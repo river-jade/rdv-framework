@@ -1,0 +1,57 @@
+---
+Parameters:
+
+- ############################################ 
+  -
+    - 'numTimeSteps'
+    - 'Number of time steps'
+  - 20
+
+- ############################################ 
+  -
+    - 'stepIntervalxx'
+    - 'Time step interval in years'
+  - 5
+
+
+- ############################################ 
+  -
+    - 'DebugTestWith20PUs'
+    - 'Debugging mode. Only uses 20 PUs for increased speed'
+  - True
+
+
+- ############################################ 
+  -
+    - 'RunZonation'
+    - 'Whether Zonation will be run'
+  - False
+
+- ############################################ 
+  -
+    - 'use_previous_zonation_result'
+    - 'Use the previous Zonation result, assumes already in runall directory'
+  - False
+
+- ############################################
+  -
+    - 'OPTcostScenario'
+    - 'Which cost scenario to use '
+  -
+    - 0
+    - 'OPTVALallPUsHaveSameCost'
+    - 'OPTVALPUcostIsProportionalToArea'
+    - 'OPTVALPUcostIsARandomValue'
+    - 'OPTVALPUcostSampledFromANormalDistribution'
+    - 'OPTVALPUcostIsAGradientFromCorner'
+    - 'OPTVALPUcostIsAfixedValuePerSqMeter'
+
+-
+  -
+    - 'Help'
+    - 'Tool help'
+  - '<b>Simulate:</b> simulates random landscapes landscapes with values drawn
+  from user specified distribution. Zonation analysis can be preformed on the
+  simulated landscapes and results from differetn runs can be compared.<br><br>
+  <b>Author:</b> Joona Lehtomaki<br>
+  <b>Updated:</b> 27.4.2010'

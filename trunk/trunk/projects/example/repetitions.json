@@ -1,0 +1,17 @@
+
+# Note that this file does all repetitions on scen 1, then on scen 2 etc...
+# Note that also the original value of the variable is not used.
+{
+repetitions : [
+    {
+        variables : {
+            test.variable.2 : 777
+        }
+    },
+    {
+        variables : {
+            test.variable.2 : 888
+        }
+    }
+]
+}
