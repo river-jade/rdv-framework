@@ -1,0 +1,36 @@
+---
+Scen1:
+
+- ############################################ 
+  -
+    - 'numTimeSteps'
+    - 'Number of time steps'
+  - 20
+
+- ############################################ 
+  -
+    - 'stepInterval'
+    - 'Time step interval in years'
+  - 5
+
+
+- ############################################ 
+  -
+    - 'DebugTestWith20PUs'
+    - 'Debugging mode. Only uses 20 PUs for increased speed'
+  - True
+
+
+- ############################################ 
+  -
+    - 'RunZonation'
+    - 'Whether Zonation will be run'
+  - False
+
+- ############################################ 
+  -
+    - 'use_previous_zonation_result'
+    - 'Use the previous Zonation result, assumes already in runall directory'
+  - False
+
+

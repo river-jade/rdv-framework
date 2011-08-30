@@ -1,0 +1,30 @@
+{
+    project_name : "Example Project",
+    base_params : {
+        variables : {
+            test.variable.1 : 123,
+            test.variable.2 : 456
+        },
+        input_files : {},
+        output_files : {
+            PAR.testing.output.filename : "test_output_file.txt"
+        }
+    },
+    scenarios : [
+      {
+          name : "Example scenario",
+          parameters : {
+            variables : {
+            }
+          }
+      },
+      {
+          name : "Example scenario 2",
+          parameters : {
+            variables : {
+                test.variable.1 : 789
+            }
+          }
+      }
+    ]
+}

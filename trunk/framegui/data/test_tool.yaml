@@ -1,0 +1,88 @@
+---
+Simulate:
+-
+  -
+    - 'Input'
+    - 'Input workspace'
+  - ''
+-
+  -
+    - 'Output'
+    - 'Output workspace'
+  - ''
+-
+  -
+    - 'Use distribution'
+    - 'Which distribution to use'
+  -
+    - 0
+    - 'Simple'
+    - 'Random'
+    - 'GaussianRF'
+-
+  -
+    - 'Landscapes'
+    - 'How many landscapes are used'
+  - 12.1
+-
+  -
+    - 'File suffix'
+    - 'Custom file suffix'
+  - 'test'
+-
+  -
+    - Run Zonation
+    - 'Should Zonation be run'
+  - False
+-
+  -
+    - 'Help'
+    - 'Tool help'
+  - '<b>Simulate:</b> simulates random landscapes landscapes with values drawn
+  from user specified distribution. Zonation analysis can be preformed on the
+  simulated landscapes and results from differetn runs can be compared.<br><br>
+  <b>Author:</b> Joona Lehtomaki<br>
+  <b>Updated:</b> 25.4.2010'
+
+Simulate2:
+-
+  -
+    - 'Input'
+    - 'Input workspace'
+  - ''
+-
+  -
+    - 'Output'
+    - 'Output workspace'
+  - ''
+-
+  -
+    - 'Use distribution'
+    - 'Which distribution to use'
+  -
+    - 0
+    - 'Simple'
+    - 'Random'
+    - 'GaussianRF'
+-
+  -
+    - 'Landscapes'
+    - 'How many landscapes are used'
+  - 12.1
+-
+  -
+    - 'File suffix'
+    - 'Custom file suffix'
+  - 'test'
+-
+  -
+    - Run Zonation
+    - 'Should Zonation be run'
+  - False
+-
+  -
+    - 'Help'
+    - 'Tool help'
+  - '<b>Simulate:</b> Nothing here.<br><br>
+  <b>Author:</b> Joona Lehtomaki<br>
+  <b>Updated:</b> 25.4.2010'

@@ -1,0 +1,78 @@
+---
+Simulate:
+-
+  - 'Input'
+  - ''
+-
+  - 'Output'
+  - ''
+-
+  - 'Use distribution'
+  -
+    - 0
+    - 'Simple'
+    - 'Random'
+    - 'GaussianRF'
+-
+  - 'Landscapes'
+  - 12.1
+-
+  - 'File suffix'
+  - 'test'
+-
+  - Run Zonation
+  - False
+-
+  - 'Help'
+  - 'This is just a simple generated ui, help description given here could be longer'
+
+TestTool2:
+-
+  - 'file'
+  - ''
+-
+  - 'Aplha'
+  - 30
+-
+  - 'Use distribution'
+  -
+    - 0
+    - 'Uniform'
+    - 'Gaussian'
+    - 'Poisson'
+-
+  - 'Multiplier'
+  - 12.1
+-
+  - 'File suffix'
+  - 'test'
+-
+  - Verbose
+  - False
+-
+  - 'Help'
+  - 'This is different kind of help.'
+
+TestTool3:
+-
+  - 'file'
+  - ''
+-
+  - 'Aplha'
+  - 30
+-
+  - 'Use distribution'
+  -
+    - 0
+    - 'Uniform'
+    - 'Gaussian'
+    - 'Poisson'
+-
+  - 'Multiplier'
+  - 12.1
+-
+  - 'File suffix'
+  - 'test'
+-
+  - Verbose
+  - False

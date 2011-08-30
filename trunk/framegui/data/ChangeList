@@ -1,0 +1,14 @@
+23.5.2010 Joona
+
+- 	Renamed framgui module as mainwindow to avoid module / package name 
+	collisions
+
+- 	Removed hard-coded yaml file paths from FrameGUIWindow constructor and
+	added new parameter files -> initial yaml file locations can be provided as
+	a string list from main()
+	
+-	self.tabNameList is redundant -> self.tools holds tool names as keys and
+	gui widgets as values -> tool names can be accessed with self.tools.keys()  
+	
+-	Modifications to add_tool():
+		-   loading errors are now logged correctly

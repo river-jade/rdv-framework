@@ -1,0 +1,21 @@
+# These commands work for a directory full of shapefiles which are in the same geographic projection and can therefore go into the same table ------------#
+
+# to prepare #  Just use a single shapefile to act as a template for the table #
+
+# the -p flag will just create the table schema #
+# -I means that a spatial index will be created #
+# -s 4326 is the spatial reference system (WGS84) #
+# /net/bastilu/test_shape/N00_E030.shp is the example template shapefile #
+# trees_samples.samples is the schema name, followed by the name of the table to be created - KEEP THESE LOWER CASE IN POSTGIS!!! #
+# the part after the | logs you in to the host (-h) using the username and password (-U) - use your own ;-)  #
+
+shp2pgsql -p -I -s 4326 /net/bastilu/test_shape/N00_E030.shp trees_samples.samples |  psql -h rott.jrc.it -U eadmin t_eurogeoss; 
+
+# to append to the table created above (-a flag) #
+
+ for file in /net/bastilu/test_shape/single_WGS84/*.shp; do shp2pgsql -a -s 4326 $file trees_samples.samples |  psql -h rott.jrc.it -U eadmin t_eurogeoss; done
+ 
+ # NB - when doing it this way, you don't use the I to specify a spatial index when each file is imported, as this was already created in the preparation stage:
+ # otherwise the last few features roll back, and you get a nice round number of features, but an incomplete dataset!
+ 
+ 
