@@ -5,12 +5,20 @@
 repetitions : [
     {
         variables : {
-	    "Prop.that.degrade" : 0.001
+	    "Prop.that.degrade" : 0.001,
+	    "OutsideGC.Multiplier" : 2,
+            "OutsideGC.Prob.offset.required" : 0.5,
+	    "Strategic.Assess.Offsets.Outside.GC" : 593.5
+
         }
     },
     {
         variables : {
-	    "Prop.that.degrade" : 0.005
+	    "Prop.that.degrade" : 0.005,
+	    "OutsideGC.Multiplier" : 2,
+            "OutsideGC.Prob.offset.required" : 0.5,
+	    "Strategic.Assess.Offsets.Outside.GC" : 593.5
+
         }
     }
 ]

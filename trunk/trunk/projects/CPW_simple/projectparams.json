@@ -2,15 +2,15 @@
   "project_name" : "CPW_simple",
   "base_params" : {
     "variables" : {
+
       "num.steps" : 80,
+
       // initial values
       "OutsideGC.Developable.Or.Offsettable" :  5270.1,
       "OutsideGC.Dev.target" :  0.0,
       "OutsideGC.Actual.Dev" :  0.0,
       "OutsideGC.Actual.Offset" :  0.0,
       "OutsideGC.Strat.Ass.extra.offsets.target" :  0.0,
-      "OutsideGC.Multiplier" : 2,
-      "OutsideGC.Prob.offset.required" : 0.5,
        
       "InsideGC.Offsetable.after.deg.inc.offset.management" :  1159.05,
       "InsideGC.Devlopable.after.deg" :  492.91,
@@ -24,9 +24,13 @@
       // constants
       "Prop.that.degrade" : 0.005,
       "Pre1750.amount.of.CPW" : 113439,
+
       "Strategic.Assess.Offsets.Outside.GC" : 593.5,
       "Offsets.Per.Year" : 19.78, // 593.5/30
       
+      "OutsideGC.Multiplier" : 2,
+      "OutsideGC.Prob.offset.required" : 0.5,   # the remaining are assumed to be illegal
+
       "InsideGC.Protected" :  269.59,
       "InsideGC.Secured" :  0.00,
       "InsideGC.Lost.Per.Year.Total" : 19.78,
@@ -34,8 +38,9 @@
 
       "OutsideGC.Protected" :  1985.5,
       "OutsideGC.Secured" :  916.5,
-      "OutsideGC.Total.Cleared" : 48.00
+      "OutsideGC.Total.Cleared.per.year" : 48.00
     },
+
     "output_files" : {
       "csv_output" : "output.csv"
     }
@@ -48,32 +53,32 @@
                 "Strategic.Assess.Offsets.Outside.GC" : 0
             }
           }
-      },
-      {
-          name : "S2 SEPP+EPBC",
-          parameters : {
-            variables : {
-	      "Strategic.Assess.Offsets.Outside.GC" : 593.5
-            }
-          }
-      },
-      {
-          name : "S3 Strat Assess",
-          parameters : {
-            variables : {
-                "Strategic.Assess.Offsets.Outside.GC" : 205
-            }
-          }
-      },
+      } #,
+      # {
+      #     name : "S2 SEPP+EPBC",
+      #     parameters : {
+      #       variables : {
+      # 	      "Strategic.Assess.Offsets.Outside.GC" : 593.5
+      #       }
+      #     }
+      # },
+      # {
+      #     name : "S3 Strat Assess",
+      #     parameters : {
+      #       variables : {
+      #           "Strategic.Assess.Offsets.Outside.GC" : 205
+      #       }
+      #     }
+      # },
 
-      {
-          name : "S4 SEPP 2_to_1",
-          parameters : {
-            variables : {
-                "Strategic.Assess.Offsets.Outside.GC" : 1856
-            }
-          }
-      }
+      # {
+      #     name : "S4 SEPP 2_to_1",
+      #     parameters : {
+      #       variables : {
+      #           "Strategic.Assess.Offsets.Outside.GC" : 1856
+      #       }
+      #     }
+      # }
 
 
     ]
