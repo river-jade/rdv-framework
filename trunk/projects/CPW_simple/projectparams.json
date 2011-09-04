@@ -5,7 +5,7 @@
 
       "num.steps" : 80,
 
-      // initial values
+      // variables - initial values
       "OutsideGC.Developable.Or.Offsettable" :  5270.1,
       "OutsideGC.Dev.target" :  0.0,
       "OutsideGC.Actual.Dev" :  0.0,
@@ -26,6 +26,10 @@
       "Pre1750.amount.of.CPW" : 113439,
 
       "Strategic.Assess.Offsets.Outside.GC" : 593.5,
+      "OutsideGC.Protected" :  1985.5,
+      "OutsideGC.Secured" :  916.5,
+      "OutsideGC.Total.Cleared.per.year" : 48.00,
+
       "Offsets.Per.Year" : 19.78, // 593.5/30
       
       "OutsideGC.Multiplier" : 2,
@@ -34,11 +38,8 @@
       "InsideGC.Protected" :  269.59,
       "InsideGC.Secured" :  0.00,
       "InsideGC.Lost.Per.Year.Total" : 19.78,
-      "InsideGC.Lost.Per.Year.Total.SEPP" : 17.27,
+      "InsideGC.Lost.Per.Year.Total.SEPP" : 17.27
 
-      "OutsideGC.Protected" :  1985.5,
-      "OutsideGC.Secured" :  916.5,
-      "OutsideGC.Total.Cleared.per.year" : 48.00
     },
 
     "output_files" : {
