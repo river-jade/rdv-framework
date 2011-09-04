@@ -62,6 +62,7 @@ class Model(basemodel.BaseModel):
         modelstates = []
         currentstate = self.createmodelstate0(variables, constants)
         modelstates.append(currentstate)
+        
         for x in range(0, variables['num.steps']):
             currentstate = currentstate.evolve()
             modelstates.append(currentstate)
@@ -81,7 +82,7 @@ class Model(basemodel.BaseModel):
         
         constants['OutsideGC.Protected'] = variables['OutsideGC.Protected']
         constants['OutsideGC.Secured'] = variables['OutsideGC.Secured']
-        constants['OutsideGC.Total.Cleared'] = variables['OutsideGC.Total.Cleared']
+        constants['OutsideGC.Total.Cleared.per.year'] = variables['OutsideGC.Total.Cleared.per.year']
 
         constants['InsideGC.Lost.Per.Year.Total'] = variables['InsideGC.Lost.Per.Year.Total']
         constants['InsideGC.Lost.Per.Year.Total.SEPP'] = variables['InsideGC.Lost.Per.Year.Total.SEPP']
@@ -96,6 +97,7 @@ class Model(basemodel.BaseModel):
         insideGC = {}
 
         # setup initial values
+        # question for Michael: why are ther 
         outsideGC[Q] = constants['OutsideGC.Developable.Or.Offsettable']
         outsideGC[R] = constants['OutsideGC.Developable.Or.Offsettable']
         outsideGC[S] = constants['OutsideGC.Developable.Or.Offsettable']
@@ -200,7 +202,7 @@ class ModelState(object):
         nextOgc[S] = thisOgc[S] * (1 - constants['Prop.that.degrade'])
 
         nextOgc[W] = thisOgc[W] * (1 - constants['Prop.that.degrade'])
-        nextOgc[X] = thisOgc[X] + constants['OutsideGC.Total.Cleared']
+        nextOgc[X] = thisOgc[X] + constants['OutsideGC.Total.Cleared.per.year']
 
         nextOgc[AB] = min(thisOgc[AB] + constants['Offsets.Per.Year'], constants['Strategic.Assess.Offsets.Outside.GC'])
 
