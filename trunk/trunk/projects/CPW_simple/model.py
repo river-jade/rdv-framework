@@ -76,18 +76,19 @@ class Model(basemodel.BaseModel):
         constants['Prop.that.degrade'] = variables['Prop.that.degrade']
         constants['Pre1750.amount.of.CPW'] = variables['Pre1750.amount.of.CPW']
         constants['Strategic.Assess.Offsets.Outside.GC'] = variables['Strategic.Assess.Offsets.Outside.GC']
-        constants['Offsets.Per.Year'] = variables['Offsets.Per.Year']
+        constants['Strat.Assess.Offsets.Per.Year'] = variables['Strat.Assess.Offsets.Per.Year']
         constants['OutsideGC.Effective.Multiplier'] = variables['OutsideGC.Multiplier'] * variables['OutsideGC.Prob.offset.required']
-        constants['OutsideGC.Developable.Or.Offsettable'] = variables['OutsideGC.Developable.Or.Offsettable']
+        constants['OutsideGC.Developable.Or.Offsettable'] = variables['OutsideGC.initial.area.developable.or.offsettable']
         
-        constants['OutsideGC.Protected'] = variables['OutsideGC.Protected']
-        constants['OutsideGC.Secured'] = variables['OutsideGC.Secured']
+        constants['OutsideGC.Protected'] = variables['OutsideGC.initial.area.protected']
+        constants['OutsideGC.Secured'] = variables['OutsideGC.initial.area.secured']
         constants['OutsideGC.Total.Cleared.per.year'] = variables['OutsideGC.Total.Cleared.per.year']
 
         constants['InsideGC.Lost.Per.Year.Total'] = variables['InsideGC.Lost.Per.Year.Total']
-        constants['InsideGC.Lost.Per.Year.Total.SEPP'] = variables['InsideGC.Lost.Per.Year.Total.SEPP']
-        constants['InsideGC.Protected'] = variables['InsideGC.Protected']
-        constants['InsideGC.Secured'] = variables['InsideGC.Secured']
+        constants['InsideGC.Offset.Total.SEPP'] = variables['InsideGC.Offset.Total.SEPP']
+        constants['InsideGC.Offset.Per.Year.Total.SEPP'] = variables['InsideGC.Offset.Per.Year.Total.SEPP']
+        constants['InsideGC.Protected'] = variables['InsideGC.initial.area.protected']
+        constants['InsideGC.Secured'] = variables['InsideGC.initial.area.secured']
         return constants
 
     def createmodelstate0(self, variables, constants):
@@ -111,12 +112,12 @@ class Model(basemodel.BaseModel):
         outsideGC[AE] = outsideGC[S] + constants['OutsideGC.Protected'] + outsideGC[W]
         outsideGC[AF] = constants['OutsideGC.Protected'] + outsideGC[W] + outsideGC[T]
 
-        insideGC[AL] = variables['InsideGC.Offsetable.after.deg.inc.offset.management']
+        insideGC[AL] = variables['InsideGC.initial.area.available.for.offsets']
         insideGC[AM] = insideGC[AL] 
         insideGC[AN] = insideGC[AL] 
-        insideGC[AO] = variables['InsideGC.Devlopable.after.deg']
+        insideGC[AO] = variables['InsideGC.initial.area.available.for.dev']
         insideGC[AP] = insideGC[AO] 
-        insideGC[AR] = variables['InsideGC.Undevelopabe']
+        insideGC[AR] = variables['InsideGC.initial.area.undevelopabe']
         insideGC[AU] = variables['InsideGC.Dev.target']
         insideGC[AV] = variables['InsideGC.Actual.Dev']
         insideGC[AW] = variables['InsideGC.Offset.target']
@@ -173,8 +174,11 @@ class ModelState(object):
         normalised['Available.CPW.left.outside.GCs'] = 1 if self.outsideGC[R] > 0 else 0
         normalised['Available.offset.CPW.left.inside.GCs'] = 1 if self.insideGC[AN] > 0 else 0
         normalised['Available.dev.CPW.left.inside.GCs'] = 1 if self.insideGC[AP] > 0 else 0
-        normalised['Available.dev.and.offset.CPW.left.inside.GCs'] = normalised['Available.offset.CPW.left.inside.GCs'] or normalised['Available.dev.CPW.left.inside.GCs']
-        normalised['Aavailable.CPW.anywhere'] = normalised['Available.CPW.left.outside.GCs'] or normalised['Available.dev.and.offset.CPW.left.inside.GCs']
+        normalised['Available.dev.and.offset.CPW.left.inside.GCs'] = \
+                                                normalised['Available.offset.CPW.left.inside.GCs'] \
+                                                or normalised['Available.dev.CPW.left.inside.GCs']
+        normalised['Aavailable.CPW.anywhere'] = normalised['Available.CPW.left.outside.GCs'] \
+                                                or normalised['Available.dev.and.offset.CPW.left.inside.GCs']
         
     def calculatefinal(self):
         """Calculate the derived values from both inside and outside growth 
@@ -196,7 +200,13 @@ class ModelState(object):
         thisOgc = self.outsideGC
         constants = self.constants
 
-        # "Developable / Offsettable after deg (inc management of offsets)"
+        #--------------------------------------------------------------
+        # Calculate the total amounts of CPW including combinations of
+        # deg, dev, and offsets 
+        #--------------------------------------------------------------
+
+        # "Developable / Offsettable after deg (inc management of
+        # offsets)" and offsetting
         nextOgc[Q] = thisOgc[Q] - ((thisOgc[Q] - thisOgc[AA]) * constants['Prop.that.degrade'])
         
         # "Developable / Offsettable after deg and offsetting and dev"
@@ -205,9 +215,11 @@ class ModelState(object):
         # "Developable / Offsettable after deg (inc NO management OR offsets OR dev)"
         nextOgc[S] = thisOgc[S] * (1 - constants['Prop.that.degrade'])
 
-        # "Developable / Offsettable after deg (inc NO management OR offsets) BUT inc dev for No Offset)"
-        #      This tracks the amount of CPW left if there is no offsets but develompment and deg occur. 
-        #      This is for the do nothing scenario.
+        # "Developable / Offsettable after deg (inc NO management OR
+        # offsets) BUT inc dev for No Offset)"
+        #   This tracks the amount of CPW left if there is no offsets
+        #   but develompment and deg occur.  This is for the do nothing
+        #   scenario.
         nextOgc[T] = max(0, nextOgc[S] - thisOgc[AD])
         
 
@@ -215,7 +227,7 @@ class ModelState(object):
         # Secured land
         #---------------
 
-        # Secured after deg
+        # "Secured after deg" - degrade the secured land
         nextOgc[W] = thisOgc[W] * (1 - constants['Prop.that.degrade'])
         
 
@@ -226,42 +238,47 @@ class ModelState(object):
         # Target amount to be developed
         nextOgc[X] = thisOgc[X] + constants['OutsideGC.Total.Cleared.per.year']
 
+        # Actual amount developed with dev and offsetting occurring
+        # TODO: check if this is bug original line below from Michael                
+        # nextOgc[Y] = nextOgc[X] if nextOgc[T] > 0 else thisOgc[Y] 
+        nextOgc[Y] = nextOgc[X] if nextOgc[R] > 0 else thisOgc[Y]            
+
         # Actual amount developed (if offsetting occurs)
         nextOgc[Y] = nextOgc[X] if nextOgc[R] > 0 else thisOgc[Y]
         
         # Actual amount developed (if no offsetting occurs)
         nextOgc[AD] = nextOgc[X] if nextOgc[T] > 0 else thisOgc[AD]
 
-
-
-        nextOgc[AB] = min(thisOgc[AB] + constants['Offsets.Per.Year'], constants['Strategic.Assess.Offsets.Outside.GC'])
-
-        nextOgc[Y] = nextOgc[X] if nextOgc[T] > 0 else thisOgc[Y]
-
         #---------------
         # Offsets
         #---------------
 
+        # Strat Ass extra offsets target
+        nextOgc[AB] = min(thisOgc[AB] + constants['Strat.Assess.Offsets.Per.Year'], \
+                          constants['Strategic.Assess.Offsets.Outside.GC'])
+        
         # Offset target
         nextOgc[Z] = nextOgc[Y] * constants['OutsideGC.Effective.Multiplier'] + nextOgc[AB]
 
         # Actual amount offset
         nextOgc[AA] = nextOgc[Z] if nextOgc[R] > 0 else thisOgc[AA]
 
+
+        #----------------------------------------------------------
+        # Calculate area of CPW for offset and non-offset scenarios
+        #----------------------------------------------------------
+
+        # Tracking the total area of CPW
         nextOgc[O] = nextOgc[R] + constants['OutsideGC.Protected'] + nextOgc[W] + nextOgc[AA]
 
-
-        #---------------
-        # Calculate area of CPW for non-offset scenarios
-        #---------------
-
-        # Tracking the amount "Do nothing"
+        # Tracking the area of CPW for "Do nothing"
         nextOgc[AE] = nextOgc[S] + constants['OutsideGC.Protected'] + nextOgc[W]
 
-        # Tracking the amount of CPW for "Dev no offsets"
+        # Tracking the area of CPW for "Dev no offsets"
         nextOgc[AF] = constants['OutsideGC.Protected'] + nextOgc[W] + nextOgc[T]
         
         return nextOgc
+    
 
     def evolveInsideGC(self):
         """Evolve the inside growth centre to the next modelstate.
@@ -272,26 +289,68 @@ class ModelState(object):
         thisIgc = self.insideGC
         constants = self.constants
 
+        # Note: inside the GC, there are separate areas to be
+        # developed and offset that don't overlap
+        
+        # "Offsetable after deg (inc offset management)"
+        nextIgc[AL] = max(0, thisIgc[AL] - ((thisIgc[AL] - thisIgc[AY]) * constants['Prop.that.degrade']))
+
+        # "Offsetable after deg (DOESNT inc offset management)" - for the Do Nothing scenario
+        nextIgc[AM] = thisIgc[AM] * (1 - constants['Prop.that.degrade'])
+
+        # "Offsetable after deg and offset (inc offset management)" - inc offset from previous time steop
+        nextIgc[AN] = max(0,nextIgc[AL] - thisIgc[AX])
+
+        # "Devlopable after deg"
+        nextIgc[AO] = thisIgc[AO] * (1 - constants['Prop.that.degrade'])
+
+        # "Devlopable after deg and dev" 
+        nextIgc[AP] = max(nextIgc[AO] - thisIgc[AV], 0)
+
+        # Undevelopabe
+        nextIgc[AR] = thisIgc[AR] * (1 - constants['Prop.that.degrade'])
+
+
+        #---------------
+        # Development
+        #---------------
+
+        # Dev target
+        nextIgc[AU] = constants['InsideGC.Lost.Per.Year.Total'] + thisIgc[AU]
+
+        # Actual dev        
+        nextIgc[AV] = nextIgc[AU] if nextIgc[AP] > 0 else thisIgc[AV]
+
+        #---------------
+        # Offsets
+        #---------------
+        
+        # Offset target
+        nextIgc[AW] = thisIgc[AW] + constants['InsideGC.Offset.Per.Year.Total.SEPP']
+        
+        # "Offset after deg" - if there is nothing left to offset then don't offset anything
+        nextIgc[AX] = nextIgc[AW] if nextIgc[AN] > 0 else thisIgc[AX]
+
+        # Actual offset (making sure it doesn't go above the total SEPP ampunt)
+        nextIgc[AY] = min(nextIgc[AX], constants['InsideGC.Offset.Total.SEPP'] )
+
+
+        #----------------------------------------------------------
+        # Calculate area of CPW for offset and non-offset scenarios
+        #----------------------------------------------------------
+        
         S0 = constants['InsideGC.Protected']
         T0 = constants['InsideGC.Secured']
-        B0 = constants['Prop.that.degrade']
-        R08 = constants['InsideGC.Lost.Per.Year.Total']
-        R015 = constants['InsideGC.Lost.Per.Year.Total.SEPP']
 
-        nextIgc[AL] = max(0, thisIgc[AL] - ((thisIgc[AL] - thisIgc[AY]) * B0))
-        nextIgc[AM] = thisIgc[AM] * (1 - B0)
-        nextIgc[AN] = max(0,nextIgc[AL] - thisIgc[AX])
-        nextIgc[AO] = thisIgc[AO] * (1 - B0)
-        nextIgc[AP] = max(nextIgc[AO] - thisIgc[AV], 0)
-        nextIgc[AR] = thisIgc[AR] * (1 - B0)
-        nextIgc[AU] = R08 + thisIgc[AU]
-        nextIgc[AK] = T0 + S0 + nextIgc[AR] + nextIgc[AL] + nextIgc[AP]
-        nextIgc[AV] = nextIgc[AU] if nextIgc[AP] > 0 else thisIgc[AV]
-        nextIgc[AW] = thisIgc[AW] + R015
-        nextIgc[AX] = nextIgc[AW] if nextIgc[AN] > 0 else thisIgc[AX]
-        nextIgc[AY] = min(nextIgc[AX], R015 * 30)
+        # Total area of CPW (note AP and AQ in the spreadsheet have been merged into 1 value here
+        nextIgc[AK] = S0 + T0 + nextIgc[AR] + nextIgc[AL] + nextIgc[AP]
+
+        # Do Nothing
         nextIgc[AZ] = T0 + S0 + nextIgc[AR] + nextIgc[AM] + nextIgc[AO]
+
+        # Dev no offsets
         nextIgc[BA] = T0 + S0 + nextIgc[AR] + nextIgc[AM] + nextIgc[AP]
+        
         return nextIgc
 
     def __str__(self):

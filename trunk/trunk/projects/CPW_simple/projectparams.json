@@ -5,16 +5,23 @@
 
       "num.steps" : 80,
 
-      // variables - initial values
-      "OutsideGC.Developable.Or.Offsettable" :  5270.1,
+      # initial values
+      "InsideGC.initial.area.available.for.offsets" :  1159.05,
+      "InsideGC.initial.area.available.for.dev" :  492.91,
+      "InsideGC.initial.area.protected" :  269.59,
+      "InsideGC.initial.area.undevelopabe" :  115.82,
+      "InsideGC.initial.area.secured" :  0.00,
+
+      "OutsideGC.initial.area.developable.or.offsettable" :  5270.1,
+      "OutsideGC.initial.area.protected" :  1985.5,
+      "OutsideGC.initial.area.secured" :  916.5,
+
+      # variables - initial values
       "OutsideGC.Dev.target" :  0.0,
       "OutsideGC.Actual.Dev" :  0.0,
       "OutsideGC.Actual.Offset" :  0.0,
       "OutsideGC.Strat.Ass.extra.offsets.target" :  0.0,
        
-      "InsideGC.Offsetable.after.deg.inc.offset.management" :  1159.05,
-      "InsideGC.Devlopable.after.deg" :  492.91,
-      "InsideGC.Undevelopabe" :  115.82,
       "InsideGC.Dev.target" :  0.0,
       "InsideGC.Actual.Dev" :  0.0,
       "InsideGC.Offset.target" :  0.0,
@@ -24,21 +31,18 @@
       // constants
       "Prop.that.degrade" : 0.005,
       "Pre1750.amount.of.CPW" : 113439,
-
-      "Strategic.Assess.Offsets.Outside.GC" : 593.5,
-      "OutsideGC.Protected" :  1985.5,
-      "OutsideGC.Secured" :  916.5,
-      "OutsideGC.Total.Cleared.per.year" : 48.00,
-
-      "Offsets.Per.Year" : 19.78, // 593.5/30
       
       "OutsideGC.Multiplier" : 2,
       "OutsideGC.Prob.offset.required" : 0.5,   # the remaining are assumed to be illegal
 
-      "InsideGC.Protected" :  269.59,
-      "InsideGC.Secured" :  0.00,
+      "Strategic.Assess.Offsets.Outside.GC" : 593.5,
+      "OutsideGC.Total.Cleared.per.year" : 48.00,
+
+      "Strat.Assess.Offsets.Per.Year" : 19.78, // 593.5/30
+      
       "InsideGC.Lost.Per.Year.Total" : 19.78,
-      "InsideGC.Lost.Per.Year.Total.SEPP" : 17.27
+      "InsideGC.Offset.Total.SEPP" : 518,
+      "InsideGC.Offset.Per.Year.Total.SEPP" : 17.27 # This is InsideGC.Offset.Total.SEPP/30
 
     },
 
