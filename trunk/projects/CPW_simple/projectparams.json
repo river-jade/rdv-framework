@@ -5,13 +5,14 @@
 
       "num.steps" : 80,
 
-      # initial values
+      # Initial values inside GC
       "InsideGC.initial.area.available.for.offsets" :  1159.05,
       "InsideGC.initial.area.available.for.dev" :  492.91,
       "InsideGC.initial.area.protected" :  269.59,
       "InsideGC.initial.area.undevelopabe" :  115.82,
       "InsideGC.initial.area.secured" :  0.00,
 
+      # Initial values outside GC
       "OutsideGC.initial.area.developable.or.offsettable" :  5270.1,
       "OutsideGC.initial.area.protected" :  1985.5,
       "OutsideGC.initial.area.secured" :  916.5,
@@ -58,32 +59,32 @@
                 "Strategic.Assess.Offsets.Outside.GC" : 0
             }
           }
-      } #,
-      # {
-      #     name : "S2 SEPP+EPBC",
-      #     parameters : {
-      #       variables : {
-      # 	      "Strategic.Assess.Offsets.Outside.GC" : 593.5
-      #       }
-      #     }
-      # },
-      # {
-      #     name : "S3 Strat Assess",
-      #     parameters : {
-      #       variables : {
-      #           "Strategic.Assess.Offsets.Outside.GC" : 205
-      #       }
-      #     }
-      # },
+      },
+      {
+          name : "S2 SEPP+EPBC",
+          parameters : {
+            variables : {
+      	      "Strategic.Assess.Offsets.Outside.GC" : 593.5
+            }
+          }
+      },
+      {
+          name : "S3 Strat Assess",
+          parameters : {
+            variables : {
+                "Strategic.Assess.Offsets.Outside.GC" : 205
+            }
+          }
+      },
 
-      # {
-      #     name : "S4 SEPP 2_to_1",
-      #     parameters : {
-      #       variables : {
-      #           "Strategic.Assess.Offsets.Outside.GC" : 1856
-      #       }
-      #     }
-      # }
+      {
+          name : "S4 SEPP 2_to_1",
+          parameters : {
+            variables : {
+                "Strategic.Assess.Offsets.Outside.GC" : 1856
+            }
+          }
+      }
 
 
     ]
