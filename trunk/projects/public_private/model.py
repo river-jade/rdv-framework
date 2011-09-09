@@ -7,13 +7,12 @@ logger = logging.getLogger('model')
 
 class Model(basemodel.BaseModel):
     def execute(self, params):
-        def run_r_code(rscript, timestep=None, variables={}, inputfiles={}, outputfiles={}):
+        def run_r_code(rscript, timestep=None, variables=None, inputfiles=None, 
+                   outputfiles=None):
             if (timestep):
+                if not variables: variables = {}
                 variables['current.time.step'] = timestep
-            myparams = params
-            if (variables or inputfiles or outputfiles):
-                myparams = params.mergeParameters(variables, inputfiles, outputfiles)
-            self.run_r_code(rscript, myparams)
+            self.run_r_code(rscript, params, variables, inputfiles, outputfiles)
 
         variables = params.variables
 
