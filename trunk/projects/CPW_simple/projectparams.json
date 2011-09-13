@@ -59,32 +59,32 @@
                 "Strategic.Assess.Offsets.Outside.GC" : 0
             }
           }
-      },
-      {
-          name : "S2 SEPP+EPBC",
-          parameters : {
-            variables : {
-      	      "Strategic.Assess.Offsets.Outside.GC" : 593.5
-            }
-          }
-      },
-      {
-          name : "S3 Strat Assess",
-          parameters : {
-            variables : {
-                "Strategic.Assess.Offsets.Outside.GC" : 205
-            }
-          }
-      },
+      }#,
+      # {
+      #     name : "S2 SEPP+EPBC",
+      #     parameters : {
+      #       variables : {
+      # 	      "Strategic.Assess.Offsets.Outside.GC" : 593.5
+      #       }
+      #     }
+      # }, 
+      # {
+      #     name : "S3 Strat Assess",
+      #     parameters : {
+      #       variables : {
+      #           "Strategic.Assess.Offsets.Outside.GC" : 205
+      #       }
+      #     }
+      # },
 
-      {
-          name : "S4 SEPP 2_to_1",
-          parameters : {
-            variables : {
-                "Strategic.Assess.Offsets.Outside.GC" : 1856
-            }
-          }
-      }
+      # {
+      #     name : "S4 SEPP 2_to_1",
+      #     parameters : {
+      #       variables : {
+      #           "Strategic.Assess.Offsets.Outside.GC" : 1856
+      #       }
+      #     }
+      # }
 
 
     ]

@@ -62,6 +62,9 @@ class Model(basemodel.BaseModel):
         modelstates = []
         currentstate = self.createmodelstate0(variables, constants)
         modelstates.append(currentstate)
+
+        print "\n--> Prop.that.degrade =",  constants['Prop.that.degrade']
+        print "--> OutsideGC.Multiplier=", variables['OutsideGC.Multiplier']
         
         for x in range(0, variables['num.steps']):
             currentstate = currentstate.evolve()
