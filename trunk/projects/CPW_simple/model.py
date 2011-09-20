@@ -392,7 +392,8 @@ def writecsv(modelstates, filename):
     # extract the fieldnames (taken from the last modelstate)
     fieldnames = [pair[0] for pair in merge(modelstates[-1])]
     # open the csv file for writing from a dictionary
-    writer = csv.DictWriter(open(filename, 'wb'), fieldnames, dialect=csv.excel)
+    f = open(filename, 'wb')
+    writer = csv.DictWriter(f, fieldnames, dialect=csv.excel)
 
     # we do a little trick to write the header row, passing a dictionary where 
     # the values are the keys. this is a built-in in py 2.7, but jython uses
@@ -401,5 +402,6 @@ def writecsv(modelstates, filename):
     # flatten the model state for each timestep, and pass to the csv writer to 
     # be written to output file.
     writer.writerows(dict(merge(row)) for row in modelstates)
+    f.close()
     logger.info("Wrote csv to: %s" % filename)
 
