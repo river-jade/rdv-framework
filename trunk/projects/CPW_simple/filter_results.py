@@ -34,7 +34,7 @@ def getinterestingids(path):
             # field index for CPW.area column
             index = reader.next().index("norm.Norm.CPW.area")
             lastrow = [row for row in reader][-1]
-            if lastrow[index] > 0.01:
+            if float(lastrow[index]) > 1:
                 runid = f.split('_')[0]
                 ids.append(runid)
     return ids
