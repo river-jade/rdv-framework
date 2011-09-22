@@ -21,6 +21,13 @@ generators : [
         start : 0,
         step_size : 1,
         count : 10
+    },
+    {
+        key : "test.variable.4",
+        generator_type : "normal_distribution",
+        mean : 10,
+        stdDev : 1,
+        count : 10
     }
 ]
 }
