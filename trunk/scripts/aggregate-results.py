@@ -9,7 +9,7 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     parser = optparse.OptionParser()
-    parser.add_option("--run_ids", dest="runids", 
+    parser.add_option("--run-ids", dest="runids", 
         help="Comma separated list of run ids whose results are to be copied, "
                 "or '*' to copy all runs.")
     parser.add_option("--outputdir", dest="outputdir", 
@@ -17,7 +17,7 @@ def main(argv=None):
     try:
         opts, args = parser.parse_args()
         if not opts.runids:
-            raise Usage("--run_ids is required.")
+            raise Usage("--run-ids is required.")
         if not opts.outputdir:
             raise Usage("--outputdir is required.")
         copyruns(opts.runids.split(','), opts.outputdir)
