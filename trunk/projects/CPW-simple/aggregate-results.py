@@ -118,4 +118,3 @@ retrieveparameters(ids, options.outputpath, options.jarpath)
 combineparameters(ids, options.outputpath)
 writefinalvalues(ids, options.outputpath)
 
-# TODO(michaell: rename script
