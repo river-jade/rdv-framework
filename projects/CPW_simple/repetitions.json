@@ -7,6 +7,7 @@ repetitions : [
         variables : {
 	    #"Prop.that.degrade" : 0.001,
 	    #"OutsideGC.Multiplier" : 2,
+	    #"OutsideGC.Prob.offset.required" : 0.5
             "OutsideGC.Prob.offset.required" : 0.5,
 	    "Strategic.Assess.Offsets.Outside.GC" : 593.5
 
@@ -16,6 +17,7 @@ repetitions : [
         variables : {
 	    #"Prop.that.degrade" : 0.005,
 	    #"OutsideGC.Multiplier" : 3,
+	    #"OutsideGC.Prob.offset.required" : 0.5
             "OutsideGC.Prob.offset.required" : 0.5,
 	    "Strategic.Assess.Offsets.Outside.GC" : 593.5,
 	    "OutsideGC.Total.Cleared.per.year" : 48.00
@@ -34,9 +36,16 @@ generators : [
     {
         key : "OutsideGC.Multiplier",
         generator_type : "linear_step",
-        start : 2,
-        step_size : 0.5,
-        count : 2
+        start : 1,
+        step_size : 0.25,
+        count : 6
+    },
+    {
+        key : "OutsideGC.Prob.offset.required",
+        generator_type : "linear_step",
+        start : 0.0001,
+        step_size : 0.1,
+        count : 9
     }
 ]
 
