@@ -8,36 +8,52 @@ import sys
 def parse_flags(parser, flags):
     """Configures the command-line flag parser.
     """
-    parser.add_option("--runset", action="store", dest="runset", 
-                      help="Runset to aggregate")
+    parser.add_option("--jar-path", action="store", dest="jarpath", 
+                      default="rdv.jar", help="Path to jar file")
+    parser.add_option("--nocopy", action="store_false", dest="copy", 
+                      help="If set, don't copy files (to save time if they've "
+                      "already been copied)", default=True)
     parser.add_option("--outputpath", action="store", dest="outputpath", 
+                      help="Runset to aggregate")
+    parser.add_option("--runset", action="store", dest="runset", 
                       help="Runset to aggregate")
     parser.add_option("--ssh-username", action="store", dest="sshusername", 
                       default="rdv", help="Username for ssh connections")
-    parser.add_option("--jar-path", action="store", dest="jarpath", 
-                      default="rdv.jar", help="Path to jar file")
 
     options, args = parser.parse_args(flags)
     return options
 
-def getinterestingids(path):
-    """Examing each of the output.csv files in the output directory
-    to see which ones match the criteria (currently 
-    that norm.Norm.CPW.area > 0.01). Returns the list of ids for runs which
-    match the criteria.
+def getinterestingids(path, filterfunction=None):
+    """Function to determine which ids we're interested in.
     """
-    files = os.listdir(path)
-    ids = []
-    for f in files:
-        if fnmatch.fnmatch(f, "*_output.csv"):
-            reader = csv.reader(open(os.path.join(path, f), 'rb'))
-            # field index for CPW.area column
-            index = reader.next().index("norm.Norm.CPW.area")
-            lastrow = [row for row in reader][-1]
-            if float(lastrow[index]) > 1:
-                runid = f.split('_')[0]
-                ids.append(runid)
-    return ids
+    if not filterfunction:
+        filterfunction = lambda x: x # if no filter function provided, just return all ids
+    return filterfunction([f.split('_')[0] for f in getoutputfiles(path)])
+
+def writefinalvalues(ids, path):
+    """Writes the final values for each run out as a CSV file.
+    """
+    fieldnames = set()
+    values = []
+    for id in ids:
+        reader = csv.reader(open(os.path.join(path, "%s_output.csv" % id), 'rb'))
+        # field index for CPW.area column
+        headers = reader.next()
+        fieldnames |= set(headers)
+        lastrow = [row for row in reader][-1]
+        valuesmap = dict(zip(headers, lastrow))
+        values.append((id, valuesmap))
+
+    fields = list(fieldnames)
+    f = open(os.path.join(path, "finalvalues.csv"), 'wb')
+    writer = csv.writer(f)
+    writer.writerow(["run_id"] + fields)
+    for id, valuesmap in values:
+        writer.writerow([id] + [valuesmap[field] for field in fields])
+    print "Wrote final values %s" % f.name
+
+def getoutputfiles(path):
+    return filter(lambda f: fnmatch.fnmatch(f, "*_output.csv"), os.listdir(path))
 
 def retrieveparameters(ids, outputpath, jarpath):
     """Call the java program to retrieve the parameters for each run passed
@@ -72,14 +88,14 @@ def combineparameters(ids, outputpath):
         values.append((id, valuesmap))
     # values now contains a list of lists of dictionaries, each of which maps from field names to values
     fields = list(fieldnames)
-    paramfile = os.path.join(outputpath, "parameters.csv")
-    f = open(paramfile, 'wb')
+    
+    f = open(os.path.join(outputpath, "parameters.csv"), 'wb')
     writer = csv.writer(f)
     writer.writerow(["run_id"] + fields)
     for id, valuesmap in values:
         for row in valuesmap:
             writer.writerow([id] + [row[field] for field in fields])
-    print "Wrote combined parameters to %s" % paramfile
+    print "Wrote combined parameters to %s" % f.name
 
 parser = optparse.OptionParser()
 options = parse_flags(parser, sys.argv)
@@ -89,11 +105,17 @@ if not options.runset:
 if not options.outputpath: 
     parser.error("Must specify an output path. Pass --help for usage info.")
 
-cmdarray = ["java", "-Duser.name=%s" % options.sshusername, "-jar", 
-            options.jarpath, "aggregate", "--runset=%s" % options.runset, 
-            "--outputpath=%s" % options.outputpath]
-print "Executing: ", ' '.join(cmdarray)
-cmd = subprocess.call(cmdarray)
+if options.copy:
+    # aggregate the results into a single directory, using the tzar aggregate command.
+    cmdarray = ["java", "-Duser.name=%s" % options.sshusername, "-jar", 
+                options.jarpath, "aggregate", "--runset=%s" % options.runset, 
+                "--outputpath=%s" % options.outputpath]
+    print "Executing: ", ' '.join(cmdarray)
+    cmd = subprocess.call(cmdarray)
+
 ids = getinterestingids(options.outputpath)
 retrieveparameters(ids, options.outputpath, options.jarpath)
 combineparameters(ids, options.outputpath)
+writefinalvalues(ids, options.outputpath)
+
+# TODO(michaell: rename script
