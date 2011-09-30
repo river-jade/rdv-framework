@@ -9,8 +9,6 @@ import basemodel
 
 import java.math.BigDecimal
 
-logger = logging.getLogger('model')
-
 # Names of the fields. These short versions are used because otherwise the code
 # becomes unwieldy. They also map to the column names in the spreadsheet upon
 # which this code is based.
@@ -40,6 +38,7 @@ AO = 'Devlopable.after.deg'
 AP = 'Devlopable.after.deg.and.dev'
 AR = 'Undevelopabe'
 AU = 'Dev.target'
+
 AV = 'Actual.Dev'
 AW = 'Offset.target'
 AX = 'Offset.after.deg'
@@ -66,14 +65,14 @@ class Model(basemodel.BaseModel):
         currentstate = self.createmodelstate0(variables, constants)
         modelstates.append(currentstate)
 
-        print "\n--> Prop.that.degrade =",  constants['Prop.that.degrade']
-        print "--> OutsideGC.Multiplier=", variables['OutsideGC.Multiplier']
+        self.logger.info("Prop.that.degrade = " + str(constants['Prop.that.degrade']))
+        self.logger.info("OutsideGC.Multiplier = " + str(variables['OutsideGC.Multiplier']))
         
         for x in range(0, variables['num.steps']):
             currentstate = currentstate.evolve()
             modelstates.append(currentstate)
             # print currentstate # for debugging
-        writecsv(modelstates, qualifiedparams['csv_output'])
+        writecsv(modelstates, qualifiedparams['csv_output'], self.logger)
     
     def createconstants(self, variables):
         """Extracts the constants from the variables and place them in a new dictionary
@@ -377,7 +376,7 @@ Normalised:\n\t%s
     """ % (sort(self.constants), sort(self.outsideGC), sort(self.insideGC), 
            sort(self.final), sort(self.normalised))
 
-def writecsv(modelstates, filename):
+def writecsv(modelstates, filename, logger):
     """Write the output for all modelstates out in CSV format.
     """
     # lambda function to qualify all keys in a dictionary with a unique string, 
