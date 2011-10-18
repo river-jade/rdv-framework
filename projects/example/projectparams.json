@@ -3,7 +3,9 @@
     base_params : {
         variables : {
             test.variable.1 : 123,
-            test.variable.2 : 456
+            test.variable.2 : 456,
+            test.variable.3 : "xyz",
+            test.variable.4 : "abc"
         },
         input_files : {},
         output_files : {
