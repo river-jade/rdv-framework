@@ -9,7 +9,8 @@
         },
         input_files : {},
         output_files : {
-            PAR.testing.output.filename : "test_output_file.txt"
+            PAR.testing.output.filename : "test_output_file.txt",
+            PAR.testing.output.filename2 : "test_output_file2.txt"
         }
     },
     scenarios : [
