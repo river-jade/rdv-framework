@@ -20,7 +20,7 @@ cat('Value for test variable 4 is:', tzar[['test.variable.4']], '\n')
 cat('The working dir is', getwd(), '\n')
 cat('PAR.testing.output.filename=', tzar[['PAR.testing.output.filename']], '\n')
 
-
+cat('\n\n##The current working dir is', getwd(), '\n\n' )
 
 test.text <- rep(1:10) 
 
