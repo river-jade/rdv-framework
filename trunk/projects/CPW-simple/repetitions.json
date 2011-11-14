@@ -12,8 +12,8 @@ generators : [
         key : "Prop.that.degrade",
         generator_type : "linear_step",
         start : 0.0,
-        step_size : 0.003,
-        count : 7    # max value 0.021
+        step_size : 0.002,
+        count : 10    # max value 0.021
     },
     {
         key : "OutsideGC.Total.Cleared.per.year",
@@ -27,14 +27,14 @@ generators : [
         generator_type : "linear_step",
         start : 1,
         step_size : 0.5,
-        count : 4    # max 3
+        count : 6    # max 4
     },
     {
         key : "OutsideGC.Prob.offset.required",
         generator_type : "linear_step",
         start : 0.0,
         step_size : 0.1,
-        count : 9  # max 0.9001
+        count : 10  # max 1.0
     }
 ]
 
