@@ -1,57 +1,26 @@
 {
-    "project_name" : "Public/Private",
+    "project_name" : "Melb grassland",
     "base_params" : {
       "variables": {
-        Debug.Test.With.20.PUs: False,
 
         #----------------------------------------------------------------------
         # basic info
         #----------------------------------------------------------------------
+
+        Debug.Test.With.20.PUs: False,
 
         step.interval: 5, # make sure you update PAR.management.cost.per.pixel if you change this
         numTimeSteps: 3,
 
         pixel.size: 50,
 
-        #----------------------------------------------------------------------
-        # cost info
-        #----------------------------------------------------------------------
+        DebugSaveLossModelOutFiles : False,
 
-        OPTsetRandomSeedForCost : True,
-        PARcostRandomSeed : 1,
+        use.run.number.as.seed : True, 
 
-        # need a 5 here because the code wants a cost per year
-        PAR.management.cost.per.pixel : 15.0, # 0.03 * 50 * 50 / step.interval
+        dbmsFunctionsRFileName : "dbms.functions.variables.melb.grassland.R",
 
-        OPT.cost.scenario : 7, # OPTVALPUcostIsSampledFromRealMelbCosts
-
-        # this is only if using OPTVALPUcostIsSampledFromRealMelbCosts
-        # if this is false and then will sample from the actual
-        # Melb cost distribution
-        OPTsampleMelbCostsFromLogNormDist : True,
-
-        #----------------------------------------------------------------------
-        # loss settings
-        #----------------------------------------------------------------------
-
-        PAR.pus.lost.per.timestep : 0,
-
-        #----------------------------------------------------------------------
-        # reserve selection settings
-        #----------------------------------------------------------------------
-        publicReserveDuration : 1000,
-        privateReserveDuration : 5,
-
-        #----------------------------------------------------------------------
-        # grassland condition model settings
-
-        OPT.use.smoothing.in.grassland.cond.model : False,
-        OPT.smoothing.option : 2, # OPT.VAL.only.use.pixels.below.fixed.val.in.smoothing
-        PAR.fixed.val.for.smoothing : 0.12,
-
-        PAR.grassland.threshold.value : 0.35,
-        PAR.prob.of.crossing.thresh : 0.0005,
-        OPT.use.raster.maps.for.input.and.output: True,
+	PAR.prop.pixels.in.PU.to.reserve : 0.7,
 
         #-----------------------------------------
         #  start_point = 1  - initialise PU info
@@ -66,55 +35,248 @@
         rows : 782,
         cols : 832,
 
-        ###########################################################################
-        #  These should be the only overrides needed to be changed
-        ###########################################################################
+        #----------------------------------------------------------------------
+        # New Variables added when converting to Melb Grassland
+        #----------------------------------------------------------------------
 
-        PARcostRandomSeed : 1,
-        PAR.pus.lost.per.timestep : 0, # 206
-        use.run.number.as.seed : True
+
+        #----------------------------------
+        #  Variables for reserve.Zonation.R
+        #----------------------------------
+        usePreviousZonationResult : True,
+        PAR.zonation.select.partial.patches : True,
+        zonationThreshold : 1.0,
+
+        #----------------------------
+        #  Variables for loss.model.R
+        #----------------------------
+	OPT.use.offsetting.in.loss.model : True,
+        PAR.pus.lost.per.timestep : 0,
+
+        #----------------------------
+        #  Variables for offset.model.R
+        #----------------------------
+	OPT.specify.offset.pool.with.map : True,
+	OPT.specify.development.pool.with.map : True,
+
+        OPT.partial.offsets.allowed : True,
+        OPT.leak.offsets.outside.study.area : False,
+        OPT.offset.leakage.prob : 0.2,
+        OPT.do.strategic.offsetting : False,
+	OPT.private.offset.multiplier : 1,
+	OPT.strategic.offset.multiplier : 1,
+        OPT.probResExpiringPerTimeStep : 0,
+        OPT.probManExpiringPerTimeStep : 0,
+
+        offsettingGlobalsTableName : "OFFSETTING_GLOBALS",
+        offsettingWorkingVarsTableName : "OFFSETTING_WORKING_VARS",
+
+
+       #-------------------------------------------
+       #  Variables for grassland.condition.model.R
+       #-------------------------------------------
+
+       OPT.use.smoothing.in.grassland.cond.model : False,
+       PAR.prob.of.crossing.thresh : 0.0005,
+
+       PAR.grassland.variability.std.dev : 0.02,
+       PAR.grassland.threshold.value : 0.35,
+       PAR.grassland.min.cond.score : 0.1,
+       PAR.grassland.max.cond.score : 0.75,
+
+        OPT.smoothing.option : 2, # OPT.VAL.only.use.pixels.below.fixed.val.in.smoothing
+        PAR.fixed.val.for.smoothing : 0.12,
+
+        OPT.use.raster.maps.for.input.and.output: True,
+
+
+
+        #-------------------------------------------
+        #  Variables for reserve.random.R
+        #-------------------------------------------
+        OPT.reserve.parcels.based.on.budget : False,
+  
+
+
+####################################
+
+            #---------------------------------
+            #  Variables for initialise.cost.information.R
+	    #  Note: I don't think this is used in this analysis
+            #---------------------------------
+
+        # need a 5 here because the code wants a cost per year
+        PAR.management.cost.per.pixel : 15.0, # 0.03 * 50 * 50 / step.interval
+        OPT.cost.scenario : 6, # OPT.VAL.PU.cost.is.a.fixed.value.per.sq.meter
+        # this is only if using OPTVALPUcostIsSampledFromRealMelbCosts
+        # if this is false and then will sample from the actual
+        # Melb cost distribution
+        OPTsampleMelbCostsFromLogNormDist : False
+
+      },
+
+      input_files : {
+
+          PAR.managed.above.thresh.filename : "condModel_above_thresh_curve.txt",
+          PAR.managed.below.thresh.filename : "condModel_below_thresh_curve.txt",
+          PAR.unmanaged.filename : "condModel_unmanaged_curve.txt",
+
+          planning.units.filename.base : "planning.units.uid_20ha",
+          planning.units.filename : "planning.units.uid_20ha.txt",
+
+	  PAR.development.pool.map.filename : "dev_pool_mask.txt", 
+	  PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
+
+	  PAR.Zonation.reserve.map : "zonation_output.rank.txt",
+	  PAR.pus.in.dev.pool : "PUs_IN_DEV_POOL.txt",
+	  PAR.pus.in.offset.pool :"PUs_IN_OFFSET_POOL.txt"
       }
     },
+
     scenarios : [
+      # {
+      #   "name" : "Do nothing",
+      #   parameters : {
+      #     variables : {
+      #       reserveSelectionMethod : "ZONATION",
+      # 	    zonation.threshold : 1,
+      # 	    OPT.use.offsetting.in.loss.model : False,
+      # 	    OPT.specify.offset.pool.with.map : True,
+      # 	    OPT.specify.development.pool.with.map : True,
+      # 	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
+      # 	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
+      # 	    PAR.pus.lost.per.timestep : 0
+      #     }
+      #   }
+      # },
       {
-        "name" : "All public",
+        "name" : "Worst Case",
         parameters : {
           variables : {
-            "reserveSelectionMethod" : "CONDITION",
-            "BudgetForPubReserves" : 1000000,
-            "BudgetForPrivateManagement" : 0
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 1,
+      	    OPT.use.offsetting.in.loss.model : False,
+      	    OPT.specify.offset.pool.with.map : True,
+      	    OPT.specify.development.pool.with.map : True,
+      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
+      	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
+      	    PAR.pus.lost.per.timestep : 78
           }
         }
       },
       {
-        "name" : "All private",
-        "parameters" : {
-           "variables" : {
-             "reserveSelectionMethod" : "RANDOM",
-             "BudgetForPubReserves" : 0,
-             "BudgetForPrivateManagement" : 1000000
-           }
+        "name" : "Best case",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 0,
+      	    OPT.use.offsetting.in.loss.model : False,
+      	    OPT.specify.offset.pool.with.map : True,
+      	    OPT.specify.development.pool.with.map : True,
+      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
+      	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
+      	    PAR.pus.lost.per.timestep : 0
+          }
         }
       },
       {
-        "name" : "50-50 mix of pub/private",
-        "parameters" : {
-           "variables" : {
-             "reserveSelectionMethod" : "CONDITION_AND_RANDOM",
-             "BudgetForPubReserves" : 500000,
-             "BudgetForPrivateManagement" : 500000
-           }
+        "name" : "Random offsets",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 1,
+      	    OPT.use.offsetting.in.loss.model : True,
+	    OPT.use.smoothing.in.grassland.cond.model : False,
+      	    OPT.specify.offset.pool.with.map : True,
+      	    OPT.specify.development.pool.with.map : True,
+      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
+      	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
+      	    PAR.pus.lost.per.timestep : 78
+          }
         }
       },
       {
-        "name" : "Do nothing",
-        "parameters" : {
-           "variables" : {
-             "reserveSelectionMethod" : "CONDITION",
-             "BudgetForPubReserves" : 0.1,
-             "BudgetForPrivateManagement" : 0.1
-           }
+        "name" : "Strat offset impl imm",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 0.916,
+
+      	    OPT.use.offsetting.in.loss.model : False,
+	    OPT.use.smoothing.in.grassland.cond.model : False,
+      	    OPT.specify.offset.pool.with.map : True,
+      	    OPT.specify.development.pool.with.map : True,
+      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
+      	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
+
+      	    PAR.pus.lost.per.timestep : 78
+          }
         }
-      }
+      },
+      {
+        "name" : "Strat offset impl grad",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 1,
+
+      	    OPT.use.offsetting.in.loss.model : True,
+	    OPT.use.smoothing.in.grassland.cond.model : False,
+      	    OPT.specify.offset.pool.with.map : True,
+      	    OPT.specify.development.pool.with.map : True,
+      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
+      	    #PAR.offset.pool.map.filename : "offset_pool_mask_strategic.txt", ## TODO NEED TO MAKE A SWITCH FOR THIS
+
+      	    PAR.pus.lost.per.timestep : 78
+          }
+        }
+      } 
+
+
+
+
+
+#,
+
+      # {
+      #   "name" : "xxxAll public",
+      #   parameters : {
+      #     variables : {
+      #       reserveSelectionMethod : "CONDITION",
+      #       BudgetForPubReserves : 1000000,
+      #       BudgetForPrivateManagement : 0
+      #     }
+      #   }
+      # },
+      # {
+      #   "name" : "xxxAll private",
+      #   "parameters" : {
+      #      "variables" : {
+      #        "reserveSelectionMethod" : "RANDOM",
+      #        "BudgetForPubReserves" : 0,
+      #        "BudgetForPrivateManagement" : 1000000
+      #      }
+      #   }
+      # },
+      # {
+      #   "name" : "xxx50-50 mix of pub/private",
+      #   "parameters" : {
+      #      "variables" : {
+      #        "reserveSelectionMethod" : "CONDITION_AND_RANDOM",
+      #        "BudgetForPubReserves" : 500000,
+      #        "BudgetForPrivateManagement" : 500000
+      #      }
+      #   }
+      # },
+      # {
+      #   "name" : "xxxDo nothing",
+      #   "parameters" : {
+      #      "variables" : {
+      #        "reserveSelectionMethod" : "CONDITION",
+      #        "BudgetForPubReserves" : 0.1,
+      #        "BudgetForPrivateManagement" : 0.1
+      #      }
+      #   }
+      # }
     ]
 }

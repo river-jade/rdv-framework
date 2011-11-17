@@ -21,7 +21,7 @@ class Model(basemodel.BaseModel):
         logger.info("\nrunning dbms initialise: %s" % \
                     variables['dbmsFunctionsRFileName'])
 
-        run_r_code("dbms.initialise.R")
+        run_r_code("dbms.initialise.melb.grassland.R")
 
         if variables['test_modelling_and_reserving_loop']:
             cur_check_point += 1           # now cur_check_point == 1
@@ -86,6 +86,7 @@ class Model(basemodel.BaseModel):
                         if variables['reserveSelectionMethod'] == "CONDITION":
                             logger.info("\nreserve CONDITION for public reserves...")
                             run_r_code("reserve.condition.R", timestep=timeStep, variables=overrides)
+                            
                     if variables['BudgetForPrivateManagement'] > 0:
                         overrides['PAR.budget.for.timestep'] = variables['BudgetForPrivateManagement']
                         overrides['OPT.action.type'] = variables['OPT.VAL.private.management']
@@ -102,7 +103,7 @@ class Model(basemodel.BaseModel):
 
                     if variables['reserveSelectionMethod'] == "CONDITION_AND_RANDOM":
 
-                        # for now only using the case were running
+                        # for now only using the case where running
                         # RANDOM for private and CONDITION for public.
                         
                         if variables['BudgetForPrivateManagement'] > 0:
@@ -123,7 +124,8 @@ class Model(basemodel.BaseModel):
                 
                 logger.info("\nloss model...")
                 # Note: currently offset model is called from inside loss model
-                run_r_code("loss.model.R", timestep=timeStep, variables=overrides)
+                #run_r_code("loss.model.R", timestep=timeStep, variables=overrides)
+                run_r_code("loss.model.melb.grassland.R", timestep=timeStep, variables=overrides)
 
                 # now save the output of the offset model
 				
