@@ -34,8 +34,12 @@ source( 'variables.R' )
 
 prop.of.patch.overlap <- PAR.zonation.prop.of.patch.overlap;
 
-reserve.map <- 'zonation_output.rank.txt';
+# note this line was changed so that this would work
+# when adding the melb grassland project into the new tzar/babushka framework
+# AG - 2011.11.15
 
+#reserve.map <- 'zonation_output.rank.txt';
+reserve.map <- PAR.Zonation.reserve.map
 
 if( PAR.zonation.select.partial.patches ){
   sel.res.partial( zonation.threshold );
