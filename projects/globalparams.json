@@ -246,7 +246,7 @@
 
         OPT.generate.polygon.time.series : False,
 
-
+		OPT.unmanaged.is.stable : False,
 
         #-------------------------------------------
         #  Variables for reserve.random.R
