@@ -164,11 +164,13 @@ if( OPT.specify.development.pool.with.map ) {
 
 
 write.table( pus.in.development.pool2,
-            "initialisation_files/PUs_IN_DEV_POOL.txt",
+            #"initialisation_files/PUs_IN_DEV_POOL.txt",
+            PAR.pus.in.dev.pool,
             row.names = FALSE, col.names = FALSE);
 
 write.table( pus.in.offset.pool2,
-            "initialisation_files/PUs_IN_OFFSET_POOL.txt",
+            #"initialisation_files/PUs_IN_OFFSET_POOL.txt",
+            PAR.pus.in.offset.pool,
             row.names = FALSE, col.names = FALSE);
 
     #------------------------------------------------------------
