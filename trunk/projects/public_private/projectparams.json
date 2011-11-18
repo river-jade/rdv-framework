@@ -54,6 +54,8 @@
         PAR.prob.of.crossing.thresh : 0.0005,
         OPT.use.raster.maps.for.input.and.output: True,
 
+		OPT.unmanaged.is.stable : False,
+
         #-----------------------------------------
         #  start_point = 1  - initialise PU info
         #  start_point = 2  - initialise cost info
