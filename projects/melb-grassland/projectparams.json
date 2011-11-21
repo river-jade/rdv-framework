@@ -10,7 +10,7 @@
         Debug.Test.With.20.PUs: False,
 
         step.interval: 5, # make sure you update PAR.management.cost.per.pixel if you change this
-        numTimeSteps: 3,
+        numTimeSteps: 7,
 
         pixel.size: 50,
 
@@ -68,8 +68,17 @@
         OPT.probResExpiringPerTimeStep : 0,
         OPT.probManExpiringPerTimeStep : 0,
 
+
         offsettingGlobalsTableName : "OFFSETTING_GLOBALS",
         offsettingWorkingVarsTableName : "OFFSETTING_WORKING_VARS",
+
+	OPT.offset.pool.option : "UNDEFINED",
+
+        # define offset pool - this varies between scenarios so need a swtich
+	# which is defined above
+	PAR.offset.pool.map.filename.random : "offset_pool_mask_random.txt",
+	PAR.offset.pool.map.filename.strategic : "offset_pool_mask_strategic.txt", 
+
 
 
        #-------------------------------------------
@@ -124,8 +133,11 @@
           planning.units.filename.base : "planning.units.uid_20ha",
           planning.units.filename : "planning.units.uid_20ha.txt",
 
+          # this is set in model.py based on the setting of OPT.offset.pool.option
+	  PAR.offset.pool.map.filename : "UNDEFINED",  
+
+	  # define development pool - this is same in all scens
 	  PAR.development.pool.map.filename : "dev_pool_mask.txt", 
-	  PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
 
 	  PAR.Zonation.reserve.map : "zonation_output.rank.txt",
 	  PAR.pus.in.dev.pool : "PUs_IN_DEV_POOL.txt",
@@ -134,7 +146,7 @@
     },
 
     scenarios : [
-      # {
+      #{
       #   "name" : "Do nothing",
       #   parameters : {
       #     variables : {
@@ -143,76 +155,71 @@
       # 	    OPT.use.offsetting.in.loss.model : False,
       # 	    OPT.specify.offset.pool.with.map : True,
       # 	    OPT.specify.development.pool.with.map : True,
-      # 	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
-      # 	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
+      # 	    OPT.offset.pool.option : "UNDEFINED",
       # 	    PAR.pus.lost.per.timestep : 0
       #     }
       #   }
       # },
-      {
-        "name" : "Worst Case",
-        parameters : {
-          variables : {
-            reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 1,
-      	    OPT.use.offsetting.in.loss.model : False,
-      	    OPT.specify.offset.pool.with.map : True,
-      	    OPT.specify.development.pool.with.map : True,
-      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
-      	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
-      	    PAR.pus.lost.per.timestep : 78
-          }
-        }
-      },
-      {
-        "name" : "Best case",
-        parameters : {
-          variables : {
-            reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 0,
-      	    OPT.use.offsetting.in.loss.model : False,
-      	    OPT.specify.offset.pool.with.map : True,
-      	    OPT.specify.development.pool.with.map : True,
-      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
-      	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
-      	    PAR.pus.lost.per.timestep : 0
-          }
-        }
-      },
-      {
-        "name" : "Random offsets",
-        parameters : {
-          variables : {
-            reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 1,
-      	    OPT.use.offsetting.in.loss.model : True,
-	    OPT.use.smoothing.in.grassland.cond.model : False,
-      	    OPT.specify.offset.pool.with.map : True,
-      	    OPT.specify.development.pool.with.map : True,
-      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
-      	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
-      	    PAR.pus.lost.per.timestep : 78
-          }
-        }
-      },
-      {
-        "name" : "Strat offset impl imm",
-        parameters : {
-          variables : {
-            reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 0.916,
+      # {
+      #   "name" : "Worst Case",
+      #   parameters : {
+      #     variables : {
+      #       reserveSelectionMethod : "ZONATION",
+      # 	    zonation.threshold : 1,
+      # 	    OPT.use.offsetting.in.loss.model : False,
+      # 	    OPT.specify.offset.pool.with.map : True,
+      # 	    OPT.specify.development.pool.with.map : True,
+      # 	    OPT.offset.pool.option : "UNDEFINED",
+      # 	    PAR.pus.lost.per.timestep : 78
+      #     }
+      #   }
+      # },
+      # {
+      #   "name" : "Best case",
+      #   parameters : {
+      #     variables : {
+      #       reserveSelectionMethod : "ZONATION",
+      # 	    zonation.threshold : 0,
+      # 	    OPT.use.offsetting.in.loss.model : False,
+      # 	    OPT.specify.offset.pool.with.map : True,
+      # 	    OPT.specify.development.pool.with.map : True,
+      # 	    OPT.offset.pool.option : "UNDEFINED",
+      # 	    PAR.pus.lost.per.timestep : 0
+      #     }
+      #   }
+      # },
+      # {
+      #   "name" : "Random offsets",
+      #   parameters : {
+      #     variables : {
+      #       reserveSelectionMethod : "ZONATION",
+      # 	    zonation.threshold : 1,
+      # 	    OPT.use.offsetting.in.loss.model : True,
+      # 	    OPT.use.smoothing.in.grassland.cond.model : False,
+      # 	    OPT.specify.offset.pool.with.map : True,
+      # 	    OPT.specify.development.pool.with.map : True,
+      # 	    OPT.offset.pool.option : "RANDOM",
+      # 	    PAR.pus.lost.per.timestep : 78
+      #     }
+      #   }
+      # },
+      # {
+      #   "name" : "Strat offset impl imm",
+      #   parameters : {
+      #     variables : {
+      #       reserveSelectionMethod : "ZONATION",
+      # 	    zonation.threshold : 0.916,
 
-      	    OPT.use.offsetting.in.loss.model : False,
-	    OPT.use.smoothing.in.grassland.cond.model : False,
-      	    OPT.specify.offset.pool.with.map : True,
-      	    OPT.specify.development.pool.with.map : True,
-      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
-      	    #PAR.offset.pool.map.filename : "offset_pool_mask_random.txt",
+      # 	    OPT.use.offsetting.in.loss.model : False,
+      # 	    OPT.use.smoothing.in.grassland.cond.model : False,
+      # 	    OPT.specify.offset.pool.with.map : True,
+      # 	    OPT.specify.development.pool.with.map : True,
+      # 	    OPT.offset.pool.option : "UNDEFINED",
 
-      	    PAR.pus.lost.per.timestep : 78
-          }
-        }
-      },
+      # 	    PAR.pus.lost.per.timestep : 78
+      #     }
+      #   }
+      # },
       {
         "name" : "Strat offset impl grad",
         parameters : {
@@ -224,59 +231,12 @@
 	    OPT.use.smoothing.in.grassland.cond.model : False,
       	    OPT.specify.offset.pool.with.map : True,
       	    OPT.specify.development.pool.with.map : True,
-      	    #PAR.development.pool.map.filename  : "dev_pool_mask.txt",
-      	    #PAR.offset.pool.map.filename : "offset_pool_mask_strategic.txt", ## TODO NEED TO MAKE A SWITCH FOR THIS
+	    OPT.offset.pool.option : "STRATEGIC",
 
       	    PAR.pus.lost.per.timestep : 78
           }
         }
       } 
 
-
-
-
-
-#,
-
-      # {
-      #   "name" : "xxxAll public",
-      #   parameters : {
-      #     variables : {
-      #       reserveSelectionMethod : "CONDITION",
-      #       BudgetForPubReserves : 1000000,
-      #       BudgetForPrivateManagement : 0
-      #     }
-      #   }
-      # },
-      # {
-      #   "name" : "xxxAll private",
-      #   "parameters" : {
-      #      "variables" : {
-      #        "reserveSelectionMethod" : "RANDOM",
-      #        "BudgetForPubReserves" : 0,
-      #        "BudgetForPrivateManagement" : 1000000
-      #      }
-      #   }
-      # },
-      # {
-      #   "name" : "xxx50-50 mix of pub/private",
-      #   "parameters" : {
-      #      "variables" : {
-      #        "reserveSelectionMethod" : "CONDITION_AND_RANDOM",
-      #        "BudgetForPubReserves" : 500000,
-      #        "BudgetForPrivateManagement" : 500000
-      #      }
-      #   }
-      # },
-      # {
-      #   "name" : "xxxDo nothing",
-      #   "parameters" : {
-      #      "variables" : {
-      #        "reserveSelectionMethod" : "CONDITION",
-      #        "BudgetForPubReserves" : 0.1,
-      #        "BudgetForPrivateManagement" : 0.1
-      #      }
-      #   }
-      # }
     ]
 }
