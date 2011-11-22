@@ -149,17 +149,18 @@ update.grassland.condtion.model <- function( cond.scores, current.time.step) {
   
   if(!OPT.unmanaged.is.stable){
   
-  	if( length( unmanaged.habitat.indices ) > 0 ) {
-    	# extract current condition of each unreserved pixel
-    	curr.unmanaged.condition <- cond.scores[ unmanaged.habitat.indices ]
+    if( length( unmanaged.habitat.indices ) > 0 ) {
+      
+      # extract current condition of each unreserved pixel
+      curr.unmanaged.condition <- cond.scores[ unmanaged.habitat.indices ]
 
-    	curr.unmanaged.condition2 <- evolve.condition( curr.unmanaged.condition,
-        	                                          step.interval,
-            	                                      "UNMANAGED" )
+      curr.unmanaged.condition2 <- evolve.condition( curr.unmanaged.condition,
+                                                    step.interval,
+                                                    "UNMANAGED" )
     
-    	cond.scores[ unmanaged.habitat.indices ] <- curr.unmanaged.condition2
-  		}
-	}
+      cond.scores[ unmanaged.habitat.indices ] <- curr.unmanaged.condition2
+    }
+  }
 
   return( cond.scores )
 }
