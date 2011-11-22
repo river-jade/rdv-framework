@@ -10,7 +10,7 @@
         Debug.Test.With.20.PUs: False,
 
         step.interval: 5, # make sure you update PAR.management.cost.per.pixel if you change this
-        numTimeSteps: 7,
+        numTimeSteps: 4,
 
         pixel.size: 50,
 
@@ -138,88 +138,90 @@
 
 	  # define development pool - this is same in all scens
 	  PAR.development.pool.map.filename : "dev_pool_mask.txt", 
+	  PAR.Zonation.reserve.map : "zonation_output.rank.txt"
+      },
 
-	  PAR.Zonation.reserve.map : "zonation_output.rank.txt",
-	  PAR.pus.in.dev.pool : "PUs_IN_DEV_POOL.txt",
-	  PAR.pus.in.offset.pool :"PUs_IN_OFFSET_POOL.txt"
+      output_files : {
+
+      	  PAR.pus.in.dev.pool : "PUs_IN_DEV_POOL.txt",
+      	  PAR.pus.in.offset.pool :"PUs_IN_OFFSET_POOL.txt"
       }
     },
 
     scenarios : [
-      #{
-      #   "name" : "Do nothing",
-      #   parameters : {
-      #     variables : {
-      #       reserveSelectionMethod : "ZONATION",
-      # 	    zonation.threshold : 1,
-      # 	    OPT.use.offsetting.in.loss.model : False,
-      # 	    OPT.specify.offset.pool.with.map : True,
-      # 	    OPT.specify.development.pool.with.map : True,
-      # 	    OPT.offset.pool.option : "UNDEFINED",
-      # 	    PAR.pus.lost.per.timestep : 0
-      #     }
-      #   }
-      # },
-      # {
-      #   "name" : "Worst Case",
-      #   parameters : {
-      #     variables : {
-      #       reserveSelectionMethod : "ZONATION",
-      # 	    zonation.threshold : 1,
-      # 	    OPT.use.offsetting.in.loss.model : False,
-      # 	    OPT.specify.offset.pool.with.map : True,
-      # 	    OPT.specify.development.pool.with.map : True,
-      # 	    OPT.offset.pool.option : "UNDEFINED",
-      # 	    PAR.pus.lost.per.timestep : 78
-      #     }
-      #   }
-      # },
-      # {
-      #   "name" : "Best case",
-      #   parameters : {
-      #     variables : {
-      #       reserveSelectionMethod : "ZONATION",
-      # 	    zonation.threshold : 0,
-      # 	    OPT.use.offsetting.in.loss.model : False,
-      # 	    OPT.specify.offset.pool.with.map : True,
-      # 	    OPT.specify.development.pool.with.map : True,
-      # 	    OPT.offset.pool.option : "UNDEFINED",
-      # 	    PAR.pus.lost.per.timestep : 0
-      #     }
-      #   }
-      # },
-      # {
-      #   "name" : "Random offsets",
-      #   parameters : {
-      #     variables : {
-      #       reserveSelectionMethod : "ZONATION",
-      # 	    zonation.threshold : 1,
-      # 	    OPT.use.offsetting.in.loss.model : True,
-      # 	    OPT.use.smoothing.in.grassland.cond.model : False,
-      # 	    OPT.specify.offset.pool.with.map : True,
-      # 	    OPT.specify.development.pool.with.map : True,
-      # 	    OPT.offset.pool.option : "RANDOM",
-      # 	    PAR.pus.lost.per.timestep : 78
-      #     }
-      #   }
-      # },
-      # {
-      #   "name" : "Strat offset impl imm",
-      #   parameters : {
-      #     variables : {
-      #       reserveSelectionMethod : "ZONATION",
-      # 	    zonation.threshold : 0.916,
+      {
+        "name" : "Do nothing",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 1,
+      	    OPT.use.offsetting.in.loss.model : False,
+      	    OPT.specify.offset.pool.with.map : False,
+      	    OPT.specify.development.pool.with.map : True,
+      	    OPT.offset.pool.option : "UNDEFINED",
+      	    PAR.pus.lost.per.timestep : 0
+          }
+        }
+      },
+      {
+        "name" : "Worst Case",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 1,
+      	    OPT.use.offsetting.in.loss.model : False,
+      	    OPT.specify.offset.pool.with.map : False,
+      	    OPT.specify.development.pool.with.map : True,
+      	    OPT.offset.pool.option : "UNDEFINED",
+      	    PAR.pus.lost.per.timestep : 78
+          }
+        }
+      },
+      {
+        "name" : "Best case",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 0,
+      	    OPT.use.offsetting.in.loss.model : False,
+      	    OPT.specify.offset.pool.with.map : False,
+      	    OPT.specify.development.pool.with.map : True,
+      	    OPT.offset.pool.option : "UNDEFINED",
+      	    PAR.pus.lost.per.timestep : 0
+          }
+        }
+      },
+      {
+        "name" : "Random offsets",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 1,
+      	    OPT.use.offsetting.in.loss.model : True,
+      	    OPT.use.smoothing.in.grassland.cond.model : False,
+      	    OPT.specify.offset.pool.with.map : True,
+      	    OPT.specify.development.pool.with.map : True,
+      	    OPT.offset.pool.option : "RANDOM",
+      	    PAR.pus.lost.per.timestep : 78
+          }
+        }
+      },
+      {
+        "name" : "Strat offset impl imm",
+        parameters : {
+          variables : {
+            reserveSelectionMethod : "ZONATION",
+      	    zonation.threshold : 0.916,
+      	    OPT.use.offsetting.in.loss.model : False,
+      	    OPT.use.smoothing.in.grassland.cond.model : False,
+      	    OPT.specify.offset.pool.with.map : True,
+      	    OPT.specify.development.pool.with.map : True,
+      	    OPT.offset.pool.option : "STRATEGIC",
 
-      # 	    OPT.use.offsetting.in.loss.model : False,
-      # 	    OPT.use.smoothing.in.grassland.cond.model : False,
-      # 	    OPT.specify.offset.pool.with.map : True,
-      # 	    OPT.specify.development.pool.with.map : True,
-      # 	    OPT.offset.pool.option : "UNDEFINED",
-
-      # 	    PAR.pus.lost.per.timestep : 78
-      #     }
-      #   }
-      # },
+      	    PAR.pus.lost.per.timestep : 78
+          }
+        }
+      },
       {
         "name" : "Strat offset impl grad",
         parameters : {

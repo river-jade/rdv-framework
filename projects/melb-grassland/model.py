@@ -17,6 +17,7 @@ class Model(basemodel.BaseModel):
 
         variables = params.variables
         overrides = {}
+        inputOverDict = {}
         inputOveride = ''
 
 
