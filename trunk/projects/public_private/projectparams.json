@@ -49,12 +49,11 @@
         OPT.smoothing.option : 2, # OPT.VAL.only.use.pixels.below.fixed.val.in.smoothing
         PAR.fixed.val.for.smoothing : 0.12,
 
-        #PAR.grassland.threshold.value : 0.35,
-       	PAR.grassland.threshold.value : 0,
+        PAR.grassland.threshold.value : 0.35,
         PAR.prob.of.crossing.thresh : 0.0005,
         OPT.use.raster.maps.for.input.and.output: True,
 
-		OPT.unmanaged.is.stable : False,
+	OPT.unmanaged.is.stable : False,
 
         #-----------------------------------------
         #  start_point = 1  - initialise PU info
@@ -79,13 +78,9 @@
       },
       
      	"input_files" : {
-    		#PAR.managed.above.thresh.filename : "condModel_above_thresh_curve.txt",
-	    	PAR.managed.above.thresh.filename : "baseline_model_managed_curve.txt",
-    	    #PAR.managed.below.thresh.filename : "condModel_below_thresh_curve.txt",
-        	#PAR.unmanaged.filename : "condModel_unmanaged_curve.txt"
-	        #PAR.unmanaged.filename : "baseline_model_landscape_det.txt"
-    	    #PAR.unmanaged.filename : "baseline_model_landscape_stab.txt"
-        	PAR.unmanaged.filename : "baseline_model_landscape_imp.txt"
+    		PAR.managed.above.thresh.filename : "condModel_above_thresh_curve.txt",
+    		PAR.managed.below.thresh.filename : "condModel_below_thresh_curve.txt",
+        	PAR.unmanaged.filename : "condModel_unmanaged_curve.txt"
     	}      
       
     },
