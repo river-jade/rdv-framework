@@ -8,20 +8,20 @@ class Model(basemodel.BaseModel):
 
         variables = runparams.variables
 
-        self.logger.info("Executing model.py for the Guppy project")
+        self.logger.fine("\n--> Running maxent")
 
         # this is for testing the repetitions file
         if variables['PAR.variable.to.test.repetitions'] > 0:
-            print "\nNow Doing repetitions, PAR.variable.to.test.repetitions=%s" %  \
-                   variables['PAR.variable.to.test.repetitions']
+          self.logger.fine("Now Doing repetitions, PAR.variable.to.test.repetitions=%s" % \
+                variables['PAR.variable.to.test.repetitions'])
 
         # test R code
         #self.run_r_code( "example.R", runparams )
 
         # run Maxent
-        self.logger.info( "\n--> Running maxent" )
+        self.logger.fine("\n--> Running maxent")
         self.run_r_code( "run.maxent.R", runparams )
 
         # run Zonation
-        self.logger.info( "\n--> Running zonation" )
+        self.logger.fine("\n--> Running zonation")
         self.run_r_code( "run.zonation.R", runparams )
