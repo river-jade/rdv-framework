@@ -64,13 +64,13 @@ class Model(basemodel.BaseModel):
         currentstate = self.createmodelstate0(variables, constants)
         modelstates.append(currentstate)
 
-        self.logger.info("Prop.that.degrade = " + str(constants['Prop.that.degrade']))
-        self.logger.info("OutsideGC.Multiplier = " + str(variables['OutsideGC.Multiplier']))
+        self.logger.fine("Prop.that.degrade = " + str(constants['Prop.that.degrade']))
+        self.logger.fine("OutsideGC.Multiplier = " + str(variables['OutsideGC.Multiplier']))
         
         for x in range(0, variables['num.steps']):
             currentstate = currentstate.evolve()
             modelstates.append(currentstate)
-            # print currentstate # for debugging
+            # self.logger.fine(currentstate) # for debugging
         writecsv(modelstates, qualifiedparams['csv_output'], self.logger)
     
     def createconstants(self, variables):
@@ -401,5 +401,5 @@ def writecsv(modelstates, filename, logger):
     # be written to output file.
     writer.writerows(dict(merge(row)) for row in modelstates)
     f.close()
-    logger.info("Wrote csv to: %s" % filename)
+    logger.fine("Wrote csv to: %s" % filename)
 

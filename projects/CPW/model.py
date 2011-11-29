@@ -16,8 +16,7 @@ class Model(basemodel.BaseModel):
 
         variables = params.variables
 
-        self.logger.info("\n--> running dbms initialise: %s" % \
-                    variables['dbmsFunctionsRFileName'])
+        self.logger.fine("\n--> running dbms initialise: %s" % variables['dbmsFunctionsRFileName'])
 
         run_r_code("dbms.initialise.R")
 
@@ -25,7 +24,7 @@ class Model(basemodel.BaseModel):
 
         if variables['test_modelling_and_reserving_loop']:
             
-            self.logger.info("\n--> running initialise Planning Unit information...")
+            self.logger.fine("\n--> running initialise Planning Unit information...")
             run_r_code("initialise.planning.unit.information.R")
             
             #raw_input("2 Hit enter to continue: about to init CPW info" )
@@ -39,12 +38,12 @@ class Model(basemodel.BaseModel):
             
             for timestep in xrange(0, xrangeTimeUpperBound, variables['step.interval']):
 
-                self.logger.info('\n')
-                self.logger.info('='*50)
-                self.logger.info(" Starting time step %s" % (timestep))
-                self.logger.info('='*50)
+                self.logger.fine('\n')
+                self.logger.fine('='*50)
+                self.logger.fine(" Starting time step %s" % (timestep))
+                self.logger.fine('='*50)
 
-                self.logger.info("\n--> grassland condition model...")
+                self.logger.fine("\n--> grassland condition model...")
                 # Make a loop to run the condition model on each category of CPW
                 aggCondDBFields = ['SCORE_OF_C1_CPW', 'SCORE_OF_C2_CPW', 'SCORE_OF_C3_CPW']
                 for curAggCondDBField in aggCondDBFields:
@@ -53,15 +52,15 @@ class Model(basemodel.BaseModel):
                             inputfiles={'PAR.managed.above.thresh.filename' : 'CPW_protected_regen.txt'})
                     #raw_input("Ran cond model using "+curAggCondDBField + " Hit enter to continue" )
           
-                self.logger.info("\n--> limit.evolution of CPW initial condition...")
+                self.logger.fine("\n--> limit.evolution of CPW initial condition...")
                 run_r_code("limit.evolution.of.CPW.initial.condition.R", timestep)
 
-                self.logger.info("\n--> loss model...")
+                self.logger.fine("\n--> loss model...")
                 run_r_code("loss.model.R", timestep)
 
 
                 if variables['OPT.include.random.reserves.outside.GC'] and timestep > 0:
-                    self.logger.info("\n--> reserve random outside growth centres...")
+                    self.logger.fine("\n--> reserve random outside growth centres...")
                     #raw_input("About to run reserve random outside growth centres" )
                     
                     run_r_code("reserve.random.R", timestep, 
@@ -72,7 +71,7 @@ class Model(basemodel.BaseModel):
                         outputfiles={'PAR.reserve.random.tmp.info.filename' : 'tmp.info.reserve.random.outside.gc.txt'})
 
                 if variables['OPT.include.random.reserves.inside.GC'] and timestep > 0:
-                    self.logger.info("\n--> reserve random inside growth centres...")
+                    self.logger.fine("\n--> reserve random inside growth centres...")
                     #raw_input("About to run reserve random inside growth centres" )
                     
                     run_r_code("reserve.random.R", timestep, 
@@ -84,12 +83,12 @@ class Model(basemodel.BaseModel):
                     #raw_input("Finished runnning reserve random inside growth centres" )
                     
 
-                self.logger.info("\n--> evaluate condition model for polygons...")
+                self.logger.fine("\n--> evaluate condition model for polygons...")
                 run_r_code("eval.cond.polygon.R", timestep)
 
                 if variables['OPT.generate.polygon.time.series']:
-                    self.logger.info("\n--> write.time.series.polygons...")
+                    self.logger.fine("\n--> write.time.series.polygons...")
                     run_r_code("write.time.series.polygons.R", timestep)
 
-                self.logger.info("\n")
+                self.logger.fine("\n")
         return

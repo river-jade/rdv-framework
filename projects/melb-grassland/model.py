@@ -29,8 +29,7 @@ class Model(basemodel.BaseModel):
 
         cur_check_point = 0
 
-        self.logger.info("\nrunning dbms initialise: %s" % \
-                    variables['dbmsFunctionsRFileName'])
+        self.logger.fine("\nrunning dbms initialise: %s" % variables['dbmsFunctionsRFileName'])
 
         run_r_code("dbms.initialise.melb.grassland.R", variables=overrides, inputfiles=inputOverDict)
 
@@ -39,14 +38,14 @@ class Model(basemodel.BaseModel):
             
             if variables['start_point'] <= cur_check_point:
                 
-                self.logger.info("\nrunning initialise Planning Unit information...")
+                self.logger.fine("\nrunning initialise Planning Unit information...")
                 run_r_code("initialise.planning.unit.information.R", variables=overrides, inputfiles=inputOverDict)
         
             cur_check_point += 1      # now cur_check_point == 2
 
             if variables['start_point'] <= cur_check_point:
 
-                self.logger.info("\nrunning initialise cost information...")
+                self.logger.fine("\nrunning initialise cost information...")
                 run_r_code("initialise.cost.information.R", variables=overrides, inputfiles=inputOverDict)
         
             cur_check_point += 1      # now cur_check_point == 3
@@ -60,12 +59,12 @@ class Model(basemodel.BaseModel):
             for timeStep in xrange(0, xrangeTimeUpperBound, variables['step.interval']):
                 
                 
-                self.logger.info( '\n' )
-                self.logger.info('='*50)
-                self.logger.info(" Starting time step %s" % timeStep)
-                self.logger.info('='*50)
+                self.logger.fine( '\n')
+                self.logger.fine('='*50)
+                self.logger.fine(" Starting time step %s" % timeStep)
+                self.logger.fine('='*50)
                 
-                self.logger.info("\ngrassland condition model...")
+                self.logger.fine("\ngrassland condition model...")
                 run_r_code("grassland.condition.model.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
 
                 run_r_code("update.planning.unit.info.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
@@ -74,13 +73,13 @@ class Model(basemodel.BaseModel):
                        (variables['reserveSelectionMethod'] == "ZONATION"):
                     
                     if not variables['usePreviousZonationResult']:
-                        self.logger.info("\nrun zonation...")
+                        self.logger.fine("\nrun zonation...")
                         run_r_code("run.zonation.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
         
-                    self.logger.info("\nreserve zonation...")
+                    self.logger.fine("\nreserve zonation...")
                     run_r_code("reserve.zonation.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
         
-                    self.logger.info("\ngen reserved PUs...")
+                    self.logger.fine("\ngen reserved PUs...")
                     run_r_code("gen.reserved.pus.from.patches.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
         
                 else:
@@ -90,11 +89,11 @@ class Model(basemodel.BaseModel):
                         overrides['OPT.action.type'] = variables['OPT.VAL.public.reserve']
                         
                         if variables['reserveSelectionMethod'] == "RANDOM":
-                            self.logger.info("\nreserve RANDOM for public reserves...")
+                            self.logger.fine("\nreserve RANDOM for public reserves...")
                             run_r_code("reserve.random.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
 
                         if variables['reserveSelectionMethod'] == "CONDITION":
-                            self.logger.info("\nreserve CONDITION for public reserves...")
+                            self.logger.fine("\nreserve CONDITION for public reserves...")
                             run_r_code("reserve.condition.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
                             
                     if variables['BudgetForPrivateManagement'] > 0:
@@ -103,11 +102,11 @@ class Model(basemodel.BaseModel):
                         overrides['PAR.reserve.duration'] = variables['privateReserveDuration']
 						
                         if variables['reserveSelectionMethod'] == "RANDOM":
-                            self.logger.info("\nreserve RANDOM for private management...")
+                            self.logger.fine("\nreserve RANDOM for private management...")
                             run_r_code("reserve.random.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
 
                         if variables['reserveSelectionMethod'] == "CONDITION":
-                            self.logger.info("\nreserve CONDITDION for private managemnt") 
+                            self.logger.fine("\nreserve CONDITDION for private managemnt")
                             run_r_code("reserve.condition.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
 
 
@@ -117,22 +116,22 @@ class Model(basemodel.BaseModel):
                         # RANDOM for private and CONDITION for public.
                         
                         if variables['BudgetForPrivateManagement'] > 0:
-                            self.logger.info("\nRunning CONDITION_AND_RANDOM")
-                            self.logger.info("reserve RANDOM for private management...")
+                            self.logger.fine("\nRunning CONDITION_AND_RANDOM")
+                            self.logger.fine("reserve RANDOM for private management...")
                             overrides['PAR.budget.for.timestep'] = variables['BudgetForPrivateManagement']
                             overrides['OPT.action.type'] = variables['OPT.VAL.private.management']
                             overrides['PAR.reserve.duration'] = variables['privateReserveDuration']
                             run_r_code("reserve.random.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
                             
                         if variables['BudgetForPubReserves'] > 0:
-                            self.logger.info("\nRunning CONDITION_AND_RANDOM")
-                            self.logger.info("reserve CONDITION for public reserves...")
+                            self.logger.fine("\nRunning CONDITION_AND_RANDOM")
+                            self.logger.fine("reserve CONDITION for public reserves...")
                             overrides['PAR.budget.for.timestep'] = variables['BudgetForPubReserves']
                             overrides['PAR.reserve.duration'] = variables['publicReserveDuration']
                             overrides['OPT.action.type'] = variables['OPT.VAL.public.reserve']
                             run_r_code("reserve.condition.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
                 
-                self.logger.info("\nloss model...")
+                self.logger.fine("\nloss model...")
                 # Note: currently offset model is called from inside loss model
                 #run_r_code("loss.model.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
                 run_r_code("loss.model.melb.grassland.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
@@ -152,7 +151,7 @@ class Model(basemodel.BaseModel):
                     
                     os.system("copy %s %s" % (filename1, filename2))
 					
-                self.logger.info("\nevaluate condition model...")
+                self.logger.fine("\nevaluate condition model...")
                 run_r_code("eval.cond.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
 
                 
