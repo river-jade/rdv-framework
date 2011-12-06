@@ -264,8 +264,8 @@
         name : "S1 BusinessAsUsual - NoEPBC",
         parameters : {
               variables : {
-		  OPT.use.offsetting.in.CPW.project : True,
-		  PAR.prob.no.offset.required.outside.growth.centres : 1.95
+                  OPT.use.offsetting.in.CPW.project : True,
+                  PAR.prob.no.offset.required.outside.growth.centres : 1.95
                   # use random reserves outside GC???
           }
       }

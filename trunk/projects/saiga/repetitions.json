@@ -6,7 +6,7 @@ repetitions : [
     {
         variables : {
             #test.variable.2 : 777
-            PAR.Prate : 0.50		#annual mean poaching rate
+            PAR.Prate : 0.50    #annual mean poaching rate
         }
     }
     ,
