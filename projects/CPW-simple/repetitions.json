@@ -3,8 +3,8 @@
 # Note that also the original value of the variable is not used.
 {
 
-	    #" Strategic.Assess.Offsets.Outside.GC" : 593.5,
-	    # "OutsideGC.Total.Cleared.per.year" : 48.00
+      # "Strategic.Assess.Offsets.Outside.GC" : 593.5,
+      # "OutsideGC.Total.Cleared.per.year" : 48.00
 
 
 generators : [

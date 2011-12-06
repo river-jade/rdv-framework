@@ -20,7 +20,7 @@
 
         dbmsFunctionsRFileName : "dbms.functions.variables.melb.grassland.R",
 
-	PAR.prop.pixels.in.PU.to.reserve : 0.7,
+        PAR.prop.pixels.in.PU.to.reserve : 0.7,
 
         #-----------------------------------------
         #  start_point = 1  - initialise PU info
@@ -50,21 +50,21 @@
         #----------------------------
         #  Variables for loss.model.R
         #----------------------------
-	OPT.use.offsetting.in.loss.model : True,
+        OPT.use.offsetting.in.loss.model : True,
         PAR.pus.lost.per.timestep : 0,
 
         #----------------------------
         #  Variables for offset.model.R
         #----------------------------
-	OPT.specify.offset.pool.with.map : True,
-	OPT.specify.development.pool.with.map : True,
+        OPT.specify.offset.pool.with.map : True,
+        OPT.specify.development.pool.with.map : True,
 
         OPT.partial.offsets.allowed : True,
         OPT.leak.offsets.outside.study.area : False,
         OPT.offset.leakage.prob : 0.2,
         OPT.do.strategic.offsetting : False,
-	OPT.private.offset.multiplier : 1,
-	OPT.strategic.offset.multiplier : 1,
+        OPT.private.offset.multiplier : 1,
+        OPT.strategic.offset.multiplier : 1,
         OPT.probResExpiringPerTimeStep : 0,
         OPT.probManExpiringPerTimeStep : 0,
 
@@ -72,12 +72,12 @@
         offsettingGlobalsTableName : "OFFSETTING_GLOBALS",
         offsettingWorkingVarsTableName : "OFFSETTING_WORKING_VARS",
 
-	OPT.offset.pool.option : "UNDEFINED",
+        OPT.offset.pool.option : "UNDEFINED",
 
         # define offset pool - this varies between scenarios so need a swtich
-	# which is defined above
-	PAR.offset.pool.map.filename.random : "offset_pool_mask_random.txt",
-	PAR.offset.pool.map.filename.strategic : "offset_pool_mask_strategic.txt", 
+        # which is defined above
+        PAR.offset.pool.map.filename.random : "offset_pool_mask_random.txt",
+        PAR.offset.pool.map.filename.strategic : "offset_pool_mask_strategic.txt",
 
 
 
@@ -111,7 +111,7 @@
 
             #---------------------------------
             #  Variables for initialise.cost.information.R
-	    #  Note: I don't think this is used in this analysis
+            #  Note: I don't think this is used in this analysis
             #---------------------------------
 
         # need a 5 here because the code wants a cost per year
@@ -134,17 +134,16 @@
           planning.units.filename : "planning.units.uid_20ha.txt",
 
           # this is set in model.py based on the setting of OPT.offset.pool.option
-	  PAR.offset.pool.map.filename : "UNDEFINED",  
+          PAR.offset.pool.map.filename : "UNDEFINED",
 
-	  # define development pool - this is same in all scens
-	  PAR.development.pool.map.filename : "dev_pool_mask.txt", 
-	  PAR.Zonation.reserve.map : "zonation_output.rank.txt"
+          # define development pool - this is same in all scens
+          PAR.development.pool.map.filename : "dev_pool_mask.txt",
+          PAR.Zonation.reserve.map : "zonation_output.rank.txt"
       },
 
       output_files : {
-
-      	  PAR.pus.in.dev.pool : "PUs_IN_DEV_POOL.txt",
-      	  PAR.pus.in.offset.pool :"PUs_IN_OFFSET_POOL.txt"
+          PAR.pus.in.dev.pool : "PUs_IN_DEV_POOL.txt",
+          PAR.pus.in.offset.pool : "PUs_IN_OFFSET_POOL.txt"
       }
     },
 
@@ -154,12 +153,12 @@
         parameters : {
           variables : {
             reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 1,
-      	    OPT.use.offsetting.in.loss.model : False,
-      	    OPT.specify.offset.pool.with.map : False,
-      	    OPT.specify.development.pool.with.map : True,
-      	    OPT.offset.pool.option : "UNDEFINED",
-      	    PAR.pus.lost.per.timestep : 0
+            zonation.threshold : 1,
+            OPT.use.offsetting.in.loss.model : False,
+            OPT.specify.offset.pool.with.map : False,
+            OPT.specify.development.pool.with.map : True,
+            OPT.offset.pool.option : "UNDEFINED",
+            PAR.pus.lost.per.timestep : 0
           }
         }
       },
@@ -168,12 +167,12 @@
         parameters : {
           variables : {
             reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 1,
-      	    OPT.use.offsetting.in.loss.model : False,
-      	    OPT.specify.offset.pool.with.map : False,
-      	    OPT.specify.development.pool.with.map : True,
-      	    OPT.offset.pool.option : "UNDEFINED",
-      	    PAR.pus.lost.per.timestep : 78
+            zonation.threshold : 1,
+            OPT.use.offsetting.in.loss.model : False,
+            OPT.specify.offset.pool.with.map : False,
+            OPT.specify.development.pool.with.map : True,
+            OPT.offset.pool.option : "UNDEFINED",
+            PAR.pus.lost.per.timestep : 78
           }
         }
       },
@@ -182,12 +181,12 @@
         parameters : {
           variables : {
             reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 0,
-      	    OPT.use.offsetting.in.loss.model : False,
-      	    OPT.specify.offset.pool.with.map : False,
-      	    OPT.specify.development.pool.with.map : True,
-      	    OPT.offset.pool.option : "UNDEFINED",
-      	    PAR.pus.lost.per.timestep : 0
+            zonation.threshold : 0,
+            OPT.use.offsetting.in.loss.model : False,
+            OPT.specify.offset.pool.with.map : False,
+            OPT.specify.development.pool.with.map : True,
+            OPT.offset.pool.option : "UNDEFINED",
+            PAR.pus.lost.per.timestep : 0
           }
         }
       },
@@ -196,13 +195,13 @@
         parameters : {
           variables : {
             reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 1,
-      	    OPT.use.offsetting.in.loss.model : True,
-      	    OPT.use.smoothing.in.grassland.cond.model : False,
-      	    OPT.specify.offset.pool.with.map : True,
-      	    OPT.specify.development.pool.with.map : True,
-      	    OPT.offset.pool.option : "RANDOM",
-      	    PAR.pus.lost.per.timestep : 78
+            zonation.threshold : 1,
+            OPT.use.offsetting.in.loss.model : True,
+            OPT.use.smoothing.in.grassland.cond.model : False,
+            OPT.specify.offset.pool.with.map : True,
+            OPT.specify.development.pool.with.map : True,
+            OPT.offset.pool.option : "RANDOM",
+            PAR.pus.lost.per.timestep : 78
           }
         }
       },
@@ -211,14 +210,14 @@
         parameters : {
           variables : {
             reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 0.916,
-      	    OPT.use.offsetting.in.loss.model : False,
-      	    OPT.use.smoothing.in.grassland.cond.model : False,
-      	    OPT.specify.offset.pool.with.map : True,
-      	    OPT.specify.development.pool.with.map : True,
-      	    OPT.offset.pool.option : "STRATEGIC",
+            zonation.threshold : 0.916,
+            OPT.use.offsetting.in.loss.model : False,
+            OPT.use.smoothing.in.grassland.cond.model : False,
+            OPT.specify.offset.pool.with.map : True,
+            OPT.specify.development.pool.with.map : True,
+            OPT.offset.pool.option : "STRATEGIC",
 
-      	    PAR.pus.lost.per.timestep : 78
+            PAR.pus.lost.per.timestep : 78
           }
         }
       },
@@ -227,15 +226,15 @@
         parameters : {
           variables : {
             reserveSelectionMethod : "ZONATION",
-      	    zonation.threshold : 1,
+            zonation.threshold : 1,
 
-      	    OPT.use.offsetting.in.loss.model : True,
-	    OPT.use.smoothing.in.grassland.cond.model : False,
-      	    OPT.specify.offset.pool.with.map : True,
-      	    OPT.specify.development.pool.with.map : True,
-	    OPT.offset.pool.option : "STRATEGIC",
+            OPT.use.offsetting.in.loss.model : True,
+            OPT.use.smoothing.in.grassland.cond.model : False,
+            OPT.specify.offset.pool.with.map : True,
+            OPT.specify.development.pool.with.map : True,
+            OPT.offset.pool.option : "STRATEGIC",
 
-      	    PAR.pus.lost.per.timestep : 78
+            PAR.pus.lost.per.timestep : 78
           }
         }
       } 

@@ -53,7 +53,7 @@
         PAR.prob.of.crossing.thresh : 0.0005,
         OPT.use.raster.maps.for.input.and.output: True,
 
-	OPT.unmanaged.is.stable : False,
+        OPT.unmanaged.is.stable : False,
 
         #-----------------------------------------
         #  start_point = 1  - initialise PU info
@@ -77,11 +77,11 @@
         use.run.number.as.seed : True
       },
       
-     	"input_files" : {
-    		PAR.managed.above.thresh.filename : "condModel_above_thresh_curve.txt",
-    		PAR.managed.below.thresh.filename : "condModel_below_thresh_curve.txt",
-        	PAR.unmanaged.filename : "condModel_unmanaged_curve.txt"
-    	}      
+       "input_files" : {
+          PAR.managed.above.thresh.filename : "condModel_above_thresh_curve.txt",
+          PAR.managed.below.thresh.filename : "condModel_below_thresh_curve.txt",
+          PAR.unmanaged.filename : "condModel_unmanaged_curve.txt"
+      }      
       
     },
     

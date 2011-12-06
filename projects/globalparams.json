@@ -51,7 +51,7 @@
         #-------------------------------------
 
         non.habitat.indicator : 0,
-	GC.non.habitat.indicator : 0,
+        GC.non.habitat.indicator : 0,
         DEBUG : False,
 
         usePatchesAsPlanningUnits : False,
@@ -153,7 +153,7 @@
 
         runZonationRFileName : "run.zonation.variables.R",
         PAR.num.spp.in.reserve.selection : 1,
-	zonation.threshold : 0.95,
+        zonation.threshold : 0.95,
         #----------------------------------
         #  Variables for reserve.Zonation.R
         #----------------------------------
@@ -196,8 +196,8 @@
         OPT.leak.offsets.outside.study.area : False,
         OPT.offset.leakage.prob : 0.2,
         OPT.do.strategic.offsetting : False,
-	OPT.private.offset.multiplier : 1,
-	OPT.strategic.offset.multiplier : 1,
+        OPT.private.offset.multiplier : 1,
+        OPT.strategic.offset.multiplier : 1,
         OPT.probResExpiringPerTimeStep : 0,
         OPT.probManExpiringPerTimeStep : 0,
 
@@ -246,7 +246,7 @@
 
         OPT.generate.polygon.time.series : False,
 
-	OPT.unmanaged.is.stable : False,
+        OPT.unmanaged.is.stable : False,
 
         #-------------------------------------------
         #  Variables for reserve.random.R

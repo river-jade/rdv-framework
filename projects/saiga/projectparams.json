@@ -7,14 +7,14 @@
             test.variable.3 : "xyz",
             test.variable.4 : "abc",
             
-            PAR.Ak : 9800,			#Ak is study area of interest in km2			PAR.NsWE : 70,			#NsWE is the number of sites West to East			PAR.NsNS : 140,
-			PAR.years : 50,			#number of years over which simulation is run
-			
-			PAR.Prate : 0.50,		#annual mean poaching rate
-			PAR.kaz.poach : 0.30,	#Kazakh poaching rate
-			PAR.uz.imm : 0.25		#Proportion that immigrate to Uzbekistan
-            
-            
+            PAR.Ak : 9800,      #Ak is study area of interest in km2
+            PAR.NsWE : 70,      #NsWE is the number of sites West to East
+            PAR.NsNS : 140,
+            PAR.years : 50,      #number of years over which simulation is run
+
+            PAR.Prate : 0.50,    #annual mean poaching rate
+            PAR.kaz.poach : 0.30,  #Kazakh poaching rate
+            PAR.uz.imm : 0.25    #Proportion that immigrate to Uzbekistan
         },
         input_files : {},
         output_files : {
@@ -27,12 +27,12 @@
           name : "Scenario 1",
           parameters : {
             variables : {
-            	OPT.Prate : "baseline",
-            	OPT.offset : "none"
+              OPT.Prate : "baseline",
+              OPT.offset : "none"
             }
           }
-      } 
-      ,
+      },
+
       {
           name : "Scenario 2 with Saigachy",
           parameters : {
@@ -41,8 +41,8 @@
                 OPT.offset : "saigachy"
             }
           }
-      }
-      #,
+      },
+
       #{
       #    name : "Scenario 2 declining poaching",
       #    parameters : {
