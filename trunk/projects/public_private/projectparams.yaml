@@ -76,10 +76,10 @@ base_params:
     use.run.number.as.seed: True
   
   
-   input_files: 
-      PAR.managed.above.thresh.filename: condModel_above_thresh_curve.txt
-      PAR.managed.below.thresh.filename: condModel_below_thresh_curve.txt
-      PAR.unmanaged.filename: condModel_unmanaged_curve.txt
+  input_files:
+    PAR.managed.above.thresh.filename: condModel_above_thresh_curve.txt
+    PAR.managed.below.thresh.filename: condModel_below_thresh_curve.txt
+    PAR.unmanaged.filename: condModel_unmanaged_curve.txt
         
 scenarios:
   - name: All public
