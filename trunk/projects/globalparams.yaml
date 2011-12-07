@@ -1,0 +1,381 @@
+variables:
+    # Random seed based on run_id
+    random.seed: $$run_id$$
+
+    #-------------------------------------#
+    #  Run controls.
+    #-------------------------------------
+
+    # Option for debugging: if TRUE dumps loss model and offset
+    # model output to file
+
+    #-----------------------------------------
+    #  start_point = 1  - initialise PU info
+    #  start_point = 2  - initialise cost info
+    #  start_point = 3  - loop over timesteps
+    #                     res/loss/cond/eval etc
+    #-----------------------------------------
+
+    start_point: 1
+
+    DebugSaveLossModelOutFiles: False
+
+    Debug.Test.With.given.num.of.PUs: False
+    Debug.Test.num.of.PUs.to.test.with: 100
+
+    Debug.Test.With.given.num.of.PUs: False
+    Debug.Num.of.PUs.to.test.with: 50
+
+    grassland_project: True
+
+    step.interval: 1
+    numTimeSteps: 7
+
+    reserveSelectionMethod: ZONATION
+
+    RunZonation: False
+
+    usePreviousZonationResult: False
+
+    cur_check_point: 0
+
+    test_spp_distribution_setup:  False
+    test_modelling_and_reserving_loop: True
+
+    #  Irrelevant for the grasslandmodel runs...
+    calculatePlanningUnitsAndCost: True
+
+    #-------------------------------------
+    #  Variables used in multiple R files.
+    #-------------------------------------
+
+    non.habitat.indicator: 0
+    GC.non.habitat.indicator: 0
+    DEBUG: False
+
+    usePatchesAsPlanningUnits: False
+
+    OPT.VAL.user.supplied.planning.units.from.raster: 1
+    OPT.VAL.user.supplied.planning.units.from.polygon: 2
+    OPT.VAL.use.patches.as.planning.units: 3
+    OPT.VAL.generate.rectangular.planning.units: 4
+    OPT.VAL.generate.Mondrian.planning.units: 5
+
+    OPT.PU.source: 1 # OPT.VAL.user.supplied.planning.units
+
+    dynamicPUinfoTableName: dynamicPUinfo
+    offsettingTestingInfoTableName: offsetting_testing_info
+    staticPUinfoTableName: staticPUinfo
+
+    PAR.reserve.duration: 1000
+    publicReserveDuration: 1000
+    privateReserveDuration: 1000
+
+
+    OPT.VAL.public.reserve: 1
+    OPT.VAL.private.management: 2
+
+    OPT.action.type: 1 # OPT.VAL.public.reserve
+
+    OPT.use.assessment.uncertainty: False
+
+
+    #---------------------------------------------
+    #  Variables for dbms.functions.R
+    #---------------------------------------------
+
+    dbmsFunctionsRFileName: dbms.functions.variables.R
+
+    globalDBdriver: SQLite
+    #  NOT USED? plus it's illegal in R with the underscore
+    #    params['PAR'].global_dbname   <<- "results/results_database.dbms"
+
+    #---------------------------------------------
+    #  Variables for dbms.initialise.R
+    #---------------------------------------------
+
+    dbmsInitialiseRFileName: dbms.initialise.variables.R
+
+    #------------------------------------------------------
+    #  Variables for initialise.planning.unit.information.R
+    #------------------------------------------------------
+
+    initPUinfoRFileName: initialise.planning.unit.information.variables.R
+
+    PAR.Mondrian.min.rectangle.size: 10
+    PAR.Mondrian.max.rectangle.size: 50
+    PAR.Mondrian.num.rectangles: 20
+
+    PAR.Developer.error.upper.bound: 0
+    PAR.Developer.error.lower.bound: 0
+    PAR.Seller.error.upper.bound: 0
+    PAR.Seller.error.lower.bound: 0
+
+    PAR.Developer.error.mean: 0
+    PAR.Seller.error.mean: 0
+
+    # Note: by default these must be >= zero; else function will hang
+    PAR.Developer.error.st.deviation: 0.1
+    PAR.Seller.error.st.deviation: 0.1
+
+
+
+    #---------------------------------
+    #  Variables for initialise.cost.information.R
+    #---------------------------------
+
+    OPTsetRandomSeedForCost: False
+    PARcostRandomSeed: 1
+    OPT.VAL.all.PUs.have.same.cost: 1
+    OPT.VAL.PU.cost.is.proportional.to.area: 2
+    OPT.VAL.PU.cost.is.a.random.value: 3
+    OPT.VAL.PU.cost.sampled.from.a.normal.distribution: 4
+    OPT.VAL.PU.cost.is.a.gradient.from.corner: 5
+    OPT.VAL.PU.cost.is.a.fixed.value.per.sq.meter: 6
+    OPTVALPUcostIsSampledFromRealMelbCosts: 7
+    OPT.cost.scenario: 2 # OPT.VAL.PU.cost.is.proportional.to.area
+
+    # this is only if using OPTVALPUcostIsSampledFromRealMelbCosts
+    # if this is false and then will sample from the actual
+    # Melb cost distribution
+    OPTsampleMelbCostsFromLogNormDist: True
+
+
+    PAR.minimum.patch.cost: 1
+    PAR.maximum.patch.cost: 1000000
+    PAR.pu.cost.per.pixel: 10
+    PAR.management.cost.per.pixel: 0.1
+
+    #---------------------------------
+    #  Variables for run.zonation.R
+    #---------------------------------
+
+    runZonationRFileName: run.zonation.variables.R
+    PAR.num.spp.in.reserve.selection: 1
+    zonation.threshold: 0.95
+    #----------------------------------
+    #  Variables for reserve.Zonation.R
+    #----------------------------------
+
+    reserveZonationRFileName: reserve.zonation.variables.R
+    pixel.size: 50
+    PAR.zonation.prop.of.patch.overlap: 0.3
+    PAR.zonation.select.partial.patches: True
+    zonation.threshold: 0.985
+
+    #-----------------------------------------------
+    #  Variables for gen.reserved.pus.from.patches.R
+    #-----------------------------------------------
+
+    genReservedPUsFromPatchesRFileName: gen.reserved.pus.from.patches.variables.R
+    PAR.prop.pixels.in.PU.to.reserve: 0.7
+
+
+    #----------------------------
+    #  Variables for loss.model.R
+    #----------------------------
+
+    lossModelRFileName: loss.model.variables.R
+
+    current.time.step: 0    #  50  #  NEEDS WORK...
+
+    PAR.pus.lost.per.timestep: 100
+
+    PAR.management.duration: 1000
+
+    OPT.use.offsetting.in.loss.model: False
+
+    #----------------------------
+    #  Variables for offset.model.R
+    #----------------------------
+
+    offsetModelRFileName: offset.model.variables.R
+
+    OPT.partial.offsets.allowed: True
+    OPT.leak.offsets.outside.study.area: False
+    OPT.offset.leakage.prob: 0.2
+    OPT.do.strategic.offsetting: False
+    OPT.private.offset.multiplier: 1
+    OPT.strategic.offset.multiplier: 1
+    OPT.probResExpiringPerTimeStep: 0
+    OPT.probManExpiringPerTimeStep: 0
+
+    offsettingGlobalsTableName: OFFSETTING_GLOBALS
+    offsettingWorkingVarsTableName: OFFSETTING_WORKING_VARS
+
+    # Note these get written in the loss.model.variables.R file as the
+    # loss model does the initialisation of the offsetmed and then
+    # calls it
+
+    OPT.specify.offset.pool.with.map: False
+    OPT.specify.development.pool.with.map: False
+
+    PAR.db.table.field.to.calc.offsets: TOTAL_COND_SCORE_SUM
+
+    PAR.threshold.area.required.for.offset: 0
+    PAR.prob.no.offset.required.in.growth.centres: 0
+    PAR.prob.no.offset.required.outside.growth.centres: 0
+
+    #-------------------------------------------
+    #  Variables for grassland.condition.model.R
+    #-------------------------------------------
+
+    grasslandConditionModelRFileName: grassland.condition.model.variables.R
+    OPT.use.smoothing.in.grassland.cond.model: False
+
+    OPT.VAL.exclude.zeros.in.smoothing: 1
+    OPT.VAL.only.use.pixels.below.fixed.val.in.smoothing: 2
+    OPT.VAL.use.all.pixels.in.smoothing: 3
+    OPT.smoothing.option: 2 # OPT.VAL.only.use.pixels.below.fixed.val.in.smoothing
+
+    # only pixels below this value will be included in calculation
+    PAR.fixed.val.for.smoothing: 0.12
+
+    PAR.grassland.smoothing.window.size: 1        # not used at present
+    PAR.weight.of.non.focal.pixels.in.smoothing: 0.1 # not used at present
+
+    PAR.grassland.variability.std.dev: 0.02
+    PAR.grassland.threshold.value: 0.35
+    PAR.grassland.min.cond.score: 0.1
+    PAR.grassland.max.cond.score: 0.75
+    PAR.prob.of.crossing.thresh: 0.0005
+
+    OPT.use.raster.maps.for.input.and.output: False
+    PAR.aggregate.parcel.condition.db.table.field: TOTAL_COND_SCORE_SUM
+
+    OPT.generate.polygon.time.series: False
+
+    OPT.unmanaged.is.stable: False
+
+    #-------------------------------------------
+    #  Variables for reserve.random.R
+    #-------------------------------------------
+
+    reserveRandomRFileName: reserve.random.variables.R
+    OPT.reserve.parcels.based.on.budget: True
+    PAR.budget.for.timestep: 0
+    BudgetForPubReserves: 0
+    BudgetForPrivateManagement: 0
+
+    #-------------------------------------------
+    #  Variables for reserve.random.R
+    #-------------------------------------------
+
+    reserveConditionRFileName: reserve.condition.variables.R
+
+    #-------------------------------------------
+    #  Variables for update.planning.unit.info.R
+    #-------------------------------------------
+
+    updatePlanningUnitInfoRFileName: update.planning.unit.info.variables.R
+
+
+    #-------------------------------------------
+    #  Variables for eval.cond.R
+    #-------------------------------------------
+
+    evalCondRFileName: eval.cond.variables.R
+
+    PUcondTableName: PU_COND
+    LandscapeCondTableName: LANDSCAPE_COND
+
+    #-------------------------------------------
+    #  Variables for set.random.seed.R
+    #-------------------------------------------
+
+    setRandomSeedRFileName: set.random.seed.variables.R
+
+    startingSeed: 5
+    use.same.seed.as.last.run: False
+    use.provided.seed: False
+
+    #-------------------------------------------
+    #  Variables for make.sq.patches.R
+    #-------------------------------------------
+
+    makeSqPatchesRFileName: make.sq.patches.variables.R
+
+    habitat.value: 1
+    num.patches.x: 3
+    num.patches.y: 5
+
+    PAUSE.BETWEEN.STAGES: True
+
+    #-------------------------------------------
+    #  Variables for generate.habitat.R
+    #-------------------------------------------
+
+    generateHabitatRFileName: generate.habitat.variables.R
+
+    generate.habitat.map: True
+    use.test.maps: True
+
+    #-------------------------------------------
+    #  Variables for run.java.patch.info.R
+    #-------------------------------------------
+
+    runJavaPatchInfoRFileName: run.java.patch.info.variables.R
+
+    OPT.use.diags: False
+    use.pixels.as.patches: False
+    lower.patch.size.thresh: 5
+    upper.patch.size.thresh: 1500
+        #  Making these names a little more specific because I'm
+        #  afraid of name conflicts in plotting code with a name as
+        #  generic as min.x or min.y.
+    runJavaPatchInfoMinX: 0
+    runJavaPatchInfoMinY: 0
+
+    #---------------------------------------------
+    #  Variables for recalculate.master.hab.maps.R
+    #---------------------------------------------
+
+    recalculateMasterHabMapsRFileName: recalculate.master.hab.maps.variables.R
+
+    #-------------------------------------------
+    #  Variables for load.all.hab.patches.map.R
+    #-------------------------------------------
+
+    loadAllHabPatchesMapRFileName: load.all.hab.patches.map.variables.R
+    num.planning.units.x: 20
+    num.planning.units.y: 20
+    rows: 256
+    cols: 256
+
+output_files:
+    cost.map.base.filename: cost.map.flt
+    reserve.map.name.base: reserve.map.zo1
+
+    CondDBname: evalCondition.dbms
+
+    reserved.pid.list.filename: reserved.patch.ids.vec
+    unreserved.pid.list.filename: unreserved.patch.ids.vec
+    reserve.info.file : reserve.info.txt
+
+    pu.reserve.info.file: pu.reserve.info.txt
+    reserved.planning.units.filename.base: reserved.planning.units.zo1
+    managed.planning.units.filename.base: managed.planning.units.zo1
+    PUinformationDBname: PUinformation.dbms
+    loss.model.root.filename: ts.loss.map
+    cond.model.root.filename: ts.cond.map
+    running.totals.for.offset.scores.filename: running.totals.for.offset.scores.txt
+    PAR.PU.information.output.shapefile.filename.base: output_polygon
+
+input_files:
+    costs.melb.grassland.parcels.Rdump: costs.melb.grassland.parcels.Rdump
+    master.habitat.map.pid.base.filename: hab.map.master.pid
+    master.habitat.map.pid.filename: hab.map.master.pid.txt
+    master.habitat.map.zo1.base.filename: hab.map.master.zo1
+    master.habitat.map.zo1.filename: hab.map.master.zo1.txt
+    PAR.development.pool.map.filename: dev_pool_mask.txt
+    PAR.managed.above.thresh.filename: condModel_above_thresh_curve.txt
+    PAR.managed.below.thresh.filename: condModel_below_thresh_curve.txt
+     # TODO(michaell): where is this file?
+    PAR.offset.pool.map.filename: offset_pool_mask_random.txt
+    PAR.time.steps.filename: condModel_timesteps.txt
+    PAR.unmanaged.filename: condModel_unmanaged_curve.txt
+    planning.units.filename.base: planning.units.uid
+    planning.units.filename: planning.units.uid.txt
+    hab.map.zo1.A.TOT.spp.filename.base.root: apparent/hab.map.zo1.A.TOT.spp.
+    hab.map.zo1.A.TOT.spp.filename.base: apparent/hab.map.zo1.A.TOT.spp.
+    PAR.PU.information.shapefile: shape/cpw_cadastre_FINAL.shp

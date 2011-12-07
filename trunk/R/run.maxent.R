@@ -21,7 +21,7 @@ current.os <- sessionInfo()$R.version$os
 source.dir <- getwd()
 
 cat( "\n The path to the run dir is", PAR.current.run.directory )
-cat( "\n\n The path back to the source tree is ", source.dir)
+cat( "\n\n The path back to the source tree is ", source.dir, "\n")
 
 
 setwd( PAR.current.run.directory )  # this is the output directory

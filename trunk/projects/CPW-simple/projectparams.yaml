@@ -1,0 +1,68 @@
+project_name: CPW_simple
+base_params:
+  variables:
+    num.steps: 80
+    # Initial values inside GC
+    InsideGC.initial.area.available.for.offsets:  1159.05
+    InsideGC.initial.area.available.for.dev:  492.91
+    InsideGC.initial.area.protected:  269.59
+    InsideGC.initial.area.undevelopabe:  115.82
+    InsideGC.initial.area.secured:  0.00
+
+    # Initial values outside GC
+    OutsideGC.initial.area.developable.or.offsettable:  5270.1
+    OutsideGC.initial.area.protected:  1985.5
+    OutsideGC.initial.area.secured:  916.5
+
+    # variables - initial values
+    OutsideGC.Dev.target:  0.0
+    OutsideGC.Actual.Dev:  0.0
+    OutsideGC.Actual.Offset:  0.0
+    OutsideGC.Strat.Ass.extra.offsets.target:  0.0
+
+    InsideGC.Dev.target:  0.0
+    InsideGC.Actual.Dev:  0.0
+    InsideGC.Offset.target:  0.0
+    InsideGC.Offset.after.deg:  0.0
+    InsideGC.Actual.Offset:  0.0
+
+    # constants
+    Prop.that.degrade: 0.005
+    Pre1750.amount.of.CPW: 113439
+
+    OutsideGC.Multiplier: 2
+    OutsideGC.Prob.offset.required: 0.5
+
+    Strategic.Assess.Offsets.Outside.GC: 593.5
+    OutsideGC.Total.Cleared.per.year: 48.00
+
+    Strat.Assess.Offsets.Per.Year: 19.78
+
+    InsideGC.Lost.Per.Year.Total: 19.78
+    InsideGC.Offset.Total.SEPP: 518
+    InsideGC.Offset.Per.Year.Total.SEPP: 17.27 # This is InsideGC.Offset.Total.SEPP/30
+
+  output_files:
+    csv_output: output.csv
+
+
+scenarios:
+  - name : S1 SEPP
+    parameters :
+      variables :
+        Strategic.Assess.Offsets.Outside.GC: 0
+
+#   - name : S2 SEPP+EPBC
+#     parameters :
+#       variables :
+#         Strategic.Assess.Offsets.Outside.GC: 593.5
+#
+#   - name : S3 Strat Assess
+#     parameters :
+#       variables :
+#         Strategic.Assess.Offsets.Outside.GC: 205
+#
+#   - name : S4 SEPP 2_to_1
+#     parameters :
+#       variables :
+#         Strategic.Assess.Offsets.Outside.GC: 1856

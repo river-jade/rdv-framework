@@ -1,0 +1,323 @@
+project_name: CPW
+base_params:
+    variables:
+        #----------------------------------------------------------------------
+        # basic info
+        #----------------------------------------------------------------------
+
+        numTimeSteps: 15 #30  # xxx
+        step.interval: 2  # EDIT - put back to 5 ?
+
+        use.run.number.as.seed: True
+
+        Debug.Test.With.given.num.of.PUs: True #xxx
+        Debug.Num.of.PUs.to.test.with: 500 #7574 PAR.initial.inside.gc.offset.PU.ID must be 0 if less than 7574
+
+        OPT.PU.source: 2 # This specifies OPT.VAL.user.supplied.planning.units.from.polygon
+
+        OPT.generate.polygon.time.series: False # xxx
+        PAR.interval.between.generating.polygon.maps: 10
+
+        #----------------------------------------------------------------------
+        # reserve random settings
+        #----------------------------------------------------------------------
+
+        OPT.reserve.parcels.based.on.budget: False      # If false uses a rate instead
+
+        OPT.include.random.reserves.outside.GC: False
+        OPT.include.random.reserves.inside.GC: False
+
+        PAR.rate.of.CPW.reserved.per.timestep: 0        # This gets reset inside model.py before R is called
+        PAR.limit.for.random.reserves: 0                # This gets reset inside model.py before R is called
+        PAR.random.reserve.criteria.1: NOT_YET_SET      # This gets reset inside model.py before R is called
+        PAR.random.reserve.criteria.2: NOT_YET_SET      # This gets reset inside model.py before R is called
+
+        PAR.limit.for.random.reserves.outside.GC: 200
+
+        #----------------------------------------------------------------------
+        # Development / offsetting settings
+        #----------------------------------------------------------------------
+
+        DEBUG.OFFSETTING: False
+        OPT.use.offsetting.in.loss.model: True   # old variable - leave as true for CPW project
+        OPT.use.offsetting.in.CPW.project: True
+
+        PAR.db.table.field.to.calc.offsets: AREA_OF_CPW
+
+        OPT.set.shanes.park.as.offsettable: False # False #############xxx yyy
+        PAR.shanes.park.PU.id: 100138120
+
+        PAR.prob.that.inside.gc.is.offset.inside.gc: 1
+        PAR.initial.inside.gc.offset.PU.ID: 0 #100138120, #shane's park ID if that's to be used 1st, set to 0 for nothing ##############xxx
+
+        PAR.inside.gc.offset.multiplier: 0.7
+        PAR.outside.gc.offset.multiplier: 2.0
+
+        PAR.hmv.limit.inside.gc: 27
+        PAR.mmv.limit.inside.gc: 450
+        PAR.lmv.limit.inside.gc: 710
+
+        PAR.initial.inside.gc.cpw.loss.rate:  39.6                             # !!SensAnal
+        PAR.initial.outside.gc.cpw.loss.rate: 48                               # !!SensAnal
+
+        PAR.threshold.area.required.for.offset: 0
+        PAR.prob.no.offset.required.in.growth.centres: 0
+        PAR.prob.no.offset.required.outside.growth.centres: 0.95
+
+
+        # ** Development rules **
+
+        # -- Development outside the growth centres
+        PAR.dev.outside.GC.criteria:
+            DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0
+
+        # -- Development inside the growth centres
+        # Note this is still defined within DevPool.R as the query includes checks of whether the limits
+        # of HHM, MMV, LMV are reached
+
+
+        # ** Offset rules **
+
+        # -- Rules for dev IN GC, offset IN GC
+        PAR.ii1.dev.IN.offset.IN.criteria:
+            DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 1 and GC_NOTCERT = 1
+            and UNDEV_LAND = 0 and AREA_OF_CPW > 0
+
+        # -- Rules for dev IN GC, offset OUT GC
+
+        PAR.io1.dev.IN.offset.OUT.criteria:
+            DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0
+
+        PAR.io2.dev.IN.offset.OUT.criteria:
+            DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and AREA_OF_C1_CPW > 0
+
+        PAR.io3.dev.IN.offset.OUT.criteria:
+            DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and PRIORITY = 1
+
+        # -- Rules for dev OUT GC, offset OUT GC
+
+        PAR.oo1.dev.OUT.offset.OUT.criteria:
+            DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0
+
+        PAR.oo2.dev.OUT.offset.OUT.criteria:
+            DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and AREA_OF_C1_CPW > 0
+
+        PAR.oo3.dev.OUT.offset.OUT.criteria:
+            DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and PRIORITY = 1
+
+        PAR.offsetRule.in.in: PAR.offsetRule.A
+        PAR.offsetRule.in.out: PAR.offsetRule.B
+        PAR.offsetRule.out.out: PAR.offsetRule.C
+
+
+        #--------------------------------------------------------------------
+        #  NOTE:
+        #  These rule definitions in this section (e.g., PAR.offsetRule.?)
+        #  are only here for documentation of what the rule should include.
+        #  The actual rules have to be hard-coded near the start of the
+        #  R file called OffsetPool.R where it defines an associative list
+        #  called offsetRules.
+        #  However, that list expects the keys to be of the form
+        #  "PAR.offsetRule.?" to correspond to these rule names.
+        #  We're doing it this way because we don't know how to get the
+        #  yaml to build a little collection of the rules automatically.
+        #
+        #  The rules here are completely ignored by the R code, so they
+        #  don't need to be here.  However, they make the next yaml section
+        #  below easier to figure out.  Still, you have to be sure that
+        #  they are not misleading if you do include them here.  That is
+        #  you need to make sure that what's shown here does match what's
+        #  hard-coded in OffsetPool.R.  Nothing will happen if it doesn't
+        #  match, but you may not be getting the output you thought you
+        #  were getting if they don't match.
+        #--------------------------------------------------------------------
+
+        PAR.offsetRule.A: ii1
+        PAR.offsetRule.B: io1
+        PAR.offsetRule.C: oo1
+
+        PAR.offsetRule.D: io2,io3,io1
+        PAR.offsetRule.E: oo2,oo3,oo1
+
+        #--------------------------------------------------------------------
+        #  This section specifies which of the rules given above will
+        #  be used in the 3 different offsetting conditions in the
+        #  CPW runs.  The strings for each of the three conditions
+        #  (in.in, in.out, and out.out) must have a corresponding entry in
+        #  the offsetRules list defined near the start of OffsetPool.R.
+        #--------------------------------------------------------------------
+
+        #----------------------------------------------------------------------
+        # Condition model settings
+        #----------------------------------------------------------------------
+
+        PAR.grassland.variability.std.dev: 0.02 # put back to 0.2, on zero for testing # !!SensAnal
+        PAR.grassland.threshold.value: 0.0
+        PAR.grassland.min.cond.score: 0
+        PAR.grassland.max.cond.score: 1
+        PAR.prob.of.crossing.thresh: 0.0
+        PAR.min.cond.to.count.as.cpw: 0.1                                              # !!SensAnal
+
+        OPT.use.raster.maps.for.input.and.output: False
+        # PAR.tenure.of.parcels.to.evolve : Unprotected  # now not used in cond model
+
+        PAR.mean.init.cond.of.HMV.CPW: 0.85 #  1.0  # (0.7 – 1.0)
+        PAR.mean.init.cond.of.MMV.CPW: 0.6  #  0.7  # (0.4 – 0.7)
+        PAR.mean.init.cond.of.LMV.CPW: 0.2  #  0.4  # (0.1 – 0.4)
+
+        PAR.sd.init.cond.of.HMV.CPW: 0.07
+        PAR.sd.init.cond.of.MMV.CPW: 0.1
+        PAR.sd.init.cond.of.LMV.CPW: 0.25
+
+        # PAR.mean.init.cond.of.HMV.CPW: 0.99 #  1.0  # (0.7 – 1.0)
+        # PAR.mean.init.cond.of.MMV.CPW: 0.69  #  0.7  # (0.4 – 0.7)
+        # PAR.mean.init.cond.of.LMV.CPW: 0.39  #  0.4  # (0.1 – 0.4)
+
+        # PAR.sd.init.cond.of.HMV.CPW: 0.0001
+        # PAR.sd.init.cond.of.MMV.CPW: 0.0001
+        # PAR.sd.init.cond.of.LMV.CPW: 0.0001
+
+    input_files:
+        PAR.managed.above.thresh.filename: CPW_protected_regen.txt
+        PAR.managed.below.thresh.filename: CPW_below_thres_dummy.txt
+        PAR.unmanaged.filename: CPW_sec_unsec_degen.txt
+        PAR.time.steps.filename: CPW_time_steps.txt
+        PAR.PU.information.shapefile: shape/CPW_cadastre_all3.shp
+        #PAR.PU.information.shapefile: shape/CPW_cadastre_all4.shp
+
+
+    output_files:
+        PAR.reserve.random.tmp.info.filename: NOT_YET_SET # This is set in model.py "tmp.info.reserve.random.txt"
+        PAR.init.CPW.score.filename: tmp.init.CPW.scores.txt
+
+scenarios:
+  - name: T1 RanRes inoutGC
+    parameters:
+        variables:
+            OPT.use.offsetting.in.CPW.project: False
+
+            OPT.include.random.reserves.outside.GC: True
+            PAR.rate.of.CPW.reserved.per.timestep.outside.GC: 20
+            PAR.limit.for.random.reserves.outside.GC: 200
+            PAR.random.reserve.outside.GC.criteria.1:
+                DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0
+            PAR.random.reserve.outside.GC.criteria.2:
+                DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0
+            OPT.include.random.reserves.inside.GC: True
+            PAR.rate.of.CPW.reserved.per.timestep.inside.GC: 20
+            PAR.limit.for.random.reserves.inside.GC: 200
+            PAR.random.reserve.inside.GC.criteria.1:
+                DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 1 and AREA_OF_CPW > 0
+            PAR.random.reserve.inside.GC.criteria.2:
+                DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 1 and AREA_OF_CPW > 0
+
+  - name: T2 RanRes inGC
+    parameters:
+        variables:
+            OPT.use.offsetting.in.CPW.project: False
+            OPT.include.random.reserves.inside.GC: True
+            PAR.rate.of.CPW.reserved.per.timestep.inside.GC: 20
+            PAR.limit.for.random.reserves.inside.GC: 150
+            PAR.random.reserve.inside.GC.criteria.1:
+                DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 1 and AREA_OF_CPW > 0
+            PAR.random.reserve.inside.GC.criteria.2:
+                DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 1 and AREA_OF_CPW > 0
+
+  - name: T3 RanRes outGC
+    parameters:
+        variables:
+            OPT.use.offsetting.in.CPW.project: False
+
+            OPT.include.random.reserves.outside.GC: True
+            PAR.rate.of.CPW.reserved.per.timestep.outside.GC: 20
+            PAR.limit.for.random.reserves.outside.GC: 150
+            PAR.random.reserve.outside.GC.criteria.1:
+                DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0
+            PAR.random.reserve.outside.GC.criteria.2:
+                DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0
+
+  - name: S1 BusinessAsUsual - NoEPBC
+    parameters:
+        variables:
+            OPT.use.offsetting.in.CPW.project: True
+            PAR.prob.no.offset.required.outside.growth.centres: 1.95
+            # use random reserves outside GC???
+
+  # - name: S2 BusinessAsUsual - IncEPBC
+  #   variables:
+  #       OPT.use.offsetting.in.CPW.project: True
+  #       PAR.prob.no.offset.required.outside.growth.centres: 0.95
+
+  #       PAR.prob.that.inside.gc.is.offset.inside.gc: 1      # change from S1
+  #       PAR.threshold.area.required.for.offset: 2            # change from S1
+
+  #       PAR.inside.gc.offset.multiplier: 0.7
+
+  #       OPT.include.random.reserves.outside.GC: True  # Note only 1 criteria so both are the same
+  #       PAR.rate.of.CPW.reserved.per.timestep.outside.GC: 3.3
+  #       PAR.random.reserve.outside.GC.criteria.1: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                                   and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0"
+  #       PAR.random.reserve.outside.GC.criteria.2: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                                   and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0"
+
+  # - name: S3 StratAss - HVM Option
+  #   variables:
+  #       OPT.use.offsetting.in.CPW.project: True
+  #       PAR.prob.no.offset.required.outside.growth.centres: 0.95
+  #       PAR.dev.outside.GC.criteria: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                  and GROWTH_CENTRE = 0 and AREA_OF_C1_CPW <= 0"
+
+  #       PAR.offsetRule.in.in: PAR.offsetRule.A
+  #       PAR.offsetRule.in.out: PAR.offsetRule.D
+  #       PAR.offsetRule.out.out: PAR.offsetRule.E
+
+  #       OPT.include.random.reserves.outside.GC: True
+  #       PAR.rate.of.CPW.reserved.per.timestep.outside.GC: 3.3
+  #       PAR.random.reserve.outside.GC.criteria.1: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                                   and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0"
+  #       PAR.random.reserve.outside.GC.criteria.2: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                                   and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0"
+
+
+  # - name: S4 StratAss - FullRecPlan
+  #   variables:
+  #       OPT.use.offsetting.in.CPW.project: True
+  #       PAR.prob.no.offset.required.outside.growth.centres: 0.95
+  #       PAR.dev.outside.GC.criteria: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                  and GROWTH_CENTRE = 0 and AREA_OF_C1_CPW <= 0 and PRIORITY = 0"
+
+  #       PAR.offsetRule.in.in: PAR.offsetRule.A
+  #       PAR.offsetRule.in.out: PAR.offsetRule.D
+  #       PAR.offsetRule.out.out: PAR.offsetRule.E
+
+  #       OPT.include.random.reserves.outside.GC: True
+  #       PAR.rate.of.CPW.reserved.per.timestep.outside.GC: 3.3
+  #       PAR.random.reserve.outside.GC.criteria.1: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                                   and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0"
+  #       PAR.random.reserve.outside.GC.criteria.2: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                                   and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0"
+
+  # - name: S5 NoDevOfCPW
+  #   variables:
+  #       OPT.use.offsetting.in.CPW.project: False
+  #       PAR.initial.inside.gc.cpw.loss.rate: 0
+  #       PAR.initial.outside.gc.cpw.loss.rate: 0
+
+  #       OPT.include.random.reserves.outside.GC: True
+  #       PAR.rate.of.CPW.reserved.per.timestep.outside.GC: 3.3
+  #       PAR.random.reserve.outside.GC.criteria.1: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                                   and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0"
+  #       PAR.random.reserve.outside.GC.criteria.2: "DEVELOPED = 0 and RESERVED = 0 and TENURE = 'Unprotected' \
+  #                                                   and GROWTH_CENTRE = 0 and AREA_OF_CPW > 0"
+
+
+  # - name: S6 Worst case
+  #   variables:
+  #       OPT.use.offsetting.in.CPW.project: False
+
+  #       # In this case can develop both unprot and commonwealth land (ie comm land = scured)
+  #       PAR.dev.outside.GC.criteria: "DEVELOPED = 0 and RESERVED = 0 and GROWTH_CENTRE = 0 \
+  #                                      and (TENURE = 'Unprotected' OR TENURE = 'Secured' )"
+
+
+

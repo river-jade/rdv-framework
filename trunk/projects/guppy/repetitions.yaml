@@ -1,7 +1,9 @@
 # Note that this file does all repetitions on scen 1, then on scen 2 etc...
 # Note that also the original value of the variable is not used.
+
 repetitions:
-  - variables :
-      PAR.hmv.limit.inside.gc  : 777
-  - variables :
-      PAR.hmv.limit.inside.gc : 888
+  - variables:
+     PAR.variable.to.test.repetitions: 1
+
+  - variables:
+     PAR.variable.to.test.repetitions: 2

@@ -1,0 +1,115 @@
+project_name: Public/Private
+base_params: 
+  variables: 
+    Debug.Test.With.20.PUs: False
+
+    #----------------------------------------------------------------------
+    # basic info
+    #----------------------------------------------------------------------
+
+    step.interval: 5 # make sure you update PAR.management.cost.per.pixel if you change this
+    numTimeSteps: 10
+
+    pixel.size: 50
+
+    #----------------------------------------------------------------------
+    # cost info
+    #----------------------------------------------------------------------
+
+    OPTsetRandomSeedForCost: True
+    PARcostRandomSeed: 1
+
+    # need a 5 here because the code wants a cost per year
+    PAR.management.cost.per.pixel: 15.0 # 0.03 * 50 * 50 / step.interval
+
+    OPT.cost.scenario: 7 # OPTVALPUcostIsSampledFromRealMelbCosts
+
+    # this is only if using OPTVALPUcostIsSampledFromRealMelbCosts
+    # if this is false and then will sample from the actual
+    # Melb cost distribution
+    OPTsampleMelbCostsFromLogNormDist: True
+
+    #----------------------------------------------------------------------
+    # loss settings
+    #----------------------------------------------------------------------
+
+    PAR.pus.lost.per.timestep: 0
+
+    #----------------------------------------------------------------------
+    # reserve selection settings
+    #----------------------------------------------------------------------
+    publicReserveDuration: 1000
+    privateReserveDuration: 5
+
+    #----------------------------------------------------------------------
+    # grassland condition model settings
+
+    OPT.use.smoothing.in.grassland.cond.model: False
+    OPT.smoothing.option: 2 # OPT.VAL.only.use.pixels.below.fixed.val.in.smoothing
+    PAR.fixed.val.for.smoothing: 0.12
+
+    PAR.grassland.threshold.value: 0.35
+    PAR.prob.of.crossing.thresh: 0.0005
+    OPT.use.raster.maps.for.input.and.output: True
+
+    OPT.unmanaged.is.stable: False
+
+    #-----------------------------------------
+    #  start_point = 1  - initialise PU info
+    #  start_point = 2  - initialise cost info
+    #  start_point = 3  - loop over timesteps
+    #                     res/loss/cond/eval etc
+    #-----------------------------------------
+    start_point: 1
+
+    num.planning.units.x: 15
+    num.planning.units.y: 15
+    rows: 782
+    cols: 832
+
+    ###########################################################################
+    #  These should be the only overrides needed to be changed
+    ###########################################################################
+
+    PARcostRandomSeed: 1
+    PAR.pus.lost.per.timestep: 0 # 206
+    use.run.number.as.seed: True
+  
+  
+   input_files: 
+      PAR.managed.above.thresh.filename: condModel_above_thresh_curve.txt
+      PAR.managed.below.thresh.filename: condModel_below_thresh_curve.txt
+      PAR.unmanaged.filename: condModel_unmanaged_curve.txt
+        
+scenarios:
+  - name: All public
+    parameters: 
+      variables: 
+        reserveSelectionMethod: CONDITION
+        BudgetForPubReserves: 1000000
+        BudgetForPrivateManagement: 0
+      
+  
+  - name: All private
+    parameters: 
+       variables: 
+         reserveSelectionMethod: RANDOM
+         BudgetForPubReserves: 0
+         BudgetForPrivateManagement: 1000000
+       
+  
+  - name: 50-50 mix of pub/private
+    parameters: 
+       variables: 
+         reserveSelectionMethod: CONDITION_AND_RANDOM
+         BudgetForPubReserves: 500000
+         BudgetForPrivateManagement: 500000
+       
+  
+  - name: Do nothing
+    parameters: 
+       variables: 
+         reserveSelectionMethod: CONDITION
+         BudgetForPubReserves: 0.1
+         BudgetForPrivateManagement: 0.1
+
