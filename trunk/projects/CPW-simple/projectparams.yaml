@@ -1,7 +1,10 @@
 project_name: CPW_simple
 base_params:
   variables:
+
+    # each time step is one year	
     num.steps: 80
+
     # Initial values inside GC
     InsideGC.initial.area.available.for.offsets:  1159.05
     InsideGC.initial.area.available.for.dev:  492.91
@@ -9,7 +12,7 @@ base_params:
     InsideGC.initial.area.undevelopabe:  115.82
     InsideGC.initial.area.secured:  0.00
 
-    # Initial values outside GC
+    # initial values outside GC
     OutsideGC.initial.area.developable.or.offsettable:  5270.1
     OutsideGC.initial.area.protected:  1985.5
     OutsideGC.initial.area.secured:  916.5
@@ -47,22 +50,22 @@ base_params:
 
 
 scenarios:
-  - name : S1 SEPP
+  # - name : S1 SEPP
+  #   parameters :
+  #     variables :
+  #       Strategic.Assess.Offsets.Outside.GC: 0
+
+  # - name : S2 SEPP+EPBC
+  #   parameters :
+  #     variables :
+  #       Strategic.Assess.Offsets.Outside.GC: 593.5
+
+  - name : S3 Strat Assess
     parameters :
       variables :
-        Strategic.Assess.Offsets.Outside.GC: 0
+        Strategic.Assess.Offsets.Outside.GC: 205
 
-#   - name : S2 SEPP+EPBC
-#     parameters :
-#       variables :
-#         Strategic.Assess.Offsets.Outside.GC: 593.5
-#
-#   - name : S3 Strat Assess
-#     parameters :
-#       variables :
-#         Strategic.Assess.Offsets.Outside.GC: 205
-#
-#   - name : S4 SEPP 2_to_1
-#     parameters :
-#       variables :
-#         Strategic.Assess.Offsets.Outside.GC: 1856
+  # - name : S4 SEPP 2_to_1
+  #   parameters :
+  #     variables :
+  #       Strategic.Assess.Offsets.Outside.GC: 1856
