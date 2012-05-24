@@ -62,6 +62,18 @@ def retrieveparameters(ids, outputpath, jarpath):
         csvoutput = open(os.path.join(outputpath, "%s_parameters.csv" % id), 'w')
         cmdarray = ["java", "-jar", jarpath, "printrun", 
                     "--runid=%s" % id, "--csv"]
+    # Note the default way the database to use is specified is via the
+    # environment variable TZAR_DB. For example to use the ARCS
+    # database it would need to be set to
+    # jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5
+    # set this with in a shell use the command
+    # export TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"
+    
+    # or can put the above command within .bashrc file otherwise to
+    # hardcode the db into this script can add the commond line flag
+    # to the call as replacing the line of code above with
+    # "--runid=%s" % id, "--csv", "--dburl", "jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"]
+        
         print "Executing: ", ' '.join(cmdarray)
         subprocess.call(cmdarray, stdout=csvoutput)
 
@@ -110,6 +122,18 @@ if options.copy:
     cmdarray = ["java", "-Duser.name=%s" % options.sshusername, "-jar", 
                 options.jarpath, "aggregate", "--runset=%s" % options.runset, 
                 "--outputpath=%s" % options.outputpath]
+    # Note the default way the database to use is specified is via the
+    # environment variable TZAR_DB. For example to use the ARCS
+    # database it would need to be set to
+    # jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5
+    # set this with in a shell use the command
+    # export TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"
+    
+    # or can put the above command within .bashrc file otherwise to
+    # hardcode the db into this script can add the commond line flag
+    # to the call as replacing the line of code above with
+    # "--outputpath=%s" % options.outputpath, "--dburl", "jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"]
+    
     print "Executing: ", ' '.join(cmdarray)
     cmd = subprocess.call(cmdarray)
 
