@@ -5,6 +5,9 @@ import os
 import subprocess
 import sys
 
+
+timstep_to_save = 50
+
 def parse_flags(parser, flags):
     """Configures the command-line flag parser.
     """
@@ -30,7 +33,7 @@ def getinterestingids(path, filterfunction=None):
         filterfunction = lambda x: x # if no filter function provided, just return all ids
     return filterfunction([f.split('_')[0] for f in getoutputfiles(path)])
 
-def writefinalvalues(ids, path):
+def writefinalvalues(ids, path, timestep):
     """Writes the final values for each run out as a CSV file.
     """
     fieldnames = set()
@@ -40,7 +43,10 @@ def writefinalvalues(ids, path):
         # field index for CPW.area column
         headers = reader.next()
         fieldnames |= set(headers)
-        lastrow = [row for row in reader][-1]
+
+        # this is where the last value is selected
+        #lastrow = [row for row in reader][-1]
+        lastrow = [row for row in reader][timestep]
         valuesmap = dict(zip(headers, lastrow))
         values.append((id, valuesmap))
 
@@ -66,7 +72,7 @@ def retrieveparameters(ids, outputpath, jarpath):
     # environment variable TZAR_DB. For example to use the ARCS
     # database it would need to be set to
     # jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5
-    # set this with in a shell use the command
+    # To set this within a shell use the command
     # export TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"
     
     # or can put the above command within .bashrc file otherwise to
@@ -126,7 +132,7 @@ if options.copy:
     # environment variable TZAR_DB. For example to use the ARCS
     # database it would need to be set to
     # jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5
-    # set this with in a shell use the command
+    # To set this within a shell use the command
     # export TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"
     
     # or can put the above command within .bashrc file otherwise to
@@ -140,5 +146,5 @@ if options.copy:
 ids = getinterestingids(options.outputpath)
 retrieveparameters(ids, options.outputpath, options.jarpath)
 combineparameters(ids, options.outputpath)
-writefinalvalues(ids, options.outputpath)
+writefinalvalues(ids, options.outputpath, timstep_to_save)
 
