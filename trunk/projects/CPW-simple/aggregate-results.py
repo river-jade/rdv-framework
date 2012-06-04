@@ -44,10 +44,17 @@ def writefinalvalues(ids, path, timestep):
         headers = reader.next()
         fieldnames |= set(headers)
 
+        # Check that timestep is not greater than the number of entires in the file
+        rows = [row for row in reader]
+        if timestep > len(rows):
+            print "ERROR: Timestep was larger than number of rows. Exiting"
+            sys.exit(1)
+            
         # this is where the last value is selected
-        #lastrow = [row for row in reader][-1]
-        lastrow = [row for row in reader][timestep]
-        valuesmap = dict(zip(headers, lastrow))
+        #row_to_save = [row for row in reader][-1]
+        
+        row_to_save = rows[timestep]
+        valuesmap = dict(zip(headers, row_to_save))
         values.append((id, valuesmap))
 
     fields = list(fieldnames)
