@@ -6,7 +6,7 @@ import subprocess
 import sys
 
 
-timstep_to_save = 50
+timestep_to_save = 50
 
 def parse_flags(parser, flags):
     """Configures the command-line flag parser.
@@ -33,9 +33,10 @@ def getinterestingids(path, filterfunction=None):
         filterfunction = lambda x: x # if no filter function provided, just return all ids
     return filterfunction([f.split('_')[0] for f in getoutputfiles(path)])
 
-def writefinalvalues(ids, path, timestep):
+def writefinalvalues(ids, path, timestep, errors=None):
     """Writes the final values for each run out as a CSV file.
     """
+    if errors == None: errors = []
     fieldnames = set()
     values = []
     for id in ids:
@@ -45,7 +46,12 @@ def writefinalvalues(ids, path, timestep):
         fieldnames |= set(headers)
 
         # Check that timestep is not greater than the number of entires in the file
-        rows = [row for row in reader]
+        try:
+            rows = [row for row in reader]
+        except Exception as e:
+            error = "Error in file with id: %s" % id
+            print error
+            errors.append((error, e))
         if timestep > len(rows):
             print "ERROR: Timestep was larger than number of rows. Exiting"
             sys.exit(1)
@@ -78,14 +84,14 @@ def retrieveparameters(ids, outputpath, jarpath):
     # Note the default way the database to use is specified is via the
     # environment variable TZAR_DB. For example to use the ARCS
     # database it would need to be set to
-    # jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5
+    # jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=<password>
     # To set this within a shell use the command
-    # export TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"
+    # export TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=<password>"
     
     # or can put the above command within .bashrc file otherwise to
     # hardcode the db into this script can add the commond line flag
     # to the call as replacing the line of code above with
-    # "--runid=%s" % id, "--csv", "--dburl", "jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"]
+    # "--runid=%s" % id, "--csv", "--dburl", "jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=<password>"]
         
         print "Executing: ", ' '.join(cmdarray)
         subprocess.call(cmdarray, stdout=csvoutput)
@@ -122,36 +128,52 @@ def combineparameters(ids, outputpath):
             writer.writerow([id] + [row[field] for field in fields])
     print "Wrote combined parameters to %s" % f.name
 
-parser = optparse.OptionParser()
-options = parse_flags(parser, sys.argv)
+def aggregateresults(outputpath, jarpath):
+    """Does the work of finding the ids, retrieving the parameters, combining them,
+    and then writing the final values out to disk."""
+    ids = getinterestingids(outputpath)
+    retrieveparameters(ids, outputpath, jarpath)
+    combineparameters(ids, outputpath)
+    errors = []
+    writefinalvalues(ids, outputpath, timestep_to_save, errors)
+    if errors:
+        print "At least one error occurred:"
+        print errors 
 
-if not options.runset: 
-    parser.error("Must specify a runset name. Pass --help for usage info.")
-if not options.outputpath: 
-    parser.error("Must specify an output path. Pass --help for usage info.")
-
-if options.copy:
-    # aggregate the results into a single directory, using the tzar aggregate command.
-    cmdarray = ["java", "-Duser.name=%s" % options.sshusername, "-jar", 
-                options.jarpath, "aggregate", "--runset=%s" % options.runset, 
-                "--outputpath=%s" % options.outputpath]
+def copyfiles(sshusername, jarpath, runset, outputpath):
+    """Aggregate the results into a single directory, using the tzar aggregate 
+    command."""
+    cmdarray = ["java", "-Duser.name=%s" % sshusername, "-jar", 
+                jarpath, "aggregate", "--runset=%s" % runset, 
+                "--outputpath=%s" % outputpath]
     # Note the default way the database to use is specified is via the
     # environment variable TZAR_DB. For example to use the ARCS
     # database it would need to be set to
-    # jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5
+    # jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=<password>
     # To set this within a shell use the command
-    # export TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"
+    # export TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=<password>"
     
     # or can put the above command within .bashrc file otherwise to
     # hardcode the db into this script can add the commond line flag
     # to the call as replacing the line of code above with
-    # "--outputpath=%s" % options.outputpath, "--dburl", "jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"]
+    # "--outputpath=%s" % outputpath, "--dburl", "jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=<password>"
     
     print "Executing: ", ' '.join(cmdarray)
     cmd = subprocess.call(cmdarray)
 
-ids = getinterestingids(options.outputpath)
-retrieveparameters(ids, options.outputpath, options.jarpath)
-combineparameters(ids, options.outputpath)
-writefinalvalues(ids, options.outputpath, timstep_to_save)
+def main(argv=None):
+    argv = argv or sys.argv
+    parser = optparse.OptionParser()
+    options = parse_flags(parser, argv)
 
+    options.runset or parser.error("Must specify a runset name. Pass --help for usage info.")
+    options.outputpath or parser.error("Must specify an output path. Pass --help for usage info.")
+
+    if options.copy:
+        copyfiles(options.sshusername, options.jarpath, options.runset, 
+                options.outputpath)
+
+    aggregateresults(options.outputpath, options.jarpath)
+
+if __name__ == "__main__":
+    sys.exit(main())
