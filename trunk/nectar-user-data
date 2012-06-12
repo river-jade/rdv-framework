@@ -1,0 +1,49 @@
+#!/bin/sh
+TZAR_DB="jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=YRxGRhq5"
+
+cd /home/ubuntu
+wget http://rdv-framework.googlecode.com/files/rdv.jar
+wget http://rdv-framework.googlecode.com/svn/trunk/R/install.packages.R
+mkdir bin
+
+mv rdv.jar bin/
+
+cat << EOF > bin/start-tzar.sh
+export TZAR_DIR="/home/ubuntu/tzar"
+if [ ! -d  \$TZAR_DIR ]; then
+  mkdir \$TZAR_DIR
+fi
+
+start-stop-daemon --start --pidfile=\$TZAR_DIR/tzar.pid --startas /home/ubuntu/bin/tzar.sh >> \$TZAR_DIR/consolelog 2>&1
+EOF
+
+cat << EOF > bin/stop-tzar.sh
+#!/bin/bash
+start-stop-daemon --stop --pidfile=\$HOME/tzar/tzar.pid
+EOF
+
+cat << EOF > bin/tzar.sh
+#!/bin/bash
+
+echo -n "Starting tzar node client:"
+
+export TZAR_DB="$TZAR_DB"
+
+export TZAR_DIR="/home/ubuntu/tzar"
+if [ ! -d  \$TZAR_DIR ]; then
+  mkdir \$TZAR_DIR
+fi
+
+# run tzar as rdv role user
+java -jar /home/ubuntu/bin/rdv.jar pollandrun --runnerclass JythonRunner --svnurl=https://rdv-framework.googlecode.com/svn/trunk/ &
+
+# write the process id of the running process to a file
+echo \$! > \$TZAR_DIR/tzar.pid
+EOF
+
+chmod +x bin/*
+
+apt-get update && \
+apt-get -y install default-jre r-base-core && \
+Rscript install.packages.R && \
+sudo -i -u ubuntu bin/start-tzar.sh
