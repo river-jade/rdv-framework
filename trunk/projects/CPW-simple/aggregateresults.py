@@ -22,6 +22,11 @@ def parse_flags(parser, flags):
                       help="Runset to aggregate")
     parser.add_option("--ssh-username", action="store", dest="sshusername", 
                       default="rdv", help="Username for ssh connections")
+    parser.add_option("--nowritefinalvalues", action="store_false", dest="writefinalvalues", 
+                      default="True", help="Don't write final values from the relevant runs out to a file.")
+    parser.add_option("--noretrieveparams", action="store_false", dest="retrieveparams", 
+                      default="True", help="Don't retrieve the parameters from the database.")
+	
 
     options, args = parser.parse_args(flags)
     return options
@@ -40,29 +45,29 @@ def writefinalvalues(ids, path, timestep, errors=None):
     fieldnames = set()
     values = []
     for id in ids:
-        reader = csv.reader(open(os.path.join(path, "%s_output.csv" % id), 'rb'))
-        # field index for CPW.area column
-        headers = reader.next()
-        fieldnames |= set(headers)
-
-        # Check that timestep is not greater than the number of entires in the file
         try:
-            rows = [row for row in reader]
-        except Exception as e:
-            error = "Error in file with id: %s" % id
-            print error
-            errors.append((error, e))
-        if timestep > len(rows):
+          reader = csv.reader(open(os.path.join(path, "%s_output.csv" % id), 'rb'))
+          # field index for CPW.area column
+          headers = reader.next()
+          fieldnames |= set(headers)
+
+          # Check that timestep is not greater than the number of entires in the file
+          rows = [row for row in reader]
+          if timestep > len(rows):
             print "ERROR: Timestep was larger than number of rows. Exiting"
             sys.exit(1)
-            
-        # this is where the last value is selected
-        #row_to_save = [row for row in reader][-1]
-        
-        row_to_save = rows[timestep]
-        valuesmap = dict(zip(headers, row_to_save))
-        values.append((id, valuesmap))
+          
+          # this is where the last value is selected
+          #row_to_save = [row for row in reader][-1]
+          row_to_save = rows[timestep]
+          valuesmap = dict(zip(headers, row_to_save))
+          values.append((id, valuesmap))
 
+        except Exception as e:
+          error = "Error in file with id: %s" % id
+          print error
+          errors.append((error, e))
+            
     fields = list(fieldnames)
     f = open(os.path.join(path, "finalvalues.csv"), 'wb')
     writer = csv.writer(f)
@@ -128,18 +133,6 @@ def combineparameters(ids, outputpath):
             writer.writerow([id] + [row[field] for field in fields])
     print "Wrote combined parameters to %s" % f.name
 
-def aggregateresults(outputpath, jarpath):
-    """Does the work of finding the ids, retrieving the parameters, combining them,
-    and then writing the final values out to disk."""
-    ids = getinterestingids(outputpath)
-    retrieveparameters(ids, outputpath, jarpath)
-    combineparameters(ids, outputpath)
-    errors = []
-    writefinalvalues(ids, outputpath, timestep_to_save, errors)
-    if errors:
-        print "At least one error occurred:"
-        print errors 
-
 def copyfiles(sshusername, jarpath, runset, outputpath):
     """Aggregate the results into a single directory, using the tzar aggregate 
     command."""
@@ -173,7 +166,18 @@ def main(argv=None):
         copyfiles(options.sshusername, options.jarpath, options.runset, 
                 options.outputpath)
 
-    aggregateresults(options.outputpath, options.jarpath)
+    outputpath = options.outputpath
+    ids = getinterestingids(outputpath)
+
+    if options.retrieveparams:
+      retrieveparameters(ids, outputpath, options.jarpath)
+      combineparameters(ids, outputpath)
+    if options.writefinalvalues:
+      errors = []
+      writefinalvalues(ids, outputpath, timestep_to_save, errors)
+      if errors:
+          print "At least one error occurred:"
+          print errors 
 
 if __name__ == "__main__":
     sys.exit(main())
