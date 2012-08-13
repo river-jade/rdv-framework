@@ -2,8 +2,8 @@ project_name: Guppy
 base_params:
     variables:
         PAR.num.spp.in.reserve.selection: 2
-        PAR.spp.hab.map.filename.root: ../spp
-        #PAR.spp.hab.map.filename.root: MaxentOutputs/spp
+        #PAR.spp.hab.map.filename.root: ../spp
+        PAR.spp.hab.map.filename.root: MaxentOutputs/spp
         PAR.spp.hab.map.filename.root.win: MaxentOutputs\\spp
 
         # Maxent
@@ -21,6 +21,7 @@ base_params:
         PAR.variable.to.test.repetitions: -99
 
     input_files:
+        PAR.input.directory: ""
     output_files:
         PAR.current.run.directory: ""
         PAR.testing.output.filename: test_output_file.txt
