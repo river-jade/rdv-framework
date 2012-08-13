@@ -60,6 +60,7 @@ maxent.input.dirs.vec <- dir( PAR.input.directory, pattern=PAR.maxent.env.layers
 # now choose one of them to be the maxent input
 cur.maxent.env.layers.dir.name <- sample(maxent.input.dirs.vec, 1)
 
+cat( "\n***\n*** Using", cur.maxent.env.layers.dir.name, "\n***\n"  )
 
 #cur.full.maxent.env.layers.dir.name <- paste( PAR.path.to.maxent.input.data, '/',
 #                                        cur.maxent.env.layers.dir.name, sep = '' )
