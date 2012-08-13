@@ -26,6 +26,7 @@ cat( "\n\n The path back to the source tree is ", source.dir, "\n")
 
 setwd( PAR.current.run.directory )  # this is the output directory
 
+
 #setwd ('/Users/bill/D/Projects_RMIT/AAA_PapersInProgress/G01_simulated_ecology/MaxentTests/')
 #setwd ('~/bill/MaxentTests')'
 #getwd()
@@ -50,24 +51,31 @@ if( !file.exists ( "MaxentOutputs" ) ) {
     #
     #------------------------------------------------------------
 
+
+
 # First get the list of potential input dirs
-maxent.input.dirs.vec <- dir( PAR.path.to.maxent.input.data, pattern=PAR.maxent.env.layers.base.name )
+#maxent.input.dirs.vec <- dir( PAR.path.to.maxent.input.data, pattern=PAR.maxent.env.layers.base.name )
+maxent.input.dirs.vec <- dir( PAR.input.directory, pattern=PAR.maxent.env.layers.base.name )
 
 # now choose one of them to be the maxent input
 cur.maxent.env.layers.dir.name <- sample(maxent.input.dirs.vec, 1)
 
 
-cur.full.maxent.env.layers.dir.name <- paste( PAR.path.to.maxent.input.data, '/',
+#cur.full.maxent.env.layers.dir.name <- paste( PAR.path.to.maxent.input.data, '/',
+#                                        cur.maxent.env.layers.dir.name, sep = '' )
+
+cur.full.maxent.env.layers.dir.name <- paste( PAR.input.directory, '/',
                                         cur.maxent.env.layers.dir.name, sep = '' )
 
 cat( '\n cur.maxent.env.layers.dir.name =', cur.full.maxent.env.layers.dir.name )
 
-#cat('\n');browser()
+#cat('\n')
 
 
 longMaxentCmd = paste( 'java -mx512m -jar ', maxent.full.path.name,
                        ' outputdirectory=MaxentOutputs',
-                       ' samplesfile=../MaxentSamples/spp.sampledPres.combined.csv',
+                       #' samplesfile=../MaxentSamples/spp.sampledPres.combined.csv',
+                       ' samplesfile=',PAR.input.directory, '/spp.sampledPres.combined.csv',
                        ' environmentallayers=', cur.full.maxent.env.layers.dir.name,
                        ' autorun  replicates=3  replicatetype=bootstrap  randomseed=true',
                        ' redoifexists  nowarnings  novisible', sep = '')
@@ -75,10 +83,10 @@ longMaxentCmd = paste( 'java -mx512m -jar ', maxent.full.path.name,
 shortMaxentCmd = paste( 'java -mx512m -jar ',
                         maxent.full.path.name,
                         ' outputdirectory=MaxentOutputs',
-                        ' samplesfile=../MaxentSamples/spp.sampledPres.combined.csv',
+                        #' samplesfile=../MaxentSamples/spp.sampledPres.combined.csv',
+                        ' samplesfile=',PAR.input.directory,'/MaxentSamples/spp.sampledPres.combined.csv',  
                         ' environmentallayers=', cur.full.maxent.env.layers.dir.name,
                         ' autorun  redoifexists', sep = '' )
-
 #maxentCmd = longMaxentCmd
 maxentCmd = shortMaxentCmd
 
