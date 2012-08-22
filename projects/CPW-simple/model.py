@@ -1,12 +1,9 @@
 import csv
-import decimal
 import glob
 import os
 import sys
 
 import basemodel
-
-import java.math.BigDecimal
 
 # Names of the fields. These short versions are used because otherwise the code
 # becomes unwieldy. They also map to the column names in the spreadsheet upon
@@ -52,12 +49,7 @@ class Model(basemodel.BaseModel):
         # get parameters qualified by input and output file paths
         qualifiedparams = runparams.getQualifiedParams(self.inputpath, self.outputpath)
 
-        # Convert all BigDecimal values into decimals, because otherwise 
-        # multiplication fails when run in jython (because
-        # decimals get passed as java.math.BigDecimal, which can't be used with '*')
-        # TODO(michaell): Do this in modelrunner.py so that it works for other projects.
-        variables = dict((k, decimal.Decimal(str(v)) if type(v) is java.math.BigDecimal else v) for k, v in 
-                         dict(runparams.getVariables()).iteritems())
+        variables = self.get_decimal_params(runparams)
 
         constants = self.createconstants(variables)
         modelstates = []
