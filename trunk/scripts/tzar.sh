@@ -10,7 +10,7 @@ if [ ! -d  $TZAR_DIR ]; then
 fi
 
 # run tzar as rdv role user
-java -jar /home/ubuntu/bin/rdv.jar pollandrun --runnerclass JythonRunner --svnurl=https://rdv-framework.googlecode.com/svn/trunk/ &
+java -jar /home/ubuntu/bin/tzar.jar pollandrun --runnerclass JythonRunner --svnurl=https://rdv-framework.googlecode.com/svn/trunk/ &
 
 # write the process id of the running process to a file
 echo $! > $TZAR_DIR/tzar.pid
