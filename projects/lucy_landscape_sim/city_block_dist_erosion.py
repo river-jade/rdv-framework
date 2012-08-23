@@ -17,7 +17,7 @@ def CityBlock(image_arr):
         binary_arr[ L[i][1] ][ L[i][2] ] = 255
 
 #Initializing distance array  
-  distance_arr=zeros((x_len,y_len), dtype= "int")
+  distance_arr=numpy.zeros((x_len,y_len), dtype= "int")
   for i in range(0, x_len):
     for j in range(0, y_len):
       if binary_arr[i][j]==0:
