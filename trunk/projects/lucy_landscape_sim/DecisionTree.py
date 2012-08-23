@@ -3,7 +3,11 @@ import numpy
 import Slope_aspect
 import city_block_dist
 import time
+ 
 import rpy
+from rpy_options import set_options
+set_options(RHOME='C:/R/R-2.14.2/')
+from rpy import *
 import pickle
 
 def DecisionTree():
