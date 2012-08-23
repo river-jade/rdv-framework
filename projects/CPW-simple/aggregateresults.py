@@ -12,7 +12,7 @@ def parse_flags(parser, flags):
     """Configures the command-line flag parser.
     """
     parser.add_option("--jar-path", action="store", dest="jarpath", 
-                      default="rdv.jar", help="Path to jar file")
+                      default="tzar.jar", help="Path to jar file")
     parser.add_option("--nocopy", action="store_false", dest="copy", 
                       help="If set, don't copy files (to save time if they've "
                       "already been copied)", default=True)

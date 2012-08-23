@@ -12,7 +12,7 @@ outputpath=$2
 
 # Takes the 9th field of the printruns output for the given runset. The 9th 
 # field is the output_path.
-for i in $(java -jar rdv.jar printruns --dburl "$DB_URL" --runset="$runset" --notruncate | \
+for i in $(java -jar tzar.jar printruns --dburl "$DB_URL" --runset="$runset" --notruncate | \
     tail -n +3 | awk -F \| '{print $9}'); do 
     echo "Looking for files in $i"
     for j in $i/*.dbms; do 
