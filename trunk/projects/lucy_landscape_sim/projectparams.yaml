@@ -1,0 +1,34 @@
+project_name: Example Project
+base_params: 
+    variables: 
+      max_level: 9
+      sigma: 1
+      seed: 0
+      H: 0.7
+      normalise: True
+      lowerBound: 0
+      upperBound: 255
+      H1: 0.7
+      H2: 0.65
+      H3: 0.40
+      H1wt: 0.7
+      H2wt: 0.2
+      H3wt: 0.1
+      elev_min: 0
+      elev_max: 1309
+    
+    input_files: 
+    output_files: 
+      ssdem_output: ss_dem
+    
+
+scenarios:
+    - name: Example scenario
+      parameters: 
+        variables: 
+
+    - name: Example scenario 2
+      parameters: 
+        variables: 
+          H: 0.8
+
