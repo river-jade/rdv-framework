@@ -31,7 +31,8 @@ base_params:
 
     # constants
     Prop.that.degrade: 0.005
-    Pre1750.amount.of.CPW: 113439
+    #Pre1750.amount.of.CPW: 113439
+    Pre1750.amount.of.CPW: 125449
 
     OutsideGC.Multiplier: 2
     OutsideGC.Prob.offset.required: 0.5
@@ -64,6 +65,7 @@ scenarios:
     parameters :
       variables :
         Strategic.Assess.Offsets.Outside.GC: 205
+
 
   # - name : S4 SEPP 2_to_1
   #   parameters :
