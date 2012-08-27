@@ -66,6 +66,10 @@ zonation.spp.list.full.filename <- paste( PAR.current.run.directory, '/',
 
 if(file.exists(zonation.spp.list.full.filename)) file.remove( zonation.spp.list.full.filename ) 
 
+
+file.list <- dir( PAR.path.to.spp.hab.map.files )  # NEW
+
+
 for( cur.spp.id in spp.used.in.reserve.selection.vector ) {
 
   if( current.os == 'mingw32' ) {
@@ -74,10 +78,16 @@ for( cur.spp.id in spp.used.in.reserve.selection.vector ) {
     filename <- paste( PAR.spp.hab.map.filename.root, '.', cur.spp.id, '.asc', sep = '' );
   }
   
-  line.of.text <- paste( "1.0 1.0 1 1 1 ", filename, "\n", sep = "" );
+  # line.of.text <- paste( "1.0 1.0 1 1 1 ", filename, "\n", sep = "" )
+
+  path.to.file <- paste( source.dir, '/', PAR.path.to.spp.hab.map.files, sep='')  # NEW
+  line.of.text <- paste( "1.0 1.0 1 1 1 ", paste(path.to.file, file.list[cur.spp.id],sep=''), "\n", sep = '' ) # NEW
+
   cat( line.of.text, file = zonation.spp.list.full.filename, append = TRUE );
   
 }
+
+browser()
 
 
 # Now try and run zonation!
@@ -104,7 +114,7 @@ if( current.os == 'mingw32' ) {
   system.command.run.zonation <- paste( 'wine', full.path.to.zonation.exe, '-r',
                                                     PAR.zonation.parameter.filename,
                                                     PAR.zonation.spp.list.filename, PAR.zonation.output.filename,
-                                                    "0.0 0 1.0 1" )
+                                                    "0.0 0 1.0 0" ) # NEW - changed autoclose
 }
 
 
