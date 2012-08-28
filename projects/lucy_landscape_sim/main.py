@@ -28,18 +28,18 @@ da = Hydro_Network.RiverNetwork(0.7, 0.7, 0.65, 0.2, 0.4, 0.1,0, 1309)
 time2 = time.time()
 print("Time taken to generate DEM , River Network, Catchment Matrix is" , (time2 -time1),"seconds")
 pylab.imsave("Output/DEM",da)
-##
-##        DecisionTree.DecisionTree()
-##        time3 = time.time()
-##        self.logger.fine("Time taken to generate decision tree is " , (time3 - time2) ,"seconds")
-##
-##        time3 = time.time()
-##        vc = VegetationClassify.VegetationClassify()
-##        time4 = time.time()
-##        self.logger.fine("Time taken to assign landcover is " , (time4 - time3),"seconds")
-##
-##        pylab.imsave("Output/Landcover",vc)
-##
-##        Geometry.GeometricFeature(min_area = 40,max_area = 400,aspect_ratio = 1.8,agri_area_limit = 0.3)
-##        time5 = time.time()
-##        self.logger.fine("Time taken to generate Geometric Features is " ,(time5 - time4) ,"seconds")
+
+DecisionTree.DecisionTree()
+time3 = time.time()
+print("Time taken to generate decision tree is " , (time3 - time2) ,"seconds")
+
+time3 = time.time()
+vc = VegetationClassify.VegetationClassify()
+time4 = time.time()
+print("Time taken to assign landcover is " , (time4 - time3),"seconds")
+
+pylab.imsave("Output/Landcover",vc)
+
+Geometry.GeometricFeature(min_area = 40,max_area = 400,aspect_ratio = 1.8,agri_area_limit = 0.3)
+time5 = time.time()
+self.logger.fine("Time taken to generate Geometric Features is " ,(time5 - time4) ,"seconds")

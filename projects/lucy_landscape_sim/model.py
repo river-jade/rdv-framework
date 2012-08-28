@@ -1,12 +1,12 @@
 import glob
 import os
-import SpectralSynthesisFM2D
-import Hydro_Network
-import DecisionTree
-import VegetationClassify 
-import Geometry
+#import SpectralSynthesisFM2D
+#import Hydro_Network
+#import DecisionTree
+#import VegetationClassify 
+#import Geometry
 import time
-import pylab
+#import pylab
 
 import basemodel
 
@@ -25,12 +25,17 @@ class Model(basemodel.BaseModel):
 
         time0 = time.time()
         self.logger.fine("Running Spectral Synthesis code")
-        sda = SpectralSynthesisFM2D.SpectralSynthesisFM2D(variables['max_level'],variables['sigma'],variables['seed'], variables['H'], variables['normalise'], variables['lowerBound'], variables['upperBound'])
+##      sda = SpectralSynthesisFM2D.SpectralSynthesisFM2D(variables['max_level'],variables['sigma'],variables['seed'], variables['H'], variables['normalise'], variables['lowerBound'], variables['upperBound'])
         
-        pylab.imsave(qualifiedparams['ssdem_output'],sda)
+##      pylab.imsave(qualifiedparams['ssdem_output'],sda)
 
-        time1 = time.time()
-        self.logger.fine("Time taken to generate DEM , with spectral synthesis is" , (time1 -time0),"seconds")
+        f = open(qualifiedparams['ssdem_output'], "w")
+        f.write("bla")
+        f.close()
+        
+
+        #time1 = time.time()
+        #self.logger.fine("Time taken to generate DEM , with spectral synthesis is" , (time1 -time0),"seconds")
 
 ##        self.logger.fine("Running Digital Elevation Model and River Network module")
 ##        da = Hydro_Network.RiverNetwork(variables['H1'],variables['H1wt'],variables['H2'],variables['H2wt'],variables['H3'],variables['H3wt'],variables['elev_min'], variables['elev_max'])
