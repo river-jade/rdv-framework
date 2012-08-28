@@ -10,7 +10,8 @@ base_params:
         PAR.path.to.zonation: ../lib/zonation
         PAR.zonation.parameter.filename: Z_parameter_settings.dat
         PAR.zonation.spp.list.filename: zonation_spp_list.dat
-        PAR.zonation.exe.filename: zig2.exe
+        #PAR.zonation.exe.filename: zig2.exe
+        PAR.zonation.exe.filename: zig3.exe
         PAR.zonation.output.filename: zonation_output
 
     input_files:
