@@ -24,4 +24,4 @@ class Model(basemodel.BaseModel):
 
         # run Zonation
         self.logger.fine("\n--> Running zonation")
-        self.run_r_code( "run.zonation.R", runparams )
+        self.run_r_code( "run.zonation.guppy.R", runparams )

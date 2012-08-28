@@ -14,14 +14,7 @@ class Model(basemodel.BaseModel):
         #   self.logger.fine("Now Doing repetitions, PAR.variable.to.test.repetitions=%s" % \
         #         variables['PAR.variable.to.test.repetitions'])
 
-        # test R code
-        #self.run_r_code( "example.R", runparams )
-
-        # run Maxent
-        #self.logger.fine("\n--> Running maxent")
-        #self.run_r_code( "run.maxent.R", runparams )
-
 
         # run Zonation
         self.logger.fine("\n--> Running zonation")
-        self.run_r_code( "run.zonation.R", runparams )
+        self.run_r_code( "run.zonation.scp-collab.R", runparams )
