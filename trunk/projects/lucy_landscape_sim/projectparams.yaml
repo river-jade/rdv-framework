@@ -1,4 +1,4 @@
-project_name: Example Project
+project_name: lucy_landscape_sim
 base_params: 
     variables: 
       max_level: 9
