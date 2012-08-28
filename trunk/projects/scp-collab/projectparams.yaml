@@ -4,17 +4,7 @@ base_params:
         PAR.num.spp.in.reserve.selection: 790
 
 
-        #PAR.spp.hab.map.filename.root: ../spp
-        PAR.spp.hab.map.filename.root: "../projects/scp-collab/input_data/"
         PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
-
-        #PAR.spp.hab.map.filename.root: MaxentOutputs/spp
-        #PAR.spp.hab.map.filename.root.win: MaxentOutputs\\spp
-
-        # Maxent
-        #PAR.path.to.maxent:  "../lib/maxent"
-        #PAR.path.to.maxent.input.data:  ".."
-        #PAR.maxent.env.layers.base.name:  "MaxentEnvLayers"
 
         # Zonation
         PAR.path.to.zonation: ../lib/zonation
@@ -22,8 +12,6 @@ base_params:
         PAR.zonation.spp.list.filename: zonation_spp_list.dat
         PAR.zonation.exe.filename: zig2.exe
         PAR.zonation.output.filename: zonation_output
-
-        PAR.variable.to.test.repetitions: -99
 
     input_files:
         PAR.input.directory: ""
