@@ -21,7 +21,7 @@ def CityBlock(image_arr):
   binary_image=Image.fromarray(binary_arr)
 
  # Initialize distance array  
-  distance_arr=zeros((x_len,y_len), dtype= "int")
+  distance_arr=numpy.zeros((x_len,y_len), dtype= "int")
   for i in range(0, x_len):
     for j in range(0, y_len):
       # Convert the gray-scale image into binary array
