@@ -19,4 +19,10 @@ class Model(basemodel.BaseModel):
         # this is useful if you want to use arithmetic operations within python.
         variables = self.get_decimal_params(runparams)
 
-        self.run_r_code("example.R", runparams)
+        # self.run_r_code("example.R", runparams)
+
+        # Construct a command string for Landserf
+        # input file = qualifiedparams['input_file']
+        # output file = qualifiedparams['output_csv']
+        # window size = variables['window_size']
+        # landserf path = variables['landserf_path']
