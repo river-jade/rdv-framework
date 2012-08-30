@@ -1,0 +1,14 @@
+project_name: Lucy_Morph
+base_params: 
+    variables: 
+        landserf_path: ../lib/landserf
+        window_size: 5
+    
+    input_files: 
+        input_path: ""
+        input_file: "input_data/new_elev.asc"
+    output_files: 
+        output_dir: ""
+        output_csv: test_output_file.csv
+    
+
