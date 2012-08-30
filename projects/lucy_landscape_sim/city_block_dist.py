@@ -9,7 +9,7 @@ def CityBlock(River_arr):
   y_len=River_arr.shape[1];
   
   #Initialize distance array  
-  distance_arr = zeros((x_len,y_len), dtype= "int")
+  distance_arr = numpy.zeros((x_len,y_len), dtype= "int")
   infinity = x_len + y_len+1
   for i in range(0, x_len):
     for j in range(0, y_len):
