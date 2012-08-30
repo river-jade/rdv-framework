@@ -42,4 +42,4 @@ pylab.imsave("Output/Landcover",vc)
 
 Geometry.GeometricFeature(min_area = 40,max_area = 400,aspect_ratio = 1.8,agri_area_limit = 0.3)
 time5 = time.time()
-self.logger.fine("Time taken to generate Geometric Features is " ,(time5 - time4) ,"seconds")
+print("Time taken to generate Geometric Features is " ,(time5 - time4) ,"seconds")
