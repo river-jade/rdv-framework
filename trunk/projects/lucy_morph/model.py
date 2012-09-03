@@ -64,7 +64,7 @@ class Model(basemodel.BaseModel):
 
         # Now export the final DEM to an Arc ASCII format
         LB_ArrayUtils.writeArrayToFile(qualifiedparams['ascii_dem'], erodedDEMs[i], "Float", "E", 1)
-        # self.logger.info ("writing file to %s" % variables['ascii_dem'])
+        print ("writing file to %s" % qualifiedparams['ascii_dem'])
 
         # Construct a command string for Landserf
         # input file = the DEM that was just written out 
@@ -72,10 +72,11 @@ class Model(basemodel.BaseModel):
         # window size = variables['window_size']
 
         java_comm = "java  -classpath .%s../../../lib/landserf/landserf230.jar%s../../../lib/landserf/utils230.jar RandomSurface" % (os.pathsep, os.pathsep)
+        
         # NB - for Windows a semi-colon is needed, rather than a colon :-(
 
         # Append space and input file name TODO
-        java_command = "%s ../%s ../%s %d ../%s" % (java_comm, qualifiedparams['ascii_dem'], qualifiedparams['output_features'], variables['window_size'], qualifiedparams['landserf_output']) 
+        java_command = "%s \"%s\" \"%s\" %d \"%s\"" % (java_comm, qualifiedparams['ascii_dem'], qualifiedparams['output_features'], variables['window_size'], qualifiedparams['landserf_output']) 
         # java_command += qualifiedparams['ascii_dem']
         #java_command += qualifiedparams['output_features']
         # java_command += variables['window_size']
