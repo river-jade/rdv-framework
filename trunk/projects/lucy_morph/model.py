@@ -53,10 +53,11 @@ class Model(basemodel.BaseModel):
             erodedDEMs.append(newDEM)
         
         # Now we should have the whole sequence of erosions - let's save them and see how it looks
-        pylab.imsave("Output/DEM_before_erosion",erodedDEMs[0])
-        for i in range(1,erosion_runs):
-            erodedDEMname = "Output/DEM_input%d" % i
-            pylab.imsave(erodedDEMname,erodedDEMs[i])
+        DEM_filename = "%s/DEM_before_erosion" % (qualifiedparams['output_dir'])
+        pylab.imsave(DEM_filename, erodedDEMs[0])
+##        for i in range(1,erosion_runs):
+##            erodedDEMname = "Output/DEM_input%d" % i
+##            pylab.imsave(erodedDEMname,erodedDEMs[i])
 
         # Now export the final DEM to an Arc ASCII format
         LB_ArrayUtils.writeArrayToFile(qualifiedparams['ascii_dem'], erodedDEMs[i], "Float", "E", 1)
