@@ -25,30 +25,22 @@ public class RandomSurface
         try// TODO replace and use the incoming args
         {
           
-            File iF = new File(args[0]);
-            System.out.println("Trying to read file " + iF.getAbsolutePath());
-
-            if (!iF.exists())
-            {
-                System.out.println("File does not exist");
-            }
-            else
-            {
-                System.out.println("File exists");
-            }
-            RasterMap readRaster = TextRasterIO.readRaster(iF.getAbsolutePath(), jwo.landserf.process.io.FileHandler.ARC_TEXT_R, sgf, null);
+//            File iF = new File(args[0]);
+            System.out.println("Trying to read file " + args[0]);
+//
+//            if (!iF.exists())
+//            {
+//                System.out.println("File does not exist");
+//            }
+//            else
+//            {
+//                System.out.println("File exists");
+//            }
+            RasterMap readRaster = TextRasterIO.readRaster(args[0], jwo.landserf.process.io.FileHandler.ARC_TEXT_R, sgf, null);
             readRaster.setWSize(Integer.parseInt(args[2]));
             
             System.out.println("About to calculate surface parameters with a window size of " + readRaster.getWSize());
             
-//            // Calculate surface parameters
-//            SurfParam spChannel = new SurfParam(sgf, jwo.landserf.process.SurfParam.CHANNEL);
-//            spChannel.findParam();
-//            RasterMap channelRaster = spChannel.getSurfParam();
-//            
-//            LandSerfIO.write(channelRaster, "channel_" + args[1]);
-            
-            // System.out.println("Frame contains " + sgf.getRasterMaps().size() + " raster maps");
             sgf.addRaster(readRaster);
             
             System.out.println("Original map is " + readRaster.getNumCols() + " by " + readRaster.getNumRows());
@@ -62,10 +54,8 @@ public class RandomSurface
             RasterMap peakRaster = spPeak.getSurfParam();
             System.out.println("Resulting map is " + peakRaster.getNumCols() + " by " + peakRaster.getNumRows());
             
-            File oF = new File(args[1]);
-            String outPath = oF.getParent() + "/peak_" + oF.getName();
-            System.out.println("Writing out to " + outPath);
-            LandSerfIO.write(peakRaster, outPath);
+            System.out.println("Writing out to " + args[1]);
+            LandSerfIO.write(peakRaster, args[1]);
             
             int[] results = peakRaster.getFrequencyDist(-10,10,1);
             
