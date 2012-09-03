@@ -71,7 +71,8 @@ class Model(basemodel.BaseModel):
         # output file = qualifiedparams['output_csv']
         # window size = variables['window_size']
 
-        java_comm = "java  -classpath .;../../../lib/landserf/landserf230.jar;../../../lib/landserf/utils230.jar RandomSurface"
+        java_comm = "java  -classpath .%s../../../lib/landserf/landserf230.jar%s../../../lib/landserf/utils230.jar RandomSurface" % (os.pathsep, os.pathsep)
+        # NB - for Windows a semi-colon is needed, rather than a colon :-(
 
         # Append space and input file name TODO
         java_command = "%s ../%s ../%s %d ../%s" % (java_comm, qualifiedparams['ascii_dem'], qualifiedparams['output_features'], variables['window_size'], qualifiedparams['landserf_output']) 
