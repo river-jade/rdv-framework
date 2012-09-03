@@ -6,10 +6,10 @@ import time
 import pylab
 import LB_ArrayUtils
 
-import basemodel
+# import basemodel
 
-class Model(basemodel.BaseModel):
-    def execute(self, runparams):
+##class Model(basemodel.BaseModel):
+##    def execute(self, runparams):
         # the logging levels are (in descending order): severe, warning, info, config, fine,
         # finer, finest
         # by default tzar will log all at info and above to the console, and all logging to a logfile.
@@ -24,8 +24,7 @@ class Model(basemodel.BaseModel):
         # this is useful if you want to use arithmetic operations within python.
         # variables = self.get_decimal_params(runparams)
 
-# Line below is for testing outside the framework
-# variables = dict(window_size=5, ascii_dem="Output/DEM.asc", output_features="Output/surfaceFeatures.srf", landserf_output="Output/landserf_results.txt", max_level=9, sigma=1, seed=0, normalise=True, H1=0.7, H2=0.65, H3=0.4, H1wt=0.7, H2wt=0.2, H3wt=0.1, elev_min=0, elev_max=1309, erosion_num=1, river_drop=5)
+variables = dict(window_size=5, ascii_dem="Output/DEM.asc", output_features="Output/surfaceFeatures.srf", landserf_output="Output/landserf_results.txt", max_level=9, sigma=1, seed=0, normalise=True, H1=0.7, H2=0.65, H3=0.4, H1wt=0.7, H2wt=0.2, H3wt=0.1, elev_min=0, elev_max=1309, erosion_num=1, river_drop=5)
 
         # self.run_r_code("example.R", runparams)
 
@@ -64,7 +63,7 @@ i = 0
 
 # Now export the final DEM to an Arc ASCII format
 LB_ArrayUtils.writeArrayToFile(variables['ascii_dem'], erodedDEMs[i], "Float", "E", 1)
-self.logger.info ("writing file to %s" % variables['ascii_dem'])
+print "writing file to %s" % variables['ascii_dem']
 
 # Construct a command string for Landserf
 # input file = the DEM that was just written out 
@@ -81,6 +80,7 @@ java_command = "%s ../%s ../%s %d ../%s" % (java_comm, variables['ascii_dem'], v
 # java_command += variables['window_size']
 #java_command += qualifiedparams['landserf_output']
 
+print java_command
 # cd to java directory TODO
 savedPath = os.getcwd()
 os.chdir('java')
