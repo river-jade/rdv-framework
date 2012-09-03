@@ -49,7 +49,7 @@ class Model(basemodel.BaseModel):
 
         for i in range(1,(erosion_runs+1)):
         
-            newDEM = Hydro_Network.RiverNetwork(erodedDEMs[i-1], generated_DEMs, i, variables['river_drop'])
+            newDEM = Hydro_Network.RiverNetwork(erodedDEMs[i-1], generated_DEMs, i, variables['river_drop'], qualifiedparams['output_dir'])
             erodedDEMs.append(newDEM)
         
         # Now we should have the whole sequence of erosions - let's save them and see how it looks
