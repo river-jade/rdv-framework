@@ -48,7 +48,7 @@ public class RandomSurface
                 System.out.println("Writing out to " + args[1]);
                 LandSerfIO.write(sfRaster, args[1]);
                 
-                int[] results = sfRaster.getFrequencyDist(-10,10,1);
+                int[] results = sfRaster.getFrequencyDist(1,6,1);
                 int sfPixelNo = sfRaster.getNumCols() * sfRaster.getNumRows();
                 RasterStats rs = new RasterStats(readRaster);
             
@@ -57,20 +57,20 @@ public class RandomSurface
                 { 
                     File file = new File(args[3]);
                     BufferedWriter output = new BufferedWriter(new FileWriter(file));
-//                    output.write("Pits " + ((float)results[0]/(float)sfPixelNo)*100 + "\n");
-//                    output.write("Channels " + ((float)results[1]/(float)sfPixelNo)*100 + "\n");
-//                    output.write("Passes " + ((float)results[2]/(float)sfPixelNo)*100 + "\n");
-//                    output.write("Ridges " + ((float)results[3]/(float)sfPixelNo)*100 + "\n");
-//                    output.write("Peaks " + ((float)results[4]/(float)sfPixelNo)*100 + "\n");
-//                    output.write("Planes " + ((float)results[5]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Pits " + ((float)results[0]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Channels " + ((float)results[1]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Passes " + ((float)results[2]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Ridges " + ((float)results[3]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Peaks " + ((float)results[4]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Planes " + ((float)results[5]/(float)sfPixelNo)*100 + "\n");
 //                    output.write(rs.toString());
-                    output.write("Pits " + results[0] + "\n");
-                    output.write("Channels " + results[1] + "\n");
-                    output.write("Passes " + results[2] + "\n");
-                    output.write("Ridges " + results[3] + "\n");
-                    output.write("Peaks " + results[4] + "\n");
-                    output.write("Planes " + results[5] + "\n");
-                    output.write("Total pixels " + sfPixelNo + "\n");
+//                    output.write("Pits " + results[0] + "\n");
+//                    output.write("Channels " + results[1] + "\n");
+//                    output.write("Passes " + results[2] + "\n");
+//                    output.write("Ridges " + results[3] + "\n");
+//                    output.write("Peaks " + results[4] + "\n");
+//                    output.write("Planes " + results[5] + "\n");
+//                    output.write("Total pixels " + sfPixelNo + "\n");
                     output.write(rs.toString());
                     output.close();
 
