@@ -17,7 +17,7 @@ base_params:
         H3wt: 0.1
         elev_min: 0
         elev_max: 1309
-        erosion_num: 1
+        erosion_num: 5
         river_drop: 5
     
     input_files: 
