@@ -25,8 +25,11 @@ base_params:
         input_file: "input_data/new_elev.asc"
     output_files: 
         output_dir: ""
-        ascii_dem: "Output/DEM.asc"
+        ascii_dem: "DEM.asc"
         output_features: "surfaceFeatures.srf"
         landserf_output: "landserf_results.txt"
     
-
+scenarios:
+    - name: Example scenario
+      parameters: 
+        variables: 
