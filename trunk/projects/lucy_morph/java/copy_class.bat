@@ -1,0 +1,1 @@
+copy Morph\build\*.class .
