@@ -30,6 +30,20 @@ base_params:
         landserf_output: "landserf_results.txt"
     
 scenarios:
-    - name: Example scenario
+    - name: S1
       parameters: 
         variables: 
+
+    - name: S2
+      parameters: 
+        variables: 
+            H1: 0.9
+            H2: 0.55
+            H3: 0.20
+
+    - name: S3
+      parameters: 
+        variables: 
+            H1: 0.9
+            H2: 0.35
+            H3: 0.20
