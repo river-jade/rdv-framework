@@ -7,6 +7,7 @@ import jwo.landserf.process.SurfaceFeatureThread;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import jwo.landserf.process.RasterStats;
 
 public class RandomSurface
 {
@@ -48,18 +49,21 @@ public class RandomSurface
                 LandSerfIO.write(sfRaster, args[1]);
                 
                 int[] results = sfRaster.getFrequencyDist(-10,10,1);
+                int sfPixelNo = sfRaster.getNumCols() * sfRaster.getNumRows();
+                RasterStats rs = new RasterStats(readRaster);
             
                 // Write out the results
                 try 
                 { 
                     File file = new File(args[3]);
                     BufferedWriter output = new BufferedWriter(new FileWriter(file));
-                    int counter = 0;
-                    for (int i=-10; i<11; i++)
-                    {
-                        output.write(i + " " + results[counter]);
-                        counter++;
-                    }
+                    output.write("Pits " + ((float)results[0]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Channels " + ((float)results[1]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Passes " + ((float)results[2]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Ridges " + ((float)results[3]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Peaks " + ((float)results[4]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Planes " + ((float)results[5]/(float)sfPixelNo)*100 + "\n");
+                    output.write(rs.toString());
                     output.close();
 
                 }
