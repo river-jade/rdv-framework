@@ -44,7 +44,7 @@ def GenerateDEM(H1, H1wt, H2, H2wt, H3, H3wt, elev_min, elev_max):
   
   return returned_DEMs  
 
-def RiverNetwork(originalDEM, inputDEMs, counter, river_drop):
+def RiverNetwork(originalDEM, inputDEMs, counter, river_drop, output_dir):
 
   (x_len,y_len) = originalDEM.shape
   (max_x, max_y) = ndimage.maximum_position(originalDEM)
@@ -223,19 +223,19 @@ def RiverNetwork(originalDEM, inputDEMs, counter, river_drop):
   numpy.save("River.npy",River_arr) 
   numpy.save("DEM.npy",originalDEM)
 
-  River_file = "Output/River%d" % counter
+  River_file = "%s/River%d" % (output_dir, counter)
   pylab.imsave(River_file, River_arr)
 
-  Catchment_file = "Output/Catchment%d" % counter
+  Catchment_file = "%s/Catchment%d" % (output_dir, counter)
   pylab.imsave(Catchment_file,Found_arr)
 
-  Catchment_bound_file = "Output/CatchmentBounds%d" % counter
+  Catchment_bound_file = "%s/CatchmentBounds%d" % (output_dir, counter)
   pylab.imsave(Catchment_bound_file,Catchment_boundary_arr)
 
-  DEM_file = "Output/Combined_eroded_DEM%d" % counter
+  DEM_file = "%s/Combined_eroded_DEM%d" % (output_dir, counter)
   pylab.imsave(DEM_file, originalDEM)
 
-  RiverDist_file = "Output/RiverDist%d" % counter
+  RiverDist_file = "%s/RiverDist%d" % (output_dir, counter)
   pylab.imsave(RiverDist_file,Distance_arr)
 
   return originalDEM
