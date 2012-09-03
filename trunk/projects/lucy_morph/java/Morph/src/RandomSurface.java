@@ -21,7 +21,7 @@ public class RandomSurface
         
         SimpleGISFrame sgf = new SimpleGISFrame();
         
-        args = new String[] {"../Output/DEM.asc", "../Output/surfaceFeatures.srf","5", "../Output/landserf_results.txt"};
+        //args = new String[] {"../Output/DEM.asc", "../Output/surfaceFeatures.srf","5", "../Output/landserf_results.txt"};
         try// TODO replace and use the incoming args
         {
           
