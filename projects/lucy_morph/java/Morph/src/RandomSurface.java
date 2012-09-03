@@ -21,21 +21,11 @@ public class RandomSurface
         
         SimpleGISFrame sgf = new SimpleGISFrame();
         
-        //args = new String[] {"../Output/DEM.asc", "../Output/surfaceFeatures.srf","5", "../Output/landserf_results.txt"};
         try// TODO replace and use the incoming args
         {
           
-//            File iF = new File(args[0]);
             System.out.println("Trying to read file " + args[0]);
-//
-//            if (!iF.exists())
-//            {
-//                System.out.println("File does not exist");
-//            }
-//            else
-//            {
-//                System.out.println("File exists");
-//            }
+
             RasterMap readRaster = TextRasterIO.readRaster(args[0], jwo.landserf.process.io.FileHandler.ARC_TEXT_R, sgf, null);
             readRaster.setWSize(Integer.parseInt(args[2]));
             
@@ -45,58 +35,43 @@ public class RandomSurface
             
             System.out.println("Original map is " + readRaster.getNumCols() + " by " + readRaster.getNumRows());
             
-            // Calculate surface parameters
-            System.out.println("about to calculate peaks...");
-            SurfParam spPeak = new SurfParam(sgf, jwo.landserf.process.SurfParam.PEAK);
-            spPeak.findParam();
-            System.out.println("peaks calculated");
-            
-            RasterMap peakRaster = spPeak.getSurfParam();
-            System.out.println("Resulting map is " + peakRaster.getNumCols() + " by " + peakRaster.getNumRows());
-            
-            System.out.println("Writing out to " + args[1]);
-            LandSerfIO.write(peakRaster, args[1]);
-            
-            int[] results = peakRaster.getFrequencyDist(-10,10,1);
-            
-            // Write out the results
-            try 
-            { 
-                File file = new File(args[3]);
-                BufferedWriter output = new BufferedWriter(new FileWriter(file));
-                int counter = 0;
-                for (int i=-10; i<11; i++)
-                {
-                    output.write(i + " " + results[counter]);
-                    counter++;
-                }
-                output.close();
-   
-            }
-            catch (IOException e)
+            SurfaceFeatureThread sfThread = new SurfaceFeatureThread(sgf,2.2f);
+            sfThread.start();
+            try
             {
+                sfThread.join(); // Join thread (i.e. wait until it is complete).
                 
+                RasterMap sfRaster = sfThread.getSurfaceFetures();
+                System.out.println("Resulting map is " + sfRaster.getNumCols() + " by " + sfRaster.getNumRows());
+            
+                System.out.println("Writing out to " + args[1]);
+                LandSerfIO.write(sfRaster, args[1]);
+                
+                int[] results = sfRaster.getFrequencyDist(-10,10,1);
+            
+                // Write out the results
+                try 
+                { 
+                    File file = new File(args[3]);
+                    BufferedWriter output = new BufferedWriter(new FileWriter(file));
+                    int counter = 0;
+                    for (int i=-10; i<11; i++)
+                    {
+                        output.write(i + " " + results[counter]);
+                        counter++;
+                    }
+                    output.close();
+
+                }
+                catch (IOException e)
+                {
+
+                }
             }
-            
-            
-//            SurfaceFeatureThread sfThread = new SurfaceFeatureThread(sgf,2.2f);
-//            sfThread.start();
-//            try
-//            {
-//                sfThread.join(); // Join thread (i.e. wait until it is complete).
-//                
-//                RasterMap sfRaster = sfThread.getSurfaceFetures();
-//                System.out.println("Resulting map is " + sfRaster.getNumCols() + " by " + sfRaster.getNumRows());
-//            
-//                File oF = new File(args[1]);
-//                String outPath2 = oF.getParent() + "/sf_" + oF.getName();
-//                System.out.println("Writing out to " + outPath2);
-//                LandSerfIO.write(sfRaster, outPath2);
-//            }
-//            catch (InterruptedException e)
-//            {
-//                System.err.println("Error: Surface Feature generation thread interrupted.");
-//            }
+            catch (InterruptedException e)
+            {
+                System.err.println("Error: Surface Feature generation thread interrupted.");
+            }
         } 
         catch (Exception e)
         {

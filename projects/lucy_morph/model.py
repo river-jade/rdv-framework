@@ -32,14 +32,14 @@ class Model(basemodel.BaseModel):
 # Create two lists of up to 5 H-values and weights TODO
 
 # Create and add DEMs, using 3 H values and weights supplied TODO use these 4 lines, not the 2 below
-# generated_DEMs = Hydro_Network.GenerateDEM(variables['H1'],variables['H1wt'],variables['H2'],variables['H2wt'],variables['H3'],variables['H3wt'],variables['elev_min'], variables['elev_max'])
+        generated_DEMs = Hydro_Network.GenerateDEM(variables['H1'],variables['H1wt'],variables['H2'],variables['H2wt'],variables['H3'],variables['H3wt'],variables['elev_min'], variables['elev_max'])
 
-# pylab.imsave("Output/DEM_input1",generated_DEMs[1])
-# pylab.imsave("Output/DEM_input2",generated_DEMs[2])
-# pylab.imsave("Output/DEM_input3",generated_DEMs[3])
+        # pylab.imsave("Output/DEM_input1",generated_DEMs[1])
+        # pylab.imsave("Output/DEM_input2",generated_DEMs[2])
+        # pylab.imsave("Output/DEM_input3",generated_DEMs[3])
 
-        generated_DEMs =[]
-        generated_DEMs.append(SpectralSynthesisFM2D.SpectralSynthesisFM2D(variables['max_level'],variables['sigma'],variables['seed'], variables['H1'], variables['normalise'], variables['elev_min'], variables['elev_max']))
+        # generated_DEMs =[]
+        # generated_DEMs.append(SpectralSynthesisFM2D.SpectralSynthesisFM2D(variables['max_level'],variables['sigma'],variables['seed'], variables['H1'], variables['normalise'], variables['elev_min'], variables['elev_max']))
         # TODO remove the 2 lines above - this is just to speed up testing
 
         # Run the hydro erosion the specified number of times.
@@ -47,20 +47,16 @@ class Model(basemodel.BaseModel):
         erodedDEMs = []
         erodedDEMs.append(generated_DEMs[0])
 
-        # TODO replace the code below for full runs
-        ##for i in range(1,(erosion_runs+1)):
-        ##
-        ##    newDEM = Hydro_Network.RiverNetwork(erodedDEMs[i-1], generated_DEMs, i, variables['river_drop'])
-        ##    erodedDEMs.append(newDEM)
-        ##
-        ### Now we should have the whole sequence of erosions - let's save them and see how it looks
-        ##pylab.imsave("Output/DEM_before_erosion",erodedDEMs[0])
-        ##for i in range(1,erosion_runs):
-        ##    erodedDEMname = "Output/DEM_input%d" % i
-        ##    pylab.imsave(erodedDEMname,erodedDEMs[i])
-
-        i = 0
-        # TODO remove the line above for full runs
+        for i in range(1,(erosion_runs+1)):
+        
+            newDEM = Hydro_Network.RiverNetwork(erodedDEMs[i-1], generated_DEMs, i, variables['river_drop'])
+            erodedDEMs.append(newDEM)
+        
+        # Now we should have the whole sequence of erosions - let's save them and see how it looks
+        pylab.imsave("Output/DEM_before_erosion",erodedDEMs[0])
+        for i in range(1,erosion_runs):
+            erodedDEMname = "Output/DEM_input%d" % i
+            pylab.imsave(erodedDEMname,erodedDEMs[i])
 
         # Now export the final DEM to an Arc ASCII format
         LB_ArrayUtils.writeArrayToFile(qualifiedparams['ascii_dem'], erodedDEMs[i], "Float", "E", 1)
