@@ -58,14 +58,19 @@ public class RandomSurface
                 { 
                     File file = new File(args[3]);
                     BufferedWriter output = new BufferedWriter(new FileWriter(file));
-                    output.write("Pits " + ((float)results[0]/(float)sfPixelNo)*100 + "\n");
-                    output.write("Channels " + ((float)results[1]/(float)sfPixelNo)*100 + "\n");
-                    output.write("Passes " + ((float)results[2]/(float)sfPixelNo)*100 + "\n");
-                    output.write("Ridges " + ((float)results[3]/(float)sfPixelNo)*100 + "\n");
-                    output.write("Peaks " + ((float)results[4]/(float)sfPixelNo)*100 + "\n");
-                    output.write("Planes " + ((float)results[5]/(float)sfPixelNo)*100 + "\n");
+                    output.write("Pits " + Math.round(((float)results[0]/(float)sfPixelNo)*100) + "\n");
+                    output.write("Channels " + Math.round(((float)results[1]/(float)sfPixelNo)*100) + "\n");
+                    output.write("Passes " + Math.round(((float)results[2]/(float)sfPixelNo)*100) + "\n");
+                    output.write("Ridges " + Math.round(((float)results[3]/(float)sfPixelNo)*100) + "\n");
+                    output.write("Peaks " + Math.round(((float)results[4]/(float)sfPixelNo)*100) + "\n");
+                    output.write("Planes " + Math.round(((float)results[5]/(float)sfPixelNo)*100) + "\n");
 
-                    output.write(rs.toString());
+                    output.write("FractalDimension," + rs.getFractalD() + "\n");
+                    output.write("VariogramGradient," + rs.getVariogramGradient() + "\n");
+                    output.write("VariogramIntercept," + rs.getVariogramIntercept() + "\n");
+                    output.write("Moran," + rs.getMoran() + "\n");
+                    output.write("Kurtosis," + rs.getKurtosis() + "\n");
+                    output.write("Skew," + rs.getSkew() + "\n");
                     output.close();
 
                 }

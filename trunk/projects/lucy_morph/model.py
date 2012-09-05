@@ -70,7 +70,7 @@ class Model(basemodel.BaseModel):
         
         # NB - for Windows a semi-colon is needed, rather than a colon :-(
 
-        # Append space and input file name TODO
+        # Append space and input file name 
         java_command = "%s \"%s\" \"%s\" %d \"%s\"" % (java_comm, qualifiedparams['ascii_dem'], qualifiedparams['output_features'], variables['window_size'], qualifiedparams['landserf_output']) 
         # java_command += qualifiedparams['ascii_dem']
         #java_command += qualifiedparams['output_features']
@@ -78,7 +78,7 @@ class Model(basemodel.BaseModel):
         #java_command += qualifiedparams['landserf_output']
         print java_command
 
-        # cd to java directory TODO
+        # cd to java directory 
         savedPath = os.getcwd()
         newPath = "%s/projects/lucy_morph/java" % savedPath
         os.chdir(newPath)
@@ -87,3 +87,11 @@ class Model(basemodel.BaseModel):
         os.system(java_command)
 
         os.chdir(savedPath)
+
+        # add the current parameters to the output file (comma-separated)
+        output_file = open(qualifiedparams['landserf_output'], 'a')
+        output_file.write("H1,%s,\n") % variables['H1']
+        output_file.write("H1wt,%s,\n") % variables['H1wt']
+        output_file.write("Erosions,%s,\n") % erosion_runs
+        # TODO - size of window used for allocating flow direction
+        output_file.close()
