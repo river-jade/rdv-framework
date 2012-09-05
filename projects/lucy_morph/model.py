@@ -38,30 +38,25 @@ class Model(basemodel.BaseModel):
         # pylab.imsave("Output/DEM_input2",generated_DEMs[2])
         # pylab.imsave("Output/DEM_input3",generated_DEMs[3])
 
-        # generated_DEMs =[]
-        # generated_DEMs.append(SpectralSynthesisFM2D.SpectralSynthesisFM2D(variables['max_level'],variables['sigma'],variables['seed'], variables['H1'], variables['normalise'], variables['elev_min'], variables['elev_max']))
-        # TODO remove the 2 lines above - this is just to speed up testing
+        # Run the hydro erosion the specified number of times.
+        erosion_runs = variables['erosion_num'] # TODO not really necessary
+        erodedDEMs = []
+        erodedDEMs.append(generated_DEMs[0])
 
-##        # Run the hydro erosion the specified number of times.
-##        erosion_runs = variables['erosion_num'] # TODO not really necessary
-##        erodedDEMs = []
-##        erodedDEMs.append(generated_DEMs[0])
-##
-##        for i in range(1,(erosion_runs+1)):
-##        
-##            newDEM = Hydro_Network.RiverNetwork(erodedDEMs[i-1], generated_DEMs, i, variables['river_drop'], qualifiedparams['output_dir'])
-##            erodedDEMs.append(newDEM)
-##        
-##        # Now we should have the whole sequence of erosions - let's save them and see how it looks
-##        DEM_filename = "%s/DEM_before_erosion" % (qualifiedparams['output_dir'])
-##        pylab.imsave(DEM_filename, erodedDEMs[0])
-####        for i in range(1,erosion_runs):
-####            erodedDEMname = "Output/DEM_input%d" % i
-####            pylab.imsave(erodedDEMname,erodedDEMs[i])
+        for i in range(1,(erosion_runs+1)):
+        
+            newDEM = Hydro_Network.RiverNetwork(erodedDEMs[i-1], generated_DEMs, i, variables['river_drop'], qualifiedparams['output_dir'])
+            erodedDEMs.append(newDEM)
+        
+        # Now we should have the whole sequence of erosions - let's save them and see how it looks
+        DEM_filename = "%s/DEM_before_erosion" % (qualifiedparams['output_dir'])
+        pylab.imsave(DEM_filename, erodedDEMs[0])
+##        for i in range(1,erosion_runs):
+##            erodedDEMname = "Output/DEM_input%d" % i
+##            pylab.imsave(erodedDEMname,erodedDEMs[i])
 
         # Now export the final DEM to an Arc ASCII format
-        LB_ArrayUtils.writeArrayToFile(qualifiedparams['ascii_dem'], generated_DEMs[0], "Float", "E", 1)
-        #LB_ArrayUtils.writeArrayToFile(qualifiedparams['ascii_dem'], erodedDEMs[i], "Float", "E", 1)
+        LB_ArrayUtils.writeArrayToFile(qualifiedparams['ascii_dem'], erodedDEMs[i], "Float", "E", 1)
 
         print ("writing file to %s" % qualifiedparams['ascii_dem'])
 
@@ -70,7 +65,7 @@ class Model(basemodel.BaseModel):
         # output file = qualifiedparams['output_csv']
         # window size = variables['window_size']
 
-        java_comm = "java -Djava.awt.headless=true -classpath .%s../../../lib/landserf/landserf230.jar%s../../../lib/landserf/utils230.jar RandomSurface" % (os.pathsep, os.pathsep)
+        java_comm = "java -classpath .%s../../../lib/landserf/landserf230.jar%s../../../lib/landserf/utils230.jar RandomSurface" % (os.pathsep, os.pathsep)
         print "Java command is:"
         
         # NB - for Windows a semi-colon is needed, rather than a colon :-(
