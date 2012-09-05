@@ -90,8 +90,8 @@ class Model(basemodel.BaseModel):
 
         # add the current parameters to the output file (comma-separated)
         output_file = open(qualifiedparams['landserf_output'], 'a')
-        output_file.write("H1,%1f,\n") % variables['H1']
-        output_file.write("H1wt,%1f,\n") % variables['H1wt']
-        output_file.write("Erosions,%d,\n") % erosion_runs
+        output_file.write("H1,%1f,\n" % variables['H1'])
+        output_file.write("H1wt,%1f,\n" % variables['H1wt'])
+        output_file.write("Erosions,%d,\n") % erosion_runs)
         # TODO - size of window used for allocating flow direction
         output_file.close()
