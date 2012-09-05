@@ -70,7 +70,7 @@ class Model(basemodel.BaseModel):
         # output file = qualifiedparams['output_csv']
         # window size = variables['window_size']
 
-        java_comm = "java -Djava.awt.headless=false -classpath .%s../../../lib/landserf/landserf230.jar%s../../../lib/landserf/utils230.jar RandomSurface" % (os.pathsep, os.pathsep)
+        java_comm = "java -Djava.awt.headless=true -classpath .%s../../../lib/landserf/landserf230.jar%s../../../lib/landserf/utils230.jar RandomSurface" % (os.pathsep, os.pathsep)
         print "Java command is:"
         
         # NB - for Windows a semi-colon is needed, rather than a colon :-(
