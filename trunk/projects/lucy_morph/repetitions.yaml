@@ -3,20 +3,43 @@
 
 repetitions:
   - variables:
-      test.variable.2: 777
-
-  - variables:
-      test.variable.2: 888
+      
 
 generators:
-  - key: test.variable.3
+  - key: H1
     generator_type: linear_step
-    start: 0
-    step_size: 1
-    count: 10
+    start: 0.55
+    step_size: 0.2
+    count: 2
 
-  - key: test.variable.4
+  - key: H1wt
+    generator_type: linear_step
+    start: 0.55
+    step_size: 0.2
+    count: 2
+
+  - key: erosion_num
+    generator_type: linear_step
+    start: 8
+    step_size: 8
+    count: 2
+
+  - key: seed1
     generator_type: normal_distribution
-    mean: 10
-    std_dev: 1
-    count: 10
+    mean: 50
+    std_dev: 5
+    count: 1
+
+
+  - key: seed2
+    generator_type: normal_distribution
+    mean: 50
+    std_dev: 5
+    count: 1
+
+
+  - key: seed3
+    generator_type: normal_distribution
+    mean: 50
+    std_dev: 5
+    count: 3
