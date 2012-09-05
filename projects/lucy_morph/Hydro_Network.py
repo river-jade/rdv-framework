@@ -11,21 +11,21 @@ def pixel_exist(p,q,x_len,y_len):
   """Check weather the pixel lie within the boundary of the grid"""
   return ( (p >= 1) and (q >= 1) and ( p <= x_len - 2) and (q <= x_len-2) )
 
-def GenerateDEM(H1, H1wt, H2, H2wt, H3, H3wt, elev_min, elev_max):
+def GenerateDEM(H1, H1wt, H2, H2wt, H3, H3wt, elev_min, elev_max, seed_in1, seed_in2, seed_in3):
 
   print "Generating Digital Elevation Maps using FM2D algorithm"
 
   #Generate first DEM with gradient = 1 (i.e. TRUE) and high H value 
   DEM_arr1 = MapGeneration_pure_python.midPointFm2d(max_level = 9, sigma = 1, H = H1, addition = True,\
-                        wrap = False, gradient = 1,seed = 0, normalise=True,lbound=elev_min, ubound=elev_max)
+                        wrap = False, gradient = 1,seed = seed_in1, normalise=True,lbound=elev_min, ubound=elev_max)
 
   #Generate second DEM with gradient = 0 (i.e. FLASE) and medium H value 
   DEM_arr2 = MapGeneration_pure_python.midPointFm2d(max_level = 9, sigma = 1, H = H2, addition = True,\
-                        wrap = False, gradient = 0,seed = 65, normalise = True,lbound=elev_min, ubound=elev_max)
+                        wrap = False, gradient = 0,seed = seed_in2, normalise = True,lbound=elev_min, ubound=elev_max)
 
   #Generate third DEM with gradient = 0 (i.e. FLASE) and medium H value 
   DEM_arr3 = MapGeneration_pure_python.midPointFm2d(max_level = 9, sigma = 1, H = H3, addition = True,\
-                        wrap = False, gradient = 0,seed = 6, normalise = True,lbound=elev_min, ubound=elev_max)
+                        wrap = False, gradient = 0,seed = seed_in3, normalise = True,lbound=elev_min, ubound=elev_max)
 
   DEM_arr_final = DEM_arr1
   (x_len,y_len) = DEM_arr_final.shape

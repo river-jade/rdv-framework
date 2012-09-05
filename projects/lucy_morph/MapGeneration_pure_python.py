@@ -31,7 +31,7 @@ def midPointFm2d(max_level, sigma, H, addition, wrap, gradient,
     #          elevation data for a square region.  
     #_________________________________________________________________________	
     
-    random.seed(seed) #seed the random number generator 
+    random.seed(int(seed)) #seed the random number generator 
     north      = 60
     north_west = 20
     west       = 5
