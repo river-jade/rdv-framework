@@ -1,6 +1,7 @@
 import jwo.landserf.structure.*;   // For spatial object class.
 import jwo.landserf.process.io.*;  // For file handling.
-import jwo.landserf.gui.SimpleGISFrame;
+//import jwo.landserf.gui.SimpleGISFrame;
+
 import java.io.File;
 import jwo.landserf.process.SurfParam;
 import jwo.landserf.process.SurfaceFeatureThread;
@@ -20,14 +21,14 @@ public class RandomSurface
         // args[2] is the window size
         // args[3] is a text file with some summary statistics
         
-        SimpleGISFrame sgf = new SimpleGISFrame();
+        FakeGISFrame sgf = new FakeGISFrame();
         
         try// TODO replace and use the incoming args
         {
           
             System.out.println("Trying to read file " + args[0]);
 
-            RasterMap readRaster = TextRasterIO.readRaster(args[0], jwo.landserf.process.io.FileHandler.ARC_TEXT_R, sgf, null);
+            RasterMap readRaster = LBTextRasterIO.readRaster(args[0], jwo.landserf.process.io.FileHandler.ARC_TEXT_R, sgf);
             readRaster.setWSize(Integer.parseInt(args[2]));
             
             System.out.println("About to calculate surface parameters with a window size of " + readRaster.getWSize());
@@ -36,7 +37,7 @@ public class RandomSurface
             
             System.out.println("Original map is " + readRaster.getNumCols() + " by " + readRaster.getNumRows());
             
-            SurfaceFeatureThread sfThread = new SurfaceFeatureThread(sgf,2.2f);
+            LBSurfaceFeatureThread sfThread = new LBSurfaceFeatureThread(sgf,2.2f);
             sfThread.start();
             try
             {
@@ -63,14 +64,7 @@ public class RandomSurface
                     output.write("Ridges " + ((float)results[3]/(float)sfPixelNo)*100 + "\n");
                     output.write("Peaks " + ((float)results[4]/(float)sfPixelNo)*100 + "\n");
                     output.write("Planes " + ((float)results[5]/(float)sfPixelNo)*100 + "\n");
-//                    output.write(rs.toString());
-//                    output.write("Pits " + results[0] + "\n");
-//                    output.write("Channels " + results[1] + "\n");
-//                    output.write("Passes " + results[2] + "\n");
-//                    output.write("Ridges " + results[3] + "\n");
-//                    output.write("Peaks " + results[4] + "\n");
-//                    output.write("Planes " + results[5] + "\n");
-//                    output.write("Total pixels " + sfPixelNo + "\n");
+
                     output.write(rs.toString());
                     output.close();
 
