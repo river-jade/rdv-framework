@@ -32,7 +32,7 @@ class Model(basemodel.BaseModel):
 # Create two lists of up to 5 H-values and weights TODO
 
 # Create and add DEMs, using 3 H values and weights supplied TODO use these 4 lines, not the 2 below
-        generated_DEMs = Hydro_Network.GenerateDEM(variables['H1'],variables['H1wt'],variables['H2'],variables['H2wt'],variables['H3'],variables['H3wt'],variables['elev_min'], variables['elev_max'])
+        generated_DEMs = Hydro_Network.GenerateDEM(variables['H1'],variables['H1wt'],variables['H2'],variables['H2wt'],variables['H3'],variables['H3wt'],variables['elev_min'], variables['elev_max'], variables['seed1'], variables['seed2'], variables['seed3'])
 
         # pylab.imsave("Output/DEM_input1",generated_DEMs[1])
         # pylab.imsave("Output/DEM_input2",generated_DEMs[2])

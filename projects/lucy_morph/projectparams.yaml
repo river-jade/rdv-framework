@@ -1,10 +1,12 @@
 project_name: Lucy_Morph
 base_params: 
     variables: 
-        window_size: 5
+        window_size: 7
         max_level: 9
         sigma: 1
-        seed: 0
+        seed1: 0
+        seed2: 65
+        seed3: 6
         H: 0.7
         normalise: True
         lowerBound: 0
