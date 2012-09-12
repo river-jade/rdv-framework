@@ -42,15 +42,22 @@ class Model(basemodel.BaseModel):
         erodedDEMs = []
         erodedDEMs.append(generated_DEMs[0])
 
-        # Open file to write out Landserf results.
-        # Change its title to contain the parameter info
-        #newFileName = "%s_H%2f_Hwt%2f_%d.csv" % (qualifiedparams['landserf_output'], variables['H1'],variables['H1wt'], erosion_runs)
-        #print newFileName
-        # Open file
-        #f = open(newFileName, 'w')
+        wsz = variables['window_size']
+        
+        # Open file to write out Landserf results
         f = open(qualifiedparams['landserf_output'], 'w')
-        # Write headers
-        f.write("Pits,Channels,Passes,Ridges,Peaks,Planes,FractalDimension,VariogramGradient,VariogramIntercept,Moran,Kurtosis,Skew\n")
+        
+        f.write("FractalDimension,VariogramGradient,VariogramIntercept,Moran,Kurtosis,Skew,")
+        
+        for x in range(0,variables['window_count']):
+            
+            # Write headers
+            f.write(("Pits%d,Channels%d,Passes%d,Ridges%d,Peaks%d,Planes%d") % (wsz,wsz,wsz,wsz,wsz,wsz))
+            if x<(variables['window_count']-1):
+                f.write(",")
+            else:
+                f.write("\n")
+            wsz = wsz + variables['window_step']
         # Close file
         f.close()
         for i in range(1,(erosion_runs+1)):
@@ -59,10 +66,7 @@ class Model(basemodel.BaseModel):
             erodedDEMs.append(newDEM)
 
             # Generate Landserf stats for this phase
-            Morphometry.calculate_surface_features(qualifiedparams['ascii_dem'], erodedDEMs[i], qualifiedparams['output_features'], variables['window_size'], newFileName, i) 
-
-            newDEM_filename = "%s/DEM_erosion_%d" % (qualifiedparams['output_dir'], i)
-            pylab.imsave(newDEM_filename, newDEM)
+            Morphometry.calculate_surface_features(qualifiedparams['ascii_dem'], erodedDEMs[i], qualifiedparams['output_features'], variables['window_size'], variables['window_count'], variables['window_step'], qualifiedparams['landserf_output']) 
         
         # Now we should have the whole sequence of erosions - let's save them and see how it looks
         DEM_filename = "%s/DEM_before_erosion" % (qualifiedparams['output_dir'])

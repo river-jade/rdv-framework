@@ -2,6 +2,8 @@ project_name: Lucy_Morph
 base_params: 
     variables: 
         window_size: 7
+        window_count: 3
+        window_step: 8
         max_level: 9
         sigma: 1
         seed1: 0
@@ -19,8 +21,8 @@ base_params:
         H3wt: 0.1
         elev_min: 0
         elev_max: 1309
-        erosion_num: 10
-        river_drop: 5
+        erosion_num: 16
+        river_drop: 8
     
     input_files: 
         input_path: ""
