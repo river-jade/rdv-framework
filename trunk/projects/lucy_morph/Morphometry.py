@@ -1,6 +1,6 @@
 import LB_ArrayUtils, os
 
-def calculate_surface_features(temp_ascii_dem, input_array, output_srf, window_size, output_text_file, erosions):
+def calculate_surface_features(temp_ascii_dem, input_array, output_srf, window_size, window_count, window_step, output_text_file):
     
     # Now export the final DEM to an Arc ASCII format
     LB_ArrayUtils.writeArrayToFile(temp_ascii_dem, input_array, "Float", "E", 1)
@@ -15,7 +15,7 @@ def calculate_surface_features(temp_ascii_dem, input_array, output_srf, window_s
     # NB - for Windows a semi-colon is needed, rather than a colon :-(
 
     # Append space and input file name 
-    java_command = "%s \"%s\" \"%s\" %d \"%s\" %d" % (java_comm, temp_ascii_dem, output_srf, window_size, output_text_file, erosions) 
+    java_command = "%s \"%s\" \"%s\" %d %d %d \"%s\"" % (java_comm, temp_ascii_dem, output_srf, window_size, window_count, window_step, output_text_file) 
     print java_command
 
     # cd to java directory 
