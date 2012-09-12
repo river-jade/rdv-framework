@@ -1,5 +1,4 @@
 import glob
-import os
 import SpectralSynthesisFM2D
 import Hydro_Network
 import time
@@ -43,10 +42,23 @@ class Model(basemodel.BaseModel):
         erodedDEMs = []
         erodedDEMs.append(generated_DEMs[0])
 
+        # Open file to write out Landserf results.
+        # Change its title to contain the parameter info
+        newFileName = "%s_H%2f_Hwt%2f_%d.csv" % (qualifiedparams['landserf_output'], variables['H1'],variables['H1wt'], erosion_runs)
+        print newFileName
+        # Open file
+        f = open(newFileName, 'w')
+        # Write headers
+        f.write("Pits,Channels,Passes,Ridges,Peaks,Planes,FractalDimension,VariogramGradient,VariogramIntercept,Moran,Kurtosis,Skew,")
+        # Close file
+        f.close()
         for i in range(1,(erosion_runs+1)):
         
             newDEM = Hydro_Network.RiverNetwork(erodedDEMs[i-1], generated_DEMs, i, variables['river_drop'], qualifiedparams['output_dir'])
             erodedDEMs.append(newDEM)
+
+            # Generate Landserf stats for this phase
+            Morphometry.calculate_surface_features(qualifiedparams['ascii_dem'], erodedDEMs[i], qualifiedparams['output_features'], variables['window_size'], newFileName, i) 
         
         # Now we should have the whole sequence of erosions - let's save them and see how it looks
         DEM_filename = "%s/DEM_before_erosion" % (qualifiedparams['output_dir'])
@@ -55,43 +67,3 @@ class Model(basemodel.BaseModel):
 ##            erodedDEMname = "Output/DEM_input%d" % i
 ##            pylab.imsave(erodedDEMname,erodedDEMs[i])
 
-        # Now export the final DEM to an Arc ASCII format
-        LB_ArrayUtils.writeArrayToFile(qualifiedparams['ascii_dem'], erodedDEMs[i], "Float", "E", 1)
-
-        print ("writing file to %s" % qualifiedparams['ascii_dem'])
-
-        # Construct a command string for Landserf
-        # input file = the DEM that was just written out 
-        # output file = qualifiedparams['output_csv']
-        # window size = variables['window_size']
-
-        java_comm = "java -classpath .%s../../../lib/landserf/landserf230.jar%s../../../lib/landserf/utils230.jar RandomSurface" % (os.pathsep, os.pathsep)
-        print "Java command is:"
-        
-        # NB - for Windows a semi-colon is needed, rather than a colon :-(
-
-        # Append space and input file name 
-        java_command = "%s \"%s\" \"%s\" %d \"%s\"" % (java_comm, qualifiedparams['ascii_dem'], qualifiedparams['output_features'], variables['window_size'], qualifiedparams['landserf_output']) 
-        # java_command += qualifiedparams['ascii_dem']
-        #java_command += qualifiedparams['output_features']
-        # java_command += variables['window_size']
-        #java_command += qualifiedparams['landserf_output']
-        print java_command
-
-        # cd to java directory 
-        savedPath = os.getcwd()
-        newPath = "%s/projects/lucy_morph/java" % savedPath
-        os.chdir(newPath)
-                
-        # run java
-        os.system(java_command)
-
-        os.chdir(savedPath)
-
-        # add the current parameters to the output file (comma-separated)
-        output_file = open(qualifiedparams['landserf_output'], 'a')
-        out_string = "H1,%1f,\nH1wt,%1f,\nErosions,%d,\n" % (variables['H1'], variables['H1wt'], erosion_runs)
-        output_file.write(out_string)
-        
-        # TODO - size of window used for allocating flow direction
-        output_file.close()
