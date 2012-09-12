@@ -15,7 +15,7 @@ def calculate_surface_features(temp_ascii_dem, input_array, output_srf, window_s
     # NB - for Windows a semi-colon is needed, rather than a colon :-(
 
     # Append space and input file name 
-    java_command = "%s \"%s\" \"%s\" %d \"%s\"" % (java_comm, temp_ascii_dem, output_srf, window_size, output_text_file, erosions) 
+    java_command = "%s \"%s\" \"%s\" %d \"%s\" %d" % (java_comm, temp_ascii_dem, output_srf, window_size, output_text_file, erosions) 
     print java_command
 
     # cd to java directory 

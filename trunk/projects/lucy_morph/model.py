@@ -3,7 +3,7 @@ import SpectralSynthesisFM2D
 import Hydro_Network
 import time
 import pylab
-import LB_ArrayUtils
+import Morphometry
 
 import basemodel
 
@@ -49,7 +49,7 @@ class Model(basemodel.BaseModel):
         # Open file
         f = open(newFileName, 'w')
         # Write headers
-        f.write("Pits,Channels,Passes,Ridges,Peaks,Planes,FractalDimension,VariogramGradient,VariogramIntercept,Moran,Kurtosis,Skew,")
+        f.write("Pits,Channels,Passes,Ridges,Peaks,Planes,FractalDimension,VariogramGradient,VariogramIntercept,Moran,Kurtosis,Skew\n")
         # Close file
         f.close()
         for i in range(1,(erosion_runs+1)):
@@ -59,6 +59,9 @@ class Model(basemodel.BaseModel):
 
             # Generate Landserf stats for this phase
             Morphometry.calculate_surface_features(qualifiedparams['ascii_dem'], erodedDEMs[i], qualifiedparams['output_features'], variables['window_size'], newFileName, i) 
+
+            newDEM_filename = "%s/DEM_erosion_%d" % (qualifiedparams['output_dir'], i)
+            pylab.imsave(newDEM_filename, newDEM)
         
         # Now we should have the whole sequence of erosions - let's save them and see how it looks
         DEM_filename = "%s/DEM_before_erosion" % (qualifiedparams['output_dir'])
