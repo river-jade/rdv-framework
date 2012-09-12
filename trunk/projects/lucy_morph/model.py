@@ -44,10 +44,11 @@ class Model(basemodel.BaseModel):
 
         # Open file to write out Landserf results.
         # Change its title to contain the parameter info
-        newFileName = "%s_H%2f_Hwt%2f_%d.csv" % (qualifiedparams['landserf_output'], variables['H1'],variables['H1wt'], erosion_runs)
-        print newFileName
+        #newFileName = "%s_H%2f_Hwt%2f_%d.csv" % (qualifiedparams['landserf_output'], variables['H1'],variables['H1wt'], erosion_runs)
+        #print newFileName
         # Open file
-        f = open(newFileName, 'w')
+        #f = open(newFileName, 'w')
+        f = open(qualifiedparams['landserf_output'], 'w')
         # Write headers
         f.write("Pits,Channels,Passes,Ridges,Peaks,Planes,FractalDimension,VariogramGradient,VariogramIntercept,Moran,Kurtosis,Skew\n")
         # Close file

@@ -29,7 +29,7 @@ base_params:
         output_dir: ""
         ascii_dem: "DEM.asc"
         output_features: "surfaceFeatures.srf"
-        landserf_output: "landserf_results.txt"
+        landserf_output: "output.csv"
     
 scenarios:
     - name: S1
