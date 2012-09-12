@@ -57,20 +57,22 @@ public class RandomSurface
                 try 
                 { 
                     File file = new File(args[3]);
-                    BufferedWriter output = new BufferedWriter(new FileWriter(file));
-                    output.write("Pits " + Math.round(((float)results[0]/(float)sfPixelNo)*100) + "\n");
-                    output.write("Channels " + Math.round(((float)results[1]/(float)sfPixelNo)*100) + "\n");
-                    output.write("Passes " + Math.round(((float)results[2]/(float)sfPixelNo)*100) + "\n");
-                    output.write("Ridges " + Math.round(((float)results[3]/(float)sfPixelNo)*100) + "\n");
-                    output.write("Peaks " + Math.round(((float)results[4]/(float)sfPixelNo)*100) + "\n");
-                    output.write("Planes " + Math.round(((float)results[5]/(float)sfPixelNo)*100) + "\n");
 
-                    output.write("FractalDimension," + rs.getFractalD() + "\n");
-                    output.write("VariogramGradient," + rs.getVariogramGradient() + "\n");
-                    output.write("VariogramIntercept," + rs.getVariogramIntercept() + "\n");
-                    output.write("Moran," + rs.getMoran() + "\n");
-                    output.write("Kurtosis," + rs.getKurtosis() + "\n");
-                    output.write("Skew," + rs.getSkew() + "\n");
+                    BufferedWriter output = new BufferedWriter(new FileWriter(file, true));
+                    // TODO make sure that this appends to the existing file.
+                    output.write(Math.round(((float)results[0]/(float)sfPixelNo)*100) + ",");
+                    output.write(Math.round(((float)results[1]/(float)sfPixelNo)*100) + ",");
+                    output.write(Math.round(((float)results[2]/(float)sfPixelNo)*100) + ",");
+                    output.write(Math.round(((float)results[3]/(float)sfPixelNo)*100) + ",");
+                    output.write(Math.round(((float)results[4]/(float)sfPixelNo)*100) + ",");
+                    output.write(Math.round(((float)results[5]/(float)sfPixelNo)*100) + ",");
+
+                    output.write(rs.getFractalD() + ",");
+                    output.write(rs.getVariogramGradient() + ",");
+                    output.write(rs.getVariogramIntercept() + ",");
+                    output.write(rs.getMoran() + ",");
+                    output.write(rs.getKurtosis() + ",");
+                    output.write(rs.getSkew() + "\n");
                     output.close();
 
                 }
