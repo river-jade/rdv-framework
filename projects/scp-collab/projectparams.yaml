@@ -1,30 +1,41 @@
 project_name: SCP-collab
 base_params:
     variables:
-        PAR.num.spp.in.reserve.selection: 790
+        PAR.num.spp.in.reserve.selection: 10  #790
 
 
         PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
 
         # Zonation
         PAR.path.to.zonation: ../lib/zonation
-        PAR.zonation.parameter.filename: Z_parameter_settings.dat
-        PAR.zonation.spp.list.filename: zonation_spp_list.dat
         #PAR.zonation.exe.filename: zig2.exe
         PAR.zonation.exe.filename: zig3.exe
+
+        PAR.zonation.parameter.filename: Z_parameter_settings.dat
+        PAR.zonation.spp.list.filename: zonation_spp_list.dat
         PAR.zonation.output.filename: zonation_output
+
+        PAR.use.administrative.units: True
+        PAR.num.admin.units: 19
+        PAR.admin.units.global.weight: 0
 
     input_files:
         PAR.input.directory: ""
+        PAR.admin.regions.map: admin_regions.asc
+
     output_files:
         PAR.current.run.directory: ""
-        PAR.testing.output.filename: test_output_file.txt
+        PAR.zonation.admu.desc.file: ADMU_desc.txt
+        PAR.zonation.admu.weights.matrix.file: ADMU_weights_matrix.txt
 
 scenarios:
-  - name: Scen 1
+  - name: S1 global 100
     parameters:
       variables:
+          PAR.use.administrative.units: False
 
-# - name: Example scenario 2
-#   parameters:
-#     variables:
+  - name: S2 local 100
+    parameters:
+      variables:
+          PAR.use.administrative.units: True
+          PAR.admin.units.global.weight: 0
