@@ -34,8 +34,8 @@ scenarios:
       variables:
           PAR.use.administrative.units: False
 
-  - name: S2 local 100
-    parameters:
-      variables:
-          PAR.use.administrative.units: True
-          PAR.admin.units.global.weight: 0
+  # - name: S2 local 100
+  #   parameters:
+  #     variables:
+  #         PAR.use.administrative.units: True
+  #         PAR.admin.units.global.weight: 0
