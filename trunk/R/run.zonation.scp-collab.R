@@ -61,7 +61,7 @@ file.list <- dir( PAR.path.to.spp.hab.map.files, pattern="^m" )
 for( cur.spp.id in spp.used.in.reserve.selection.vector ) {
 
   path.to.file <- paste( source.dir, '/', PAR.path.to.spp.hab.map.files, sep='')
-  if( current.os == mingw32 ) path.to.file <- gsub("/", "\\\\", path.to.file )
+  if( current.os == 'mingw32' ) path.to.file <- gsub("/", "\\\\", path.to.file )
   line.of.text <- paste( "1.0 1.0 1 1 1 ", paste(path.to.file, file.list[cur.spp.id],sep=''), "\n", sep='' )
   cat( line.of.text, file = zonation.spp.list.full.filename, append = TRUE )
   
@@ -147,7 +147,7 @@ system.command.run.zonation <- paste( system.specific.cmd, full.path.to.zonation
 
 cat( '\n The system command to run zonation will be:', system.command.run.zonation )
 
-#system( system.command.run.zonation )      
+system( system.command.run.zonation )      
 
     #--------------------------------------------
     # If running with Administrative units run zonation again to
@@ -157,22 +157,22 @@ cat( '\n The system command to run zonation will be:', system.command.run.zonati
     # manual v3.1)
     #--------------------------------------------
 
-if( PAR.use.administrative.units ){
+## if( PAR.use.administrative.units ){
 
-  reload.output.name <- paste( PAR.zonation.output.filename, '_redistributed.rank', sep = '')
+##   reload.output.name <- paste( PAR.zonation.output.filename, '_redistributed.rank', sep = '')
   
-  system.command.run.zonation <- paste( system.specific.cmd,
-                                       full.path.to.zonation.exe,
-                                       '-lzonation_output.ADMU.redistributed.rank.asc',
-                                       PAR.zonation.parameter.filename,
-                                       PAR.zonation.spp.list.filename,
-                                       reload.output.name,
-                                       "0.0 0 1.0 1" )
+##   system.command.run.zonation <- paste( system.specific.cmd,
+##                                        full.path.to.zonation.exe,
+##                                        '-lzonation_output.ADMU.redistributed.rank.asc',
+##                                        PAR.zonation.parameter.filename,
+##                                        PAR.zonation.spp.list.filename,
+##                                        reload.output.name,
+##                                        "0.0 0 1.0 1" )
 
-  browser()
-  system( system.command.run.zonation )
+##   browser()
+##   system( system.command.run.zonation )
   
-}
+## }
 
 #/Users/ascelin/tzar/outputdata/SCP_collab_S2_local_100_8315.inprogress
 
