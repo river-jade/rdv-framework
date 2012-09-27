@@ -157,13 +157,14 @@ system( system.command.run.zonation )
     # manual v3.1)
     #--------------------------------------------
 
-if( PAR.use.administrative.units ){
+if( !PAR.use.administrative.units ){
 
-  reload.output.name <- paste( PAR.zonation.output.filename, '_redistributed.rank', sep = '')
+  reload.output.name <- paste( PAR.zonation.output.filename, '_TESTRELOAD', sep = '')
   
   system.command.run.zonation <- paste( system.specific.cmd,
                                        full.path.to.zonation.exe,
-                                       '-lzonation_output.ADMU.redistributed.rank.asc',
+                                       '-lzonation_output.rank.asc',
+                                       #'-lzonation_output.ADMU.redistributed.rank.asc',
                                        PAR.zonation.parameter.filename,
                                        PAR.zonation.spp.list.filename,
                                        reload.output.name,
