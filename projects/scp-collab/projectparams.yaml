@@ -2,7 +2,7 @@ project_name: SCP-collab
 base_params:
     variables:
         # 50, 25, 15 13 bad
-        PAR.num.spp.in.reserve.selection: 25  #790
+        PAR.num.spp.in.reserve.selection: 790
 
 
         PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
@@ -30,13 +30,13 @@ base_params:
         PAR.zonation.admu.weights.matrix.file: ADMU_weights_matrix.txt
 
 scenarios:
-    - name: S1 global 25spp
-      parameters:
-        variables:
-            PAR.use.administrative.units: False
-
-    # - name: S2 local
+    # - name: S1 global 790spp
     #   parameters:
     #     variables:
-    #         PAR.use.administrative.units: True
-    #         PAR.admin.units.global.weight: 0
+    #         PAR.use.administrative.units: False
+
+    - name: S2 local
+      parameters:
+        variables:
+            PAR.use.administrative.units: True
+            PAR.admin.units.global.weight: 0

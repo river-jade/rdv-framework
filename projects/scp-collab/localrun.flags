@@ -1,0 +1,3 @@
+--runnerclass=JythonRunner
+--projectspec=projects/scp-collab/projectparams.yaml
+--commandlineflags="-p scp-collab"
