@@ -220,22 +220,22 @@ def RiverNetwork(originalDEM, inputDEMs, counter, river_drop, output_dir):
 #Output different statistics for display and further use
   print "printing statistics ...see the Output Folder"
   
-  numpy.save("River.npy",River_arr) 
-  numpy.save("DEM.npy",originalDEM)
-
-  River_file = "%s/River%d" % (output_dir, counter)
-  pylab.imsave(River_file, River_arr)
+##  numpy.save("River.npy",River_arr) 
+##  numpy.save("DEM.npy",originalDEM)
+##
+##  River_file = "%s/River%d" % (output_dir, counter)
+##  pylab.imsave(River_file, River_arr)
 
   Catchment_file = "%s/Catchment%d" % (output_dir, counter)
   pylab.imsave(Catchment_file,Found_arr)
 
-  Catchment_bound_file = "%s/CatchmentBounds%d" % (output_dir, counter)
-  pylab.imsave(Catchment_bound_file,Catchment_boundary_arr)
-
+##  Catchment_bound_file = "%s/CatchmentBounds%d" % (output_dir, counter)
+##  pylab.imsave(Catchment_bound_file,Catchment_boundary_arr)
+##
   DEM_file = "%s/Combined_eroded_DEM%d" % (output_dir, counter)
   pylab.imsave(DEM_file, originalDEM)
-
-  RiverDist_file = "%s/RiverDist%d" % (output_dir, counter)
-  pylab.imsave(RiverDist_file,Distance_arr)
+##
+##  RiverDist_file = "%s/RiverDist%d" % (output_dir, counter)
+##  pylab.imsave(RiverDist_file,Distance_arr)
 
   return originalDEM
