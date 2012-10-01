@@ -1,5 +1,5 @@
 import numpy
-from PIL import Image
+# from PIL import Image
 import scipy  
 
 def CityBlock(image_arr):
