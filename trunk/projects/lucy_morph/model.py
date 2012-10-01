@@ -33,9 +33,9 @@ class Model(basemodel.BaseModel):
 # Create and add DEMs, using 3 H values and weights supplied TODO use these 4 lines, not the 2 below
         generated_DEMs = Hydro_Network.GenerateDEM(variables['H1'],variables['H1wt'],variables['H2'],variables['H2wt'],variables['H3'],variables['H3wt'],variables['elev_min'], variables['elev_max'], variables['seed1'], variables['seed2'], variables['seed3'])
 
-        # pylab.imsave("Output/DEM_input1",generated_DEMs[1])
-        # pylab.imsave("Output/DEM_input2",generated_DEMs[2])
-        # pylab.imsave("Output/DEM_input3",generated_DEMs[3])
+        pylab.imsave("Output/DEM_input1",generated_DEMs[1])
+        pylab.imsave("Output/DEM_input2",generated_DEMs[2])
+        pylab.imsave("Output/DEM_input3",generated_DEMs[3])
 
         # Run the hydro erosion the specified number of times.
         erosion_runs = variables['erosion_num'] # TODO not really necessary
@@ -71,7 +71,5 @@ class Model(basemodel.BaseModel):
         # Now we should have the whole sequence of erosions - let's save them and see how it looks
         DEM_filename = "%s/DEM_before_erosion" % (qualifiedparams['output_dir'])
         pylab.imsave(DEM_filename, erodedDEMs[0])
-##        for i in range(1,erosion_runs):
-##            erodedDEMname = "Output/DEM_input%d" % i
-##            pylab.imsave(erodedDEMname,erodedDEMs[i])
+
 
