@@ -2,20 +2,20 @@ project_name: SCP-collab
 base_params:
     variables:
         # 50, 25, 15 13 bad
-        PAR.num.spp.in.reserve.selection: 200 # 790
+        PAR.num.spp.in.reserve.selection: 100 # 790
 
 
         PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
 
         # Zonation
         PAR.path.to.zonation: ../lib/zonation
-        #PAR.zonation.exe.filename: zig2.exe
         PAR.zonation.exe.filename: zig3.exe
 
         PAR.zonation.parameter.filename: Z_parameter_settings.dat
         PAR.zonation.reload.parameter.filename: Z_parameter_settings_reload.dat
         PAR.zonation.spp.list.filename: zonation_spp_list.dat
-        PAR.zonation.output.filename: zonation_output
+        PAR.zonation.output.filename: z_output
+        PAR.zonation.reloaded.output.suffix: .redistributed.rank
 
         PAR.use.administrative.units: True
         PAR.num.admin.units: 19

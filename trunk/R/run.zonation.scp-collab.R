@@ -159,15 +159,16 @@ if( PAR.use.administrative.units ){
   setwd( PAR.current.run.directory )
   
   
-  reload.output.name <- paste( PAR.zonation.output.filename, '_TESTRELOAD', sep = '')
+  reload.output.name <- paste( PAR.zonation.output.filename, PAR.zonation.reloaded.output.suffix, sep = '')
   
   system.command.run.zonation2 <- paste( system.specific.cmd,
-                                       full.path.to.zonation.exe,
-                                       '-lzonation_output.ADMU.redistributed.rank.asc',
-                                       PAR.zonation.reload.parameter.filename,
-                                       PAR.zonation.spp.list.filename,
-                                       reload.output.name,
-                                       "0.0 0 1.0 1" )
+                                    full.path.to.zonation.exe,
+                                    paste( '-l',PAR.zonation.output.filename,'.ADMU.redistributed.rank.asc', sep=''),
+                                    #'-lz_output.ADMU.redistributed.rank.asc',
+                                    PAR.zonation.reload.parameter.filename,
+                                    PAR.zonation.spp.list.filename,
+                                    reload.output.name,
+                                    "0.0 0 1.0 1" )
 
 
   cat( '\nThe system command to run zonation (2nd time) is',  system.command.run.zonation2 )
