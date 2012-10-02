@@ -1,5 +1,5 @@
 # Does all the file copying then
-# Runs zonation and copies output files back to the working dir.
+# Runs zonation 
 
 # source( 'run.zonation.scp-collab.R' )
 
@@ -7,16 +7,17 @@
     #  Other code that needs to be sourced
     #------------------------------------------------------------
 
+
 rm( list = ls( all=TRUE ));
 
 source( 'variables.R'     )
 
-    cat( '\n----------------------------------' )
-    cat( '\nrun.zonation.scp-collab.R         ' )
-    cat( '\n----------------------------------' )
+cat( '\n----------------------------------' )
+cat( '\n  run.zonation.scp-collab.R         ' )
+cat( '\n----------------------------------' )
 
-number.asc.header.rows <- 6;  #number of header rows in the ascii files for
-                              #zonation.
+number.asc.header.rows <- 6;  # number of header rows in the ascii files for
+                              # zonation.
 
 # First get the OS
 #   for linux this returns linux-gnu
@@ -36,12 +37,20 @@ cat( "\n The path back to the source tree is ", source.dir)
     # Copy the Zonation data file to the output dir
     #--------------------------------------------
 
-from.filename <- paste( PAR.path.to.zonation, '/', PAR.zonation.parameter.filename, sep = '' )
-Z.settings.file.full.path <- paste(  PAR.current.run.directory, '/',  PAR.zonation.parameter.filename, sep = '' )
-if( !file.copy( from.filename, Z.settings.file.full.path, overwrite = TRUE ) ) {
-  cat( '\nCould not copy',PAR.zonation.parameter.filename, 'to', Z.settings.file.full.path, '\n' )
-  stop( '\nAborted due to error.', call. = FALSE )
+copy.z.files <- function( from.filename ) {
+
+  # Note the hack  Z.settings.file.full.path is a global variable as it's needed below
+  full.from.filename <- paste( PAR.path.to.zonation, '/', from.filename, sep = '' )
+  Z.settings.file.full.path <- paste(  PAR.current.run.directory, '/',  from.filename, sep = '' )
+  if( !file.copy( full.from.filename, Z.settings.file.full.path, overwrite = TRUE ) ) {
+    cat( '\nCould not copy',from.filename, 'to', Z.settings.file.full.path, '\n' )
+    stop( '\nAborted due to error.', call. = FALSE )
+  }
+  return( Z.settings.file.full.path )
 }
+
+
+Z.settings.file.full.path <- copy.z.files( PAR.zonation.parameter.filename )
 
 
     #--------------------------------------------
@@ -66,8 +75,6 @@ for( cur.spp.id in spp.used.in.reserve.selection.vector ) {
   cat( line.of.text, file = zonation.spp.list.full.filename, append = TRUE )
   
 }
-
-browser()
 
     #--------------------------------------------
     # If using admin units, generate the admin input files
@@ -117,37 +124,21 @@ cat( '\n\n full.path.to.zonation.exe=', full.path.to.zonation.exe )
 
 setwd( PAR.current.run.directory )
 
-if( current.os == 'mingw32' ) {
-  
+if( current.os == 'mingw32' ) {  
   system.specific.cmd <- ''
-  
-  # in this case we're one a windows machine
-  ## system.command.run.zonation <- paste( full.path.to.zonation.exe, '-r',
-  ##                                              PAR.zonation.parameter.filename,
-  ##                                              PAR.zonation.spp.list.filename, PAR.zonation.output.filename,
-  ##                                              "0.0 0 1.0 1" )
-  
-
 } else {
-  
   system.specific.cmd <- 'wine'
-  
-  # otherwise assume we're on mac or linux
-  ## system.command.run.zonation2 <- paste( 'wine', full.path.to.zonation.exe, '-r',
-  ##                                                   PAR.zonation.parameter.filename,
-  ##                                                   PAR.zonation.spp.list.filename, PAR.zonation.output.filename,
-  ##                                                   "0.0 0 1.0 1" ) 
-
 }
 
 system.command.run.zonation <- paste( system.specific.cmd, full.path.to.zonation.exe, '-r',
-                                       PAR.zonation.parameter.filename,
-                                       PAR.zonation.spp.list.filename, PAR.zonation.output.filename,
-                                       "0.0 0 1.0 1" ) 
+                                     PAR.zonation.parameter.filename,
+                                     PAR.zonation.spp.list.filename,
+                                     PAR.zonation.output.filename,
+                                     "0.0 0 1.0 1" ) 
 
-cat( '\n The system command to run zonation will be:', system.command.run.zonation )
-
+cat( '\n\nThe system command to run zonation (1st time) is',  system.command.run.zonation )
 system( system.command.run.zonation )      
+
 
     #--------------------------------------------
     # If running with Administrative units run zonation again to
@@ -157,23 +148,29 @@ system( system.command.run.zonation )
     # manual v3.1)
     #--------------------------------------------
 
-if( !PAR.use.administrative.units ){
+if( PAR.use.administrative.units ){
 
+  # The second copy of the settings files is needed for reloading the
+  # admin units solution. There is a bug in zonation where where you need
+  # to set "Edge removal" to zero when reloading a solution otherwise it
+  # crashes http://consplan.it.helsinki.fi/software/issues/27
+  setwd(source.dir)
+  copy.z.files( PAR.zonation.reload.parameter.filename )
+  setwd( PAR.current.run.directory )
+  
+  
   reload.output.name <- paste( PAR.zonation.output.filename, '_TESTRELOAD', sep = '')
   
-  system.command.run.zonation <- paste( system.specific.cmd,
+  system.command.run.zonation2 <- paste( system.specific.cmd,
                                        full.path.to.zonation.exe,
-                                       '-lzonation_output.rank.asc',
-                                       #'-lzonation_output.ADMU.redistributed.rank.asc',
-                                       PAR.zonation.parameter.filename,
+                                       '-lzonation_output.ADMU.redistributed.rank.asc',
+                                       PAR.zonation.reload.parameter.filename,
                                        PAR.zonation.spp.list.filename,
                                        reload.output.name,
                                        "0.0 0 1.0 1" )
 
-  system( system.command.run.zonation )
+
+  cat( '\nThe system command to run zonation (2nd time) is',  system.command.run.zonation2 )
+  system( system.command.run.zonation2 )
   
 }
-
-#/Users/ascelin/tzar/outputdata/SCP_collab_S2_local_100_8315.inprogress
-
-# wine /Users/ascelin/analysis/src/rdv-framework/R/../lib/zonation/zig3.exe -lzonation_output.ADMU.redistributed.rank.asc Z_parameter_settings.dat zonation_spp_list.dat zonation_output_redistributed.rank.txt 0.0 0 1.0 1

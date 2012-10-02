@@ -1,3 +1,4 @@
 --runnerclass=JythonRunner
+--localcodepath=.
 --projectspec=projects/scp-collab/projectparams.yaml
 --commandlineflags="-p scp-collab"
