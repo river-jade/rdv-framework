@@ -14,7 +14,7 @@ source( 'variables.R' )
 
 cat( '\n----------------------------------' )
 cat( '\n  scp-collab.eval.z.results.R     ' )
-cat( '\n----------------------------------' )
+cat( '\n----------------------------------\n' )
 
     #--------------------------------------------
     # Read in the .curves.txt file and extract relevant bits
@@ -43,7 +43,7 @@ min.prop.rem <- z.results[,min_prop_rem.colno]
     # 
     #--------------------------------------------
 
-prop.to.eval <- 0.9
+prop.to.eval <- 0.3
 
 indices <- which(av.prop.rem > prop.to.eval )
 
@@ -53,6 +53,8 @@ if( length( indices )  > 0 ){
   prop.landscape <- 0
 }
 
+cat('\nProp of landscape lost to retain an average of proporstion of', prop.to.eval,
+    'over all spp =', prop.landscape, '\n') 
 
     #--------------------------------------------
     # Make a plot of the results
@@ -61,3 +63,4 @@ if( length( indices )  > 0 ){
 pdf( PAR.z.curves.graph )
 plot(prop.landscape.lost, av.prop.rem, col=1, type='l')
 dev.off ()
+
