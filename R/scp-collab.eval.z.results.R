@@ -16,7 +16,12 @@ cat( '\n----------------------------------' )
 cat( '\n  scp-collab.eval.z.results.R     ' )
 cat( '\n----------------------------------' )
 
-test.input <- '/Users/ascelin/tzar/outputdata/SCP_collab_S2_local_790sppXXX_8366/z_curves.txt'
+    #--------------------------------------------
+    # Read in the .curves.txt file and extract relevant bits
+    #--------------------------------------------
+
+setwd( PAR.current.run.directory )
+z.results <- read.csv(PAR.final.Z.curves.filename, header=FALSE, skip=2, sep="")
 
 # The structure of the file columns are
 # 1 - Prop_landscape_lost
@@ -25,24 +30,34 @@ test.input <- '/Users/ascelin/tzar/outputdata/SCP_collab_S2_local_790sppXXX_8366
 # 4 - ave_prop_rem
 # 5 - W_prop_rem
 # 6 - ext-1 ext-2 prop for each species remaining at level of removal ...
-
 Prop_landscape_lost.colno <- 1
 ave_prop_rem.colno <- 4
 min_prop_rem.colno <- 3
-
-setwd( PAR.current.run.directory )
-
-#test <- read.csv(test.input, header=TRUE, col.names=FALSE, skip=2, sep=" ") 
-z.results <- read.csv(PAR.final.Z.curves.filename, header=FALSE, skip=2, sep="")
 
 # extract some info from the results 
 prop.landscape.lost <- z.results[,Prop_landscape_lost.colno]
 av.prop.rem <- z.results[,ave_prop_rem.colno]
 min.prop.rem <- z.results[,min_prop_rem.colno]
 
+    #--------------------------------------------
+    # 
+    #--------------------------------------------
 
-# make a plot of the results
-#pdf( "mean_prop_rem_curve.pdf" )
+prop.to.eval <- 0.9
+
+indices <- which(av.prop.rem > prop.to.eval )
+
+if( length( indices )  > 0 ){
+  prop.landscape <- prop.landscape.lost[max( indices )]
+} else {
+  prop.landscape <- 0
+}
+
+
+    #--------------------------------------------
+    # Make a plot of the results
+    #--------------------------------------------
+
 pdf( PAR.z.curves.graph )
 plot(prop.landscape.lost, av.prop.rem, col=1, type='l')
 dev.off ()
