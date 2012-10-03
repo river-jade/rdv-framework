@@ -1,8 +1,7 @@
 project_name: SCP-collab
 base_params:
     variables:
-        # 50, 25, 15 13 bad
-        PAR.num.spp.in.reserve.selection: 100 # 790
+        PAR.num.spp.in.reserve.selection: 100 #790
 
 
         PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
@@ -14,9 +13,11 @@ base_params:
         PAR.zonation.parameter.filename: Z_parameter_settings.dat
         PAR.zonation.reload.parameter.filename: Z_parameter_settings_reload.dat
         PAR.zonation.spp.list.filename: zonation_spp_list.dat
-        PAR.zonation.output.filename: z_output
-        PAR.zonation.reloaded.output.suffix: .redistributed.rank
+        PAR.Z.output.prefix: z_output
+        PAR.Z.reloaded.output.suffix: _reload
+        PAR.final.Z.curves.filename: z_curves.txt
 
+        # Zonation admin units settings
         PAR.use.administrative.units: True
         PAR.num.admin.units: 19
         PAR.admin.units.global.weight: 0
@@ -29,14 +30,15 @@ base_params:
         PAR.current.run.directory: ""
         PAR.zonation.admu.desc.file: ADMU_desc.txt
         PAR.zonation.admu.weights.matrix.file: ADMU_weights_matrix.txt
+        PAR.z.curves.graph: mean_prop_rem_curve.pdf
 
 scenarios:
-    - name: S1 global 790spp
+    - name: S1 global 100spp
       parameters:
         variables:
             PAR.use.administrative.units: False
 
-    - name: S2 local 790spp
+    - name: S2 local 100spp
       parameters:
         variables:
             PAR.use.administrative.units: True

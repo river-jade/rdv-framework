@@ -8,16 +8,13 @@
     #------------------------------------------------------------
 
 
-rm( list = ls( all=TRUE ));
+rm( list = ls( all=TRUE ))
 
 source( 'variables.R'     )
 
 cat( '\n----------------------------------' )
-cat( '\n  run.zonation.scp-collab.R         ' )
+cat( '\n  run.zonation.scp-collab.R       ' )
 cat( '\n----------------------------------' )
-
-number.asc.header.rows <- 6;  # number of header rows in the ascii files for
-                              # zonation.
 
 # First get the OS
 #   for linux this returns linux-gnu
@@ -133,7 +130,7 @@ if( current.os == 'mingw32' ) {
 system.command.run.zonation <- paste( system.specific.cmd, full.path.to.zonation.exe, '-r',
                                      PAR.zonation.parameter.filename,
                                      PAR.zonation.spp.list.filename,
-                                     PAR.zonation.output.filename,
+                                     PAR.Z.output.prefix,
                                      "0.0 0 1.0 1" ) 
 
 cat( '\n\nThe system command to run zonation (1st time) is',  system.command.run.zonation )
@@ -159,11 +156,11 @@ if( PAR.use.administrative.units ){
   setwd( PAR.current.run.directory )
   
   
-  reload.output.name <- paste( PAR.zonation.output.filename, PAR.zonation.reloaded.output.suffix, sep = '')
+  reload.output.name <- paste( PAR.Z.output.prefix, PAR.Z.reloaded.output.suffix, sep = '')
   
   system.command.run.zonation2 <- paste( system.specific.cmd,
                                     full.path.to.zonation.exe,
-                                    paste( '-l',PAR.zonation.output.filename,'.ADMU.redistributed.rank.asc', sep=''),
+                                    paste( '-l',PAR.Z.output.prefix,'.ADMU.redistributed.rank.asc', sep=''),
                                     #'-lz_output.ADMU.redistributed.rank.asc',
                                     PAR.zonation.reload.parameter.filename,
                                     PAR.zonation.spp.list.filename,
@@ -173,5 +170,17 @@ if( PAR.use.administrative.units ){
 
   cat( '\nThe system command to run zonation (2nd time) is',  system.command.run.zonation2 )
   system( system.command.run.zonation2 )
+
+  # as admin units were used, want to copy the curves file from
+  # reloading the redistributed.rank.asc to be the final .curves.txt
+  # file.
+
+  file.copy( paste(reload.output.name,'.curves.txt', sep=''), PAR.final.Z.curves.filename )
   
+} else {
+
+  # in this case no admin units were used so copy the .curves.txt file
+  # to be the final output curves file.
+  file.copy( paste(PAR.Z.output.prefix,'.curves.txt', sep=''), PAR.final.Z.curves.filename )
+
 }
