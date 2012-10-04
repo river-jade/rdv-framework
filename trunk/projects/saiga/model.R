@@ -1,5 +1,8 @@
 # Joe's current Saiga Offset model
 
+# realias variables to tzar for backwards compatibility
+tzar <- variables
+
 set.seed(33)
 
 # Var renames
@@ -326,43 +329,5 @@ if(Smat[i,j]<Ptemp & Smat[i,j]>0 & BOmat[i,j]==1){Smat[i,j]<-1}
 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
-
-
-# orig example code
-
-cat('In test.for.python.dry.run.R...\n')
-
-
-x <- matrix( nrow=20, ncol=20)
-x[] <- 1:(20*20) 
-
-
-test.variable.1 <- tzar[['test.variable.1']]
-
-cat('Value for test variable 1 is:', tzar[['test.variable.1']], '\n')
-
-
-cat('The working dir is', getwd(), '\n')
-cat('PAR.testing.output.filename=', tzar[['PAR.testing.output.filename']], '\n')
-
-
-
-test.text <- rep(1:10) 
-write.table(test.text, tzar[['PAR.testing.output.filename']] )
-
-cat( "\n\nPAR.saiga.output.matrix =", PAR.saiga.output.matrix )
-write.table(Rmat, PAR.saiga.output.matrix )
-
-
-#Rmat <- as.matrix(read.table("/Users/joewbull/tzar/outputdata/Saiga_Scenario_1_21/saiga.output.txt", header=TRUE, sep=""))
-#Rmat <- as.data.frame(Rmat)
-#plot(Rmat[,1], Rmat[,7], type="n", ylab="Saiga", xlab="Time")
-#lines(Rmat[,1], Rmat[,7])
-
-
-
-
-
-
 
 

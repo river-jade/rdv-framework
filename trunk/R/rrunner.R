@@ -10,17 +10,22 @@ library("optparse")
 cmd_args <- commandArgs(TRUE);
 option_list <- list(
     make_option("--paramfile"),
+    make_option("--inputpath"),
+    make_option("--outputpath"),
     make_option("--rscript")
 )
 args <- parse_args(OptionParser(option_list = option_list), args = c(cmd_args))
 
 library("rjson")
-print(args$paramfile)
 tzar <- fromJSON(paste(readLines(args$paramfile, warn=FALSE), collapse=""))
+inputpath = args$inputpath
+outputpath = args$outputpath
+
+inputFiles <- lapply(tzar$inputFiles, function(x) { paste(inputpath, x, sep='') } )
+outputFiles <- lapply(tzar$outputFiles, function(x) { paste(outputpath, x, sep='') } )
+variables <- tzar$variables
 
 source(args$rscript)
 
 # for debugging: prints out the parameters
-# for (i in 1:length(json_data)) {
-#   cat(names(json_data[i]), '=', get(names(json_data[i])), '\n')
-# }
+# str(tzar)
