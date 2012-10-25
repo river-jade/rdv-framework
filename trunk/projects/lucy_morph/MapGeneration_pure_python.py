@@ -9,29 +9,29 @@ def fN(delta, x, sigma):
     return_num = x.mean() + delta * random.gauss(0.0, sigma)
     return return_num
 
-#_______________________________________________________________________________
+
 def midPointFm2d(max_level, sigma, H, addition, wrap, gradient,
-                 seed=0, normalise = True, lbound=0, ubound=1309):
-    #________________________________________________________________________
-    # INPUT
-    # max_level : Maximum number of recursions( N = 2^max_level)
-    # sigma     : Initial standard deviation
-    # H         : Roughness constant varies form 0.0 to 1.0
-    # addition  : boolean parameter (turns random additions on/off)
-    # wrap      : wraps the Image
-    # gradient  : if 1 then corners are deterministically set else randomally
-    # seed      : seed value for random number generator
-    # normalise : normalizes the data using bound
-    # bounds    : used for normalization of the grid data
-    # save      : (boolean) True : if you want to save the image else False
-    # file_name : Name of the image file you want to save image as	
-    #
-    # OUTPUT
-    # Output is given in the form of an array(grid) which holds surface
-    #          elevation data for a square region.  
-    #_________________________________________________________________________	
+                 seed=0, normalise = True, bounds = [0,1]):
+    """
+    ________________________________________________________________________
+    Args:
+        max_level : Maximum number of recursions( N = 2^max_level)
+        sigma     : Initial standard deviation
+        H         : Roughness constant varies form 0.0 to 1.0
+        addition  : boolean parameter (turns random additions on/off)
+        wrap      : wraps the Image
+        gradient  : if 1 then corners are deterministically set else randomally
+        seed      : seed value for random number generator
+        normalise : normalizes the data using bound
+        bounds    : used for normalization of the grid data
     
-    random.seed(int(seed)) #seed the random number generator 
+    Result:     
+        Output is given in the form of an array(grid) which holds surface
+        elevation data for a square region.  
+    _________________________________________________________________________
+    """	
+    
+    random.seed(seed) #seed the random number generator 
     north      = 60
     north_west = 20
     west       = 5
@@ -122,7 +122,7 @@ def midPointFm2d(max_level, sigma, H, addition, wrap, gradient,
 					np.array([grid[x,y+dd], grid[x,y-dd],\
                     grid[x+dd,y], grid[x-dd,y]]), sigma)\
 					for y in y_vec] for x in x_vec]
-        
+
         if addition:          
             vec = range(0,N+1,D)
             grid[0:N+1:D,0:N+1:D] += [[delta*random.gauss(0.0,sigma)\
@@ -135,6 +135,6 @@ def midPointFm2d(max_level, sigma, H, addition, wrap, gradient,
         D=D/2
         dd=dd/2
     if(normalise):
-        grid += np.amin(grid)*-1 + lbound
-        grid = (grid/np.amax(grid)) * ubound
+        grid += np.amin(grid)*-1 + bounds[0]
+        grid = (grid/np.amax(grid)) * bounds[1]
     return grid

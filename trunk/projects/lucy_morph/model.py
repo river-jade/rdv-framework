@@ -1,14 +1,37 @@
 import glob
-import SpectralSynthesisFM2D
-import Hydro_Network
+#import SpectralSynthesisFM2D
+#import Hydro_Network
 import time
+import numpy
 import pylab
+from scipy import ndimage 
 import Morphometry
 import SummaryFileWriter
 
 import basemodel
 
+def import_file(full_path_to_module):
+    try:
+        import os
+        module_dir, module_file = os.path.split(full_path_to_module)
+        module_name, module_ext = os.path.splitext(module_file)
+        save_cwd = os.getcwd()
+        os.chdir(module_dir)
+        module_obj = __import__(module_name)
+        module_obj.__file__ = full_path_to_module
+        globals()[module_name] = module_obj
+        os.chdir(save_cwd)
+    except:
+        raise ImportError
+
+import_file('Y:/My Documents/GitHub/landscapeSim/Hydro_Network.py')
+#import_file('Y:/My Documents/GitHub/landscapeSim/DecisionTree.py')
+#import_file('Y:/My Documents/GitHub/landscapeSim/VegetationClassify.py')
+#import_file('Y:/My Documents/GitHub/landscapeSim/Geometry.py')
+#import_file('Y:/My Documents/GitHub/landscapeSim/surface_plot.py')
+
 class Model(basemodel.BaseModel):
+
     def execute(self, runparams):
         # the logging levels are (in descending order): severe, warning, info, config, fine,
         # finer, finest
@@ -29,21 +52,38 @@ class Model(basemodel.BaseModel):
 
         # self.run_r_code("example.R", runparams)
 
-# Create two lists of up to 5 H-values and weights TODO
-
-# Create and add DEMs, using 3 H values and weights supplied TODO use these 4 lines, not the 2 below
-        generated_DEMs = Hydro_Network.GenerateDEM(variables['H1'],variables['H1wt'],variables['H2'],variables['H2wt'],variables['H3'],variables['H3wt'],variables['elev_min'], variables['elev_max'], variables['seed1'], variables['seed2'], variables['seed3'])
-
-        DEM1_file = "%s/DEM_input1" % (qualifiedparams['output_dir'])
-        pylab.imsave(DEM1_file,generated_DEMs[1])
-        DEM2_file = "%s/DEM_input2" % (qualifiedparams['output_dir'])
-        pylab.imsave(DEM2_file,generated_DEMs[2])
-        DEM3_file = "%s/DEM_input3" % (qualifiedparams['output_dir'])
-        pylab.imsave(DEM3_file,generated_DEMs[3])
-
-        # Run the hydro erosion the specified number of times.
+        # Create a holder for the results of the erosion iterations
         erosion_runs = variables['erosion_num'] # TODO not really necessary
         erodedDEMs = []
+        
+        # Create lists of file names and file titles - these will be populated as we go along, then written out to the 'index.html' file for quick views of results
+        erodedDEMfileNames = [None] * erosion_runs
+        erodedDEMfileTitles = [None] * erosion_runs
+        catchmentFileNames = [None] * erosion_runs
+        catchmentFileTitles = [None] * erosion_runs
+
+        DEMinputFileNames = [None] * 3
+        DEMinputFileTitles = [None] * 3
+        DEMinputFileTitles[0] = "H %0.1f, wt %0.1f" % (variables['H1'],variables['H1wt'])
+        DEMinputFileTitles[1] = "H %0.1f, wt %0.1f" % (variables['H2'],variables['H2wt'])
+        DEMinputFileTitles[2] = "H %0.1f, wt %0.1f" % (variables['H3'],variables['H3wt'])
+        # TODO - when numbers of inputs vary, make this a loop that responds to the number of H-values
+
+        # Create two lists of up to 5 H-values and weights 
+        H_values = [variables['H1'], variables['H2'], variables['H3']]
+        H_weights = [variables['H1wt'], variables['H2wt'], variables['H3wt']]
+        seeds = [variables['seed1'], variables['seed2'], variables['seed3']]
+        elev_range = [variables['elev_min'], variables['elev_max']]
+
+        # Call the DEM creator method which will create a composite elevation model
+        generated_DEMs = Hydro_Network.DEM_creator(H_values, H_weights, seeds, elev_range, variables['max_level'], variables['DEMcreator_option'])
+
+        for i in range(0,len(generated_DEMs[1])):
+            file_name = "%s/%s" % (qualifiedparams['output_dir'],generated_DEMs[2][i])
+            pylab.imsave(file_name, generated_DEMs[1][i])
+            DEMinputFileNames[i] = "%s.png" % (generated_DEMs[2][i])
+
+        # Run the hydro erosion the specified number of times.
         erodedDEMs.append(generated_DEMs[0])
 
         wsz = variables['window_size']
@@ -66,45 +106,70 @@ class Model(basemodel.BaseModel):
         f.close()
 
         for i in range(1,(erosion_runs+1)):
-        
-            newDEM = Hydro_Network.RiverNetwork(erodedDEMs[i-1], generated_DEMs, i, variables['river_drop'], qualifiedparams['output_dir'])
-            # TODO return a vector of different things - the DEM, the file name of the DEM image and the filename of the catchments image
+
+            newDEM = erodedDEMs[i-1]
+                                                
+            # Create file names for writing out to HTML
+            erodedDEMfileNames[i-1] = "Combined_eroded_DEM%d" % (i)
+            catchmentFileNames[i-1] = "Catchment%d" % (i)
+            erodedDEMfileTitles[i-1] = "Erosion step %d" % (i)
+            catchmentFileTitles[i-1] = "Catchments %d" % (i)
+          
+            #Remove sink using 3x3 window by calling Single_Cell_PitRemove(originalDEM, no_of_itr)
+            newDEM = Hydro_Network.Single_Cell_PitRemove(newDEM, no_of_itr = 6)
+            (x_len,y_len) = newDEM.shape
+            max_posn = ndimage.maximum_position(newDEM)
+            Flow_dirn_arr = numpy.zeros((x_len,y_len,2), dtype="int" )
+            #Flow_arr will be used for the purpose of catchment extraction
+            Flow_arr = numpy.zeros((x_len, y_len), dtype = "uint8")
+            River_arr = numpy.ones((x_len, y_len), dtype = "int")
+            pit_list = [] #Not required now
+            ( pit_list, Flow_dirn_arr, DEM ) = Hydro_Network.Get_Flow_Dirn_using_9x9_window(newDEM, Flow_dirn_arr, pit_list)
+            # call Flow_Dirn_3x3(DEM, Flow_arr , pit_list) for the purpose of catchment extraction
+            pit_list = [] #Required for catchment extraction
+            ( pit_list, Flow_arr ) = Hydro_Network.Flow_Dirn_3x3(newDEM, Flow_arr , pit_list)
+            
+            #Catchment extraction, calling CatchmentExtraction(pit_list, DEM_arr, max_posn)
+            (newDEM, Found_arr, Catchment_boundary_arr) = Hydro_Network.CatchmentExtraction(pit_list, newDEM, Flow_arr, max_posn)
+            #Write result to Output file
+            file_name = "%s/%s" % (qualifiedparams['output_dir'], catchmentFileNames[i-1])
+            pylab.imsave(file_name, Found_arr)
+            catchmentFileNames[i-1] += '.png'
+            
+            #file_name = "%s/Catchment_Boundary%s" % (qualifiedparams['output_dir'], i)
+            #pylab.imsave(file_name, Catchment_boundary_arr)
+            
+            #Assignnig flow dirnection again after catchment extraction and Depression filling
+            ( pit_list, Flow_dirn_arr, newDEM ) = Hydro_Network.Get_Flow_Dirn_using_9x9_window(newDEM, Flow_dirn_arr , pit_list)
+            
+            #Calculate flow accumulation by Calling Flow_accumulation(Flow_dirn_arr ,River_arr , DEM)
+            River_arr = Hydro_Network.Flow_accumulation(Flow_dirn_arr ,River_arr, newDEM)
+            #Write result to Output file
+            #file_name = "%s/River%s" % (qualifiedparams['output_dir'],i)
+            #pylab.imsave(file_name, River_arr)
+            
+            #"Eroding the DEM based on Distance from River ...Calling Erosion(River_arr,DEM_arr,river_drop)
+            (newDEM, Distance_arr) = Hydro_Network.Erosion(River_arr, newDEM, variables['river_drop'])  
+            #Write result to Output file
+            file_name = "%s/%s" % (qualifiedparams['output_dir'], erodedDEMfileNames[i-1])
+            pylab.imsave(file_name, newDEM)
+            erodedDEMfileNames[i-1] += '.png'
+            #file_name = "%s/RiverDistance%s" % (qualifiedparams['output_dir'], i)
+            #pylab.imsave(file_name, Distance_arr)
+
+            # Add this DEM to the list of eroded results
             erodedDEMs.append(newDEM)
 
             # Generate Landserf stats for this phase
             Morphometry.calculate_surface_features(qualifiedparams['ascii_dem'], erodedDEMs[i], qualifiedparams['output_features'], variables['window_size'], variables['window_count'], variables['window_step'], qualifiedparams['landserf_output']) 
-        
+
+            
         # Now we should have the whole sequence of erosions - let's save them and see how it looks
         DEM_filename = "%s/DEM_before_erosion" % (qualifiedparams['output_dir'])
         pylab.imsave(DEM_filename, erodedDEMs[0])
 
-        for i in range(1, (erosion_runs+1)):
-            Catchment_file = "%s/Catchment%d.png" % (qualifiedparams['output_dir'], i)
-
-        for i in range(1, (erosion_runs+1)):
-            DEM_file = "%s/Combined_eroded_DEM%d.png" % (qualifiedparams['output_dir'], i)
-
         #---------------------------------------------------------------------------
-        # Create details to be written out to HTML table
-        DEMinputFileNames = [None] * 3
-        DEMinputFileNames = ["DEM_input1.png", "DEM_input2.png", "DEM_input3.png"]
-        DEMinputFileTitles = [None] * 3
-        DEMinputFileTitles[0] = "H %0.1f, wt %0.1f" % (variables['H1'],variables['H1wt'])
-        DEMinputFileTitles[1] = "H %0.1f, wt %0.1f" % (variables['H2'],variables['H2wt'])
-        DEMinputFileTitles[2] = "H %0.1f, wt %0.1f" % (variables['H3'],variables['H3wt'])
-
-        erodedDEMfileNames = [None] * erosion_runs
-        erodedDEMfileTitles = [None] * erosion_runs
-        catchmentFileNames = [None] * erosion_runs
-        catchmentFileTitles = [None] * erosion_runs
-
-        for i in range(0,erosion_runs):
-
-          erodedDEMfileNames[i] = "Combined_eroded_DEM%d.png" % (i+1)
-          catchmentFileNames[i] = "Catchment%d.png" % (i+1)
-          erodedDEMfileTitles[i] = "Erosion step %d" % (i+1)
-          catchmentFileTitles[i] = "Catchments %d" % (i+1) 
-            
+        # Write out details to HTML tables and hyperlinks
         index_file = "%s/index.html" % qualifiedparams['output_dir']
         indexF = SummaryFileWriter.open_file(index_file)   
         SummaryFileWriter.writeHTMLTop("Run results", indexF)
