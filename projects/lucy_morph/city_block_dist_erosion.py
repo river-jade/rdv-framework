@@ -1,11 +1,9 @@
 import numpy
-# from PIL import Image
-import scipy  
+from scipy import *
 
 def CityBlock(image_arr):
 #converting the gray-scale image into binary image
   (x_len,y_len)=image_arr.shape
-  print "Generating River Distance"
   L = []
   for i in range(0,x_len):
     for j in range(0,y_len):
@@ -17,7 +15,7 @@ def CityBlock(image_arr):
         binary_arr[ L[i][1] ][ L[i][2] ] = 255
 
 #Initializing distance array  
-  distance_arr=numpy.zeros((x_len,y_len), dtype= "int")
+  distance_arr=zeros((x_len,y_len), dtype= "int")
   for i in range(0, x_len):
     for j in range(0, y_len):
       if binary_arr[i][j]==0:
@@ -47,5 +45,4 @@ def CityBlock(image_arr):
         distance_arr[i][j] = min(distance_arr[i][j],1+distance_arr[i+1][j], 1+distance_arr[i][j+1]);
       else:
         distance_arr[i][j]=distance_arr[i][j];
-
   return distance_arr

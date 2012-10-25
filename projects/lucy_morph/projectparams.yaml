@@ -21,8 +21,9 @@ base_params:
         H3wt: 0.1
         elev_min: 0
         elev_max: 1309
-        erosion_num: 16
+        erosion_num: 3
         river_drop: 8
+        DEMcreator_option: fm2D
     
     input_files: 
         input_path: ""

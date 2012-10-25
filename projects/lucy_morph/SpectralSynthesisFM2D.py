@@ -1,11 +1,24 @@
-# from PIL import Image
+import numpy
 import random
 import math
 import pylab
-import numpy
 
-def SpectralSynthesisFM2D(max_level,sigma,seed,H,normalise, lbound, ubound):
-  
+def SpectralSynthesisFM2D(max_level, sigma, H, seed=0, normalise=True, bounds=[0,1]):
+  """
+  ________________________________________________________________________
+  Args:
+      max_level : Maximum number of recursions( N = 2^max_level)
+      sigma     : Initial standard deviation
+      H         : Roughness constant varies form 0.0 to 1.0
+      seed      : seed value for random number generator
+      normalise : normalizes the data using bound
+      bounds    : used for normalization of the grid data
+  Result:     
+      Output is given in the form of an array(grid) which holds surface
+      elevation data for a square region.  
+  _________________________________________________________________________
+  """	
+
   N = 2**max_level 
   A = numpy.zeros((N,N), dtype = complex)
   random.seed(seed) #seed the random number generator
@@ -41,12 +54,6 @@ def SpectralSynthesisFM2D(max_level,sigma,seed,H,normalise, lbound, ubound):
   
   Grid = numpy.real(pylab.ifft2(( A ) ))
   if(normalise):
-        Grid += numpy.amin(Grid)*-1 + lbound
-        Grid = (Grid/numpy.amax(Grid)) * ubound
+        Grid += numpy.amin(Grid)*-1 + bounds[0]
+        Grid = (Grid/numpy.amax(Grid)) * bounds[1]
   return Grid
-
-# def Main():
-    # Grid = SpectralSynthesisFM2D(max_level = 9,sigma = 1,seed = 0,H= 0.70 ,normalise=True, lbound=0, ubound=255)
-    # Image.fromarray(Grid).show()
-# if __name__ == "__main__":
-#     Main();
