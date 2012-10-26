@@ -1,6 +1,6 @@
 import glob
 #import SpectralSynthesisFM2D
-#import Hydro_Network
+import Hydro_Network
 import time
 import numpy
 import pylab
@@ -24,7 +24,7 @@ def import_file(full_path_to_module):
     except:
         raise ImportError
 
-import_file('Y:/My Documents/GitHub/landscapeSim/Hydro_Network.py')
+#import_file('Y:/My Documents/GitHub/landscapeSim/Hydro_Network.py')
 #import_file('Y:/My Documents/GitHub/landscapeSim/DecisionTree.py')
 #import_file('Y:/My Documents/GitHub/landscapeSim/VegetationClassify.py')
 #import_file('Y:/My Documents/GitHub/landscapeSim/Geometry.py')
