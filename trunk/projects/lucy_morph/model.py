@@ -64,9 +64,9 @@ class Model(basemodel.BaseModel):
 
         DEMinputFileNames = [None] * 3
         DEMinputFileTitles = [None] * 3
-        DEMinputFileTitles[0] = "H %0.1f, wt %0.1f" % (variables['H1'],variables['H1wt'])
-        DEMinputFileTitles[1] = "H %0.1f, wt %0.1f" % (variables['H2'],variables['H2wt'])
-        DEMinputFileTitles[2] = "H %0.1f, wt %0.1f" % (variables['H3'],variables['H3wt'])
+        DEMinputFileTitles[0] = "H %0.2f, wt %0.2f" % (variables['H1'],variables['H1wt'])
+        DEMinputFileTitles[1] = "H %0.2f, wt %0.2f" % (variables['H2'],variables['H2wt'])
+        DEMinputFileTitles[2] = "H %0.2f, wt %0.2f" % (variables['H3'],variables['H3wt'])
         # TODO - when numbers of inputs vary, make this a loop that responds to the number of H-values
 
         # Create two lists of up to 5 H-values and weights 
