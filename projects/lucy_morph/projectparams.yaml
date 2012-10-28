@@ -13,12 +13,12 @@ base_params:
         normalise: True
         lowerBound: 0
         upperBound: 255
-        H1: 0.7
-        H2: 0.65
+        H1: 0.8
+        H2: 0.55
         H3: 0.40
-        H1wt: 0.7
+        H1wt: 0.6
         H2wt: 0.2
-        H3wt: 0.1
+        H3wt: 0.2
         elev_min: 0
         elev_max: 1309
         erosion_num: 16
