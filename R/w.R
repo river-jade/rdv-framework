@@ -80,45 +80,6 @@ write.pgm.file <- function (table.to.write, filename.root,
     cat( '\nwrote', pgmFileName );
   }
 
-original.write.pgm.file <- function (table.to.write, filename.root, 
-                            num.table.rows, num.table.cols)
-  {
-  ######################
-  #write a pgm file
-
-    if ( !is.integer(table.to.write) ) {
-      cat ('\nTable is NOT integer.  CanNOT write pgm file ', 
-           filename.root, '\n')
-      return( FALSE ) 
-    }
-
-    #add the .pgm to the filename
-    pgmFileName = paste(filename.root, ".pgm", sep = "" )
-  
-    #first write the header into the output file
-    #for a pgm file need the following header:
-    # (the last number is the maximim cell value)
-    #P2
-    #cols row ! (ie this is width, height )
-    #4
-  
-    #  Compute the maximum value to be written to the pgm file.
-    #  If the file is all zeros, then the max comes out to be 0 and 
-    #  putting that value in the pgm header makes some pgm viewers 
-    #  crash.  So, use a value of 1 in that case.
-    max.table.value <- max( max( table.to.write ), 1)
-    
-    cat( "P2\n", file = pgmFileName )
-    cat( num.table.cols, file = pgmFileName, append = TRUE )
-    cat( " ", file = pgmFileName, append = TRUE )
-    cat( num.table.rows, file = pgmFileName, append = TRUE )
-    cat( "\n", max.table.value, "\n", file = pgmFileName, append = TRUE )
-    
-    write.table( table.to.write, file= pgmFileName,  append = TRUE, 
-                row.names = FALSE, col.names = FALSE );
-    
-    cat( '\nwrote', pgmFileName, '\n' );
-  }
 
 write.txt.file <- function (table.to.write, filename.root, 
                             num.table.rows, num.table.cols)
@@ -128,14 +89,9 @@ write.txt.file <- function (table.to.write, filename.root,
   
     rawFileName = paste(filename.root, ".txt", sep = "" )
 
-if (DEBUG) {
-cat ("\nIn write.txt.file, rawFileName = ", rawFileName);
-#cat ("\ntable.to.write = \n");
-#browser();
-#print (table.to.write);
-#cat ("\n");
-#browser();
-}
+    if (DEBUG) {
+      cat ("\nIn write.txt.file, rawFileName = ", rawFileName);
+    }
 
     write.table( table.to.write, file= rawFileName, 
 		row.names = FALSE, col.names = FALSE );
@@ -146,10 +102,10 @@ cat ("\nIn write.txt.file, rawFileName = ", rawFileName);
 
 write.asc.file <- function (table.to.write, filename.root, 
                             num.table.rows, num.table.cols,
-                            xllcorner = 0.0,		#  BTL - 2011.02.15 - Added. 
+                            xllcorner = 0.0,	    #  BTL - 2011.02.15 - Added. 
                             yllcorner = 0.0,
                             no.data.value = 0,      #  BTL - 2011.02.13 - Added.
-							cellsize = 1			#  BTL - 2011.02.15 - Added.
+			    cellsize = 1	    #  BTL - 2011.02.15 - Added.
                             )
   {
 
