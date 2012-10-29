@@ -1,5 +1,3 @@
-# Does all the file copying then
-# Runs zonation 
 
 # source( 'scp-collab.eval.z.results.R' )
 
@@ -43,18 +41,25 @@ min.prop.rem <- z.results[,min_prop_rem.colno]
     # 
     #--------------------------------------------
 
-prop.to.eval <- 0.3
 
-indices <- which(av.prop.rem > prop.to.eval )
 
-if( length( indices )  > 0 ){
-  prop.landscape <- prop.landscape.lost[max( indices )]
-} else {
-  prop.landscape <- 0
+get.landscape.lost.when.av.spp.prop.remain.is <- function( spp.prop ) {
+  indices <- which( av.prop.rem > spp.prop )
+
+  if( length( indices )  > 0 ){
+    prop.landscape <- prop.landscape.lost[max( indices )]
+  } else {
+    prop.landscape <- 0
+  }
+
+  return(prop.landscape)
 }
 
-cat('\nProp of landscape lost to retain an average of proporstion of', prop.to.eval,
-    'over all spp =', prop.landscape, '\n') 
+
+for( x in c(0.1,0.2,0.3, 0.4) )
+  cat( '\n Prop landscape when av spp rep =', x, 'is', get.landscape.lost.when.av.spp.prop.remain.is(x) )
+
+cat('\n')
 
     #--------------------------------------------
     # Make a plot of the results
