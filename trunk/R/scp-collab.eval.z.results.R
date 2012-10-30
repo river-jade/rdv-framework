@@ -56,9 +56,16 @@ get.landscape.lost.when.av.spp.prop.remain.is <- function( spp.prop ) {
 }
 
 
-for( x in c(0.1,0.2,0.3, 0.4) )
-  cat( '\n Prop landscape when av spp rep =', x, 'is', get.landscape.lost.when.av.spp.prop.remain.is(x) )
+# calcualte the prop of the landscape that needs to be removed for
+# different mean spp proportions to be left and write it to file
 
+cat( 'av_spp_rep', 'prop_landscap\n', file=PAR.z.mean.props.summary.filename, append=TRUE)
+
+for( x in c(0.1,0.2,0.3, 0.4) ) {
+  prop.rem <- get.landscape.lost.when.av.spp.prop.remain.is(x)
+  cat( '\n Prop landscape when av spp rep =', x, 'is', prop.rem )
+  cat( x, prop.rem, '\n', file=PAR.z.mean.props.summary.filename, append=TRUE)
+}
 cat('\n')
 
     #--------------------------------------------

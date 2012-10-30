@@ -78,6 +78,15 @@ for( cur.spp.id in spp.used.in.reserve.selection.vector ) {
     #--------------------------------------------
 
 if( PAR.use.administrative.units ){
+
+
+  # If we have permuted the admin units to form coalitions, then use
+  # this new admin units map for zontation
+  if( PAR.permute.admin.regions )
+    admin.regions.map <- paste(PAR.remapped.admin.regions.map.filename.base,'.asc', sep='')
+  else
+    admin.regions.map <- PAR.admin.regions.map
+
   
   # Administrative units description file
   cat ( '#ID    G_A    beta_A    name\n' , file = PAR.zonation.admu.desc.file, append = TRUE );
@@ -97,7 +106,7 @@ if( PAR.use.administrative.units ){
                   '[Administrative units]', '\n',
                   'use ADMUs = 1', '\n',
                   'ADMU descriptions file = ADMU_desc.txt', '\n',
-                  'ADMU layer file = ', PAR.admin.regions.map, '\n',
+                  'ADMU layer file = ', admin.regions.map, '\n',
                   'ADMU weight matrix = ADMU_weights_matrix.txt', '\n', 
                   'calculate local weights from condition = 1', '\n',
                   'ADMU mode = 2', '\n',
