@@ -15,6 +15,11 @@ class Model(basemodel.BaseModel):
         #         variables['PAR.variable.to.test.repetitions'])
 
 
+
+        # remap planning units
+        self.logger.fine("\n--> Running scp-collab.permute.coalitions.R")
+        self.run_r_code( "scp-collab.permute.coalitions.R", runparams )
+
         # run Zonation
         self.logger.fine("\n--> Running zonation")
         self.run_r_code( "run.zonation.scp-collab.R", runparams )

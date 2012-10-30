@@ -1,15 +1,17 @@
 project_name: SCP-collab
 base_params:
     variables:
-        PAR.num.spp.in.reserve.selection: 100 #790
-
+        PAR.num.spp.in.reserve.selection: 200 #790
 
         PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
+
+        # Coalitions
+        PAR.permute.admin.regions: False
+        PAR.num.coalitions: 4
 
         # Zonation
         PAR.path.to.zonation: ../lib/zonation
         PAR.zonation.exe.filename: zig3.exe
-
         PAR.zonation.parameter.filename: Z_parameter_settings.dat
         PAR.zonation.reload.parameter.filename: Z_parameter_settings_reload.dat
         PAR.zonation.spp.list.filename: zonation_spp_list.dat
@@ -22,6 +24,16 @@ base_params:
         PAR.num.admin.units: 19
         PAR.admin.units.global.weight: 0
 
+        # Zonation asci file header info
+        PAR.ncols: 281
+        PAR.nrows: 250
+        PAR.xllcorner: -109.45483714671
+        PAR.yllcorner: -55.979644819015
+        PAR.cellsize: 0.286609223258
+        PAR.NODATA_value: -9999
+
+
+
     input_files:
         PAR.input.directory: ""
         PAR.admin.regions.map: admin_regions.asc
@@ -31,15 +43,30 @@ base_params:
         PAR.zonation.admu.desc.file: ADMU_desc.txt
         PAR.zonation.admu.weights.matrix.file: ADMU_weights_matrix.txt
         PAR.z.curves.graph: mean_prop_rem_curve.pdf
+        PAR.z.mean.props.summary.filename: mean_prop_summary.txt
+
+        PAR.admin.regions.map.filename.base: admin_regions
+        PAR.remapped.admin.regions.map.filename.base: admin_regions_remapped
+        PAR.admin.regions.id.mapping.filename: admin_regions_id_mapping.txt
+
+
 
 scenarios:
-    - name: S1 global 100spp
-      parameters:
-        variables:
-            PAR.use.administrative.units: False
+    # - name: S1 global PURM 100spp
+    #   parameters:
+    #     variables:
+    #         PAR.use.administrative.units: False
 
-    - name: S2 local 100spp
+    # - name: S2 local 100spp
+    #   parameters:
+    #     variables:
+    #         PAR.use.administrative.units: True
+    #         PAR.permute.admin.regions: False
+    #         PAR.num.coalitions: 4
+
+    - name: S3 local 200spp ncoal6
       parameters:
         variables:
             PAR.use.administrative.units: True
-            PAR.admin.units.global.weight: 0
+            PAR.permute.admin.regions: True
+            PAR.num.coalitions: 6
