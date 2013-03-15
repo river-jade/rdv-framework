@@ -13,10 +13,10 @@ generators:
     generator_type: linear_step
     start: 0
     step_size: 1
-    count: 10
+    count: 5
 
   - key: test.variable.4
     generator_type: normal_distribution
-    mean: 10
+    mean: 5
     std_dev: 1
     count: 10
