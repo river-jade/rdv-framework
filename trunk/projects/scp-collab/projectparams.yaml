@@ -1,7 +1,7 @@
 project_name: SCP-collab
 base_params:
     variables:
-        PAR.num.spp.in.reserve.selection: 790
+        PAR.num.spp.in.reserve.selection: 200 #790
 
         PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
 
@@ -52,21 +52,21 @@ base_params:
 
 
 scenarios:
-    # - name: S1 global 790spp
+    # - name: S1 global 200spp
     #   parameters:
     #     variables:
     #         PAR.use.administrative.units: False
 
-    # - name: S2 local 790spp
+    # - name: S2 local 200spp
     #   parameters:
     #     variables:
     #         PAR.use.administrative.units: True
     #         PAR.permute.admin.regions: False
     #         PAR.num.coalitions: 4
 
-    - name: S3 local 790spp nocoal2 
+    - name: S3 local 200spp ncoal14 
       parameters:
         variables:
             PAR.use.administrative.units: True
             PAR.permute.admin.regions: True
-            PAR.num.coalitions: 2
+            PAR.num.coalitions: 14
