@@ -11,6 +11,7 @@ base_params:
 
         # Remote input data
         PAR.input.data.zipfile.URL: http://glass.eres.rmit.edu.au/tzar_input/scp-collab/input_data.zip
+        PAR.admin.regions.map.downloaded: input_data/admin_regions.asc
 
         # Zonation
         PAR.path.to.zonation: ../lib/zonation
