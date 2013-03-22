@@ -30,7 +30,7 @@ orig.ids <- unique.ids
     #--------------------------------------------
 
 
-# For now this is just a hack that assigns each current coutnry into one of 4 coalitions
+# For now this is just a hack that assigns each current country into one of 4 coalitions
 permuted.coalitions <- sample( 1:PAR.num.coalitions, length(orig.ids), replace = TRUE)
 remapped.ids <- permuted.coalitions
 
@@ -58,9 +58,9 @@ perm <- function( x ){
 #M <- matrix( sample( orig.ids, 25, replace = TRUE) ,5,5)
 #M2 <- apply(M,c(1,2), perm )
 
-   # note the 2nd argument (c(1,2)) tell apply to apply the function
-   # 'perm' to each element of the matrix (as opposed to only rows or
-   # cols
+   # Note the 2nd argument (c(1,2)) tells the apply function to apply
+   # the function 'perm' to each element of the matrix (as opposed to
+   # only rows or columns).
 
 admin.units.map.remapped <- apply( admin.units.map, c(1,2), perm )
 M2 <- admin.units.map.remapped 
@@ -78,13 +78,13 @@ write.table( cbind(orig.ids, remapped.ids), file=PAR.admin.regions.id.mapping.fi
             row.names = FALSE, quote=FALSE)
 
 
-write.asc.file ( admin.units.map.remapped, PAR.remapped.admin.regions.map.filename.base, 
-                 PAR.nrows, PAR.ncols, 
-                 PAR.xllcorner, PAR.yllcorner,
-                 PAR.NODATA_value, PAR.cellsize
+write.asc.file( admin.units.map.remapped, PAR.remapped.admin.regions.map.filename.base, 
+                PAR.nrows, PAR.ncols, 
+                PAR.xllcorner, PAR.yllcorner,
+                PAR.NODATA_value, PAR.cellsize
                 )
 
-# note: set nodate value to zero before writing pgm
+# Note: set nodata value to zero before writing pgm
 admin.units.map.remapped[ which( admin.units.map.remapped == PAR.NODATA_value )] <- 0
 write.pgm.file( admin.units.map.remapped, PAR.remapped.admin.regions.map.filename.base, 
                 PAR.nrows, PAR.ncols )
