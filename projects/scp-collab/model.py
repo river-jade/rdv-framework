@@ -15,6 +15,9 @@ class Model(basemodel.BaseModel):
         #         variables['PAR.variable.to.test.repetitions'])
 
 
+        # download the required input data
+        self.logger.fine("\n--> scp-collab.download.inputdata.R")
+        self.run_r_code( "scp-collab.download.inputdata.R", runparams )
 
         # remap planning units
         self.logger.fine("\n--> Running scp-collab.permute.coalitions.R")

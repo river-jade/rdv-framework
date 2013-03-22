@@ -9,6 +9,9 @@ base_params:
         PAR.permute.admin.regions: False
         PAR.num.coalitions: 4
 
+        # Remote input data
+        PAR.input.data.zipfile.URL: http://glass.eres.rmit.edu.au/tzar_input/scp-collab/input_data.zip
+
         # Zonation
         PAR.path.to.zonation: ../lib/zonation
         PAR.zonation.exe.filename: zig3.exe
@@ -31,6 +34,7 @@ base_params:
         PAR.yllcorner: -55.979644819015
         PAR.cellsize: 0.286609223258
         PAR.NODATA_value: -9999
+
 
 
 
