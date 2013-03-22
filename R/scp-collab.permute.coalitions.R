@@ -15,6 +15,15 @@ cat( '\n----------------------------------' )
 cat( '\n  scp-collab.permute.coalitions.R ' )
 cat( '\n----------------------------------\n' )
 
+
+## # First download the data
+## curr.dir <- getwd()
+## setwd( PAR.current.run.directory )
+## download.file(PAR.input.data.zipfile.URL, destfile ="input_data.zip")
+## unzip("input_data.zip" )
+## setwd( curr.dir ) 
+
+
     #--------------------------------------------
     # Read in the current admin file and get the IDs
     #--------------------------------------------
