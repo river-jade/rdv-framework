@@ -22,6 +22,6 @@ class Model(basemodel.BaseModel):
 
         # run Zonation
         self.logger.fine("\n--> Running zonation")
-        self.run_r_code( "run.zonation.scp-collab.R", runparams )
+        self.run_r_code( "scp-collab.run.zonation.R", runparams )
         
         self.run_r_code( "scp-collab.eval.z.results.R", runparams )
