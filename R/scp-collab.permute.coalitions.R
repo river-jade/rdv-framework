@@ -28,7 +28,10 @@ cat( '\n----------------------------------\n' )
     # Read in the current admin file and get the IDs
     #--------------------------------------------
 
-admin.units.map <- as.matrix(read.table( PAR.admin.regions.map, skip=6 ))
+#admin.units.map <- as.matrix(read.table( PAR.admin.regions.map, skip=6 ))
+
+setwd(PAR.current.run.directory)
+admin.units.map <- as.matrix(read.table( PAR.admin.regions.map.downloaded, skip=6 ))
 all.unique.ids <- unique(as.vector( admin.units.map ) )
 unique.ids <- sort(all.unique.ids[which( all.unique.ids != PAR.NODATA_value )])
 orig.ids <- unique.ids
