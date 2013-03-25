@@ -18,6 +18,19 @@ safe.remove.file.if.exists <- function( filename ) {
   }
 }
 
+#-----------------------------------------------------------------------------
+
+# obtained from http://r.789695.n4.nabble.com/Extracting-File-Basename-without-Extension-td878817.html
+
+# RECURSIVE function to remove the extension of a filename
+no.extension <- function(astring) {
+  if (substr(astring, nchar(astring), nchar(astring))==".") {
+    return(substr(astring, 1, nchar(astring)-1))
+  } else {
+    no.extension(substr(astring, 1, nchar(astring)-1))
+  }
+}
+
 
 #-----------------------------------------------------------------------------
 

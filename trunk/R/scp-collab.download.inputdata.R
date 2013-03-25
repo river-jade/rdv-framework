@@ -8,7 +8,6 @@
 rm( list = ls( all=TRUE ))
 
 source( 'variables.R' )
-source( 'w.R' )
 
 cat( '\n----------------------------------' )
 cat( '\n  scp-collab.download.inputdata.R ' )
@@ -18,5 +17,10 @@ cat( '\n----------------------------------\n' )
 # Download the required inputdata
 
 setwd( PAR.current.run.directory )
-download.file(PAR.input.data.zipfile.URL, destfile ="input_data.zip")
-unzip("input_data.zip" )
+
+# Download the zip file, to a file with the same name as the original zip file
+download.file( paste(PAR.input.data.zipfile.url, PAR.input.data.zipfile.url.filename, sep=''),
+               destfile=PAR.input.data.zipfile.url.filename)
+
+# Unzip the zipfile
+unzip( PAR.input.data.zipfile.url.filename )

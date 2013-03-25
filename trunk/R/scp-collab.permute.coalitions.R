@@ -16,13 +16,6 @@ cat( '\n  scp-collab.permute.coalitions.R ' )
 cat( '\n----------------------------------\n' )
 
 
-## # First download the data
-## curr.dir <- getwd()
-## setwd( PAR.current.run.directory )
-## download.file(PAR.input.data.zipfile.URL, destfile ="input_data.zip")
-## unzip("input_data.zip" )
-## setwd( curr.dir ) 
-
 
     #--------------------------------------------
     # Read in the current admin file and get the IDs
@@ -30,7 +23,7 @@ cat( '\n----------------------------------\n' )
 
 #admin.units.map <- as.matrix(read.table( PAR.admin.regions.map, skip=6 ))
 
-setwd(PAR.current.run.directory)
+setwd (PAR.current.run.directory )
 admin.units.map <- as.matrix(read.table( PAR.admin.regions.map.downloaded, skip=6 ))
 all.unique.ids <- unique(as.vector( admin.units.map ) )
 unique.ids <- sort(all.unique.ids[which( all.unique.ids != PAR.NODATA_value )])
