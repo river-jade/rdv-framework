@@ -3,15 +3,19 @@ base_params:
     variables:
         PAR.num.spp.in.reserve.selection: 200 #790
 
-        PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
+        # Not the is old - just for use when using input data stored locally
+        # PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
 
         # Coalitions
         PAR.permute.admin.regions: False
         PAR.num.coalitions: 4
 
-        # Remote input data
-        PAR.input.data.zipfile.URL: http://glass.eres.rmit.edu.au/tzar_input/scp-collab/input_data.zip
+        # Remote input data (downloaded from glass)
+        PAR.input.data.zipfile.url: http://glass.eres.rmit.edu.au/tzar_input/scp-collab/
+        PAR.input.data.zipfile.url.filename: input_data.zip
         PAR.admin.regions.map.downloaded: input_data/admin_regions.asc
+        PAR.path.to.spp.hab.map.files.downloaded: input_data/
+        PAR.delete.downloaded.data.at.end.of.run: True
 
         # Zonation
         PAR.path.to.zonation: ../lib/zonation

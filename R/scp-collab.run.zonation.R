@@ -1,7 +1,7 @@
 # Does all the file copying then
 # Runs zonation 
 
-# source( 'run.zonation.scp-collab.R' )
+# source( 'scp-collab.run.zonation.R' )
 
     #------------------------------------------------------------
     #  Other code that needs to be sourced
@@ -25,8 +25,8 @@ current.os <- sessionInfo()$R.version$os
 
 spp.used.in.reserve.selection.vector <- 1:PAR.num.spp.in.reserve.selection
 
-
 source.dir <- getwd()
+
 cat( "\n The path to the run dir is", PAR.current.run.directory )
 cat( "\n The path back to the source tree is ", source.dir)
 
@@ -34,20 +34,29 @@ cat( "\n The path back to the source tree is ", source.dir)
     # Copy the Zonation data file to the output dir
     #--------------------------------------------
 
-copy.z.files <- function( from.filename ) {
+copy.single.zonation.settings.files <- function( from.filename ) {
 
-  # Note the hack  Z.settings.file.full.path is a global variable as it's needed below
+  # This function copies the default zonation settings file from its
+  # location in the rdv-framework sourcecode to the output directory
+  # for use with running zonation.
+
+  # Full path to file in the rdv-framework sourcecode
   full.from.filename <- paste( PAR.path.to.zonation, '/', from.filename, sep = '' )
+
+  # Full path to desitnation 
   Z.settings.file.full.path <- paste(  PAR.current.run.directory, '/',  from.filename, sep = '' )
+
+  # Copy the file
   if( !file.copy( full.from.filename, Z.settings.file.full.path, overwrite = TRUE ) ) {
     cat( '\nCould not copy',from.filename, 'to', Z.settings.file.full.path, '\n' )
     stop( '\nAborted due to error.', call. = FALSE )
   }
+
+  # Return the fullpath to the file
   return( Z.settings.file.full.path )
 }
 
-
-Z.settings.file.full.path <- copy.z.files( PAR.zonation.parameter.filename )
+Z.settings.file.full.path <- copy.single.zonation.settings.files( PAR.zonation.parameter.filename )
 
 
     #--------------------------------------------
@@ -59,19 +68,28 @@ zonation.spp.list.full.filename <- paste( PAR.current.run.directory, '/',
 # delete old one if already there
 if(file.exists(zonation.spp.list.full.filename)) file.remove( zonation.spp.list.full.filename ) 
 
+zonation.spp.list.full.filename
 
-file.list <- dir( PAR.path.to.spp.hab.map.files, pattern="^m" )
-# pattern="^m" is regex for files starting with m
-# need this becuase all spp maps start with m so want these but don't want the admin map which starts with "a"
+downloaded.input.data.dir <- paste( PAR.current.run.directory, '/', PAR.path.to.spp.hab.map.files.downloaded, sep='')
+# file.list <- dir( PAR.path.to.spp.hab.map.files, pattern="^m" ) # old - used for local copy
+file.list <- dir( downloaded.input.data.dir, pattern="^m" )
+# The pattern="^m" is regex for files starting with m. This is needed
+# as all spp maps start with "m", and want to exclude the admin map
+# which starts with "a"
 
+# Now dynamicly create the Zonation file: zonation_spp_list.dat
 for( cur.spp.id in spp.used.in.reserve.selection.vector ) {
 
-  path.to.file <- paste( source.dir, '/', PAR.path.to.spp.hab.map.files, sep='')
+  # path.to.file <- paste( source.dir, '/', PAR.path.to.spp.hab.map.files, sep='') # old - used for local copy
+  path.to.file <- PAR.path.to.spp.hab.map.files.downloaded
+  # If runnig on a windows system, replace the "/" with "\" (need to test that this wrokd as expected!!)
   if( current.os == 'mingw32' ) path.to.file <- gsub("/", "\\\\", path.to.file )
+  
   line.of.text <- paste( "1.0 1.0 1 1 1 ", paste(path.to.file, file.list[cur.spp.id],sep=''), "\n", sep='' )
   cat( line.of.text, file = zonation.spp.list.full.filename, append = TRUE )
   
 }
+
 
     #--------------------------------------------
     # If using admin units, generate the admin input files
@@ -91,8 +109,8 @@ if( PAR.use.administrative.units ){
   # Administrative units description file
   cat ( '#ID    G_A    beta_A    name\n' , file = PAR.zonation.admu.desc.file, append = TRUE );
   for( i in 1:PAR.num.admin.units ) {
-    line.of.text <- paste ( i, '    1    1    ',  'R', i, '\n', sep='' )
-    cat( line.of.text, file = PAR.zonation.admu.desc.file, append = TRUE );
+    line.of.text2 <- paste ( i, '    1    1    ',  'R', i, '\n', sep='' )
+    cat( line.of.text2, file = PAR.zonation.admu.desc.file, append = TRUE );
   }
 
   # Administrative units weights matrix file
@@ -161,7 +179,7 @@ if( PAR.use.administrative.units ){
   # to set "Edge removal" to zero when reloading a solution otherwise it
   # crashes http://consplan.it.helsinki.fi/software/issues/27
   setwd(source.dir)
-  copy.z.files( PAR.zonation.reload.parameter.filename )
+  copy.single.zonation.settings.files( PAR.zonation.reload.parameter.filename )
   setwd( PAR.current.run.directory )
   
   
