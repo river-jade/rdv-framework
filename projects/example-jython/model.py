@@ -19,7 +19,4 @@ class Model(basemodel.BaseModel):
         # this is useful if you want to use arithmetic operations within python.
         variables = self.get_decimal_params(runparams)
 
-        # NOTE: this run_r_code fucntion calls the example on the R
-        # directory ie rdv-framework/R/example.R
-
-        self.run_r_code("example.R", runparams)
+        self.logger.fine("\nTest variable 4 is the string: %s" % variables['test.variable.4'])
