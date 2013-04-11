@@ -1,0 +1,4 @@
+--scpusername=ubuntu
+--dburl="jdbc:postgresql://glass.eres.rmit.edu.au:8080/tzar?user=tzar&password=Asc#!in"
+
+
