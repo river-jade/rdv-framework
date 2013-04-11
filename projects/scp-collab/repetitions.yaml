@@ -2,8 +2,15 @@
 # Note that also the original value of the variable is not used.
 
 repetitions:
-  - variables:
-     PAR.variable.to.test.repetitions: 1
+#  - variables:
+#      PAR.variable.to.test.repetitions: 1
 
-  - variables:
-     PAR.variable.to.test.repetitions: 2
+#  - variables:
+#     PAR.variable.to.test.repetitions: 2
+
+generators:
+  - key: PAR.num.coalitions
+    generator_type: linear_step
+    start: 2
+    step_size: 1
+    count: 10    # max value 0.02

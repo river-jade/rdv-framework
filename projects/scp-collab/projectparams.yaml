@@ -78,4 +78,4 @@ scenarios:
         variables:
             PAR.use.administrative.units: True
             PAR.permute.admin.regions: True
-            PAR.num.coalitions: 14
+            PAR.num.coalitions: 4
