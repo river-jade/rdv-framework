@@ -15,6 +15,21 @@ cat( '\n  scp-collab.eval.z.results.R     ' )
 cat( '\n----------------------------------\n' )
 
     #--------------------------------------------
+    # First work out how many different coalitions there really
+    # are. As each admin region is randomly assigned to a coalition,
+    # the total number of coalitions after sampling might be less then
+    # the actual number to sample from.
+    #--------------------------------------------
+
+# skip the first row as it has the col names in it
+admin.remapping <- read.table(  PAR.admin.regions.id.mapping.filename, skip=1 )
+
+# get the number of unique coalitions that were randomly chosen
+actual.no.of.coalitions <- length(unique(admin.remapping[,2]))
+
+
+
+    #--------------------------------------------
     # Read in the .curves.txt file and extract relevant bits
     #--------------------------------------------
 
@@ -59,12 +74,12 @@ get.landscape.lost.when.av.spp.prop.remain.is <- function( spp.prop ) {
 # calcualte the prop of the landscape that needs to be removed for
 # different mean spp proportions to be left and write it to file
 
-cat( 'av_spp_rep', 'prop_landscap\n', file=PAR.z.mean.props.summary.filename, append=TRUE)
+cat( 'av_spp_rep', 'prop_landscap', 'no_coal\n', file=PAR.z.mean.props.summary.filename, append=TRUE)
 
 for( x in c(0.1,0.2,0.3, 0.4) ) {
   prop.rem <- get.landscape.lost.when.av.spp.prop.remain.is(x)
   cat( '\n Prop landscape when av spp rep =', x, 'is', prop.rem )
-  cat( x, prop.rem, '\n', file=PAR.z.mean.props.summary.filename, append=TRUE)
+  cat( x, prop.rem, actual.no.of.coalitions, '\n', file=PAR.z.mean.props.summary.filename, append=TRUE)
 }
 cat('\n')
 
