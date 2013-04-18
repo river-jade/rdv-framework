@@ -1,6 +1,10 @@
 project_name: Example Project
 base_params: 
     variables: 
+        # Random seed based on run_id. The $$ syntax specifies that this value 
+        # is to be substituted at runtime.
+        random.seed: $$run_id$$
+
         test.variable.1: 123
         test.variable.2: 456
         test.variable.3: xyz
