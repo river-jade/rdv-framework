@@ -16,4 +16,5 @@ class Model(basemodel.BaseModel):
         # this is useful if you want to use arithmetic operations within python.
         variables = self.get_decimal_params(runparams)
 
+        self.logger.fine("\nRandom.seed is %s" % variables['random.seed'])
         self.logger.fine("\nTest variable 4 is the string: %s" % variables['test.variable.4'])
