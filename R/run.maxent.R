@@ -1,3 +1,56 @@
+#=========================================================================================
+
+#  To run this code locally using tzar (by calling the R code from model.py):
+
+#      cd /Users/bill/D/rdv-framework
+
+#          All of this goes on one line; I've broken it here for clarity.
+#      java -jar tzar.jar 
+#           execlocalruns 
+#           --runnerclass=JythonRunner  
+#           --projectspec=projects/guppy/projectparams.yaml 
+#           --localcodepath=. 
+#           --commandlineflags="-p guppy"
+
+
+
+
+#          All of this goes on one line; I've broken it here for clarity.
+#      java -jar tzar.jar execlocalruns --runnerclass=au.edu.rmit.tzar.runners.RRunner  --projectspec=projects/guppy/projectparams.yaml --localcodepath=. --commandlineflags="-p guppy"
+
+# b01211027b-02b:rdv-framework Bill$ java -jar tzar.jar execlocalruns --runnerclass=au.edu.rmit.tzar.runners.RRunner  --projectspec=projects/guppy/projectparams.yaml --localcodepath=. --commandlineflags="-p guppy"
+# [INFO|5:16:13]: Created 1 runs. 
+# [INFO|5:16:13]: Creating temporary outputdir: /Users/Bill/tzar/outputdata/Guppy/default_runset/3_Scen_1.inprogress 
+# [INFO|5:16:13]: Running model: ., run_id: 3, Project name: Guppy, Scenario name: Scen 1, Flags: -p guppy 
+# [SEVERE|5:16:14]: An unrecoverable error occurred. 
+# au.edu.rmit.tzar.api.RdvException: Error parsing flag string: [-p, guppy]
+# 	at au.edu.rmit.tzar.runners.SystemRunner.parseFlags(SystemRunner.java:63)
+# 	at au.edu.rmit.tzar.runners.RRunner.runModel(RRunner.java:24)
+# 	at au.edu.rmit.tzar.ExecutableRun.execute(ExecutableRun.java:113)
+# 	at au.edu.rmit.tzar.commands.ExecLocalRuns.executeRun(ExecLocalRuns.java:73)
+# 	at au.edu.rmit.tzar.commands.ExecLocalRuns.execute(ExecLocalRuns.java:51)
+# 	at au.edu.rmit.tzar.commands.Main.main(Main.java:78)
+# Caused by: com.beust.jcommander.ParameterException: The following option is required:     --rscript 
+# 	at com.beust.jcommander.JCommander.validateOptions(JCommander.java:314)
+# 	at com.beust.jcommander.JCommander.parse(JCommander.java:276)
+# 	at com.beust.jcommander.JCommander.parse(JCommander.java:258)
+# 	at au.edu.rmit.tzar.runners.SystemRunner.parseFlags(SystemRunner.java:61)
+# 	... 5 more
+# b01211027b-02b:rdv-framework Bill$ 
+
+#  java -jar tzar.jar execlocalruns --runnerclass=au.edu.rmit.tzar.runners.RRunner --projectspec=projects/guppy/projectparams.yaml --localcodepath=. --commandlineflags="-p guppy --rscript=run.maxent.R"
+
+# b01211027b-02b:rdv-framework Bill$ java -jar tzar.jar execlocalruns --runnerclass=au.edu.rmit.tzar.runners.RRunner --projectspec=projects/guppy/projectparams.yaml --localcodepath=. --commandlineflags="-p guppy --rscript=run.maxent.R"
+# [INFO|5:20:09]: Created 1 runs. 
+# [INFO|5:20:09]: Creating temporary outputdir: /Users/Bill/tzar/outputdata/Guppy/default_runset/4_Scen_1.inprogress 
+# [INFO|5:20:09]: Running model: ., run_id: 4, Project name: Guppy, Scenario name: Scen 1, Flags: -p guppy --rscript=run.maxent.R 
+# [INFO|5:20:09]: Renaming "/Users/Bill/tzar/outputdata/Guppy/default_runset/4_Scen_1.inprogress" to "/Users/Bill/tzar/outputdata/Guppy/default_runset/4_Scen_1.failed" 
+# [WARNING|5:20:09]: Run 4 failed. 
+# [WARNING|5:20:09]: Executed 1 runs: 0 succeeded. 1 failed 
+# [WARNING|5:20:09]: Failed IDs were: [4] 
+# b01211027b-02b:rdv-framework Bill$ 
+
+#=========================================================================================
 
 # source( 'run.maxent.R' )
 
@@ -98,3 +151,6 @@ system ( maxentCmd )
 
 
 setwd( source.dir )
+
+#=========================================================================================
+
