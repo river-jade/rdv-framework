@@ -24,7 +24,7 @@
 	#  Because I was not building the probability distribution, that was
 	#  ok.  Maxent wanted them as files, not as matrices.
 	#
-	#  What I need to do now (thursday 3/28) is load the matrices from
+	#  What I need to do now (thursday 3/28/13) is load the matrices from
 	#  the files I've moved from glass.  At that point, I will be able
 	#  to build the probability distribution and create the true presences
 	#  and the sampled presences, like I did in Austin but have not done here
@@ -88,6 +88,8 @@ genEnvLayers <- function ()
 		}
 			cat ("\n\nenvLayersDir = '", envLayersDir, "'", sep='')
 
+	fileSizeSuffix = variables$PAR.fileSizeSuffix
+
 	minH = 1
 	maxH = 10
 	minImgNum = 1
@@ -149,14 +151,17 @@ genEnvLayers <- function ()
 			#  May want to use the 256x256 images instead of the 1024x1024 images...
 			#  http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H01/H01_1.256.asc
 
-		for (suffix in c(".tif", ".asc", ".pnm"))   #
+#		for (suffix in c(".tif", ".asc", ".pnm"))   #
+#		for (suffix in c(".asc", ".pnm"))   #
+		for (suffix in c(".asc", ".pgm"))   #
 			{
 			imgFileName = paste (imgFileRoot, suffix, sep='')
 			fullImgFileDestPath = paste (cur.full.maxent.env.layers.dir.name, "/",
 										 eLayerFileNamePrefix, imgFileName, sep='')
 					cat ("\n\nfullImgFileDestPath = '", fullImgFileDestPath,  "'", sep='')
 
-			srcFile = paste (envSrcDir, imgFileName, sep='')
+			srcImgFileName = paste (imgFileRoot, fileSizeSuffix, suffix, sep='')
+			srcFile = paste (envSrcDir, srcImgFileName, sep='')
 					cat ("\nsrcFile = '", srcFile, "'")
 
 			if (useRemoteEnvDir)
@@ -182,7 +187,8 @@ genEnvLayers <- function ()
 				}  #  end else - using local env dir files
 
 					cat ("\n\nsuffix = '", suffix, "'\n", sep='')
-			if (suffix == ".pnm")
+#			if (suffix == ".pnm")
+			if (suffix == ".pgm")
 				{
 						cat ("\n\nsuffix is .pnm so adding env.layer\n", sep='')
 						cat ("\nlength (env.layers) before = '", length(env.layers), sep='')

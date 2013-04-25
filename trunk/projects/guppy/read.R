@@ -127,7 +127,8 @@ read.asc.file.to.matrix <-
   {
   name.of.file.to.read <- paste (base.asc.filename.to.read, '.asc', sep='')
   asc.file.as.matrix <-
-  as.matrix (read.table (paste (input.dir, name.of.file.to.read, sep=''),
+###  as.matrix (read.table (paste (input.dir, name.of.file.to.read, sep=''),
+  as.matrix (read.table (paste (input.dir, base.asc.filename.to.read, sep=''),
 	                       skip=6))
 
   return (asc.file.as.matrix)
