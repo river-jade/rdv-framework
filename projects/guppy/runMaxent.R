@@ -94,7 +94,9 @@ num.rows <- imgDimensions [1]
 num.cols <- imgDimensions [2]
 num.cells <- num.rows * num.cols
 
-cat ("\n\n img is ", num.rows, " rows by ", num.cols, " cols for total cell ct = ", num.cells, sep='')
+cat ("\n\n>>>  After genEnvLayers(), num.env.layers = ", num.env.layers, sep='')
+cat ("\n>>>                        imgDimensions = ", imgDimensions)
+cat ("\n>>>                        img is ", num.rows, " rows by ", num.cols, " cols for total cell ct = ", num.cells, sep='')
 
 	#--------------------------------------------
 	#  Generate true relative probability maps.
@@ -103,7 +105,7 @@ cat ("\n\n img is ", num.rows, " rows by ", num.cols, " cols for total cell ct =
 if (variables$PAR.genTruePresWithArithmeticCombinations)
 	{
 	#num.true.presences = get.num.true.presences.for.each.spp ()
-	true.rel.prob.dists.for.spp =
+#	true.rel.prob.dists.for.spp =
 		get.true.rel.prob.dists.for.all.spp.ARITH (env.layers, num.env.layers
 		#,
 		#									 num.true.presences
@@ -120,8 +122,8 @@ if (variables$PAR.genTruePresWithArithmeticCombinations)
 		#	3) Return that as the true relative probability map.
 		#--------------------------------------------------------------------
 
-	true.rel.prob.dists.for.spp =
-		get.true.rel.prob.dists.for.all.spp.MAXENT ()
+#	true.rel.prob.dists.for.spp =
+		get.true.rel.prob.dists.for.all.spp.MAXENT (env.layers, num.env.layers)
 	}
 
 	#----------------------------
@@ -134,15 +136,15 @@ num.true.presences = get.num.true.presences.for.each.spp ()
 list.of.true.presences.and.x.y.locs = genTruePresences (num.true.presences)
 combined.spp.true.presences.table =
 	list.of.true.presences.and.x.y.locs [["combined.spp.true.presences.table"]]
-true.presence.locs.x.y =
-	list.of.true.presences.and.x.y.locs [["true.presence.locs.x.y"]]
+all.spp.true.presence.locs.x.y =
+	list.of.true.presences.and.x.y.locs [["all.spp.true.presence.locs.x.y"]]
 
 	#-------------------------------
 	#  Generate sampled presences.
 	#-------------------------------
 
 combined.spp.sampled.presences.table =
-	createSampledPresences (num.true.presences)
+	createSampledPresences (num.true.presences, all.spp.true.presence.locs.x.y)
 
 	#----------------------------------
 	#  Generate all of the presences.

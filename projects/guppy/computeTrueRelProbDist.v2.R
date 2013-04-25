@@ -1,6 +1,6 @@
 #===============================================================================
 
-						#  computeTrueRelProbDist.v4.R
+						#  computeTrueRelProbDist.v2.R
 
 #  Compute the true relative probability distribution for each species.
 
@@ -13,19 +13,6 @@
 #  source ('computeTrueRelProbDist.R')
 
 #  History:
-
-#  2013.04.16 - BTL -  v4
-#  Abandoning the S4 nonsense.  Reverting to v2 version of this file.
-
-#  2013.04.16 - BTL -  v3
-#  Trying to convert this to S4 objects, but once again, it's proving difficult
-#  to figure out how to phrase things since the R documentation tends to only
-#  give examples for methods like "plot", rather than more complicated things
-#  that I want to do.  Plus, I can't see the command to do the setGeneric()
-#  for plot() and that means I'm uncertain how to mimic it.  This is probably
-#  a complete waste of time and I should just get something working now and
-#  do the oop stuff in python instead of endlessly screwing around with
-#  guessing the appropriate syntax and trickery for S4 in R.
 
 #  2013.04.14 - BTL -  v2
 #  Pulling out the bit that writes the matrix to a file and moving it up a
@@ -74,7 +61,7 @@ normalize.prob.distribution.from.env.layers = function (rel.prob.matrix)
 
 #===============================================================================
 
-computeRelProbDist.ARITH = function (spp.id, spp.name, env.layers, num.env.layers)
+computeRelProbDist = function (spp.id, spp.name, env.layers, num.env.layers)
 	{
 	cat ("\n\nin computeRelProbDist, num.env.layers = '", num.env.layers, "'\n\n", sep='')
 	cat ("\n\nlength (env.layers) = '", length (env.layers), "'\n\n", sep='')
@@ -83,11 +70,7 @@ computeRelProbDist.ARITH = function (spp.id, spp.name, env.layers, num.env.layer
 
 	if (PAR.use.old.maxent.output.for.input)
 		{
-		norm.prob.matrix =
-			read.asc.file.to.matrix (
-#									spp.name,
-									paste (spp.name, ".asc", sep=''),
-									PAR.old.maxent.output.dir)
+		norm.prob.matrix = read.asc.file.to.matrix (spp.name, PAR.old.maxent.output.dir)
 
 		norm.prob.matrix <-
 				normalize.prob.distribution.from.env.layers (norm.prob.matrix)

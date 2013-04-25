@@ -19,7 +19,7 @@
 		#  sampled occurrence layer to feed to maxent.
 		#---------------------------------------------------------------------
 
-createSampledPresences = function (num.true.presences)
+createSampledPresences = function (num.true.presences, all.spp.true.presence.locs.x.y)
 {
     #  This is just a hack for now.
     #  Need to figure out a better way to pass in arrays of numbers of
@@ -27,7 +27,7 @@ createSampledPresences = function (num.true.presences)
 PAR.num.samples.to.take = num.true.presences
 if (! PAR.use.all.samples)
     {
-    PAR.num.samples.to.take = num.true.presences / 2
+    PAR.num.samples.to.take = as.integer (num.true.presences / 2)
     }
 
 for (spp.id in 1:variables$PAR.num.spp.to.create)
@@ -40,22 +40,25 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 
 	if (PAR.use.all.samples)
 	  {
-	  sampled.locs.x.y = true.presence.locs.x.y
+	  sampled.locs.x.y = all.spp.true.presence.locs.x.y [[spp.id]]
 
 	  } else
 	  {
-	  num.samples.to.take = min (num.true.presences, PAR.num.samples.to.take)
+	  num.samples.to.take = min (num.true.presences [spp.id], PAR.num.samples.to.take)
 	  sample.presence.indices.into.true.presence.indices =
 			sample (1:(num.true.presences [spp.id]),
 					num.samples.to.take,
 					replace=FALSE)  #  Should this be WITH rep instead?
+cat ("\n\n>>>  num.samples.to.take = '", num.samples.to.take, "'", sep='')
+cat ("\n\n>>>  num.true.presences [", spp.id, "] = '", num.true.presences [spp.id], "'", sep='')
+cat ("\n\n>>>  sample.presence.indices.into.true.presence.indices = '", sample.presence.indices.into.true.presence.indices, "'")
 	  sampled.locs.x.y <-
 		  build.presence.sample (sample.presence.indices.into.true.presence.indices,
-								 true.presence.locs.x.y)
+								 all.spp.true.presence.locs.x.y [[spp.id]])
 	  }
 
 	#  temporary comment to try to get rid of sample points on image - aug 25 2011
-	# plot (true.presence.locs.x.y [,1], true.presence.locs.x.y [,2],
+	# plot (all.spp.true.presence.locs.x.y [[spp.id]] [,1], all.spp.true.presence.locs.x.y [[spp.id]] [,2],
 	# 	  xlim = c (0, num.cols), ylim = c(0, num.rows),
 	# 	  asp = 1,
 	# 	  main = paste ("True presences \nnum.true.presences = ",

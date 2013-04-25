@@ -1,6 +1,6 @@
 #===============================================================================
 
-						#  computeTrueRelProbDist.v4.R
+						#  computeTrueRelProbDist.v3.R
 
 #  Compute the true relative probability distribution for each species.
 
@@ -13,9 +13,6 @@
 #  source ('computeTrueRelProbDist.R')
 
 #  History:
-
-#  2013.04.16 - BTL -  v4
-#  Abandoning the S4 nonsense.  Reverting to v2 version of this file.
 
 #  2013.04.16 - BTL -  v3
 #  Trying to convert this to S4 objects, but once again, it's proving difficult
@@ -74,7 +71,7 @@ normalize.prob.distribution.from.env.layers = function (rel.prob.matrix)
 
 #===============================================================================
 
-computeRelProbDist.ARITH = function (spp.id, spp.name, env.layers, num.env.layers)
+computeRelProbDist = function (spp.id, spp.name, env.layers, num.env.layers)
 	{
 	cat ("\n\nin computeRelProbDist, num.env.layers = '", num.env.layers, "'\n\n", sep='')
 	cat ("\n\nlength (env.layers) = '", length (env.layers), "'\n\n", sep='')
@@ -83,11 +80,7 @@ computeRelProbDist.ARITH = function (spp.id, spp.name, env.layers, num.env.layer
 
 	if (PAR.use.old.maxent.output.for.input)
 		{
-		norm.prob.matrix =
-			read.asc.file.to.matrix (
-#									spp.name,
-									paste (spp.name, ".asc", sep=''),
-									PAR.old.maxent.output.dir)
+		norm.prob.matrix = read.asc.file.to.matrix (spp.name, PAR.old.maxent.output.dir)
 
 		norm.prob.matrix <-
 				normalize.prob.distribution.from.env.layers (norm.prob.matrix)
@@ -171,6 +164,51 @@ computeRelProbDist.ARITH = function (spp.id, spp.name, env.layers, num.env.layer
 
 	return (norm.prob.matrix)
 	}
+
+#===============================================================================
+
+setClass ("SppRelProbDistGenerator",
+		representation (genName = "character"),
+#		prototype (name = NA_character_, age = NA_real_)
+		)
+
+setClass ("ArithSppRelProbDistGenerator",
+		representation (genName = "character"),
+		contains = "SppRelProbDistGenerator"
+		)
+
+setClass ("MaxentSppRelProbDistGenerator",
+#		representation (instrument = "character"),
+		contains="SppRelProbDistGenerator"
+		)
+
+#--------------------
+
+setGeneric ("genSppRelProbMap",
+			function (object, spp.id, spp.name, env.layers, num.env.layers)
+				{ standardGeneric ("genSppRelProbMap") }
+			)
+
+setMethod ("genSppRelProbMap",
+			signature("ArithSppRelProbDistGenerator",
+						"numeric", "character", "numeric", "numeric"),
+			function (object, spp.id, spp.name, env.layers, num.env.layers)
+				{
+				return (computeRelProbDist (spp.id, spp.name,
+											env.layers, num.env.layers))
+				}
+			)
+
+setMethod ("genSppRelProbMap",
+			signature("MaxentSppRelProbDistGenerator",
+						"numeric", "character", "numeric", "numeric"),
+			function (object, spp.id, spp.name, env.layers, num.env.layers)
+				{
+				cat ("\n\n>>>  genSppRelProbMap() method not defined yet for ",
+						"MaxentSppRelProbDistGenerator.\n\n", sep='')
+				stop()
+				}
+			)
 
 #===============================================================================
 

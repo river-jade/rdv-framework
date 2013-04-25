@@ -36,6 +36,11 @@ build.presence.sample =
 	    #  subsample of the original population with no errors.
 		#-------------------------------------------------------------------
 
+cat ("\n\n+++  sample.presence.indices.into.true.presence.indices = '", sample.presence.indices.into.true.presence.indices, "'")
+cat ("\n\n+++  true.presence.locs.x.y = \n")
+print (true.presence.locs.x.y)
+cat ("\n")
+
 	sample.locs.x.y =
 	    true.presence.locs.x.y [sample.presence.indices.into.true.presence.indices,]
 
@@ -155,4 +160,6 @@ draw.filled.contour.img <- function (img.matrix,
     #      side = 1, line = 4, adj = 1, cex = .66)
                     )
     }
+
+#=========================================================================================
 

@@ -239,12 +239,12 @@ get.true.rel.prob.dists.for.all.spp.ARITH = function (env.layers, num.env.layers
 
 		}  #  end for - all species
 
-	return (true.rel.prob.dists.for.spp)
+#	return (true.rel.prob.dists.for.spp)
 	}
 
 #===============================================================================
 
-get.true.rel.prob.dists.for.all.spp.MAXENT = function ()
+get.true.rel.prob.dists.for.all.spp.MAXENT = function (env.layers, num.env.layers)
 	{
 
 	cat ("\n\nGenerate true rel prob map using maxent.\n\n")
@@ -352,15 +352,15 @@ get.true.rel.prob.dists.for.all.spp.MAXENT = function ()
 
 	cat ("\n\nDone copying files...\n\n")
 
-		} else  #  No option chosen
-		{
-		cat ("\n\nNo option chosen for how to generate true rel prob map.\n\n")
-		stop()
-		}
+## 		} else  #  No option chosen
+## 		{
+## 		cat ("\n\nNo option chosen for how to generate true rel prob map.\n\n")
+## 		stop()
+## 		}
 
 
 
-	return (true.rel.prob.dists.for.spp)
+#	return (true.rel.prob.dists.for.spp)
 	}
 
 #===============================================================================

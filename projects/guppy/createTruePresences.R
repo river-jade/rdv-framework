@@ -1,20 +1,23 @@
-#=========================================================================================
+#===============================================================================
 
 #                               createTruePresences.R
 
 # source( 'createTruePresences.R' )
 
-#=========================================================================================
+#===============================================================================
 
 #  History:
 
 #  2013.04 - BTL
 #  Split out of guppy.test.maxent.v9.R and later versions of runMaxent.R.
 
-#=========================================================================================
+#===============================================================================
 
 genTruePresences = function (num.true.presences)
 {
+all.spp.true.presence.locs.x.y =
+		vector (mode="list", length=variables$PAR.num.spp.to.create)
+
 for (spp.id in 1:variables$PAR.num.spp.to.create)
 	{
 	spp.name <- paste ('spp.', spp.id, sep='')
@@ -24,7 +27,13 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 		#  and to make sure everything went ok.
 		#----------------------------------------------------------------
 
-	norm.prob.matrix = true.rel.prob.dists.for.spp [[spp.id]]
+#	norm.prob.matrix = true.rel.prob.dists.for.spp [[spp.id]]
+	filename = paste (prob.dist.layers.dir.with.slash,
+								variables$PAR.trueProbDistFilePrefix,
+								".", spp.name, '.asc', sep='')
+	norm.prob.matrix = read.asc.file.to.matrix (filename)
+
+
 
 	num.rows <- (dim (norm.prob.matrix)) [1]
 	num.cols <- (dim (norm.prob.matrix)) [2]
@@ -82,12 +91,12 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 	names (true.presences.table) <- c('species', 'longitude', 'latitude')
 
 		#--------------------------------------------------------------------
-		  #  Write the true presences out to a .csv file to be fed to maxent.
-		  #  This will represent the case of "perfect" information
+		#  Write the true presences out to a .csv file to be fed to maxent.
+		#  This will represent the case of "perfect" information
 		#  (for a given population size), i.e., it contains the true
 		#  location of every member of the population at the time of the
 		#  sampling.  For stationary species like plants, this will be
-		  #  "more perfect" than for things that can move around.
+		#  "more perfect" than for things that can move around.
 		#--------------------------------------------------------------------
 
 
@@ -110,6 +119,9 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 			   row.names = FALSE,
 			   quote=FALSE)
 
+
+	all.spp.true.presence.locs.x.y [[spp.id]] = true.presence.locs.x.y
+
 		#-----------------------------------------------------------------
 		#  Append the true presences to a combined table of presences
 		#  for all species.
@@ -118,13 +130,13 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 	combined.spp.true.presences.table <-
 		rbind (combined.spp.true.presences.table, true.presences.table)
 
-	#===============================================================================
+	#===========================================================================
 
 	}  #  end for - all species
 
 return (list (combined.spp.true.presences.table=combined.spp.true.presences.table,
-				true.presence.locs.x.y=true.presence.locs.x.y))
+				all.spp.true.presence.locs.x.y=all.spp.true.presence.locs.x.y))
 }
 
-#=========================================================================================
+#===============================================================================
 

@@ -1,7 +1,18 @@
 project_name: Guppy
 base_params:
     variables:
-        PAR.num.spp.to.create: 2
+        PAR.num.spp.to.create: 3
+        PAR.use.random.num.true.presences: FALSE
+            #  Note that this PAR.num.true.presences list needs to have
+            #  one entry for each spp if PAR.use.random.num.true.presences is
+            #  FALSE.  That is, you need to give a number for each species.
+        PAR.num.true.presences:
+            - 50
+            - 100
+            - 75
+        PAR.min.true.presence.fraction.of.landscape: 0.01
+        PAR.max.true.presence.fraction.of.landscape: 0.50
+
         PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
 
         #PAR.spp.hab.map.filename.root: ../spp
@@ -14,7 +25,8 @@ base_params:
         PAR.maxent.env.layers.base.name:  "MaxentEnvLayers"
         PAR.maxent.samples.base.name:  "MaxentSamples"
         PAR.do.maxent.replicates: TRUE
-        PAR.num.maxent.replicates: 3
+#        PAR.do.maxent.replicates: FALSE
+        PAR.num.maxent.replicates: 10
 
         PAR.analysis.dir.name: "ResultsAnalysis"
 
@@ -36,23 +48,19 @@ base_params:
         PAR.remoteEnvDir: "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
         PAR.localEnvDir: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
 
+        PAR.fileSizeSuffix: ".256"      #  if using 256x256 env layers
+        #PAR.fileSizeSuffix: ""         #  if using full size env layers
+
         PAR.random.seed: 17
         PAR.num.processors: 1
 
-        PAR.numEnvLayers: 2
+        PAR.numEnvLayers: 5
 
         PAR.use.old.maxent.output.for.input: FALSE
         PAR.old.maxent.output.dir: "/Users/bill/tzar/outputdata/Guppy_Scen_1_4/MaxentOutputs/"
 
         CONST.product.rule: 1
         CONST.add.rule: 2
-
-        PAR.use.random.num.true.presences: FALSE
-        PAR.num.true.presences:
-            - 50
-            - 100
-        PAR.min.true.presence.fraction.of.landscape: 0.01
-        PAR.max.true.presence.fraction.of.landscape: 0.50
 
         PAR.use.old.maxent.output.for.input: FALSE
 
@@ -62,18 +70,21 @@ base_params:
         PAR.use.pnm.env.layers: TRUE
 
         PAR.show.abs.error.in.dist: TRUE
-        PAR.show.percent.error.in.dist: FALSE
+#        PAR.show.percent.error.in.dist: FALSE
+        PAR.show.percent.error.in.dist: TRUE
         PAR.show.abs.percent.error.in.dist: TRUE
-        PAR.truncated.percent.err.img: FALSE
-        PAR.show.heatmap: FALSE
-        PAR.show.raw.error.in.dist: FALSE
-
+#        PAR.truncated.percent.err.img: FALSE
+        PAR.truncated.percent.err.img: TRUE
+#        PAR.show.heatmap: FALSE
+        PAR.show.heatmap: TRUE
+#        PAR.show.raw.error.in.dist: FALSE
+        PAR.show.raw.error.in.dist: TRUE
         PAR.use.all.samples: FALSE
 
         PAR.genTruePresWithArithmeticCombinations: FALSE
         PAR.genTruePresWithMaxent: TRUE
-        PAR.minNumPres: 1
-        PAR.maxNumPres: 5
+        PAR.minNumPres: 3
+        PAR.maxNumPres: 9
 
         PAR.trueProbDistFilePrefix: "true.prob.dist"
 

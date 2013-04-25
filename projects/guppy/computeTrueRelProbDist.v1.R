@@ -1,6 +1,6 @@
 #===============================================================================
 
-						#  computeTrueRelProbDist.v4.R
+						#  computeTrueRelProbDist.R
 
 #  Compute the true relative probability distribution for each species.
 
@@ -13,29 +13,8 @@
 #  source ('computeTrueRelProbDist.R')
 
 #  History:
-
-#  2013.04.16 - BTL -  v4
-#  Abandoning the S4 nonsense.  Reverting to v2 version of this file.
-
-#  2013.04.16 - BTL -  v3
-#  Trying to convert this to S4 objects, but once again, it's proving difficult
-#  to figure out how to phrase things since the R documentation tends to only
-#  give examples for methods like "plot", rather than more complicated things
-#  that I want to do.  Plus, I can't see the command to do the setGeneric()
-#  for plot() and that means I'm uncertain how to mimic it.  This is probably
-#  a complete waste of time and I should just get something working now and
-#  do the oop stuff in python instead of endlessly screwing around with
-#  guessing the appropriate syntax and trickery for S4 in R.
-
-#  2013.04.14 - BTL -  v2
-#  Pulling out the bit that writes the matrix to a file and moving it up a
-#  couple of levels to the file computeSppDistributions.R since that's
-#  where the true prob distribution is built.  Here you're only normalizing
-#  any matrix that you're handed, so it shouldn't be writing the matrix to
-#  a file as the true probability distribution.
-
-#  2013 04 04 - BTL - v1
-#  Extracted from guppy.test.maxent.v9.R.
+#		2013 04 04 - BTL
+#			Extracted from guppy.test.maxent.v9.R.
 
 #===============================================================================
 
@@ -52,7 +31,12 @@
 
 #===============================================================================
 
-normalize.prob.distribution.from.env.layers = function (rel.prob.matrix)
+CONST.product.rule = variables$CONST.product.rule
+CONST.add.rule = variables$CONST.add.rule
+
+#===============================================================================
+
+normalize.prob.distribution.from.env.layers <- function (rel.prob.matrix)
         #normalize.prob.distribution.from.env.layers <- function (env.layers)
 	{
 		#--------------------------------------------------------------------------
@@ -69,12 +53,116 @@ normalize.prob.distribution.from.env.layers = function (rel.prob.matrix)
 	norm.prob.matrix <- rel.prob.matrix / tot.rel.prob.matrix
 	cat ("\nsum of norm.prob.matrix = ", sum (norm.prob.matrix), " (should = 1).\n")
 
+	#---------------------------------------------------------------------------
+	#  May want to move all this file writing a couple of levels higher in
+	#  the calling chain.  At the upper levels, I couldn't figure out where
+	#  the true probability map was being written out and this isn't a
+	#  function for creating the true prob dist.  It's a function for
+	#  normalizing that could be called by any other routine, not just by
+	#  the one computing true prob of presence.
+	#  BTL - 2013.04.14
+	#---------------------------------------------------------------------------
+		#--------------------------------------------------------------------------------
+		#  Write the normalized distribution to a csv image so that it can
+		#  be inspected later if you want.
+		#  May want to write to something other than csv, but it's easy for
+		#  the moment.
+		#
+		#  One small problem:
+    	#  Can't seem to get write.csv() to leave off the column headings,
+    	#  no matter what options I choose.  R even complains if I use the
+    	#  col.names=NA option as advertised in the help file.
+    	#
+    	#  On the web, I did find a write.matrix() function in MASS that
+    	#  doesn't add the column headings, but it's much slower than
+		#  write.csv() so I won't use it at this point.
+		#      library (MASS)
+		#      write.matrix (norm.prob.matrix, file = true.prob.dist.filename, sep=',')
+		#--------------------------------------------------------------------------------
+
+  filename.root = paste (prob.dist.layers.dir, "/true.prob.dist.", spp.name, sep='')
+  num.img.rows = dim (norm.prob.matrix)[1]
+  num.img.cols = dim (norm.prob.matrix)[2]
+
+	true.prob.dist.csv.filename <- paste (filename.root, ".csv", sep='')
+	cat ("\nWriting norm.tot.prod.matrix to ", true.prob.dist.csv.filename, "\n", sep='')
+	write.csv (norm.prob.matrix, file = true.prob.dist.csv.filename, row.names = FALSE)
+
+  cat ("\nWriting norm.tot.prod.matrix to ", filename.root, ".asc", "\n", sep='')
+      #  NOTE:
+      # Both the maxent env input layers (e.g., H05_1.asc) and the maxent
+      # output layers have the following header when the image is 256x256:
+
+      # ncols         256
+      # nrows         256
+      # xllcorner     1
+      # yllcorner     1
+      # cellsize      1
+      # NODATA_value  -9999
+
+      # Running write.asc() with the defaults gives the following header,
+      # which Zonation chokes on (I think that it thinks all values are 0):
+
+      # ncols         256
+      # nrows         256
+      # xllcorner     0
+      # yllcorner     0
+      # cellsize      1
+      # NODATA_value  0
+
+      # So, need to run write.asc() specifying all options to match the
+      # maxent input headers.
+
+#  write.asc.file (norm.prob.matrix, filename.root, num.img.rows, num.img.cols);
+	write.asc.file (norm.prob.matrix, filename.root,
+					  num.img.rows, num.img.cols
+					  , xllcorner = 1    #  Looks like maxent adds the xy values to xllcorner, yllcorner
+					  , yllcorner = 1    #  so they must be (0,0) instead of (1,1), i.e., the origin
+										 #  is not actually on the map.  It's just off the lower
+										 #  left corner.
+					  , no.data.value = -9999
+					  , cellsize = 1
+					 )
+
+	cat ("\nWriting norm.tot.prod.matrix to ", filename.root, ".pgm", "\n", sep='')
+	write.pgm.file (norm.prob.matrix, filename.root, num.img.rows, num.img.cols);
+
+		#-----------------------------------------------------------------
+		#  Show a heatmap representation of the probability distribution
+		#  if desired.
+		#-----------------------------------------------------------------
+
+		#  WHERE WOULD A HEATMAP SHOW UP ON TZAR SINCE IT'S NOT SHOWING THE TERMINAL
+		#  ANYWHERE THAT I KNOW OF?
+		#  DO I HAVE TO WRITE IT TO A FILE?
+		#  BTL - 2013 04 08
+
+	show.heatmap <- FALSE
+	if (show.heatmap)
+		{
+    		#-----------------------------------------------------------------------
+   			#  standard color schemes that I know of that you can use:
+    		#  heat.colors(n), topo.colors(n), terrain.colors(n), and cm.colors(n)
+    		#
+    		#  I took this code from an example I found on the web and it uses
+    		#  some options that I don't know anything about but it works.
+    		#  May want to refine it later.
+    		#-----------------------------------------------------------------------
+
+		heatmap (norm.prob.matrix,
+		 		Rowv = NA, Colv = NA,
+		 		col = heat.colors (256),
+				###		 scale="column",     #  This can rescale colors within columns.
+		 		margins = c (5,10)
+		 		)
+		}
+
 	return (norm.prob.matrix)
 	}
 
 #===============================================================================
 
-computeRelProbDist.ARITH = function (spp.id, spp.name, env.layers, num.env.layers)
+computeRelProbDist = function (spp.id, spp.name, env.layers, num.env.layers)
 	{
 	cat ("\n\nin computeRelProbDist, num.env.layers = '", num.env.layers, "'\n\n", sep='')
 	cat ("\n\nlength (env.layers) = '", length (env.layers), "'\n\n", sep='')
@@ -83,11 +171,7 @@ computeRelProbDist.ARITH = function (spp.id, spp.name, env.layers, num.env.layer
 
 	if (PAR.use.old.maxent.output.for.input)
 		{
-		norm.prob.matrix =
-			read.asc.file.to.matrix (
-#									spp.name,
-									paste (spp.name, ".asc", sep=''),
-									PAR.old.maxent.output.dir)
+		norm.prob.matrix = read.asc.file.to.matrix (spp.name, PAR.old.maxent.output.dir)
 
 		norm.prob.matrix <-
 				normalize.prob.distribution.from.env.layers (norm.prob.matrix)

@@ -69,16 +69,46 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 
 		#  Load the maxent output distribution into a matrix.
 	maxent.rel.prob.dist =
-			read.asc.file.to.matrix (spp.name, maxent.output.dir.with.slash)
+			read.asc.file.to.matrix (
+#									spp.name,
+									paste (spp.name, ".asc", sep=''),
+									maxent.output.dir.with.slash)
 
 		#  Normalize the matrix to allow comparison with true distribution.
 	tot.maxent.rel.prob.dist = sum (maxent.rel.prob.dist)
 	maxent.norm.prob.dist = maxent.rel.prob.dist/tot.maxent.rel.prob.dist
-	sum (maxent.norm.prob.dist)  #  Make sure it's a prob dist, i.e., sums to 1
+
+		#  Make sure it's a prob dist, i.e., sums to 1
+	cat ("\n\n sum (maxent.norm.prob.dist) = '", sum (maxent.norm.prob.dist),
+		"'.  Should == 1.\n\n")
+
+################################################################################
+#####  2013 04 25 - BTL
+#####  THIS IS A TOTAL HACK THAT NEEDS TO BE CLEANED UP.
+#####  NORM.PROB.MATRIX WAS SUPPOSED TO ALREADY HAVE BEEN NORMALIZED BEFORE
+#####  IT WAS WRITTEN TO A FILE, BUT IT ISN'T, SO I'M NORMALIZING IT HERE.
+#####  THIS WASN'T NECESSARY WHEN I WAS CREATING PROBABILITY DISTRIBUTIONS
+#####  USING ARITHMETIC SINCE IT WAS DONE CORRECTLY THEN.
+#####  NOW, I'M USING MAXENT OUTPUT FILES AS THE TRUE PROB DIST AND THEY
+#####  DON'T SEEM TO BE NORMALIZED.
+
+	norm.prob.matrix =
+			read.asc.file.to.matrix (paste (prob.dist.layers.dir.with.slash,
+									variables$PAR.trueProbDistFilePrefix,
+									".", spp.name, '.asc', sep=''))
+
+#####  start of hack
+			tot.norm.prob.matrix = sum (norm.prob.matrix)
+			norm.prob.matrix = norm.prob.matrix / tot.norm.prob.matrix
+#####  end of hack
+
+	cat ("\n\n sum (norm.prob.matrix) = '", sum (norm.prob.matrix),
+		"'.  Should also == 1.\n\n")
+################################################################################
 
 		#  Compute the difference between the correct and maxent probabilities
 		#  and save it to a file for display.
-	norm.prob.matrix = true.rel.prob.dists.for.spp [[spp.id]]
+
 	err.between.maxent.and.true.prob.dists =
 			maxent.norm.prob.dist - norm.prob.matrix
 
@@ -166,8 +196,8 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 	tot.err.magnitude <- sum (err.magnitudes)
 	max.err.magnitude <- max (err.magnitudes)
 
-	  ####  PROBLEM: norm.prob.matrix not defined?  maxent.norm.prob.dist not defined?
-	####  Actually, norm.problmatrix IS defined.  Not sure why this comment is here.
+	####  PROBLEM: norm.prob.matrix not defined?  maxent.norm.prob.dist not defined?
+	####  Actually, norm.prob.matrix IS defined.  Not sure why this comment is here.
 	####  May be vestigial. Will leave it though until I clean everything up and
 	####  make sure it's ok to delete it.
 	####  BTL - 2011.09.22
@@ -228,23 +258,33 @@ epsilon = 1e-09
 	#  that matches whatever byrow conventions are used there.
 percent.err.magnitudes = err.magnitudes
 
+#cat ("\n\nComputing percent.err.magnitudes\n")
 for (curIdx in 1:length(err.magnitudes))
 	{
+		#  %% indicates x mod y and
+		#  %/% indicates integer division
+
+#	if ((curIdx %% 50) == 0)  cat("\n")
+
 	retVal = NA
 	curErrMag = err.magnitudes [curIdx]
 	corVal = norm.prob.matrix [curIdx]
 	if (curErrMag == 0)
 		{
 		retVal = 0
+#		cat ("0")
 		} else if (corVal == 0)
 		{
 		retVal = 100 * curErrMag / epsilon
+#		cat ("1")
 		} else
 		{
 		retVal = 100 * curErrMag / corVal
+#		cat ("3")
 		}
 	percent.err.magnitudes [curIdx] = retVal
 	}
+#cat ("\n\nDone computing percent.err.magnitudes\n")
 
 ## percent.err.magnitudes [(err.magnitudes == 0)] = 0
 ## minAndMax = range(x[(!is.infinite(x) & !is.nan(x))])
@@ -551,8 +591,10 @@ cat ("\n\n")
 	if (variables$PAR.do.maxent.replicates)
 		{
 		maxent.bootstrap.sd =
-			read.asc.file.to.matrix (paste ("/", spp.name, "_stddev", sep=''),
-									 maxent.output.dir)
+			read.asc.file.to.matrix (
+#									paste ("/", spp.name, "_stddev", sep=''),
+									paste ("/", spp.name, "_stddev", ".asc", sep=''),
+									maxent.output.dir)
 
 	#  Just realized this is probably not necessary because maxent
 	#  writes a .png of the sd values in the plots directory.
