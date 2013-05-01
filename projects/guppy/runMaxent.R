@@ -161,6 +161,8 @@ maxentSamplesFileName = combinedPresSamplesFileName
 maxentOutputDir = maxent.output.dir
 bootstrapMaxent = variables$PAR.do.maxent.replicates
 
+if (FALSE)
+{
 runMaxentCmd (maxentSamplesFileName, maxentOutputDir,
 				bootstrapMaxent)
 
@@ -170,6 +172,12 @@ runMaxentCmd (maxentSamplesFileName, maxentOutputDir,
 	#----------------------------------------------------------------
 
 evaluateMaxentResults ()
+}
+	#----------------------------------------------------------------
+	#  Set up input files and paths to run zonation, then run it.
+	#----------------------------------------------------------------
+
+source ('/Users/Bill/D/rdv-framework/projects/guppy/runZonation.R')
 
 #===============================================================================
 
