@@ -13,6 +13,25 @@
 
 #=========================================================================================
 
+
+
+#  Many things in here have an absolute path that looks like this:
+#
+#			/Users/Bill/D/rdv-framework/lib/maxent
+#
+#  This will fail when moved to windows or linux because rdv is not in:
+#
+#			/Users/Bill/D
+#
+#  Is that lead-in for rdv's location available somewhere as a variable
+#  in the variables list?
+
+
+
+
+
+
+
 	#---------------------------------------------------------------------
     #  Temporary fixes to things that were set in guppy.test.maxent.v9.R
     #  but don't seem to appear anywhere here.
@@ -227,7 +246,7 @@ cat ("\n\ncombinedPresSamplesFileName = '", combinedPresSamplesFileName, "'\n\n"
 PAR.path.to.maxent = variables$'PAR.path.to.maxent'
 cat ("\n\nPAR.path.to.maxent = '", PAR.path.to.maxent, "'", sep='')
 
-maxent.full.path.name <- paste (PAR.path.to.maxent,  '/', 'maxent.jar', sep = '')
+maxent.full.path.name <- paste (startingDir, "/", PAR.path.to.maxent,  '/', 'maxent.jar', sep = '')
 
 cat ("\n\nmaxent.full.path.name = '", maxent.full.path.name, "'")
 

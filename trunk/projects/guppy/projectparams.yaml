@@ -13,14 +13,18 @@ base_params:
         PAR.min.true.presence.fraction.of.landscape: 0.01
         PAR.max.true.presence.fraction.of.landscape: 0.50
 
-        PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
+#        PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
+        PAR.num.spp.in.reserve.selection: 3    #  No reserve selection yet.
 
         #PAR.spp.hab.map.filename.root: ../spp
         PAR.spp.hab.map.filename.root: MaxentOutputs/spp
         PAR.spp.hab.map.filename.root.win: MaxentOutputs\\spp
 
         # Maxent
-        PAR.path.to.maxent:  "/Users/Bill/D/rdv-framework/lib/maxent"
+###        PAR.path.to.maxent:  "/Users/Bill/D/rdv-framework/lib/maxent"
+#			Assuming you're sitting in rdv-framework/projects/guppy/
+        PAR.path.to.maxent:  "lib/maxent"
+
         PAR.path.to.maxent.input.data:  ".."    #  relative to output dir?  projects dir?
         PAR.maxent.env.layers.base.name:  "MaxentEnvLayers"
         PAR.maxent.samples.base.name:  "MaxentSamples"
@@ -31,17 +35,35 @@ base_params:
         PAR.analysis.dir.name: "ResultsAnalysis"
 
         # Zonation
-        PAR.path.to.zonation: ../lib/zonation
+###        PAR.path.to.zonation: "/Users/Bill/D/rdv-framework/lib/zonation"
+#			Assuming you're sitting in rdv-framework/projects/guppy/
+        PAR.path.to.zonation: "lib/zonation"
+
         PAR.zonation.parameter.filename: Z_parameter_settings.dat
         PAR.zonation.spp.list.filename: zonation_spp_list.dat
         PAR.zonation.exe.filename: zig2.exe
-        PAR.zonation.output.filename: zonation_output
+
+
+#        PAR.zonation.output.filename: zonation_output
+        PAR.zonation.app.spp.list.filename: "zonation_app_spp_list.dat"
+        PAR.zonation.app.output.filename: "zonation_app_output"
+        PAR.zonation.cor.spp.list.filename: "zonation_cor_spp_list.dat"
+        PAR.zonation.cor.output.filename: "zonation_cor_output"
+
+
+###        PAR.app.spp.hab.map.filename.root: "/Users/bill/D/Projects_RMIT/AAA_PapersInProgress/G01_simulated_ecology/MaxentTests/MaxentOutputs/spp"
+###    Still not right.  Needs to be built in the code I think, but close enough for the moment...
+###        PAR.app.spp.hab.map.filename.root: "/Users/bill/D/Projects_RMIT/AAA_PapersInProgress/G01_simulated_ecology/MaxentTests/MaxentOutputs/spp"
+
 
         PAR.variable.to.test.repetitions: -99
 
-        PAR.rdv.directory: "/Users/Bill/D/rdv-framework"
-
-        PAR.pathToRfiles: '/Users/Bill/D/rdv-framework/projects/guppy/'
+#			Assuming you're sitting in rdv-framework/projects/guppy/
+#        PAR.rdv.directory: "/Users/Bill/D/rdv-framework"
+        PAR.rdv.directory: "./"
+#			Assuming you're sitting in rdv-framework/projects/guppy/
+#        PAR.pathToRfiles: '/Users/Bill/D/rdv-framework/projects/guppy/'
+        PAR.pathToRfiles: './projects/guppy/'
 
         #  Location of environment layers (e.g., local dir or on dir on glass)
         PAR.useRemoteEnvDir: FALSE
@@ -57,7 +79,7 @@ base_params:
         PAR.numEnvLayers: 5
 
         PAR.use.old.maxent.output.for.input: FALSE
-        PAR.old.maxent.output.dir: "/Users/bill/tzar/outputdata/Guppy_Scen_1_4/MaxentOutputs/"
+##        PAR.old.maxent.output.dir: "/Users/bill/tzar/outputdata/Guppy_Scen_1_4/MaxentOutputs/"
 
         CONST.product.rule: 1
         CONST.add.rule: 2
@@ -96,6 +118,7 @@ base_params:
         PAR.prob.dist.layers.dir.name: "MaxentProbDistLayers"
         PAR.maxent.output.dir.name: "MaxentOutputs"
         PAR.maxent.gen.output.dir.name: "MaxentGenOutputs"
+        PAR.zonation.files.dir.name: "Zonation"
 
 
 scenarios:
