@@ -249,11 +249,13 @@ stop()
 
 zonation.app.rank =
     read.asc.file.to.matrix ("zonation_app_output.rank",
-                             "/Users/bill/D/Projects_RMIT/AAA_PapersInProgress/G01_simulated_ecology/MaxentTests/Zonation/")
+    						zonation.files.dir.with.slash)
+#"/Users/bill/D/Projects_RMIT/AAA_PapersInProgress/G01_simulated_ecology/MaxentTests/Zonation/")
 
 zonation.cor.rank =
     read.asc.file.to.matrix ("zonation_cor_output.rank",
-                             "/Users/bill/D/Projects_RMIT/AAA_PapersInProgress/G01_simulated_ecology/MaxentTests/Zonation/")
+    						zonation.files.dir.with.slash)
+#"/Users/bill/D/Projects_RMIT/AAA_PapersInProgress/G01_simulated_ecology/MaxentTests/Zonation/")
 
     #--------------------
 
@@ -265,7 +267,8 @@ num.img.rows <- dim (err.between.app.and.zonation.ranks) [1]
 num.img.cols <- dim (err.between.app.and.zonation.ranks) [2]
 
 write.pgm.file (err.between.app.and.zonation.ranks,
-				paste (analysis.dir, "raw.error.in.zonation.ranks", sep=''),
+				paste (zonation.files.dir.with.slash,
+						"raw.error.in.zonation.ranks", sep=''),
             	num.img.rows, num.img.cols)
 
     #-------------------------------------------------------------------------
@@ -310,7 +313,8 @@ err.magnitudes <- abs (err.between.app.and.zonation.ranks)
 #                 , cellsize = 1
 #                 )
 write.pgm.file (err.magnitudes,
-				paste (analysis.dir, "abs.error.in.zonation.ranks", sep=''),
+				paste (analysis.dir.with.slash,
+						"abs.error.in.zonation.ranks", sep=''),
             	num.img.rows, num.img.cols)
 
 
@@ -341,12 +345,14 @@ percent.err.magnitudes <- (err.magnitudes / zonation.cor.rank) * 100
 hist (percent.err.magnitudes [percent.err.magnitudes <= 100])
 
 write.pgm.file (percent.err.magnitudes,
-				paste (analysis.dir, "percent.error.in.zonation.ranks", sep=''),
+				paste (analysis.dir.with.slash,
+						"percent.error.in.zonation.ranks", sep=''),
             	num.img.rows, num.img.cols)
 
 abs.percent.err.magnitudes <- abs (percent.err.magnitudes)
 write.pgm.file (abs.percent.err.magnitudes,
-				paste (analysis.dir, "abs.percent.error.in.zonation.ranks", sep=''),
+				paste (analysis.dir.with.slash,
+						"abs.percent.error.in.zonation.ranks", sep=''),
             	num.img.rows, num.img.cols)
 
 
@@ -357,7 +363,8 @@ write.pgm.file (abs.percent.err.magnitudes,
 truncated.err.img <- abs.percent.err.magnitudes
 truncated.err.img [percent.err.magnitudes >= 50] <- 50
 write.pgm.file (truncated.err.img,
-				paste (analysis.dir, "truncated.zonation.rank.percent.err.img", sep=''),
+				paste (analysis.dir.with.slash,
+						"truncated.zonation.rank.percent.err.img", sep=''),
             	num.img.rows, num.img.cols)
 
 
@@ -376,7 +383,8 @@ write.pgm.file (truncated.err.img,
                              )
     if (write.to.file)  dev.off()
 
-    if (write.to.file)  tiff (paste (analysis.dir, "raw.error.zonation.rank.map.tiff", sep=''))
+    if (write.to.file)  tiff (paste (analysis.dir.with.slash,
+    								"raw.error.zonation.rank.map.tiff", sep=''))
 #    plot.main.title <- "Percent error in Zonation rank"
 #    plot.key.title <- "Error\n(percent)"
 #    draw.filled.contour.img (truncated.err.img, plot.main.title, plot.key.title)
