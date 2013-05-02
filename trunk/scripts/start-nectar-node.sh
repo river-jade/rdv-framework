@@ -1,11 +1,9 @@
 #!/bin/sh
 
-# Database connection string
-export TZAR_DB='jdbc:postgresql://glass.eres.rmit.edu.au:8080/tzar?user=tzar&password=Asc#!in'
-
-# If using the old ARCS db then replace line(s)above
-# on exporting TZAR_DB with the following:
-# export #TZAR_DB='jdbc:postgresql://arcs-01.ivec.org:5432/rdv?user=rdv&password=Asc#!in'
+if [[ -z $TZAR_DB ]];
+then
+  echo "The TZAR_DB environment variable must be set for tzar to function correctly"
+fi
 
 cd /home/ubuntu
 
@@ -20,8 +18,8 @@ wget http://rdv-framework.googlecode.com/svn/trunk/R/install.packages.R
 cat << EOF >start-tzar.sh
 export TZAR_DIR="/home/ubuntu/tzar"
 
-if [ ! -d  \$TZAR_DIR ]; then
- mkdir \$TZAR_DIR
+if [ ! -d \$TZAR_DIR ]; then
+  mkdir \$TZAR_DIR
 fi
 
 start-stop-daemon --start --pidfile=\$TZAR_DIR/tzar.pid --startas /home/ubuntu/bin/tzar.sh >> \$TZAR_DIR/consolelog 2>&1
@@ -39,8 +37,8 @@ export TZAR_DIR="/home/ubuntu/tzar"
 echo -n "Starting tzar node client:"
 
 export TZAR_DB="$TZAR_DB"
-if [ ! -d  \$TZAR_DIR ]; then
- mkdir \$TZAR_DIR
+if [ ! -d \$TZAR_DIR ]; then
+  mkdir \$TZAR_DIR
 fi
 
 # run tzar
