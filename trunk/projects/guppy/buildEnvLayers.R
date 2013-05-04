@@ -76,15 +76,25 @@ genEnvLayers <- function ()
 			cat ("\n\nuseRemoteEnvDir = '", useRemoteEnvDir, "'", sep='')
 
 			cat ("\n\nvariables$PAR.remoteEnvDir = '", variables$PAR.remoteEnvDir, "'", sep='')
-			cat ("\n\nvariables$PAR.localEnvDir = '", variables$PAR.localEnvDir, "'", sep='')
+			cat ("\n\nvariables$PAR.localEnvDirMac = '", variables$PAR.localEnvDirMac, "'", sep='')
+			cat ("\n\nvariables$PAR.localEnvDirWin = '", variables$PAR.localEnvDirWin, "'", sep='')
 
 	#envLayersDir = "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
 	envLayersDir = variables$PAR.remoteEnvDir
 
 	if (!useRemoteEnvDir)
 		{
-		envLayersDir = variables$PAR.localEnvDir
+##		envLayersDir = variables$PAR.localEnvDir
 		#envLayersDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
+
+		if (current.os == "mingw32")
+			{
+			envLayersDir = variables$PAR.localEnvDirWin
+
+			} else
+			{
+			envLayersDir = variables$PAR.localEnvDirMac
+			}
 		}
 			cat ("\n\nenvLayersDir = '", envLayersDir, "'", sep='')
 

@@ -57,28 +57,57 @@
 
 #===============================================================================
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/w.R')
-source ('/Users/Bill/D/rdv-framework/projects/guppy/read.R')
-source ('/Users/Bill/D/rdv-framework/projects/guppy/guppySupportFunctions.R')
+# First get the OS
+#   for linux this returns linux-gnu
+#   for mac this returns darwin9.8.0
+#   for windos this returns mingw32
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/guppyInitializations.R')
+current.os <- sessionInfo()$R.version$os
+cat ("\n\nos = '", current.os, "'\n", sep='')
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/buildEnvLayers.R')
+dir.slash = "/"
+#if (current.os == 'mingw32')  dir.slash = "\\"
+if (current.os == "mingw32")  dir.slash = "\\"
+cat ("\n\ndir.slash = '", dir.slash, "'\n", sep='')
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/genCombinedSppPresTable.R')
+#===============================================================================
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/computeTrueRelProbDist.R')
-source ('/Users/Bill/D/rdv-framework/projects/guppy/computeSppDistributions.R')
+rdvRootDir = getwd()
+rdvSharedRsrcDir = paste (rdvRootDir, "/R", sep='')
+guppyProjectRsrcDir = paste (rdvRootDir, "/Projects/Guppy", sep='')
+guppyProjectRsrcDirWithSlash = paste (guppyProjectRsrcDir, "/", sep='')
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/createTruePresences.R')
+cat ("\n\nrdvRootDir = ", rdvRootDir, sep='')
+cat ("\nrdvSharedRsrcDir = ", rdvSharedRsrcDir, sep='')
+cat ("\nguppyProjectRsrcDirWithSlash = ", guppyProjectRsrcDirWithSlash, sep='')
+cat ("\n\n")
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/createSampledPresences.R')
+#stop()
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/saveCombinedPresencesForMaxent.R')
+#===============================================================================
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/runMaxentCmd.R')
+source (paste (guppyProjectRsrcDirWithSlash, 'w.R', sep=''))
+source (paste (guppyProjectRsrcDirWithSlash, 'read.R', sep=''))
+source (paste (guppyProjectRsrcDirWithSlash, 'guppySupportFunctions.R', sep=''))
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/evaluateMaxentResults.R')
+source (paste (guppyProjectRsrcDirWithSlash, 'guppyInitializations.R', sep=''))
+
+source (paste (guppyProjectRsrcDirWithSlash, 'buildEnvLayers.R', sep=''))
+
+source (paste (guppyProjectRsrcDirWithSlash, 'genCombinedSppPresTable.R', sep=''))
+
+source (paste (guppyProjectRsrcDirWithSlash, 'computeTrueRelProbDist.R', sep=''))
+source (paste (guppyProjectRsrcDirWithSlash, 'computeSppDistributions.R', sep=''))
+
+source (paste (guppyProjectRsrcDirWithSlash, 'createTruePresences.R', sep=''))
+
+source (paste (guppyProjectRsrcDirWithSlash, 'createSampledPresences.R', sep=''))
+
+source (paste (guppyProjectRsrcDirWithSlash, 'saveCombinedPresencesForMaxent.R', sep=''))
+
+source (paste (guppyProjectRsrcDirWithSlash, 'runMaxentCmd.R', sep=''))
+
+source (paste (guppyProjectRsrcDirWithSlash, 'evaluateMaxentResults.R', sep=''))
 
 #===============================================================================
 
@@ -161,8 +190,8 @@ maxentSamplesFileName = combinedPresSamplesFileName
 maxentOutputDir = maxent.output.dir
 bootstrapMaxent = variables$PAR.do.maxent.replicates
 
-if (FALSE)
-{
+#if (FALSE)
+#{
 runMaxentCmd (maxentSamplesFileName, maxentOutputDir,
 				bootstrapMaxent)
 
@@ -172,12 +201,12 @@ runMaxentCmd (maxentSamplesFileName, maxentOutputDir,
 	#----------------------------------------------------------------
 
 evaluateMaxentResults ()
-}
+#}
 	#----------------------------------------------------------------
 	#  Set up input files and paths to run zonation, then run it.
 	#----------------------------------------------------------------
 
-source ('/Users/Bill/D/rdv-framework/projects/guppy/runZonation.R')
+source (paste (guppyProjectRsrcDirWithSlash, 'runZonation.R', sep=''))
 
 #===============================================================================
 

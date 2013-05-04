@@ -82,19 +82,35 @@ runMaxentCmd = function (maxentSamplesFileName, maxentOutDir, bootstrapMaxent)
 	#  distribution.
 	#----------------------------------------------------------------------
 
+		#  Maxent's command line parsing chokes on Windows file names that
+		#  contain spaces, so you need to put quotes around all the path
+		#  or file names that you hand to it.
+filenameQuote = '"'
+
 maxentCmd = paste ('java -mx512m -jar ',
 
+	filenameQuote,
 					maxent.full.path.name,
+	filenameQuote,
 
 #                       ' outputdirectory=MaxentOutputs',
-				   ' outputdirectory=', maxentOutDir,
+				   ' outputdirectory=',
+	filenameQuote,
+				   maxentOutDir,
+	filenameQuote,
 
 				   #' samplesfile=../MaxentSamples/spp.sampledPres.combined.csv',
 #                       ' samplesfile=',PAR.input.directory, '/spp.sampledPres.combined.csv',
 #				   ' samplesfile=',cur.full.maxent.samples.dir.name, '/spp.sampledPres.combined.csv',
-				   ' samplesfile=', maxentSamplesFileName,
+				   ' samplesfile=',
+	filenameQuote,
+				   maxentSamplesFileName,
+	filenameQuote,
 
-				   ' environmentallayers=', cur.full.maxent.env.layers.dir.name,
+				   ' environmentallayers=',
+	filenameQuote,
+				   cur.full.maxent.env.layers.dir.name,
+	filenameQuote,
 
 						#  If you have more than one processor in your
 						#  machine, then setting the thread count to the
