@@ -33,6 +33,7 @@ EOF
 cat << EOF > tzar.sh
 #!/bin/bash
 export TZAR_DIR="/home/ubuntu/tzar"
+export DISPLAY=:1
 
 echo -n "Starting tzar node client:"
 
