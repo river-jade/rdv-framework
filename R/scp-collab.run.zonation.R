@@ -160,9 +160,20 @@ system.command.run.zonation <- paste( system.specific.cmd, full.path.to.zonation
                                      PAR.Z.output.prefix,
                                      "0.0 0 1.0 1" ) 
 
-cat( '\n\nThe system command to run zonation (1st time) is',  system.command.run.zonation )
-system( system.command.run.zonation )      
+system.command <- paste( system.specific.cmd )
+system.command.arguments <- paste( full.path.to.zonation.exe, '-r',
+                                   PAR.zonation.parameter.filename,
+                                   PAR.zonation.spp.list.filename,
+                                   PAR.Z.output.prefix,
+                                   "0.0 0 1.0 1" ) 
 
+
+cat( '\n\nThe system command to run zonation (1st time) is',  system.command.run.zonation )
+
+#system( system.command.run.zonation )      
+system2( system.command, args=system.command.arguments, env="DISPLAY=:1" )      
+
+cat( '\nFinsihed running Zonation' )
 
     #--------------------------------------------
     # If running with Administrative units run zonation again to
