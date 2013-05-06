@@ -22,12 +22,12 @@ if [ ! -d \$TZAR_DIR ]; then
   mkdir \$TZAR_DIR
 fi
 
-start-stop-daemon --start --pidfile=\$TZAR_DIR/tzar.pid --startas /home/ubuntu/bin/tzar.sh >> \$TZAR_DIR/consolelog 2>&1
+/sbin/start-stop-daemon --start --pidfile=\$TZAR_DIR/tzar.pid --startas /home/ubuntu/bin/tzar.sh >> \$TZAR_DIR/consolelog 2>&1
 EOF
 
 cat << EOF > stop-tzar.sh
 #!/bin/bash
-start-stop-daemon --stop --pidfile=\$HOME/tzar/tzar.pid
+/sbin/start-stop-daemon --stop --pidfile=\$HOME/tzar/tzar.pid
 EOF
 
 cat << EOF > tzar.sh
