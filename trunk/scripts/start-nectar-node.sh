@@ -56,9 +56,22 @@ echo "|1|vsNQtnEsu8UD1ivBbbVmz9n/PI0=|AIFdBpKKfm+tYWPsecBdeqE/GL4= ssh-rsa AAAAB
 
 chmod +x bin/*
 
+# update the package list
 apt-get update && \
-apt-get -y install default-jre r-base-core && \
+\
+# install java, R and the virtual X11 framebuffer \
+apt-get -y install default-jre r-base-core xvfb && \
+\
+# install the R packages \
 Rscript bin/install.packages.R && \
+\
+# start the framebuffer in the background \
+Xvfb :1 > /tmp/xvfb.out & \
+\
+# add start-tzar to the crontab so that it will run on reboot, or when started \
+# from an image. \
 su ubuntu -c '(crontab -l; echo "@reboot /home/ubuntu/bin/start-tzar.sh") | crontab -' && \
+\
+# start tzar \
 su ubuntu -c bin/start-tzar.sh
 
