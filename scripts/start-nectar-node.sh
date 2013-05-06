@@ -88,5 +88,6 @@ chmod +x bin/*
 apt-get update && \
 apt-get -y install default-jre r-base-core && \
 Rscript bin/install.packages.R && \
+su ubuntu -c '(crontab -l; echo "@reboot /home/ubuntu/bin/start-tzar.sh") | crontab -' && \
 su ubuntu -c bin/start-tzar.sh
 
