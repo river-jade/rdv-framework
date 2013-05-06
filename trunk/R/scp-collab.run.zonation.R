@@ -204,11 +204,20 @@ if( PAR.use.administrative.units ){
                                     PAR.zonation.spp.list.filename,
                                     reload.output.name,
                                     "0.0 0 1.0 1" )
-
+  
+  system.command <- paste( system.specific.cmd)
+  system.command.arguments <-  paste( full.path.to.zonation.exe,
+                                    paste( '-l',PAR.Z.output.prefix,'.ADMU.redistributed.rank.asc', sep=''),
+                                    #'-lz_output.ADMU.redistributed.rank.asc',
+                                    PAR.zonation.reload.parameter.filename,
+                                    PAR.zonation.spp.list.filename,
+                                    reload.output.name,
+                                    "0.0 0 1.0 1" )
 
   cat( '\nThe system command to run zonation (2nd time) is',  system.command.run.zonation2 )
-  system( system.command.run.zonation2 )
-
+  #system( system.command.run.zonation2 )
+  system2( system.command, args=system.command.arguments, env="DISPLAY=:1" )
+  
   # as admin units were used, want to copy the curves file from
   # reloading the redistributed.rank.asc to be the final .curves.txt
   # file.
