@@ -40,7 +40,7 @@ base_params:
 #			Assuming you're sitting in rdv-framework/projects/guppy/
         PAR.path.to.zonation: "lib/zonation"
         PAR.run.zonation: TRUE
-        PAR.closeZonationWindowOnCompletion: FALSE
+        PAR.closeZonationWindowOnCompletion: TRUE
 
         PAR.zonation.parameter.filename: "Z:\\Bill\\D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
 #        PAR.zonation.parameter.filename: Z_parameter_settings.dat

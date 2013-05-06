@@ -415,8 +415,20 @@ max.err.magnitude <- max (err.magnitudes)
 
   ####  PROBLEM: norm.prob.matrix not defined?  zonation.norm.prob.dist not defined?
 
-npm.vec <- as.vector (norm.prob.matrix)
-mnpd.vec <- as.vector (zonation.norm.prob.dist)
+	########  Should these be cor and app instead?
+	########  I.e., npm.vec ----> norm.prob.cor.vec and
+	########       mnpd.vec ----> norm.prob.app.vec ???
+	########  BTL - 2013.05.06
+
+	########  Also, is it really necessary to convert these to vectors?
+	########  Doesn't R already treat them as vectors except when you apply
+	########  matrix operations to them?
+
+
+#npm.vec <- as.vector (norm.prob.matrix)
+npm.vec <- as.vector (zonation.app.rank)
+#mnpd.vec <- as.vector (zonation.norm.prob.dist)
+mnpd.vec <- as.vector (zonation.cor.rank)
 
 pearson.cor <- cor (npm.vec, mnpd.vec,
      			    method = "pearson"
@@ -554,6 +566,10 @@ write.pgm.file (truncated.err.img,
 
 #===============================================================================
 
+	#  Don't want to do anything with this at the moment, so cutting it out.
+	#  BTL - 2013.05.06.
+if (FALSE)
+{
 library (knnflex)
 num.rows = 256
 num.cols = 256
@@ -572,6 +588,7 @@ for (curRow in 1:num.rows)
   }
 
 dist.between.all.xy.locs = knn.dist (idx.to.xy.table)
+}
 
 #===============================================================================
 
