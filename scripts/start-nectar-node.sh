@@ -36,7 +36,7 @@ export TZAR_DIR="/home/ubuntu/tzar"
 
 echo -n "Starting tzar node client:"
 
-export TZAR_DB="$TZAR_DB"
+export TZAR_DB='$TZAR_DB'
 if [ ! -d \$TZAR_DIR ]; then
   mkdir \$TZAR_DIR
 fi
