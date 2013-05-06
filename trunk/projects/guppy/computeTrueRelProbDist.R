@@ -85,8 +85,8 @@ computeRelProbDist.ARITH = function (spp.id, spp.name, env.layers, num.env.layer
 		{
 		norm.prob.matrix =
 			read.asc.file.to.matrix (
-#									spp.name,
-									paste (spp.name, ".asc", sep=''),
+									spp.name,
+#									paste (spp.name, ".asc", sep=''),
 									PAR.old.maxent.output.dir)
 
 		norm.prob.matrix <-

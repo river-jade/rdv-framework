@@ -125,11 +125,29 @@ read.asc.file.to.matrix <-
 #        function (base.asc.filename.to.read, input.dir = "./")
         function (base.asc.filename.to.read, input.dir = "")
   {
+##  name.of.file.to.read <- paste (base.asc.filename.to.read, '.asc', sep='')
+##  asc.file.as.matrix <-
+#####  as.matrix (read.table (paste (input.dir, name.of.file.to.read, sep=''),
+##  as.matrix (read.table (paste (input.dir, base.asc.filename.to.read, sep=''),
+##	                       skip=6))
+
   name.of.file.to.read <- paste (base.asc.filename.to.read, '.asc', sep='')
+
+#filename.handed.in = paste (input.dir, base.asc.filename.to.read, sep='')
+filename.handed.in = paste (input.dir, name.of.file.to.read, sep='')
+cat ("\n\n====>>  In read.asc.file.to.matrix(), \n",
+		"\tname.of.file.to.read = '", name.of.file.to.read, "\n",
+		"\tbase.asc.filename.to.read = '", base.asc.filename.to.read, "\n",
+		"\tinput.dir = '", input.dir, "\n",
+		"\tfilename.handed.in = '", filename.handed.in, "\n",
+		"\n", sep='')
+
   asc.file.as.matrix <-
-###  as.matrix (read.table (paste (input.dir, name.of.file.to.read, sep=''),
-  as.matrix (read.table (paste (input.dir, base.asc.filename.to.read, sep=''),
+#  as.matrix (read.table (paste (input.dir, base.asc.filename.to.read, sep=''),
+  as.matrix (read.table (paste (input.dir, name.of.file.to.read, sep=''),
 	                       skip=6))
+
+
 
   return (asc.file.as.matrix)
   }

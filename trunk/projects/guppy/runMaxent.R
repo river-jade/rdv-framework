@@ -159,8 +159,12 @@ if (variables$PAR.genTruePresWithArithmeticCombinations)
 	#  Generate true presences.
 	#----------------------------
 
+cat ("\n\n+++++\tBefore ", "get.num.true.presences.for.each.spp", "\n")
+
 #  moved from up above.
 num.true.presences = get.num.true.presences.for.each.spp ()
+
+cat ("\n\n+++++\tBefore", "genTruePresences", "\n")
 
 list.of.true.presences.and.x.y.locs = genTruePresences (num.true.presences)
 combined.spp.true.presences.table =
@@ -172,12 +176,16 @@ all.spp.true.presence.locs.x.y =
 	#  Generate sampled presences.
 	#-------------------------------
 
+cat ("\n\n+++++\tBefore", "createSampledPresences", "\n")
+
 combined.spp.sampled.presences.table =
 	createSampledPresences (num.true.presences, all.spp.true.presence.locs.x.y)
 
 	#----------------------------------
 	#  Generate all of the presences.
 	#----------------------------------
+
+cat ("\n\n+++++\tBefore", "saveCombinedPresencesForMaxent", "\n")
 
 saveCombinedPresencesForMaxent (combined.spp.true.presences.table,
 								combined.spp.sampled.presences.table)
@@ -192,6 +200,8 @@ bootstrapMaxent = variables$PAR.do.maxent.replicates
 
 #if (FALSE)
 #{
+cat ("\n\n+++++\tBefore", "runMaxentCmd", "\n")
+
 runMaxentCmd (maxentSamplesFileName, maxentOutputDir,
 				bootstrapMaxent)
 
@@ -200,11 +210,15 @@ runMaxentCmd (maxentSamplesFileName, maxentOutputDir,
 	#  to the true relative probability maps.
 	#----------------------------------------------------------------
 
+cat ("\n\n+++++\tBefore", "evaluateMaxentResults", "\n")
+
 evaluateMaxentResults ()
 #}
 	#----------------------------------------------------------------
 	#  Set up input files and paths to run zonation, then run it.
 	#----------------------------------------------------------------
+
+cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
 
 source (paste (guppyProjectRsrcDirWithSlash, 'runZonation.R', sep=''))
 

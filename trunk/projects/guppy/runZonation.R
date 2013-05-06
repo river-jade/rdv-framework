@@ -110,7 +110,9 @@ setUpAndRunZonation = function (spp.list.filename,
 								zonation.output.filename,
 								full.path.to.zonation.parameter.file,
 								full.path.to.zonation.exe,
-								runZonation
+								runZonation,
+								sppFilePrefix,
+								closeZonationWindowOnCompletion
 								)
 	{
 	zonation.spp.list.full.filename <-
@@ -125,11 +127,17 @@ setUpAndRunZonation = function (spp.list.filename,
 		#      1.0 1.0 2 10 1.0 /Users/ascelin/analysis/zonation/wine_test2_data/spp2.asc
 		#      1.0 1.0 2 10 1.0 /Users/ascelin/analysis/zonation/wine_test2_data/spp3.asc
 
+zonation.input.maps.dir = gsub ("Documents and Settings", "DOCUME~1", zonation.input.maps.dir)
 	for (cur.spp.id in spp.used.in.reserve.selection.vector)
 		{
 #		filename <- paste (zonation.input.maps.dir, '/', 'spp.', cur.spp.id, '.asc', sep = '' );
-		filename <- paste ('"', zonation.input.maps.dir, dir.slash, 'spp.',
-							cur.spp.id, '.asc', '"', sep = '' );
+##		filename <- paste ('"', zonation.input.maps.dir, dir.slash, 'spp.',
+##							cur.spp.id, '.asc', '"', sep = '' );
+			#  sppFilePrefix is different for correct and apparent species.
+			#  For apparent, it will just be "spp", but for correct,
+			#  it will probably be something like "true.prob.dist.spp".
+		filename <- paste (zonation.input.maps.dir, dir.slash, sppFilePrefix, '.',
+							cur.spp.id, '.asc', sep = '' );
 		line.of.text <- paste ("1.0 1.0 1 1 1 ", filename, "\n", sep = "");
 		cat (line.of.text, file = zonation.spp.list.full.filename, append = TRUE);
 		}
@@ -147,30 +155,52 @@ setUpAndRunZonation = function (spp.list.filename,
 		#  or file names that you hand to it.
 filenameQuote = '"'
 
+full.path.to.zonation.exe = gsub ("Documents and Settings", "DOCUME~1", full.path.to.zonation.exe)
+full.path.to.zonation.parameter.file = gsub ("Documents and Settings", "DOCUME~1", full.path.to.zonation.parameter.file)
+zonation.spp.list.full.filename = gsub ("Documents and Settings", "DOCUME~1", zonation.spp.list.full.filename)
+zonation.full.output.filename = gsub ("Documents and Settings", "DOCUME~1", zonation.full.output.filename)
+
+
+
+
+##	system.command.run.zonation <- paste (
+##	######									'/sw/bin/wine',
+##		filenameQuote,
+##										full.path.to.zonation.exe,
+##		filenameQuote, " ",
+##
+##										'-r', " ",
+##		filenameQuote,
+##										full.path.to.zonation.parameter.file,
+##		filenameQuote, " ",
+##
+##		filenameQuote,
+##										zonation.spp.list.full.filename,
+##		filenameQuote, " ",
+##
+##		filenameQuote,
+##										zonation.full.output.filename,
+##		filenameQuote, " ",
+##
+##
+##	#                                      "0.0 0 1.0 1" ,    #  close Zonation after finished
+##										  "0.0 0 1.0 0" ,    #  stay open after finished
+##										  sep='')
+
+
+##if (closeZonationWindowOnCompletion)
+
 
 	system.command.run.zonation <- paste (
 	######									'/sw/bin/wine',
-		filenameQuote,
 										full.path.to.zonation.exe,
-		filenameQuote, " ",
-
-										'-r', " ",
-		filenameQuote,
+										'-r',
 										full.path.to.zonation.parameter.file,
-		filenameQuote, " ",
-
-		filenameQuote,
 										zonation.spp.list.full.filename,
-		filenameQuote, " ",
-
-		filenameQuote,
 										zonation.full.output.filename,
-		filenameQuote, " ",
-
-
-	#                                      "0.0 0 1.0 1" ,    #  close Zonation after finished
-										  "0.0 0 1.0 0" ,    #  stay open after finished
-										  sep='')
+                                      	"0.0 0 1.0",
+										as.integer (closeZonationWindowOnCompletion)
+										)
 
 	cat( '\n The system command to run zonation will be:', system.command.run.zonation )
 
@@ -205,6 +235,28 @@ full.path.to.zonation.exe <- paste (startingDir, '/',
 
 zonation.files.dir = outputFiles$PAR.zonation.files.dir.name
 zonation.files.dir.with.slash = paste (zonation.files.dir, "/", sep='')
+
+	#  Kluge to deal with lots of Windows problems running zonation
+	#  using file names with embedded spaces.
+	#  So far, they're all due to the "Documents and Settings" directory,
+	#  so I'll deal with that.  In the Windows terminal window you can
+	#  ask Windows for a no-spaces version of the name of a directory
+	#  by using the -x option on dir, e.g., sitting above the
+	#  "Documents and Settings" in C: and giving the command "dir /x", will
+	#  list the shortened names of all the files and directories there,
+	#  including "DOCUME~1 for "Documents and Settings".
+	#  I think that these problems may primarily be coming from the use of
+	#  the Windows environment variable called HOMEPATH to determine
+	#  where to hang the temporary output directories.  I suspect that
+	#  is what tzar is doing.  If we could get tzar to fix it up right
+	#  when it's created, then none of this would be necessary here.
+	#  Note, I found HOMEPATH by running the SET command with no arguments
+	#  to see all declared variables in the environment, because a web site
+	#  had mentioned that the similarly troublesome directory called
+	#  "Program Files" has a name stored in the environment that you can
+	#  use to avoid these space-based problems.
+
+zonation.files.dir.with.slash = gsub ("Documents and Settings", "DOCUME~1", zonation.files.dir.with.slash)
 
 cat ("\nzonation.files.dir = '", zonation.files.dir, "'", sep='')
 if ( !file.exists (zonation.files.dir))
@@ -243,7 +295,9 @@ setUpAndRunZonation (zonation.APP.spp.list.filename,
 					zonation.APP.output.filename,
 					full.path.to.zonation.parameter.file,
 					full.path.to.zonation.exe,
-					runZonation
+					runZonation,
+					"spp",
+					variables$PAR.closeZonationWindowOnCompletion
 					)
 
 	#  CORRECT
@@ -260,11 +314,13 @@ setUpAndRunZonation (zonation.COR.spp.list.filename,
 					zonation.COR.output.filename,
 					full.path.to.zonation.parameter.file,
 					full.path.to.zonation.exe,
-					runZonation
+					runZonation,
+					"true.prob.dist.spp",
+					variables$PAR.closeZonationWindowOnCompletion
 					)
 
 cat ("\n\nDone setting up and running zonation.\n\n")
-stop()
+#stop()
 
 #===============================================================================
 

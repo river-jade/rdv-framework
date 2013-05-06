@@ -30,7 +30,9 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 #	norm.prob.matrix = true.rel.prob.dists.for.spp [[spp.id]]
 	filename = paste (prob.dist.layers.dir.with.slash,
 								variables$PAR.trueProbDistFilePrefix,
-								".", spp.name, '.asc', sep='')
+								".", spp.name,
+#								'.asc',
+								sep='')
 	norm.prob.matrix = read.asc.file.to.matrix (filename)
 
 

@@ -30,7 +30,8 @@ base_params:
         PAR.maxent.samples.base.name:  "MaxentSamples"
         PAR.do.maxent.replicates: TRUE
 #        PAR.do.maxent.replicates: FALSE
-        PAR.num.maxent.replicates: 10
+#        PAR.num.maxent.replicates: 10
+        PAR.num.maxent.replicates: 3
 
         PAR.analysis.dir.name: "ResultsAnalysis"
 
@@ -39,6 +40,7 @@ base_params:
 #			Assuming you're sitting in rdv-framework/projects/guppy/
         PAR.path.to.zonation: "lib/zonation"
         PAR.run.zonation: TRUE
+        PAR.closeZonationWindowOnCompletion: FALSE
 
         PAR.zonation.parameter.filename: "Z:\\Bill\\D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
 #        PAR.zonation.parameter.filename: Z_parameter_settings.dat
@@ -51,7 +53,6 @@ base_params:
         PAR.zonation.app.output.filename: "zonation_app_output"
         PAR.zonation.cor.spp.list.filename: "zonation_cor_spp_list.dat"
         PAR.zonation.cor.output.filename: "zonation_cor_output"
-
 
 ###        PAR.app.spp.hab.map.filename.root: "/Users/bill/D/Projects_RMIT/AAA_PapersInProgress/G01_simulated_ecology/MaxentTests/MaxentOutputs/spp"
 ###    Still not right.  Needs to be built in the code I think, but close enough for the moment...
