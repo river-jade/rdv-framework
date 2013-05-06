@@ -220,7 +220,18 @@ evaluateMaxentResults ()
 
 cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
 
-source (paste (guppyProjectRsrcDirWithSlash, 'runZonation.R', sep=''))
+		#  At the moment, I can't get wine to run properly anywhere,
+		#  so I can only run zonation if we're on a Windows system.
+if (current.os == "mingw32")
+	{
+	source (paste (guppyProjectRsrcDirWithSlash, 'runZonation.R', sep=''))
+
+	} else
+	{
+	cat ("\n\n=====>  Can't run zonation on non-Windows system yet ",
+		   "\n=====>  since wine doesn't work properly yet.  Quitting now.\n\n",
+		   sep='')
+	}
 
 #===============================================================================
 

@@ -204,6 +204,11 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 	####  make sure it's ok to delete it.
 	####  BTL - 2011.09.22
 
+	########  Should these be cor and app instead?
+	########  I.e., npm.vec ----> norm.prob.cor.vec and
+	########       mnpd.vec ----> norm.prob.app.vec ???
+	########  BTL - 2013.05.06
+
 	npm.vec <- as.vector (norm.prob.matrix)
 	mnpd.vec <- as.vector (maxent.norm.prob.dist)
 
