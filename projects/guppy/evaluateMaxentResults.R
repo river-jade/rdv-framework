@@ -70,8 +70,8 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 		#  Load the maxent output distribution into a matrix.
 	maxent.rel.prob.dist =
 			read.asc.file.to.matrix (
-#									spp.name,
-									paste (spp.name, ".asc", sep=''),
+									spp.name,
+##									paste (spp.name, ".asc", sep=''),
 									maxent.output.dir.with.slash)
 
 		#  Normalize the matrix to allow comparison with true distribution.
@@ -95,7 +95,9 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 	norm.prob.matrix =
 			read.asc.file.to.matrix (paste (prob.dist.layers.dir.with.slash,
 									variables$PAR.trueProbDistFilePrefix,
-									".", spp.name, '.asc', sep=''))
+									".", spp.name,
+##									'.asc',
+									sep=''))
 
 #####  start of hack
 			tot.norm.prob.matrix = sum (norm.prob.matrix)
@@ -592,8 +594,8 @@ cat ("\n\n")
 		{
 		maxent.bootstrap.sd =
 			read.asc.file.to.matrix (
-#									paste ("/", spp.name, "_stddev", sep=''),
-									paste ("/", spp.name, "_stddev", ".asc", sep=''),
+									paste ("/", spp.name, "_stddev", sep=''),
+##									paste ("/", spp.name, "_stddev", ".asc", sep=''),
 									maxent.output.dir)
 
 	#  Just realized this is probably not necessary because maxent

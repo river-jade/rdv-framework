@@ -36,6 +36,7 @@ get.num.true.presences.for.each.spp = function ()
 			#  into counts.
 			#-------------------------------------------------------------
 
+		cat ("\n\nIn get.num.true.presences.for.each.spp, case: random true pres")
 		spp.true.presence.fractions.of.landscape =
 			runif (variables$PAR.num.spp.to.create,
 				   min = PAR.min.true.presence.fraction.of.landscape,
@@ -60,6 +61,7 @@ get.num.true.presences.for.each.spp = function ()
 
 		num.true.presences = variables$PAR.num.true.presences
 
+				cat ("\n\nIn get.num.true.presences.for.each.spp, case: NON-random true pres")
 				cat ("\n\nnum.true.presences = '",
 				num.true.presences, "'", sep='')
 				cat ("\nclass (num.true.presences) = '",
