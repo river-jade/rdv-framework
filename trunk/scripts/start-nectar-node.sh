@@ -14,40 +14,9 @@ wget http://tzar-framework.googlecode.com/files/tzar-0.3.0.jar
 ln -s tzar-0.3.0.jar tzar.jar
 
 wget http://rdv-framework.googlecode.com/svn/trunk/R/install.packages.R
-
-cat << EOF >start-tzar.sh
-export TZAR_DIR="/home/ubuntu/tzar"
-
-if [ ! -d \$TZAR_DIR ]; then
-  mkdir \$TZAR_DIR
-fi
-
-/sbin/start-stop-daemon --start --pidfile=\$TZAR_DIR/tzar.pid --startas /home/ubuntu/bin/tzar.sh >> \$TZAR_DIR/consolelog 2>&1
-EOF
-
-cat << EOF > stop-tzar.sh
-#!/bin/bash
-/sbin/start-stop-daemon --stop --pidfile=\$HOME/tzar/tzar.pid
-EOF
-
-cat << EOF > tzar.sh
-#!/bin/bash
-export TZAR_DIR="/home/ubuntu/tzar"
-export DISPLAY=:1
-
-echo -n "Starting tzar node client:"
-
-export TZAR_DB='$TZAR_DB'
-if [ ! -d \$TZAR_DIR ]; then
-  mkdir \$TZAR_DIR
-fi
-
-# run tzar
-java -jar /home/ubuntu/bin/tzar.jar pollandrun --svnurl=https://rdv-framework.googlecode.com/svn/trunk/ --scpoutputhost=glass.eres.rmit.edu.au --scpoutputpath=/mnt/rdv/tzar_output --pemfile=/home/ubuntu/glass.pem &
-
-# write the process id of the running process to a file
-echo \$! > \$TZAR_DIR/tzar.pid
-EOF
+wget http://rdv-framework.googlecode.com/svn/trunk/scripts/start-tzar.sh
+wget http://rdv-framework.googlecode.com/svn/trunk/scripts/stop-tzar.sh
+wget http://rdv-framework.googlecode.com/svn/trunk/scripts/tzar.sh
 
 cd /home/ubuntu
 
@@ -60,15 +29,12 @@ chmod +x bin/*
 # update the package list
 apt-get update && \
 \
-# install java, R and the virtual X11 framebuffer \
-apt-get -y install default-jre r-base-core xvfb && \
-\
-# install the R packages \
-Rscript bin/install.packages.R && \
-\
-# start the framebuffer in the background \
-Xvfb :1 > /tmp/xvfb.out & \
-\
+# install java \
+apt-get -y install default-jre $EXTRA_PACKAGES
+
+# run whatever code is specified to run after installing packages
+$POST_APT_INSTALL
+
 # add start-tzar to the crontab so that it will run on reboot, or when started \
 # from an image. \
 su ubuntu -c '(crontab -l; echo "@reboot /home/ubuntu/bin/start-tzar.sh") | crontab -' && \
