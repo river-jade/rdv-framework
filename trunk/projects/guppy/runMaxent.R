@@ -74,7 +74,7 @@ cat ("\n\ndir.slash = '", dir.slash, "'\n", sep='')
 
 rdvRootDir = getwd()
 rdvSharedRsrcDir = paste (rdvRootDir, "/R", sep='')
-guppyProjectRsrcDir = paste (rdvRootDir, "/Projects/Guppy", sep='')
+guppyProjectRsrcDir = paste (rdvRootDir, "/projects/guppy", sep='')
 guppyProjectRsrcDirWithSlash = paste (guppyProjectRsrcDir, "/", sep='')
 
 cat ("\n\nrdvRootDir = ", rdvRootDir, sep='')
