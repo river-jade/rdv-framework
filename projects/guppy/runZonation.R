@@ -209,15 +209,31 @@ zonation.full.output.filename = gsub ("Documents and Settings", "DOCUME~1", zona
 #  Can't run zonation under wine yet, so only allow it to be tried
 #  under Windows for now...
 
-if (current.os == "mingw32")
-{
+##if (current.os == "mingw32")
+##{
 		#  Run Zonation.
 	if (runZonation)
 		{
-		system (system.command.run.zonation)
-		}
-}
+##		system (system.command.run.zonation)
 
+		if( current.os == 'mingw32' )
+			{
+##			system.specific.cmd <- ''
+			retval = system (system.command.run.zonation)
+
+			} else
+			{
+		  	system.specific.cmd <- 'wine'
+cat ("\n\nAbout to run zonation using system.specific.cmd = '", system.specific.cmd, "'\n\n", sep='')
+
+##		retval = system2( system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1" )
+			retval = system2( system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1" )
+			}
+
+cat ("\n\nzonation retval = '", retval, "'.\n\n", sep='')
+
+		}
+##}
 	}
 
 #===============================================================================
