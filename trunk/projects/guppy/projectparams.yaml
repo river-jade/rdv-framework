@@ -1,6 +1,21 @@
 project_name: Guppy
 base_params:
     variables:
+            #  These should be ok on nectar as long as PAR.useRemoteEnvDir is
+            #  set to TRUE so that these two variables are ignored.
+            #  They're only meant to be used when testing locally on my mac
+            #  in either the mac or vmware windows environment.
+        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
+        PAR.localEnvDirWin: "Z:/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
+
+
+            #  Looks like this is no longer used and can probably be deleted.
+        PAR.zonation.parameter.filename: "Z:\\Bill\\D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
+#        PAR.zonation.parameter.filename: Z_parameter_settings.dat
+
+
+
+
         PAR.num.spp.to.create: 3
         PAR.use.random.num.true.presences: FALSE
             #  Note that this PAR.num.true.presences list needs to have
@@ -42,8 +57,6 @@ base_params:
         PAR.run.zonation: TRUE
         PAR.closeZonationWindowOnCompletion: TRUE
 
-        PAR.zonation.parameter.filename: "Z:\\Bill\\D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
-#        PAR.zonation.parameter.filename: Z_parameter_settings.dat
         PAR.zonation.spp.list.filename: zonation_spp_list.dat
         PAR.zonation.exe.filename: zig2.exe
 
@@ -70,10 +83,9 @@ base_params:
         PAR.pathToRfiles: './projects/guppy/'
 
         #  Location of environment layers (e.g., local dir or on dir on glass)
-        PAR.useRemoteEnvDir: FALSE
+        PAR.useRemoteEnvDir: TRUE
         PAR.remoteEnvDir: "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
-        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
-        PAR.localEnvDirWin: "Z:/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
+
 
         PAR.fileSizeSuffix: ".256"      #  if using 256x256 env layers
         #PAR.fileSizeSuffix: ""         #  if using full size env layers
