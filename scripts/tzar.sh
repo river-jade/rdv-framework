@@ -11,7 +11,7 @@ fi
 java -jar /home/ubuntu/bin/tzar.jar pollandrun \
     --svnurl=https://rdv-framework.googlecode.com/svn/trunk/ \
     --scpoutputhost=glass.eres.rmit.edu.au --scpoutputpath=/mnt/rdv/tzar_output \
-    --pemfile=/home/ubuntu/glass.pem &
+    --pemfile=/home/ubuntu/glass.pem $EXTRA_TZAR_FLAGS &
 
 # write the process id of the running process to a file
 echo $! > $TZAR_DIR/tzar.pid
