@@ -233,5 +233,7 @@ cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
 ##		   sep='')
 ##	}
 
+cat ("\n\nAt end of runMaxent.R.  \n\n             -----  ALL DONE WITH GUPPY RUN NOW  -----\n\n")
+
 #===============================================================================
 
