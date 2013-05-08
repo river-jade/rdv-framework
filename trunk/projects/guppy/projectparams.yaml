@@ -17,14 +17,18 @@ base_params:
 
 
         PAR.num.spp.to.create: 3
+            #  This "random.num.true.presences" option isn't even implemented
+            #  anymore is it?  Looks like it was in an earlier version, i.e.,
+            #  computeSppDistributions.v1.R.  May want to reinstate it...
         PAR.use.random.num.true.presences: FALSE
             #  Note that this PAR.num.true.presences list needs to have
             #  one entry for each spp if PAR.use.random.num.true.presences is
             #  FALSE.  That is, you need to give a number for each species.
-        PAR.num.true.presences:
-            - 50
-            - 100
-            - 75
+        PAR.num.true.presences: "50,100,75"
+#        PAR.num.true.presences:
+#            - 50
+#            - 100
+#            - 75
         PAR.min.true.presence.fraction.of.landscape: 0.01
         PAR.max.true.presence.fraction.of.landscape: 0.50
 

@@ -221,6 +221,12 @@ zonation.full.output.filename = gsub ("Documents and Settings", "DOCUME~1", zona
 ##			system.specific.cmd <- ''
 			retval = system (system.command.run.zonation)
 
+			} else if (current.os == 'darwin9.8.0')
+			{
+			cat ("\n\n=====>  Can't run zonation on Mac yet since wine doesn't work properly yet.",
+				   "\n=====>  Quitting now.\n\n",
+				   sep='')
+
 			} else
 			{
 		  	system.specific.cmd <- 'wine'
@@ -239,6 +245,20 @@ cat ("\n\nzonation retval = '", retval, "'.\n\n", sep='')
 #===============================================================================
 
 #browser()
+
+runZonation = variables$PAR.run.zonation
+
+
+if (runZonation)
+{
+if( current.os == 'darwin9.8.0' )
+	{
+	cat ("\n\n=====>  Can't run zonation on Mac yet since wine doesn't work properly yet.",
+		   "\n=====>  Quitting now.\n\n",
+		   sep='')
+
+	} else
+	{
 
     #--------------------
 
@@ -291,8 +311,6 @@ cat ("\n\nfull.path.to.zonation.parameter.file = '",
 
 PAR.num.spp.in.reserve.selection = variables$PAR.num.spp.in.reserve.selection
 spp.used.in.reserve.selection.vector <- 1:PAR.num.spp.in.reserve.selection
-
-runZonation = variables$PAR.run.zonation
 
     #--------------------
 
@@ -604,6 +622,11 @@ for (curRow in 1:num.rows)
   }
 
 dist.between.all.xy.locs = knn.dist (idx.to.xy.table)
+}
+
+#===============================================================================
+
+}
 }
 
 #===============================================================================
