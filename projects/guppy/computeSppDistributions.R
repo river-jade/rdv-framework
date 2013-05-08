@@ -17,6 +17,13 @@
 
 #===============================================================================
 
+strOfCommaSepNumbersToVec = function (numberString)
+	{
+	numStrAsCatCmdStr = paste ("c(", numberString, ")", sep='')
+
+	return (eval (parse (text = numStrAsCatCmdStr)))
+	}
+
 	#---------------------------------------------------------------
 	#  Determine the number of true presences for each species.
 	#  At the moment, you can specify the number of true presences
@@ -59,7 +66,9 @@ get.num.true.presences.for.each.spp = function ()
 			#  specified in the yaml file.
 			#--------------------------------------------------
 
-		num.true.presences = variables$PAR.num.true.presences
+#		num.true.presences = variables$PAR.num.true.presences
+		num.true.presences =
+			strOfCommaSepNumbersToVec (variables$PAR.num.true.presences)
 
 				cat ("\n\nIn get.num.true.presences.for.each.spp, case: NON-random true pres")
 				cat ("\n\nnum.true.presences = '",
