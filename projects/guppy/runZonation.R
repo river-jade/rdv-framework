@@ -101,6 +101,9 @@
 
 library (pixmap)
 
+
+setwd(rdvRootDir)
+
 #===============================================================================
 
 setUpAndRunZonation = function (spp.list.filename,
@@ -202,12 +205,14 @@ zonation.full.output.filename = gsub ("Documents and Settings", "DOCUME~1", zona
 										as.integer (closeZonationWindowOnCompletion)
 										)
 
-	cat( '\n The system command to run zonation will be:', system.command.run.zonation )
+	cat( '\n The system command to run zonation will be:', system.command.run.zonation, "'\n\n")
 
 	#---------------------
 
 #  Can't run zonation under wine yet, so only allow it to be tried
 #  under Windows for now...
+
+cat("\n =====> The current wd is", getwd() )
 
 ##if (current.os == "mingw32")
 ##{
@@ -231,6 +236,8 @@ zonation.full.output.filename = gsub ("Documents and Settings", "DOCUME~1", zona
 			{
 		  	system.specific.cmd <- 'wine'
 cat ("\n\nAbout to run zonation using system.specific.cmd = '", system.specific.cmd, "'\n\n", sep='')
+
+
 
 ##		retval = system2( system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1" )
 			retval = system2( system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1" )
