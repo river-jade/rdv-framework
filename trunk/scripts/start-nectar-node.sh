@@ -33,7 +33,7 @@ apt-get update && \
 apt-get -y install default-jre $EXTRA_PACKAGES
 
 # run whatever code is specified to run after installing packages
-$POST_APT_INSTALL
+eval $POST_APT_INSTALL
 
 # add start-tzar to the crontab so that it will run on reboot, or when started \
 # from an image. \
