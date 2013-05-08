@@ -10,8 +10,8 @@ base_params:
 
 
             #  Looks like this is no longer used and can probably be deleted.
-#        PAR.zonation.parameter.filename: "Z:\\Bill\\D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
-        PAR.zonation.parameter.filename: "lib/zonation/Z_parameter_settings.dat"
+        #PAR.zonation.parameter.filename: "Z:\\Bill\\D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
+        PAR.zonation.parameter.filename: "lib\\zonation\\Z_parameter_settings.dat"
 
 #        PAR.zonation.parameter.filename: Z_parameter_settings.dat
 
