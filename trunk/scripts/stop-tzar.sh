@@ -1,2 +1,4 @@
 #!/bin/bash
-start-stop-daemon --stop --pidfile=/home/ubuntu/tzar.pid
+export TZAR_DIR="/home/ubuntu/tzar"
+
+start-stop-daemon --stop --pidfile=$TZAR_DIR/tzar.pid

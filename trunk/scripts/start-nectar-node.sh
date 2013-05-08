@@ -37,7 +37,8 @@ $POST_APT_INSTALL
 
 # add start-tzar to the crontab so that it will run on reboot, or when started \
 # from an image. \
-su ubuntu -c '(crontab -l; echo "@reboot /home/ubuntu/bin/start-tzar.sh") | crontab -' && \
+su ubuntu -c '(crontab -l; echo "@reboot EXTRA_TZAR_FLAGS=$EXTRA_TZAR_FLAGS /home/ubuntu/bin/start-tzar.sh") \
+    | crontab -' && \c
 \
 # start tzar \
 su ubuntu -c bin/start-tzar.sh
