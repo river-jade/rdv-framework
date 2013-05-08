@@ -87,7 +87,8 @@ runMaxentCmd = function (maxentSamplesFileName, maxentOutDir, bootstrapMaxent)
 		#  or file names that you hand to it.
 filenameQuote = '"'
 
-maxentCmd = paste ('java -mx512m -jar ',
+maxentCmd = paste (
+		'-mx512m -jar ',
 
 	filenameQuote,
 					maxent.full.path.name,
@@ -178,7 +179,12 @@ cat( '\n----------------------------------' );
 cat( '\n Running Maxent' );
 cat( '\n----------------------------------' );
 
-maxent.exit.code = system (maxentCmd)
+		if( current.os == 'mingw32' )
+			{
+maxent.exit.code = system (paste ('java ', maxentCmd))
+} else {
+maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
+}
 
 cat ("\n\nmaxent.exit.code = ", maxent.exit.code,
 	", class (maxent.exit.code) = ", class (maxent.exit.code))
