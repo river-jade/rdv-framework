@@ -231,3 +231,5 @@ if( PAR.use.administrative.units ){
   file.copy( paste(PAR.Z.output.prefix,'.curves.txt', sep=''), PAR.final.Z.curves.filename )
 
 }
+
+cat( '\n\n ==> Finished running Zonation' ) 
