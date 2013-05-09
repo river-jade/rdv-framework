@@ -46,8 +46,8 @@ get.num.true.presences.for.each.spp = function ()
 		cat ("\n\nIn get.num.true.presences.for.each.spp, case: random true pres")
 		spp.true.presence.fractions.of.landscape =
 			runif (variables$PAR.num.spp.to.create,
-				   min = PAR.min.true.presence.fraction.of.landscape,
-				   max = PAR.max.true.presence.fraction.of.landscape)
+				   min = variables$PAR.min.true.presence.fraction.of.landscape,
+				   max = variables$PAR.max.true.presence.fraction.of.landscape)
 
 				cat ("\n\nspp.true.presence.fractions.of.landscape = \n")
 				print (spp.true.presence.fractions.of.landscape)
