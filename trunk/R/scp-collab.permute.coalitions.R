@@ -21,23 +21,39 @@ cat( '\n----------------------------------\n' )
     # Read in the current admin file and get the IDs
     #--------------------------------------------
 
-#admin.units.map <- as.matrix(read.table( PAR.admin.regions.map, skip=6 ))
+setwd( PAR.current.run.directory )
 
-setwd (PAR.current.run.directory )
 admin.units.map <- as.matrix(read.table( PAR.admin.regions.map.downloaded, skip=6 ))
 all.unique.ids <- unique(as.vector( admin.units.map ) )
-unique.ids <- sort(all.unique.ids[which( all.unique.ids != PAR.NODATA_value )])
-orig.ids <- unique.ids
+orig.ids <- sort(all.unique.ids[which( all.unique.ids != PAR.NODATA_value )])
 
 
     #--------------------------------------------
     # Permunte the IDs
     #--------------------------------------------
 
-
-# For now this is just a hack that assigns each current country into one of 4 coalitions
+# For now this is just a hack that assigns each current country into one of PAR.num.coalitions4 coalitions
 permuted.coalitions <- sample( 1:PAR.num.coalitions, length(orig.ids), replace = TRUE)
 remapped.ids <- permuted.coalitions
+
+# make a vector of randome coalitions
+
+no.coutnries <- length(orig.ids)
+sample.reps <- ceiling( no.coutnries/PAR.num.coalitions)
+
+sampled.coals <- sample( 1:PAR.num.coalitions, length(1:PAR.num.coalitions), replace = FALSE)
+
+for( i in 1:(sample.reps -1) ) {
+  sampled.coals <- c(sampled.coals, sample( 1:PAR.num.coalitions, length(1:PAR.num.coalitions), replace = FALSE) )
+}
+
+remapped.ids2 <- rep( -1, length(1:no.coutnries))
+
+for( i in 1:no.coutnries ) {
+
+  remapped.ids2[i] <- sampled.coals[i]
+  
+}
 
     #--------------------------------------------
     # Remap all the values in admin.units.map to the values in
@@ -49,7 +65,7 @@ remapped.ids <- permuted.coalitions
 
 perm <- function( x ){
 
-  if( x == PAR.NODATA_value ) return(PAR.NODATA_value)
+  if( x == PAR.NODATA_value ) return( PAR.NODATA_value )
   else {
     # get the position in the original ID vector that the current value occurs at 
     indx <- which( orig.ids == x )  
@@ -68,10 +84,6 @@ perm <- function( x ){
    # only rows or columns).
 
 admin.units.map.remapped <- apply( admin.units.map, c(1,2), perm )
-M2 <- admin.units.map.remapped 
-M <- admin.units.map
-
-
 
     #--------------------------------------------
     # write outputs
@@ -100,3 +112,4 @@ write.pgm.file( admin.units.map, PAR.admin.regions.map.filename.base,
                 PAR.nrows, PAR.ncols )
 
 
+cat( '\n' )
