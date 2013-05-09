@@ -34,7 +34,7 @@ orig.ids <- sort(all.unique.ids[which( all.unique.ids != PAR.NODATA_value )])
 
 # For now this is just a hack that assigns each current country into one of PAR.num.coalitions4 coalitions
 permuted.coalitions <- sample( 1:PAR.num.coalitions, length(orig.ids), replace = TRUE)
-remapped.ids <- permuted.coalitions
+remapped.ids.old <- permuted.coalitions
 
 # make a vector of randome coalitions
 
@@ -47,11 +47,11 @@ for( i in 1:(sample.reps -1) ) {
   sampled.coals <- c(sampled.coals, sample( 1:PAR.num.coalitions, length(1:PAR.num.coalitions), replace = FALSE) )
 }
 
-remapped.ids2 <- rep( -1, length(1:no.coutnries))
+remapped.ids <- rep( -1, length(1:no.coutnries))
 
 for( i in 1:no.coutnries ) {
 
-  remapped.ids2[i] <- sampled.coals[i]
+  remapped.ids[i] <- sampled.coals[i]
   
 }
 
