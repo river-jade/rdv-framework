@@ -101,7 +101,8 @@ genEnvLayers <- function ()
 	fileSizeSuffix = variables$PAR.fileSizeSuffix
 
 	minH = 1
-	maxH = 10
+#	maxH = 10       #  For some reason I didn't create .256 images for H=10.
+	maxH = 9
 	minImgNum = 1
 	maxImgNum = 100
 
