@@ -1,6 +1,5 @@
 --commandlineflags="-p scp-collab"
 --runnerclass=JythonRunner
---dburl="jdbc:postgresql://glass.eres.rmit.edu.au:8080/tzar?user=tzar&password=Asc#!in"
 --projectspec projects/scp-collab/projectparams.yaml
 --revision=current_head
 --svnurl="https://rdv-framework.googlecode.com/svn/trunk"
