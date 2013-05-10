@@ -1,6 +1,25 @@
 project_name: Guppy
 base_params:
     variables:
+
+            #  If R warning level is two or larger all warnings are
+            #  turned into errors.
+        PAR.RwarningLevel: 2
+
+#---------------------------------------
+    #  Bigger example
+#        PAR.numEnvLayers: 10
+#        PAR.num.spp.to.create: 25
+#        PAR.num.spp.in.reserve.selection: 25    #  No reserve selection yet.
+
+    #  Smaller example
+        PAR.numEnvLayers: 5
+        PAR.num.spp.to.create: 3
+        PAR.num.spp.in.reserve.selection: 3    #  No reserve selection yet.
+#---------------------------------------
+
+#        PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
+
             #  These should be ok on nectar as long as PAR.useRemoteEnvDir is
             #  set to TRUE so that these two variables are ignored.
             #  They're only meant to be used when testing locally on my mac
@@ -18,10 +37,6 @@ base_params:
 
 
 
-
-        PAR.num.spp.to.create: 25
-#        PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
-        PAR.num.spp.in.reserve.selection: 25    #  No reserve selection yet.
 
             #  This "random.num.true.presences" option isn't even implemented
             #  anymore is it?  Looks like it was in an earlier version, i.e.,
@@ -58,8 +73,8 @@ base_params:
         PAR.maxent.samples.base.name:  "MaxentSamples"
         PAR.do.maxent.replicates: TRUE
 #        PAR.do.maxent.replicates: FALSE
-        PAR.num.maxent.replicates: 10
-#        PAR.num.maxent.replicates: 3
+#        PAR.num.maxent.replicates: 10
+        PAR.num.maxent.replicates: 3
 
         PAR.analysis.dir.name: "ResultsAnalysis"
 
@@ -105,9 +120,6 @@ base_params:
 
         PAR.random.seed: 17
         PAR.num.processors: 1
-
-#        PAR.numEnvLayers: 5
-        PAR.numEnvLayers: 10
 
         PAR.use.old.maxent.output.for.input: FALSE
 ##        PAR.old.maxent.output.dir: "/Users/bill/tzar/outputdata/Guppy_Scen_1_4/MaxentOutputs/"

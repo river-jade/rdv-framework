@@ -39,7 +39,7 @@
 	#---------------------------------------------------------------------
 
 random.seed <- variables$PAR.random.seed
-cat ("\n\nrandom.seed = '", random.seed, "'\n\n")
+cat ("\n\nrandom.seed = '", random.seed, "', class (random.seed) = '", class(random.seed), "')\n\n", sep='')
 set.seed (random.seed)
 
 	#---------------------------------------------------
