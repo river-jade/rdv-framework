@@ -19,7 +19,10 @@ base_params:
 
 
 
-        PAR.num.spp.to.create: 3
+        PAR.num.spp.to.create: 25
+#        PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
+        PAR.num.spp.in.reserve.selection: 25    #  No reserve selection yet.
+
             #  This "random.num.true.presences" option isn't even implemented
             #  anymore is it?  Looks like it was in an earlier version, i.e.,
             #  computeSppDistributions.v1.R.  May want to reinstate it...
@@ -36,11 +39,10 @@ base_params:
 #            - 50
 #            - 100
 #            - 75
+            #  Based on currently using a 256x256 image, 0.0001 to 0.002
+            #  should give anywhere from around 7 to 140 presences.
         PAR.min.true.presence.fraction.of.landscape: 0.0001
         PAR.max.true.presence.fraction.of.landscape: 0.002
-
-#        PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
-        PAR.num.spp.in.reserve.selection: 3    #  No reserve selection yet.
 
         #PAR.spp.hab.map.filename.root: ../spp
         PAR.spp.hab.map.filename.root: MaxentOutputs/spp
@@ -48,7 +50,7 @@ base_params:
 
         # Maxent
 ###        PAR.path.to.maxent:  "/Users/Bill/D/rdv-framework/lib/maxent"
-#			Assuming you're sitting in rdv-framework/projects/guppy/
+#            Assuming you're sitting in rdv-framework/projects/guppy/
         PAR.path.to.maxent:  "lib/maxent"
 
         PAR.path.to.maxent.input.data:  ".."    #  relative to output dir?  projects dir?
@@ -56,14 +58,14 @@ base_params:
         PAR.maxent.samples.base.name:  "MaxentSamples"
         PAR.do.maxent.replicates: TRUE
 #        PAR.do.maxent.replicates: FALSE
-#        PAR.num.maxent.replicates: 10
-        PAR.num.maxent.replicates: 3
+        PAR.num.maxent.replicates: 10
+#        PAR.num.maxent.replicates: 3
 
         PAR.analysis.dir.name: "ResultsAnalysis"
 
         # Zonation
 ###        PAR.path.to.zonation: "/Users/Bill/D/rdv-framework/lib/zonation"
-#			Assuming you're sitting in rdv-framework/projects/guppy/
+#            Assuming you're sitting in rdv-framework/projects/guppy/
         PAR.path.to.zonation: "lib/zonation"
         PAR.run.zonation: TRUE
         PAR.closeZonationWindowOnCompletion: TRUE
@@ -85,11 +87,11 @@ base_params:
 
         PAR.variable.to.test.repetitions: -99
 
-#			Assuming you're sitting in rdv-framework/projects/guppy/
+#            Assuming you're sitting in rdv-framework/projects/guppy/
 #        PAR.rdv.directory: "/Users/Bill/D/rdv-framework"
 ##        PAR.rdv.directory: "./"
         PAR.rdv.directory: ""
-#			Assuming you're sitting in rdv-framework/projects/guppy/
+#        Assuming you're sitting in rdv-framework/projects/guppy/
 #        PAR.pathToRfiles: '/Users/Bill/D/rdv-framework/projects/guppy/'
         PAR.pathToRfiles: './projects/guppy/'
 
@@ -104,7 +106,8 @@ base_params:
         PAR.random.seed: 17
         PAR.num.processors: 1
 
-        PAR.numEnvLayers: 5
+#        PAR.numEnvLayers: 5
+        PAR.numEnvLayers: 10
 
         PAR.use.old.maxent.output.for.input: FALSE
 ##        PAR.old.maxent.output.dir: "/Users/bill/tzar/outputdata/Guppy_Scen_1_4/MaxentOutputs/"
