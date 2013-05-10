@@ -2,3 +2,4 @@
 --projectspec=projects/guppy/projectparams.yaml
 --localcodepath=.
 --commandlineflags="-p guppy --rscript=runMaxent.R"
+--repetitionsfile="projects/guppy/repetitions.yaml"

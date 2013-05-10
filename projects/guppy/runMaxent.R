@@ -57,6 +57,22 @@
 
 #===============================================================================
 
+#  options (warn = 2)  =>  warnings are treated as errors, i.e., they're fatal.
+#  Here's what the options() help page in R says:
+#
+#    warn:
+#    sets the handling of warning messages. If warn is negative all warnings
+#    are ignored. If warn is zero (the default) warnings are stored until
+#    the top–level function returns. If fewer than 10 warnings were signalled
+#    they will be printed otherwise a message saying how many were signalled.
+#    An object called last.warning is created and can be printed through the
+#    function warnings. If warn is one, warnings are printed as they occur.
+#    If warn is two or larger all warnings are turned into errors.
+
+options (warn = variables$PAR.RwarningLevel)
+
+#===============================================================================
+
 # First get the OS
 #   for linux this returns linux-gnu
 #   for mac this returns darwin9.8.0

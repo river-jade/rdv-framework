@@ -52,7 +52,7 @@ get.num.true.presences.for.each.spp = function ()
 				cat ("\n\nspp.true.presence.fractions.of.landscape = \n")
 				print (spp.true.presence.fractions.of.landscape)
 
-		spp.true.presence.cts = num.cells * spp.true.presence.fractions.of.landscape
+		spp.true.presence.cts = round (num.cells * spp.true.presence.fractions.of.landscape)
 				cat ("\nspp.true.presence.cts = ")
 				print (spp.true.presence.cts)
 
