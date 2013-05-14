@@ -57,7 +57,10 @@
 
 #===============================================================================
 
-runMaxentCmd = function (maxentSamplesFileName, maxentOutDir, bootstrapMaxent)
+runMaxentCmd = function (maxentSamplesFileName, maxentOutDir,
+                        doMaxentReplicates, maxentReplicateType,
+                        numMaxentReplicates,
+                        verboseMaxent = TRUE)
 	{
 	cat ("\n\nIn runMaxentCmd(), \n        maxentSamplesFileName = '", maxentSamplesFileName, "'\n\n", sep='')
 
@@ -113,6 +116,8 @@ maxentCmd = paste (
 				   cur.full.maxent.env.layers.dir.name,
 	filenameQuote,
 
+	                ' verbose=', verboseMaxent,    #  Gived detailed diagnostics for debugging
+
 						#  If you have more than one processor in your
 						#  machine, then setting the thread count to the
 						#  number of processors can speed up things like
@@ -120,7 +125,9 @@ maxentCmd = paste (
 						#  operations) by using all of the processors.
 				   ' threads=', PAR.num.processors,
 
-				   ' autorun ',
+				   ' -z ',    #  Run without showing the gui
+
+				   ' autorun ',  #  Run without having to hit return.
 
 				   ' redoifexists ',
 
@@ -137,6 +144,7 @@ maxentCmd = paste (
 						#  Commented out in guppy.test.maxent.v9.R
 						#  Not commented out in ascelin's guppy example code.
 						#  Not sure which is best inside of tzar.
+				   ' novisible',
 
                             #  While I'm doing interactive testing, I'll leave
                             #  novisible commented out.  I think that the place
@@ -146,13 +154,12 @@ maxentCmd = paste (
 
 				   sep = '')
 
-#if (variables$PAR.do.maxent.replicates)
-if (bootstrapMaxent)
+if (doMaxentReplicates)
 	{
 	maxentCmd = paste (maxentCmd,
-						' replicates=', variables$PAR.num.maxent.replicates,
+						' replicates=', numMaxentReplicates,
 
-						' replicatetype=bootstrap ',
+						' replicatetype=', maxentReplicateType,
 
 #  There are some random seed issues here when doing bootstrap replicates.
 #  It looks like you cannot choose the seed yourself so you cannot get
@@ -163,6 +170,24 @@ if (bootstrapMaxent)
 #  2011.09.21 - BTL
 						' randomseed=true',
 #                       ' randomseed=false',
+
+#------------------------
+#  NOT IMPLEMENTED YET, but I want to remember the option names...
+#                        ' linear=', allowLinearFeatures,
+#                        ' quadratic=', allowQuadraticFeatures,
+#                        ' product=', allowProductFeatures,
+#                        ' threshold=', allowThresholdFeatures,
+#                        ' hinge=', allowHingeFeatures,
+#                               Number of samples at which product and threshold features start being used.
+#                               default is 80.
+#                        ' lq2lqptthreshold=', lq2lqptthreshold,
+#                               Number of samples at which quadratic features start being used
+#                               default is 10.
+#                        ' hingethreshold=', hingethreshold,
+#                               Number of samples at which hinge features start being used
+#                               default is 15.
+#                        ' hingethreshold=', hingethreshold,
+#------------------------
 
 						sep='')
 	}
