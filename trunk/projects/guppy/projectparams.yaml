@@ -4,18 +4,31 @@ base_params:
 
             #  If R warning level is two or larger all warnings are
             #  turned into errors.
-        PAR.RwarningLevel: 2
+        PAR.RwarningLevel: 1
 
 #---------------------------------------
+
+#                    ***VERY IMPORTANT***
+#  THIS HAS TO BE SET TO TRUE TO RUN ON NECTAR AND FALSE TO RUN AT HOME!
+        PAR.useRemoteEnvDir: TRUE
+
     #  Bigger example
-#        PAR.numEnvLayers: 10
-#        PAR.num.spp.to.create: 25
-#        PAR.num.spp.in.reserve.selection: 25    #  No reserve selection yet.
+        PAR.numEnvLayers: 10
+        PAR.num.spp.to.create: 100
+        PAR.num.spp.in.reserve.selection: 100    #  No reserve selection yet.
 
     #  Smaller example
-        PAR.numEnvLayers: 5
-        PAR.num.spp.to.create: 3
-        PAR.num.spp.in.reserve.selection: 3    #  No reserve selection yet.
+#        PAR.numEnvLayers: 5
+#        PAR.num.spp.to.create: 5
+#        PAR.num.spp.in.reserve.selection: 3    #  No reserve selection yet.
+
+#        PAR.do.maxent.replicates: TRUE
+        PAR.do.maxent.replicates: FALSE
+#        PAR.num.maxent.replicates: 10
+#        PAR.num.maxent.replicates: 3
+        PAR.num.maxent.replicates: 5
+#        PAR.maxent.replicateType: bootstrap
+        PAR.maxent.replicateType: crossvalidate
 #---------------------------------------
 
 #        PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
@@ -54,9 +67,9 @@ base_params:
 #            - 50
 #            - 100
 #            - 75
-            #  Based on currently using a 256x256 image, 0.0001 to 0.002
-            #  should give anywhere from around 7 to 140 presences.
-        PAR.min.true.presence.fraction.of.landscape: 0.0001
+            #  Based on currently using a 256x256 image, 0.0002 to 0.002
+            #  should give anywhere from around 13 to 131 presences.
+        PAR.min.true.presence.fraction.of.landscape: 0.0002
         PAR.max.true.presence.fraction.of.landscape: 0.002
 
         #PAR.spp.hab.map.filename.root: ../spp
@@ -71,10 +84,6 @@ base_params:
         PAR.path.to.maxent.input.data:  ".."    #  relative to output dir?  projects dir?
         PAR.maxent.env.layers.base.name:  "MaxentEnvLayers"
         PAR.maxent.samples.base.name:  "MaxentSamples"
-        PAR.do.maxent.replicates: TRUE
-#        PAR.do.maxent.replicates: FALSE
-#        PAR.num.maxent.replicates: 10
-        PAR.num.maxent.replicates: 3
 
         PAR.analysis.dir.name: "ResultsAnalysis"
 
@@ -111,14 +120,13 @@ base_params:
         PAR.pathToRfiles: './projects/guppy/'
 
         #  Location of environment layers (e.g., local dir or on dir on glass)
-        PAR.useRemoteEnvDir: TRUE
         PAR.remoteEnvDir: "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
 
 
         PAR.fileSizeSuffix: ".256"      #  if using 256x256 env layers
         #PAR.fileSizeSuffix: ""         #  if using full size env layers
 
-        PAR.random.seed: 17
+        PAR.random.seed: 19
         PAR.num.processors: 1
 
         PAR.use.old.maxent.output.for.input: FALSE

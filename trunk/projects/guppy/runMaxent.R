@@ -212,14 +212,17 @@ saveCombinedPresencesForMaxent (combined.spp.true.presences.table,
 
 maxentSamplesFileName = combinedPresSamplesFileName
 maxentOutputDir = maxent.output.dir
-bootstrapMaxent = variables$PAR.do.maxent.replicates
+doMaxentReplicates = variables$PAR.do.maxent.replicates
+numMaxentReplicates = variables$PAR.num.maxent.replicates
+maxentReplicateType = variables$PAR.maxent.replicateType
 
 #if (FALSE)
 #{
 cat ("\n\n+++++\tBefore", "runMaxentCmd", "\n")
 
 runMaxentCmd (maxentSamplesFileName, maxentOutputDir,
-				bootstrapMaxent)
+				doMaxentReplicates, maxentReplicateType,
+				numMaxentReplicates)
 
 	#----------------------------------------------------------------
 	#  Evaluate the results of maxent by comparing its output maps
