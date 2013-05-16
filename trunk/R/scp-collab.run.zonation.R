@@ -103,8 +103,8 @@ if( PAR.use.administrative.units ){
   if( PAR.permute.admin.regions )
     admin.regions.map <- paste(PAR.remapped.admin.regions.map.filename.base,'.asc', sep='')
   else
-    admin.regions.map <- PAR.admin.regions.map
-
+    # admin.regions.map <- PAR.admin.regions.map
+    admin.regions.map <- PAR.admin.regions.map.downloaded
   
   # Administrative units description file
   cat ( '#ID    G_A    beta_A    name\n' , file = PAR.zonation.admu.desc.file, append = TRUE );

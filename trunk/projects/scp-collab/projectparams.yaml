@@ -3,9 +3,6 @@ base_params:
     variables:
         PAR.num.spp.in.reserve.selection: 20 # 790
 
-        # Not the is old - just for use when using input data stored locally
-        # PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
-
         # Coalitions
         PAR.permute.admin.regions: False
         PAR.num.coalitions: 4
@@ -16,9 +13,10 @@ base_params:
         PAR.admin.regions.map.downloaded: input_data/admin_regions.asc
         PAR.path.to.spp.hab.map.files.downloaded: input_data/
         PAR.delete.downloaded.data.at.end.of.run: True
-        PAR.copy.input.files.locally: False
         PAR.local.data.copy: /Users/ascelin/analysis/scp_collab/Z_input_data/input_data.zip
 
+        # this is just for testing on Ascelin's mac
+        PAR.copy.input.files.locally: False
 
         # Zonation
         PAR.path.to.zonation: ../lib/zonation
@@ -43,12 +41,8 @@ base_params:
         PAR.cellsize: 0.286609223258
         PAR.NODATA_value: -9999
 
-
-
-
     input_files:
         PAR.input.directory: ""
-        PAR.admin.regions.map: admin_regions.asc
 
     output_files:
         PAR.current.run.directory: ""
