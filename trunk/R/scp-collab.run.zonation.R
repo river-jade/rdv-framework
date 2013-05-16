@@ -173,7 +173,7 @@ cat( '\n\nThe system command to run zonation (1st time) is',  system.command.run
 #system( system.command.run.zonation )      
 system2( system.command, args=system.command.arguments, env="DISPLAY=:1" )      
 
-cat( '\nFinsihed running Zonation' )
+cat( '\nFinsihed running Zonation the first time' )
 
     #--------------------------------------------
     # If running with Administrative units run zonation again to
@@ -217,6 +217,7 @@ if( PAR.use.administrative.units ){
   cat( '\nThe system command to run zonation (2nd time) is',  system.command.run.zonation2 )
   #system( system.command.run.zonation2 )
   system2( system.command, args=system.command.arguments, env="DISPLAY=:1" )
+  cat( '\nFinsihed running Zonation the second time' )
   
   # as admin units were used, want to copy the curves file from
   # reloading the redistributed.rank.asc to be the final .curves.txt
