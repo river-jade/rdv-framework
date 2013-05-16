@@ -1,7 +1,7 @@
 project_name: SCP-collab
 base_params:
     variables:
-        PAR.num.spp.in.reserve.selection: 200 #790
+        PAR.num.spp.in.reserve.selection: 20 # 790
 
         # Not the is old - just for use when using input data stored locally
         # PAR.path.to.spp.hab.map.files: "../projects/scp-collab/input_data/"
@@ -16,6 +16,9 @@ base_params:
         PAR.admin.regions.map.downloaded: input_data/admin_regions.asc
         PAR.path.to.spp.hab.map.files.downloaded: input_data/
         PAR.delete.downloaded.data.at.end.of.run: True
+        PAR.copy.input.files.locally: False
+        PAR.local.data.copy: /Users/ascelin/analysis/scp_collab/Z_input_data/input_data.zip
+
 
         # Zonation
         PAR.path.to.zonation: ../lib/zonation
@@ -61,21 +64,25 @@ base_params:
 
 
 scenarios:
-    # - name: S1 global 200spp
-    #   parameters:
-    #     variables:
-    #         PAR.use.administrative.units: False
+     # - name: S1 global 200spp
+     #   parameters:
+     #     variables:
+     #         PAR.copy.input.files.locally: True
+     #         PAR.use.administrative.units: False
+     #         PAR.num.coalitions: 1
 
-    # - name: S2 local 200spp
-    #   parameters:
-    #     variables:
-    #         PAR.use.administrative.units: True
-    #         PAR.permute.admin.regions: False
-    #         PAR.num.coalitions: 4
+      - name: S2 local 200spp
+        parameters:
+          variables:
+              PAR.copy.input.files.locally: True
+              PAR.use.administrative.units: True
+              PAR.permute.admin.regions: False
+              PAR.num.coalitions: 4
 
-    - name: S3 local 200spp ncoal14 
-      parameters:
-        variables:
-            PAR.use.administrative.units: True
-            PAR.permute.admin.regions: True
-            PAR.num.coalitions: 4
+     # - name: S3 local 200spp ncoal14 
+     #   parameters:
+     #     variables:
+     #         PAR.copy.input.files.locally: True
+     #         PAR.use.administrative.units: True
+     #         PAR.permute.admin.regions: True
+     #         PAR.num.coalitions: 4
