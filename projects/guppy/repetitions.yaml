@@ -11,7 +11,7 @@
 generators:
   - key: PAR.random.seed
     generator_type: linear_step
-    start: 31
+    start: 17
     step_size: 1
-    count: 2       #  should equal total number of repetitions
+    count: 5       #  should equal total number of repetitions
 

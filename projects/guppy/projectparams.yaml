@@ -148,8 +148,8 @@ base_params:
         PAR.show.abs.percent.error.in.dist: TRUE
 #        PAR.truncated.percent.err.img: FALSE
         PAR.truncated.percent.err.img: TRUE
-#        PAR.show.heatmap: FALSE
-        PAR.show.heatmap: TRUE
+        PAR.show.heatmap: FALSE
+#        PAR.show.heatmap: TRUE
 #        PAR.show.raw.error.in.dist: FALSE
         PAR.show.raw.error.in.dist: TRUE
         PAR.use.all.samples: FALSE
