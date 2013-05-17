@@ -2,6 +2,7 @@ source ('/Users/Bill/D/rdv-framework/projects/guppy/read.R')
 
 CONST.imgSize.hardCodedMatrix = -1
 CONST.imgSize.inputFile = 0
+CONST.defaultBufSize = 0.05
 
 test = function (imgSize, 
                  numPlotIntervals, 
@@ -12,7 +13,9 @@ test = function (imgSize,
                  algLegendString="algorithm's selection",
                  seed=17, 
                  verbose=FALSE,
-                 plotTitle="Fraction of pixels for whom both their apparent and correct\nranks are at least as good as the given apparent rank"
+                 plotTitle="True Positive fraction above each threshold", 
+#                 plotTitle="Fraction of pixels for whom both their apparent and correct\nranks are at least as good as the given apparent rank", 
+                 buffer=CONST.defaultBufSize
                  )
     {
         #---------------------------
@@ -177,7 +180,9 @@ test = function (imgSize,
         #  better than random.
         
     numTPRanks = rep(-1,numPlotIntervals)
-    fracTPRanks = rep(-1,numPlotIntervals)
+    fracTPRanks = rep(0,numPlotIntervals)
+    fracTPRanksMinus.1 = rep(0,numPlotIntervals)
+        
     for (curIdx in 1:numPlotIntervals)
         {
         n = pointsToPlotX [curIdx]
@@ -188,13 +193,22 @@ test = function (imgSize,
         corTopNThresholdValue = corZonationRanks [positionOfCorRanks [n]]
         cat ("\n    corTopNThresholdValue = ", corTopNThresholdValue)
 
-        TPs = (corZonationRanks [topNAppLocs] >= corTopNThresholdValue)
+        corTopNThresholdValueMinus.1 = max (corTopNThresholdValue - buffer, 0)
+        cat ("\n    corTopNThresholdValueMinus.1 = ", corTopNThresholdValueMinus.1)
         
-        numTPRanks [curIdx] = sum (TPs)
-        cat ("\n    numTPRanks [", curIdx, "] = ", numTPRanks [curIdx])
+##        TPs = (corZonationRanks [topNAppLocs] >= corTopNThresholdValue)
         
-        fracTPRanks [curIdx] = numTPRanks [curIdx] / n
+##        numTPRanks [curIdx] = sum (TPs)
+##        cat ("\n    numTPRanks [", curIdx, "] = ", numTPRanks [curIdx])
+        
+##        fracTPRanks [curIdx] = numTPRanks [curIdx] / n
+##        cat ("\n    fracTPRanks [curIdx] = ", fracTPRanks [curIdx])
+
+        fracTPRanks [curIdx] = sum (corZonationRanks [topNAppLocs] >= corTopNThresholdValue) / n
         cat ("\n    fracTPRanks [curIdx] = ", fracTPRanks [curIdx])
+
+        fracTPRanksMinus.1 [curIdx] = sum (corZonationRanks [topNAppLocs] >= corTopNThresholdValueMinus.1) / n
+        cat ("\n    fracTPRanksMinus.1 [curIdx] = ", fracTPRanksMinus.1 [curIdx])
 
         if (verbose)
             {            
@@ -209,11 +223,13 @@ test = function (imgSize,
     cat ("\n\n==================================================")
 
     cat ("\n\n    xInterval = '", xInterval, "'", sep='')        
-    cat ("\nnumTPRanks = ")
-    print (numTPRanks)
+  ##  cat ("\nnumTPRanks = ")
+  ##  print (numTPRanks)
     cat ("\nfracTPRanks = ")
     print (fracTPRanks)
-
+    cat ("\nfracTPRanksMinus.1 = ")
+    print (fracTPRanksMinus.1)
+        
         #  Create labels for x axis.
             #  Old code labelled X axis with absolute ranks but 
             #  normalized to 0-1 makes it easier to compare among 
@@ -240,24 +256,40 @@ test = function (imgSize,
         #  lots of options that would be useful here when I want to make 
         #  this fancier and/or save it to a file.
     plot (xValues, yValues, 
-          xlab="Apparent Rank", 
-          ylab="True Positive Fraction",
-          type='l')
-    title(main=plotTitle)
+          ann=FALSE,
+          xaxt='n', yaxt='n',
+#           xlab="Apparent Rank", 
+#           ylab="True Positive Fraction",
+          type='l', 
+          col='red')
+        
+    lines(xValues, c(0,fracTPRanksMinus.1),  #  TP for thresh - 0.1              
+            type="l", lty=2,  # lwd=2
+            col='blue'
+            )
+        
     lines(c(0,topXOfRandomDiagonal),c(0,1),  #  expected result for random selection              
-          type="l", lty=3  #, lwd=2
-          )
-    legend("right", 
-           c(algLegendString,"random selection"), cex=0.9, #col=plot_colors, 
-            lty=1:2, #lwd=2, 
-           bty="n"
-           );
+            type="l", lty=3, # lwd=2
+            col='black'
+            )
+
+#     title(main=plotTitle)        
+#         
+#     legend("right", 
+#            c(algLegendString,
+#              paste ("TP for thresh - ", buffer, sep=''), 
+#              "random selection"), 
+#             cex=0.9, #col=plot_colors, 
+#             lty=1:3, #lwd=2, 
+#             bty="n",
+#             col=c('red','blue','black')
+#             );
         
     }
 
 #test(18)
-
-testHardCodedMatrix = function (seed=18, verbose=FALSE)
+testHardCodedMatrix = function (seed=18, verbose=FALSE, 
+                                buffer=CONST.defaultBufSize)
     {
     testDir = "/Users/Bill/D/rdv-framework/projects/guppy/"
     corTestRankFileNameBase = "small.z.rank.test.cor" 
@@ -273,11 +305,14 @@ testHardCodedMatrix = function (seed=18, verbose=FALSE)
             testDir,
             "hard-coded matrix",
             seed,
-            verbose
+            verbose,
+            buffer=buffer
             )
     }
 
-testZonation = function (numPlotIntervals=100, seed=18, verbose=FALSE)
+testZonation = function (numPlotIntervals=100, seed=18, 
+                         verbose=FALSE,
+                         buffer=CONST.defaultBufSize)
     {
     zonationInputDir = "/Users/Bill/tzar/outputdata/Guppy/WindowsRuns/101_Scen_1/Zonation/"
     corRankFileNameBase="zonation_app_output.rank"
@@ -291,13 +326,18 @@ testZonation = function (numPlotIntervals=100, seed=18, verbose=FALSE)
              zonationInputDir,
             "zonation",
              seed,
-             verbose
+             verbose,
+             buffer=buffer
             )
     }
 
 testMaxent = function (startSppNum=1, endSppNum=1, 
-                       numPlotIntervals=100, seed=18, verbose=FALSE)
+                       numPlotIntervals=100, seed=18, 
+                       verbose=FALSE, 
+                       buffer=CONST.defaultBufSize)
     {
+    op = par()
+    par (mfrow=c(10,10), mar=c(0.1,0.1,0.1,0.1))
     
         #  2013.05.16 - BTL
         #  WARNING:  NOT SURE IF THIS IS CORRECT FOR MAXENT.
@@ -328,12 +368,17 @@ testMaxent = function (startSppNum=1, endSppNum=1,
                 appMaxentInputDir,
                 paste ("maxent spp ", curSppNum, sep=''), 
                 seed,
-                verbose
+                verbose, 
+                buffer=buffer
                 )
         }
+#    par (mfrow=c(1,1))
+    par (op)
     }
 
-testRandom = function (imgSize=25, numPlotIntervals=5, seed=18, verbose=FALSE)
+testRandom = function (imgSize=25, numPlotIntervals=5, 
+                       seed=18, verbose=FALSE, 
+                       buffer=CONST.defaultBufSize)
     {
     test (imgSize, 
             numPlotIntervals, 
@@ -344,14 +389,17 @@ testRandom = function (imgSize=25, numPlotIntervals=5, seed=18, verbose=FALSE)
             'testRandom',
             seed,
             verbose, 
-            plotTitle="testRandom TP of apparent ranks"
+#            plotTitle="testRandom TP of apparent ranks",
+            buffer=buffer
             )
     }
 
-testAll = function ()
+#setwd ("/Users/Bill/D/rdv-framework/projects/guppy")
+#source ("analyzeZonationResults.R")
+testAll = function (bufSize=CONST.defaultBufSize)
 {
-    testHardCodedMatrix ()
-    testRandom ()
-    testZonation ()
-    testMaxent (4,6)
+    testMaxent (1,100, buffer=bufSize)
+    testHardCodedMatrix (buffer=bufSize)
+    testRandom (buffer=bufSize)
+    testZonation (buffer=bufSize)
 }
