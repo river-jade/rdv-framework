@@ -255,13 +255,18 @@ test = function (imgSize,
         #  See http://www.harding.edu/fmccown/r/ for simple example using 
         #  lots of options that would be useful here when I want to make 
         #  this fancier and/or save it to a file.
-    plot (xValues, yValues, 
-          ann=FALSE,
-          xaxt='n', yaxt='n',
-#           xlab="Apparent Rank", 
-#           ylab="True Positive Fraction",
-          type='l', 
-          col='red')
+#         plot (xValues, yValues, 
+#                          xlab="Apparent Rank", 
+#                          ylab="True Positive Fraction",
+#               type='l', 
+#               col='red')
+        plot (xValues, yValues, 
+              ann=FALSE,
+              xaxt='n', yaxt='n',
+              #           xlab="Apparent Rank", 
+              #           ylab="True Positive Fraction",
+              type='l', 
+              col='red')
         
     lines(xValues, c(0,fracTPRanksMinus.1),  #  TP for thresh - 0.1              
             type="l", lty=2,  # lwd=2
@@ -273,17 +278,17 @@ test = function (imgSize,
             col='black'
             )
 
-#     title(main=plotTitle)        
-#         
-#     legend("right", 
-#            c(algLegendString,
-#              paste ("TP for thresh - ", buffer, sep=''), 
-#              "random selection"), 
-#             cex=0.9, #col=plot_colors, 
-#             lty=1:3, #lwd=2, 
-#             bty="n",
-#             col=c('red','blue','black')
-#             );
+text (0.8, 0.4, algLegendString) 
+#    title(main=plotTitle)                
+#         legend("right", 
+#                c(algLegendString,
+#                  paste ("TP for thresh - ", buffer, sep=''), 
+#                  "random selection"), 
+#                cex=0.9, #col=plot_colors, 
+#                lty=1:3, #lwd=2, 
+#                bty="n",
+#                col=c('red','blue','black')
+#         );
         
     }
 
@@ -366,7 +371,8 @@ testMaxent = function (startSppNum=1, endSppNum=1,
                 sppFileNameBase, 
                 corMaxentInputDir,
                 appMaxentInputDir,
-                paste ("maxent spp ", curSppNum, sep=''), 
+#                paste ("maxent spp ", curSppNum, sep=''), 
+              paste(curSppNum),
                 seed,
                 verbose, 
                 buffer=buffer
@@ -398,7 +404,7 @@ testRandom = function (imgSize=25, numPlotIntervals=5,
 #source ("analyzeZonationResults.R")
 testAll = function (bufSize=CONST.defaultBufSize)
 {
-    testMaxent (1,100, buffer=bufSize)
+#    testMaxent (1,100, buffer=bufSize)
     testHardCodedMatrix (buffer=bufSize)
     testRandom (buffer=bufSize)
     testZonation (buffer=bufSize)
