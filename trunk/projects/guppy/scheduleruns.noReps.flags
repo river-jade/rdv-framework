@@ -1,0 +1,7 @@
+--clustername=scpc
+--runnerclass=RRunner
+--projectspec=projects/guppy/projectparams.yaml
+--commandlineflags="-p guppy --rscript=runMaxent.R"
+--revision=runtime_head
+--svnurl=https://rdv-framework.googlecode.com/svn/trunk/
+--runset="guppy_single_run_100spp_noReplicates"

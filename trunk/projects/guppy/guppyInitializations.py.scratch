@@ -1,0 +1,263 @@
+#=========================================================================================
+
+#                       guppyInitializations.py.scratch
+
+# source( 'guppyInitializations.R' )
+
+#=========================================================================================
+
+#  History:
+
+#  2013.07.14 - BTL
+#  Converted to python.
+
+#  2013.04 - BTL
+#  Split out of guppy.test.maxent.v9.R and later versions of runMaxent.R.
+
+#=========================================================================================
+
+
+
+#  Many things in here have an absolute path that looks like this:
+#
+#			/Users/Bill/D/rdv-framework/lib/maxent
+#
+#  This will fail when moved to windows or linux because rdv is not in:
+#
+#			/Users/Bill/D
+#
+#  Is that lead-in for rdv's location available somewhere as a variable
+#  in the variables list?
+
+
+
+#===============================================================================
+
+dirSlash = "/"    #  How does python sense this for each OS?
+					#  Should this be in the yaml file?
+
+#===============================================================================
+
+	#---------------------------------------------------------------------
+    #  Temporary fixes to things that were set in guppy.test.maxent.v9.R
+    #  but don't seem to appear anywhere here.
+    #  BTL - 2013 04 04
+	#---------------------------------------------------------------------
+
+randomSeed = variables ['PAR.random.seed']
+print "\n\nrandomSeed = '", randomSeed, "', class (randomSeed) = '", class(randomSeed), "')\n\n"
+random.seed (randomSeed)
+
+	#---------------------------------------------------
+	#  default value for number of processors in the
+    #  current machine.
+    #  maxent can use this value to speed up some
+    #  of its operations by creating more threads.
+    #  It's not a necessary thing to set for any other
+    #  reason.
+	#---------------------------------------------------
+
+PAR.num.processors = variables ['PAR.num.processors']
+
+#=========================================================================================
+
+	#---------------------------------------------------------------------------
+    #  Echo all of the input parameters to make sure they all loaded correctly.
+	#---------------------------------------------------------------------------
+
+print "\n\n=========  START of the 3 parameter sets  =========\n\n"
+print "inputFiles = \n", inputFiles
+print "outputFiles = \n", outputFiles
+print "variables = \n", variables
+print "\n\n=========  END of the 3 parameter sets  =========\n\n"
+
+#=========================================================================================
+
+	#---------------------------------------------------------------
+	#  Initialize variables and create necessary directories, etc.
+	#---------------------------------------------------------------
+
+startingDir = os.getcwd()
+print "\n\nstartingDir = '", startingDir, "'"
+
+#----------------------
+
+pathToRfiles = variables ['PAR.pathToRfiles']
+print "\n\npathToRfiles = '", pathToRfiles, "'"
+
+#----------------------
+
+PARrdvDirectory = variables ['PAR.rdv.directory']
+print "\n\nPARrdvDirectory = '", PARrdvDirectory, "'"
+
+#----------------------
+
+PARinputDirectoryFromYaml = inputFiles ['PAR.input.directory']
+
+    #  Why are the first 2 characters stripped off of here?
+PARinputDirectory = PARrdvDirectory + dirSlash + PARinputDirectoryFromYaml [3:]
+###                             substr (PARinputDirectoryFromYaml,                 #  PYTHON ???
+###                                     3, nchar (PARinputDirectoryFromYaml))
+
+print "\n\nPARinputDirectory = '", PARinputDirectory, "'"
+
+#----------------------
+
+PARcurrentRunDirectory = outputFiles ['PAR.current.run.directory']
+print "\n\nPARcurrentRunDirectory = '", PARcurrentRunDirectory, "'"
+
+#----------------------
+
+#probDistLayersDir = "./MaxentProbDistLayers/"    #7/17#  what we want maxent to generate, i.e., the true layers?
+#PARprobDistLayersDirName = "MaxentProbDistLayers"
+##probDistLayersDir = paste (PARcurrentRunDirectory, "/",
+##                              PARprobDistLayersDirName, "/"
+
+probDistLayersDir = outputFiles ['PAR.prob.dist.layers.dir.name']
+probDistLayersDir.with.slash = probDistLayersDir + "/"
+
+print "\nprobDistLayersDir = '", probDistLayersDir, "'"
+if not os.path.isdir (probDistLayersDir):
+	os.makedirs (probDistLayersDir)
+
+    #--------------------
+
+#PARmaxentOutputDirName = "MaxentOutputs"
+
+maxentOutputDir = outputFiles ['PAR.maxent.output.dir.name']
+maxentOutputDirWithSlash = maxentOutputDir + dirSlash
+
+print "\nmaxentOutputDir = '", maxentOutputDir, "'"
+if not os.path.isdir (maxentOutputDir):
+	os.makedirs (maxentOutputDir)
+
+    #--------------------
+
+#PARmaxentGenOutputDirName = "MaxentGenOutputs"
+
+maxentGenOutputDir = outputFiles ['PAR.maxent.gen.output.dir.name']
+maxentGenOutputDirWithSlash = maxentGenOutputDir + "/"
+
+print "\nmaxentGenOutputDir = '", maxentGenOutputDir, "'"
+if not os.path.isdir (maxentGenOutputDir):
+	os.makedirs (maxentGenOutputDir)
+
+    #--------------------
+
+#analysisDir = "./ResultsAnalysis/"
+#PARanalysisDirName = "ResultsAnalysis"
+
+analysisDirWithSlash = PARcurrentRunDirectory +  "/" + variables ['PAR.analysis.dir.name'] + "/"
+print "\nanalysisDirWithSlash = '", analysisDirWithSlash, "'"
+if not os.path.isdir (analysisDirWithSlash):
+    os.makedirs (analysisDirWithSlash)
+
+#------------------------------------------------------------------------------
+
+    #  Move to the output directory.
+
+    #  NOTE:  DOES THIS NEED TO BE DONE NOW?
+    #         IE, ARE ALL THE DIRECTORY CREATIONS BELOW ABSOLUTE OR ARE THEY
+    #         RELATIVE TO BEING IN THE CURRENTRUNDIRECTORY?
+    #
+    #         It makes testing all this in python easier if I can separate
+    #         the moving to a directory from the creation of directories.
+
+os.chdir (PARcurrentRunDirectory)  # this is the output directory
+
+#---------------------
+
+##if (!file.exists ("MaxentOutputs"))
+##	{
+##	dir.create ("MaxentOutputs")
+##	}
+
+curFullMaxentEnvLayersDirName = \
+	PARcurrentRunDirectory + variables ['PAR.maxent.env.layers.base.name']
+
+print "\n\ncurFullMaxentEnvLayersDirName = '" + \
+     curFullMaxentEnvLayersDirName + "'"
+
+createDirIfDoesntExist (curFullMaxentEnvLayersDirName)
+
+#---------------------
+
+##if (not file.exists ("MaxentSamples"))
+##	{
+##	dir.create ("MaxentSamples")
+##	}
+
+curFullMaxentSamplesDirName = \
+	PARcurrentRunDirectory + variables ['PAR.maxent.samples.base.name']
+
+print "\n\ncurFullMaxentSamplesDirName = '" + curFullMaxentSamplesDirName + "'"
+
+createDirIfDoesntExist (curFullMaxentSamplesDirName)
+
+    #--------------------
+
+#       write.to.file : TRUE,
+writeToFile = variables ['PAR.write.to.file']
+
+#   	  use.draw.image : FALSE,
+useDrawImage = variables ['PAR.use.draw.image']
+
+#   	  use.filled.contour : TRUE,
+useFilledContour = variables ['PAR.use.filled.contour']
+
+            #  BEWARE: if this is FALSE, the get.env.layers() routine in
+            #          guppy.maxent.functions.v6.R does something vestigial
+            #          that you may not expect (or want) at all !
+            #          Need to fix that.
+            #          BTL - 2011.09.20
+            #  BTL - 2011.10.03 - Is this note even relevant anymore?
+            #                     Looks like this variable isn't even used now.
+#   	  use.pnm.env.layers : TRUE ,
+usePnmEnvLayers = variables ['PAR.use.pnm.env.layers']
+
+#---------------------
+
+combinedSppTruePresencesTable = None		#  correct Null for PYTHON ???
+combinedSppSampledPresencesTable = None
+
+#---------------------
+
+PARnumSppToCreate = variables ['PAR.num.spp.to.create']
+ARnumSppInReserveSelection = variables ['PAR.num.spp.in.reserve.selection']
+PARuseOldMaxentOutputForInput = variables ['PAR.use.old.maxent.output.for.input']
+
+#---------------------
+
+PARuseAllSamples = variables ['PAR.use.all.samples']
+
+#---------------------
+
+CONSTproductRule = variables ['CONST.product.rule']
+CONSTaddRule = variables ['CONST.add.rule']
+
+#---------------------
+
+combinedPresSamplesFileName = curFullMaxentSamplesDirName + dirSlash + \
+						'spp.sampledPres.combined.csv'
+print "\n\ncombinedPresSamplesFileName = '" + combinedPresSamplesFileName + "'\n\n"
+
+#---------------------
+
+PARpathToMaxent = variables ['PAR.path.to.maxent']
+print "\n\nPARpathToMaxent = '" + PARpathToMaxent + "'"
+
+maxentFullPathName = startingDir + dirSlash + PARpathToMaxent + dirSlash + 'maxent.jar'
+
+print "\n\nmaxentFullPathName = '" + maxentFullPathName, "'"
+
+#---------------------
+
+#  Look at this ipython notebook under the Subplots heading to see the
+#  matplotlib way to do this.
+#      http://nbviewer.ipython.org/urls/raw.github.com/swcarpentry/notebooks/master/matplotlib.ipynb
+
+#####    par (mfrow=c(2,2))
+
+#===============================================================================
+
+

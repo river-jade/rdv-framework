@@ -1,0 +1,4 @@
+--runnerclass=au.edu.rmit.tzar.runners.RRunner
+--projectspec=projects/guppy/projectparams.yaml
+--localcodepath=.
+--commandlineflags="-p guppy --rscript=runMaxent.R"
