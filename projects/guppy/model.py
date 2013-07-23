@@ -17,8 +17,6 @@ java -jar tzar.jar execlocalruns --runnerclass=PythonRunner  --projectspec=proje
 
 """
 
-
-
 class Model(basemodel.BaseModel):
     def execute(self, runparams):
 
@@ -82,3 +80,9 @@ class Model(basemodel.BaseModel):
 
 #         self.run_r_code("example.R", runparams)
 ###        self.run_r_code("                                         example.R", runparams)
+
+    def __init__(self):			#  Just dummying this in for the moment...
+        self.qualifiedparams = {}
+        self.variables = {}
+        self.runparams = {}
+

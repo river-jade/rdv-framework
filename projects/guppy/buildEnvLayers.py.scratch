@@ -1,0 +1,268 @@
+#=========================================================================================
+
+#                       buildEnvLayers.v2.py
+
+# import buildEnvLayers
+
+#=========================================================================================
+
+#  History:
+
+#  2013.07.11 - BTL
+#  Converted from R to python.
+
+#  2013.04 - BTL
+#  Split out of guppy.test.maxent.v9.R and later versions of runMaxent.R.
+
+#=========================================================================================
+
+	#--------------------------------------------------------------------------
+	#  In the Austin code, the env layers are returned as matrices that
+	#  are elements of a list, i.e., env.layers is a list with 2 elements,
+	#  env layer 1 and env layer 2.  Each of these matrices was loaded
+	#  directly from a pnm file (I think).
+	#
+	#  Here, instead of having them preloaded in a list, they have been
+	#  copied from glass into a local directory as files (asc files?).
+	#  Because I was not building the probability distribution, that was
+	#  ok.  Maxent wanted them as files, not as matrices.
+	#
+	#  What I need to do now (thursday 3/28/13) is load the matrices from
+	#  the files I've moved from glass.  At that point, I will be able
+	#  to build the probability distribution and create the true presences
+	#  and the sampled presences, like I did in Austin but have not done here
+	#  yet.
+	#--------------------------------------------------------------------------
+
+    #-----------------------------------------------------------------------
+    #  Get environment variables,
+    #  then combine them using some made-up rule to get a True probability
+    #  surface that maxent will try to recreate.
+    #  (For example, we can use generated images from a pnm file as the
+    #   environment layers.)
+    #
+    #  Then, sample from that surface to get the true occurrences of the
+    #  species.  Once you have that set, then you can build a biased
+    #  sampling method to look for these true occurrences and then feed
+    #  the results of that sampling to maxent.
+    #
+    #  This biased sampling might also have errors in it, i.e., false
+    #  positives.
+    #-----------------------------------------------------------------------
+	#
+	#  The synthetic env data directory currently has 5 different files for
+	#  each combination of H level and image ID, e.g., for H00_1:
+	#		H00_1.256.asc
+	#		H00_1.256.pgm
+	#		H00_1.asc
+	#		H00_1.pnm
+	#		H00_1.tif
+	#
+    #-----------------------------------------------------------------------
+
+#===============================================================================
+
+    #------------------------------------------------------------
+    #  Now choose the set of input environmental layers to use
+    #
+    #      - This is done by looking at all the input dirs
+    #        in PAR.path.to.maxent.input.data that match the pattern
+    #        PAR.maxent.env.layers.base.name
+    #      - Then randomly selecting one of these
+    #
+    #------------------------------------------------------------
+
+
+
+im1 = numpy.array([[0, 1],[65534, 65535]], dtype=numpy.uint16)
+imsave('_tmp.pgm', im1)
+im2 = imread('_tmp.pgm')
+assert numpy.all(im1 == im2)
+
+
+available before trash empty = 165 GB
+after emptying unlocked =
+after emptying locked =
+
+
+
+import random
+import urllib
+import os
+import shutil
+import netpbmfile
+
+
+dirSlash = "/"    #  How does python sense this for each OS?
+
+CONSTwindowsOSnameInR = "mingw32"
+CONSTwindowsOSnameInPython = "os2"		#  NOT SURE ABOUT THIS...
+										#  SEE os.name variable in python documentation
+CONSTwindowsOSname = CONSTwindowsOSnameInPython
+
+os.chdir ("/Users/Bill/D/rdv-framework/projects/guppy/")
+
+#  NOTE the difference between the mac path in R and in python.
+#       In R, you need the backslash in front of the spaces, but in python,
+#       the backslash can't be there.
+
+#			 "PAR.localEnvDirMac" : "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H",
+variables = { "PAR.useRemoteEnvDir" : False,
+				"PAR.localEnvDir" : "/Users/Bill/D/Projects_RMIT/",
+				"PAR.localEnvDirMac" : "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H",
+				"PAR.localEnvDirWin" : "Z:/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H",
+				"PAR.remoteEnvDir" : "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H" }
+
+curFullMaxentEnvLayersDirName = ???
+
+#  Constants that will probably become instance variables.
+minH = 1
+#	maxH = 10       #  For some reason I didn't create .256 images for H=10.
+maxH = 9
+minImgNum = 1
+maxImgNum = 100
+
+
+
+
+def getEnvLayersDirPrefix (variables):
+	useRemoteEnvDir = variables ["PAR.useRemoteEnvDir"]
+
+	print "\n\nvariables ['PAR.useRemoteEnvDir = '", variables ['PAR.useRemoteEnvDir'], "]'"
+	print "\n\nuseRemoteEnvDir = '", useRemoteEnvDir, "'"
+
+	print "\n\nvariables ['PAR.remoteEnvDir = '", variables ['PAR.remoteEnvDir'], "]'"
+	print "\n\nvariables ['PAR.localEnvDirMac = '", variables ['PAR.localEnvDirMac'], "]'"
+	print "\n\nvariables ['PAR.localEnvDirWin = '", variables ['PAR.localEnvDirWin'], "]'"
+
+	#envLayersDir = "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
+	envLayersDir = variables ['PAR.remoteEnvDir']
+
+	if (not useRemoteEnvDir):
+		##		envLayersDir = variables ['PAR.localEnvDir']
+		#envLayersDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
+
+		if (current.os == CONSTwindowsOSname):
+			envLayersDir = variables ['PAR.localEnvDirWin']
+		else:
+			envLayersDir = variables ['PAR.localEnvDirMac']
+
+	print "\n\nenvLayersDir = '", envLayersDir, "'"
+
+	return envLayersDir
+
+
+def genEnvLayers (variables):
+
+	envLayersDir = getEnvLayersDirPrefix (variables)
+
+##---------------
+		##  Only one use of this variable, so getting rid of it and using
+		##  the variables[...] itself in that one place.
+		##  BTL - 2013.07.13
+##	fileSizeSuffix = variables ['PAR.fileSizeSuffix']  #  E.g., .256 for 256x256 files.
+##---------------
+
+#  Constants moved outside routine that will probably become instance variables.
+## 	minH = 1
+## #	maxH = 10       #  For some reason I didn't create .256 images for H=10.
+## 	maxH = 9
+## 	minImgNum = 1
+## 	maxImgNum = 100
+
+##---------------
+		##  Looks like this variable is no longer used (at least in this file...)
+		##  BTL - 2013.07.13
+##	PAR.path.to.maxent.input.data = variables ['PAR.path.to.maxent.input.data']
+##	print "\n\nPAR.path.to.maxent.input.data = '", PAR.path.to.maxent.input.data, "'"
+##---------------
+
+	numEnvLayers = variables ['PAR.numEnvLayers']
+	print "\n\nnumEnvLayers = '", numEnvLayers, "'"
+
+##	#env.layers = list()
+##	###	env.layers = vector (mode="list", length=numEnvLayers)    ###  PYTHON???
+##		env.layers = vector (mode="list", length=numEnvLayers)    ###  PYTHON???
+	envLayers = [None] * numEnvLayers
+
+##		for (curEnvLayerIdx in 1:numEnvLayers):		#  ***  REMEMBER PYTHON 0:N VS R'S 1:N.  NOT SURE IF IT MATTERS HERE OR NOT...
+	for curEnvLayerIdx in range (numEnvLayers):		#  ***  REMEMBER PYTHON 0:N VS R'S 1:N.  NOT SURE IF IT MATTERS HERE OR NOT...
+
+		eLayerFileNamePrefix = buildEnvLayerOutputPrefix (curEnvLayerIdx)
+
+		#----------
+
+		imgFileRoot = buildImgFilenameRoot (envLayersDir)
+
+			#-------------------------------------------------------------------
+			#  May want to use the 256x256 images instead of the 1024x1024 images...
+			#  http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H01/H01_1.256.asc
+			#-------------------------------------------------------------------
+
+		for suffix in [".asc", ".pgm"]:
+
+				#-----------------------------------------------
+				#  Build the file name and retrieve the file.
+				#  File may be on local disk or on web server.
+				#-----------------------------------------------
+
+			imgFileName = imgFileRoot + suffix
+			fullImgFileDestPath = curFullMaxentEnvLayersDirName + dirSlash +
+										 eLayerFileNamePrefix + imgFileName
+			print "\n\nfullImgFileDestPath = '", fullImgFileDestPath,  "'"
+
+			srcImgFileName = imgFileRoot + variables ['PAR.fileSizeSuffix'] + suffix
+			srcFile = envSrcDir + srcImgFileName
+			print "\nsrcFile = '", srcFile, "'"
+
+				#--------------------------------------------------
+				#  Copy file from url to fullImgFileDestPath
+				#  or from local directory to fullImgFileDestPath
+				#  as specified by user option.
+				#--------------------------------------------------
+
+			if useRemoteEnvDir:
+				urllib.urlretrieve (srcFile, fullImgFileDestPath)
+			else:
+				shutil.copy (srcFile, fullImgFileDestPath)
+
+				#--------------------------------------------------------------
+				#  Now have the file copied to local work area.
+				#  Need to load the image into an array.
+				#  Only do this if it's a pgm since the pgm and asc file
+				#  will contain the same image and we know how to read a pgm.
+				#
+				#  Note that only a couple of lines below are actually doing
+				#  anything relevant.  The rest are there to print things
+				#  for debugging purposes and can be removed later.
+				#--------------------------------------------------------------
+
+			print "\n\nsuffix = '", suffix, "'\n"
+#			if (suffix == ".pnm"):
+			if (suffix == ".pgm"):
+				print "\n\nsuffix is .pnm so adding env.layer\n"
+				print "\nlen (env.layers) before = '", len (env.layers)
+
+#  NEEDS REPLACEMENT WITH NETPBM CODE IN PYTHON.
+				new.env.layer = get.img.matrix.from.pnm (fullImgFileDestPath)	###  PYTHON???
+
+				print "\ndim (new.env.layer) before = '", dim (new.env.layer)	###  PYTHON???
+				print "\n\nis.matrix(new.env.layer) in get.img.matrix.from.pnm = '", is.matrix(new.env.layer), "\n"	###  PYTHON???
+				print "\n\nis.vector(new.env.layer) in get.img.matrix.from.pnm = '", is.vector(new.env.layer), "\n"	###  PYTHON???
+				print "\n\nclass(new.env.layer) in get.img.matrix.from.pnm = '", class(new.env.layer), "\n"	###  PYTHON???
+
+				env.layers [curEnvLayerIdx]= new.env.layer    #  Add to stack.
+
+				print "\nlen (env.layers) AFTER = '", len (env.layers)
+#  IS THIS THE CORRECT WAY TO INDEX THE ARRAY RETURNED BY READING THE PGM FILE?
+				print "\n\nnew.env.layer [1:3,1:3] = \n", new.env.layer [1:3,1:3], "\n"     #  Echo a bit of the result...	###  PYTHON???
+				for (row in 1:3):
+					for (col in 1:3):
+						print "\nnew.env.layer [", row, ", ", col, "] = ", new.env.layer[row,col], ", and class = ", class(new.env.layer[row,col])	###  PYTHON???
+				#print (new.env.layer [1:3,1:3])    #  Echo a bit of the result...	###  PYTHON???
+
+			print '\n curFullMaxentEnvLayersDirName = ', curFullMaxentEnvLayersDirName
+
+	return (env.layers)
+
+#===============================================================================

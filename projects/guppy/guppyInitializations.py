@@ -593,10 +593,6 @@ print "\n\nmaxentFullPathName = '" + maxentFullPathName, "'"
 
 #####    par (mfrow=c(2,2))
 
-# <headingcell level=1>
-
-# End of guppyinitializations code  (EOF)
-
 # <markdowncell>
 
 # ---
@@ -604,185 +600,257 @@ print "\n\nmaxentFullPathName = '" + maxentFullPathName, "'"
 # ---
 # 
 # ---
-
-# <headingcell level=2>
-
-# Trying out some ipython extensions.
 
 # <headingcell level=3>
 
-# Most of the cells below that involved a call to the web failed at work or even at home, so I've turned those cells into raw text just to remember the code but not make the running of all cells in this notebook fail.
+# Following code is pulled from netpbm.py file to get some examples of declaring a class etc.  Will delete this stuff after I've figured all that out.
 
-# <markdowncell>
+# <codecell>
 
-# **Extension:  version_information**
-# 
-# http://nbviewer.ipython.org/urls/raw.github.com/jrjohansson/version_information/master/example.ipynb
-# 
-# This one fails all over the place, but need to try it from home to see if it's an issue with RMIT firewall, proxies, etc.
+__version__ = '2013.01.18'
+__docformat__ = 'restructuredtext en'
+__all__ = ['imread', 'imsave', 'NetpbmFile']
+
+
+def imread(filename, *args, **kwargs):
+    """Return image data from Netpbm file as numpy array.
+
+    `args` and `kwargs` are arguments to NetpbmFile.asarray().
+
+    Examples
+    --------
+    >>> image = imread('_tmp.pgm')
+
+    """
+    try:
+        netpbm = NetpbmFile(filename)
+        image = netpbm.asarray()
+    finally:
+        netpbm.close()
+    return image
+
+
+def imsave(filename, data, maxval=None, pam=False):
+    """Write image data to Netpbm file.
+
+    Examples
+    --------
+    >>> image = numpy.array([[0, 1],[65534, 65535]], dtype=numpy.uint16)
+    >>> imsave('_tmp.pgm', image)
+
+    """
+    try:
+        netpbm = NetpbmFile(data, maxval=maxval)
+        netpbm.write(filename, pam=pam)
+    finally:
+        netpbm.close()
+
+
+class NetpbmFile(object):
+    """Read and write Netpbm PAM, PBM, PGM, PPM, files."""
+
+    _types = {b'P1': b'BLACKANDWHITE', b'P2': b'GRAYSCALE', b'P3': b'RGB',
+              b'P4': b'BLACKANDWHITE', b'P5': b'GRAYSCALE', b'P6': b'RGB',
+              b'P7 332': b'RGB', b'P7': b'RGB_ALPHA'}
+
+    def __init__(self, arg=None, **kwargs):
+        """Initialize instance from filename, open file, or numpy array."""
+        for attr in ('header', 'magicnum', 'width', 'height', 'maxval',
+                     'depth', 'tupltypes', '_filename', '_fh', '_data'):
+            setattr(self, attr, None)
+        if arg is None:
+            self._fromdata([], **kwargs)
+        elif isinstance(arg, basestring):
+            self._fh = open(arg, 'rb')
+            self._filename = arg
+            self._fromfile(self._fh, **kwargs)
+        elif hasattr(arg, 'seek'):
+            self._fromfile(arg, **kwargs)
+            self._fh = arg
+        else:
+            self._fromdata(arg, **kwargs)
+
+    def asarray(self, copy=True, cache=False, **kwargs):
+        """Return image data from file as numpy array."""
+        data = self._data
+        if data is None:
+            data = self._read_data(self._fh, **kwargs)
+            if cache:
+                self._data = data
+            else:
+                return data
+        return deepcopy(data) if copy else data
+
+    def write(self, arg, **kwargs):
+        """Write instance to file."""
+        if hasattr(arg, 'seek'):
+            self._tofile(arg, **kwargs)
+        else:
+            with open(arg, 'wb') as fid:
+                self._tofile(fid, **kwargs)
+
+    def close(self):
+        """Close open file. Future asarray calls might fail."""
+        if self._filename and self._fh:
+            self._fh.close()
+            self._fh = None
+
+    def __del__(self):
+        self.close()
+
+    def _fromfile(self, fh):
+        """Initialize instance from open file."""
+        fh.seek(0)
+        data = fh.read(4096)
+        if (len(data) < 7) or not (b'0' < data[1:2] < b'8'):
+            raise ValueError("Not a Netpbm file:\n%s" % data[:32])
+        try:
+            self._read_pam_header(data)
+        except Exception:
+            try:
+                self._read_pnm_header(data)
+            except Exception:
+                raise ValueError("Not a Netpbm file:\n%s" % data[:32])
+
+    def _read_pam_header(self, data):
+        """Read PAM header and initialize instance."""
+        regroups = re.search(
+            b"(^P7[\n\r]+(?:(?:[\n\r]+)|(?:#.*)|"
+            b"(HEIGHT\s+\d+)|(WIDTH\s+\d+)|(DEPTH\s+\d+)|(MAXVAL\s+\d+)|"
+            b"(?:TUPLTYPE\s+\w+))*ENDHDR\n)", data).groups()
+        self.header = regroups[0]
+        self.magicnum = b'P7'
+        for group in regroups[1:]:
+            key, value = group.split()
+            setattr(self, unicode(key).lower(), int(value))
+        matches = re.findall(b"(TUPLTYPE\s+\w+)", self.header)
+        self.tupltypes = [s.split(None, 1)[1] for s in matches]
+
+    def _read_pnm_header(self, data):
+        """Read PNM header and initialize instance."""
+        bpm = data[1:2] in b"14"
+        regroups = re.search(b"".join((
+            b"(^(P[123456]|P7 332)\s+(?:#.*[\r\n])*",
+            b"\s*(\d+)\s+(?:#.*[\r\n])*",
+            b"\s*(\d+)\s+(?:#.*[\r\n])*" * (not bpm),
+            b"\s*(\d+)\s(?:\s*#.*[\r\n]\s)*)")), data).groups() + (1, ) * bpm
+        self.header = regroups[0]
+        self.magicnum = regroups[1]
+        self.width = int(regroups[2])
+        self.height = int(regroups[3])
+        self.maxval = int(regroups[4])
+        self.depth = 3 if self.magicnum in b"P3P6P7 332" else 1
+        self.tupltypes = [self._types[self.magicnum]]
+
+    def _read_data(self, fh, byteorder='>'):
+        """Return image data from open file as numpy array."""
+        fh.seek(len(self.header))
+        data = fh.read()
+        dtype = 'u1' if self.maxval < 256 else byteorder + 'u2'
+        depth = 1 if self.magicnum == b"P7 332" else self.depth
+        shape = [-1, self.height, self.width, depth]
+        size = numpy.prod(shape[1:])
+        if self.magicnum in b"P1P2P3":
+            data = numpy.array(data.split(None, size)[:size], dtype)
+            data = data.reshape(shape)
+        elif self.maxval == 1:
+            shape[2] = int(math.ceil(self.width / 8))
+            data = numpy.frombuffer(data, dtype).reshape(shape)
+            data = numpy.unpackbits(data, axis=-2)[:, :, :self.width, :]
+        else:
+            data = numpy.frombuffer(data, dtype)
+            data = data[:size * (data.size // size)].reshape(shape)
+        if data.shape[0] < 2:
+            data = data.reshape(data.shape[1:])
+        if data.shape[-1] < 2:
+            data = data.reshape(data.shape[:-1])
+        if self.magicnum == b"P7 332":
+            rgb332 = numpy.array(list(numpy.ndindex(8, 8, 4)), numpy.uint8)
+            rgb332 *= [36, 36, 85]
+            data = numpy.take(rgb332, data, axis=0)
+        return data
+
+    def _fromdata(self, data, maxval=None):
+        """Initialize instance from numpy array."""
+        data = numpy.array(data, ndmin=2, copy=True)
+        if data.dtype.kind not in "uib":
+            raise ValueError("not an integer type: %s" % data.dtype)
+        if data.dtype.kind == 'i' and numpy.min(data) < 0:
+            raise ValueError("data out of range: %i" % numpy.min(data))
+        if maxval is None:
+            maxval = numpy.max(data)
+            maxval = 255 if maxval < 256 else 65535
+        if maxval < 0 or maxval > 65535:
+            raise ValueError("data out of range: %i" % maxval)
+        data = data.astype('u1' if maxval < 256 else '>u2')
+        self._data = data
+        if data.ndim > 2 and data.shape[-1] in (3, 4):
+            self.depth = data.shape[-1]
+            self.width = data.shape[-2]
+            self.height = data.shape[-3]
+            self.magicnum = b'P7' if self.depth == 4 else b'P6'
+        else:
+            self.depth = 1
+            self.width = data.shape[-1]
+            self.height = data.shape[-2]
+            self.magicnum = b'P5' if maxval > 1 else b'P4'
+        self.maxval = maxval
+        self.tupltypes = [self._types[self.magicnum]]
+        self.header = self._header()
+
+    def _tofile(self, fh, pam=False):
+        """Write Netbm file."""
+        fh.seek(0)
+        fh.write(self._header(pam))
+        data = self.asarray(copy=False)
+        if self.maxval == 1:
+            data = numpy.packbits(data, axis=-1)
+        data.tofile(fh)
+
+    def _header(self, pam=False):
+        """Return file header as byte string."""
+        if pam or self.magicnum == b'P7':
+            header = "\n".join((
+                "P7",
+                "HEIGHT %i" % self.height,
+                "WIDTH %i" % self.width,
+                "DEPTH %i" % self.depth,
+                "MAXVAL %i" % self.maxval,
+                "\n".join("TUPLTYPE %s" % unicode(i) for i in self.tupltypes),
+                "ENDHDR\n"))
+        elif self.maxval == 1:
+            header = "P4 %i %i\n" % (self.width, self.height)
+        elif self.depth == 1:
+            header = "P5 %i %i %i\n" % (self.width, self.height, self.maxval)
+        else:
+            header = "P6 %i %i %i\n" % (self.width, self.height, self.maxval)
+        if sys.version_info[0] > 2:
+            header = bytes(header, 'ascii')
+        return header
+
+    def __str__(self):
+        """Return information about instance."""
+        return unicode(self.header)
+
+
+if sys.version_info[0] > 2:
+    basestring = str
+    unicode = lambda x: str(x, 'ascii')
+
 
 # <rawcell>
 
-# %install_ext http://raw.github.com/jrjohansson/version_information/master/version_information.py
-# %load_ext version_information
-# %version_information
-# %version_information scipy, numpy, Cython, matplotlib, qutip
-
-# <markdowncell>
-
-# Extension:  ***Magics for temporary workspace***
-# 
-#     %cdtemp -- Creates a temporary directory that is magically cleaned up when you exit IPython session.
-# 
-#     %%with_temp_dir -- Run Python code in a temporary directory and clean up it after the execution.
-# 
-# https://github.com/tkf/ipython-tempmagic
-
-# <codecell>
-
-%install_ext https://raw.github.com/tkf/ipython-tempmagic/master/tempmagic.py
-
-# <markdowncell>
-
-# ***Extension: ipy_table***
-#     
-# 
-# ipy_table is a supporting module for IP[y]:Notebook which makes it easy to create richly formatted data tables.
-# 
-# 
-# http://nbviewer.ipython.org/urls/raw.github.com/epmoyer/ipy_table/master/ipy_table-Introduction.ipynb
-#     
-
-# <markdowncell>
-
-# Extension:  ***flot - interactive plotting***
-# 
-# Inline javascript plotting for IPython notebooks
-# 
-# This package adds the ability to plot in an ipython notebook using the flot plotting backend. This makes it possible to have interactive (zoomable) plots within an ipython notebook webpage. The flot javascript library that is sourced is currently hosted at crbates.github.com/flot/. This add-in requires ipython >= 0.13
-# 
-# https://github.com/crbates/ipython-flot/
-# 
-# http://www.flotcharts.org/
-
-# <markdowncell>
-
-# from IPython.display import Image
-# Image(url='http://python.org/images/python-logo.gif')
-
-# <rawcell>
-
-# from IPython.display import SVG
-# SVG(filename='python-logo.svg')
-
-# <rawcell>
-
-# from IPython.display import Image
-# 
-# # by default Image data are embedded
-# Embed      = Image(    'http://scienceview.berkeley.edu/view/images/newview.jpg')
-# 
-# # if kwarg `url` is given, the embedding is assumed to be false
-# ##SoftLinked = Image(url='http://scienceview.berkeley.edu/view/images/newview.jpg')
-# 
-# # In each case, embed can be specified explicitly with the `embed` kwarg
-# # ForceEmbed = Image(url='http://scienceview.berkeley.edu/view/images/newview.jpg', embed=True)
-
-# <codecell>
-
-from IPython.display import HTML
-
-# <codecell>
-
-s = """<table>
-<tr>
-<th>Header 1</th>
-<th>Header 2</th>
-</tr>
-<tr>
-<td>row 1, cell 1</td>
-<td>row 1, cell 2</td>
-</tr>
-<tr>
-<td>row 2, cell 1</td>
-<td>row 2, cell 2</td>
-</tr>
-</table>"""
-
-# <codecell>
-
-h = HTML(s); h
-
-# <markdowncell>
-
-# The following pandas section (and the display ones above) are taken from: 
-# 
-# https://wakari.io/nb/url///wakari.io/static/notebooks/Part_5___Rich_Display_System.ipynb
-
-# <codecell>
-
-import pandas
-
-# <markdowncell>
-
-# By default, DataFrames will be represented as text; to enable HTML representations we need to set a print option:
-
-# <codecell>
-
-pandas.core.format.set_printoptions(notebook_repr_html=True)
-
-# <markdowncell>
-
-# Here is a small amount of stock data for APPL:
-
-# <codecell>
-
-%%file data.csv
-Date,Open,High,Low,Close,Volume,Adj Close
-2012-06-01,569.16,590.00,548.50,584.00,14077000,581.50
-2012-05-01,584.90,596.76,522.18,577.73,18827900,575.26
-2012-04-02,601.83,644.00,555.00,583.98,28759100,581.48
-2012-03-01,548.17,621.45,516.22,599.55,26486000,596.99
-2012-02-01,458.41,547.61,453.98,542.44,22001000,540.12
-2012-01-03,409.40,458.24,409.00,456.48,12949100,454.53
-
-# <markdowncell>
-
-# Read this as into a DataFrame:
-
-# <codecell>
-
-df = pandas.read_csv('data.csv')
-
-# <markdowncell>
-
-# And view the HTML representation:
-
-# <codecell>
-
-df
-
-# <markdowncell>
-
-# You can even embed an entire page from another site in an iframe; for example this is today's Wikipedia page for mobile users:
-
-# <codecell>
-
-from IPython.display import HTML
-HTML('<iframe src=http://en.mobile.wikipedia.org/?useformat=mobile width=700 height=350></iframe>')
-
-# <markdowncell>
-
-# And we also support the display of mathematical expressions typeset in LaTeX, which is rendered in the browser thanks to the MathJax library.
-
-# <codecell>
-
-from IPython.display import Math
-Math(r'F(k) = \int_{-\infty}^{\infty} f(x) e^{2\pi i k} dx')
-
-# <markdowncell>
-
-# Much more about Latex follows on the example page I've been copying from.  There's also a bunch of other stuff about things like embedding movies, etc.
+# if __name__ == "__main__":
+#     print "\n\n=====>>>  In __main__  <<<=====\n\n"
+#     print "Quitting...\n\n"
+# '''    
+#         try:
+#             pam = NetpbmFile(fname)
+#             pam.close()
+#         except ValueError as e:
+#             print(fname, e)
+#             continue
+# '''
 
 # <codecell>
 

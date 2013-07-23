@@ -1,0 +1,8 @@
+--clustername=bill
+--runnerclass=RRunner
+--projectspec=projects/guppy/projectparams.yaml
+--commandlineflags="-p guppy --rscript=runMaxent.R"
+--revision=runtime_head
+--svnurl=https://rdv-framework.googlecode.com/svn/trunk/
+--runset="guppy_20_runs_with_100spp_and_noBootstrap_only_diff_is_random_seed"
+--repetitionsfile="projects/guppy/repetitions.yaml"
