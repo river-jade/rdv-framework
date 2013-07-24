@@ -34,6 +34,19 @@ print "\n\n\n====>>>  tempDontMakeDirsYet = ", tempDontMakeDirsYet, "\n\n\n"
 
 #  History:
 
+#  2013.07.24 - BTL
+#  Had converted to python by doing it all inside an ipython notebook and 
+#  incrementally testing each little bit of code.  Now want to create a 
+#  class for Guppy and turn this initialization code into a method for that 
+#  class.  Unfortunately, ipython cannot execute multiple cells at once 
+#  and if you make a method that spans multiple cells, there will be 
+#  indentation and ipython will get upset about that indentation when it tries 
+#  to run just one cell where the reason for the indentation is not visible 
+#  in that cell.  So, I'm now going to strip this file down to one method or  
+#  a small number of methods, with each method in its own (possibly very long) 
+#  cell.  Once I have these methods built, I'll go create the Guppy class and 
+#  hang all this off of there.
+
 #  2013.07.14 - BTL
 #  Converted to python.
 
@@ -73,6 +86,64 @@ print "\n\n\n====>>>  tempDontMakeDirsYet = ", tempDontMakeDirsYet, "\n\n\n"
 # 
 # 
 # At svn guppy revision 259, have removed the full output echo that was in the next cell for now because it's quite large and I'm not doing anything with it.  If you need to see it, look at svn version 259 of this file (BTL - 2013.07.24).
+
+# <codecell>
+
+import os
+from pprint import pprint
+
+verbose = False
+
+class Guppy (object):
+    """Overarching class for everything about managing a Guppy run.
+    """
+    def __init__ (self, constants=None, variables=None, \
+                        qualifiedParams=None, runParams=None):
+        
+        self.constants = constants or {}
+        self.variables = variables or {}
+        self.qualifiedParams = qualifiedParams or {}
+        self.runParams = runParams or {}
+        self.curDir = os.getcwd()
+        
+        if (verbose):
+                
+            print ("\n-----------------------------\n\nPARAMS AS PASSED IN:")
+            self.pprintParamValues()
+        
+        self.constants ["dirSlash"] = "/"
+        self.variables ["test"] = "varTest"
+        self.qualifiedParams ["test"] = "qpTest"
+        self.runParams ["test"] = "rpTest"
+
+    def pprintParamValues (self):
+        print "\n\nconstants ="
+        pprint (self.constants)
+        print "\n\nvariables ="
+        pprint (self.variables)
+        print "\n\nqualifiedParams ="
+        pprint (self.qualifiedParams)
+        print "\n\nrunParams ="
+        pprint (self.runParams)
+        print "\n\ncurDir =" + self.curDir + "\n\n"
+      
+#===============================================================================
+
+#  Uncomment "name=main" line and indent following lines when all of this  
+#  becomes a full, standalone python file.
+#  For now, just want the code below to run automatically on every test 
+#  in ipython.
+        
+#if __name__ == '__main__':    
+
+g = Guppy()
+print ("\nCreated a Guppy.\n")
+
+if (verbose):
+    print ("-----------------------------\n\nINITIALIZED PARAMS:")
+    g.pprintParamValues()
+    
+#===============================================================================
 
 # <codecell>
 
