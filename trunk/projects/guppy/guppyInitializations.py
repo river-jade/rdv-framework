@@ -34,29 +34,6 @@ verbose = False
 
 # <codecell>
 
-#  History:
-
-#  2013.07.24 - BTL
-#  Had converted to python by doing it all inside an ipython notebook and 
-#  incrementally testing each little bit of code.  Now want to create a 
-#  class for Guppy and turn this initialization code into a method for that 
-#  class.  Unfortunately, ipython cannot execute multiple cells at once 
-#  and if you make a method that spans multiple cells, there will be 
-#  indentation and ipython will get upset about that indentation when it tries 
-#  to run just one cell where the reason for the indentation is not visible 
-#  in that cell.  So, I'm now going to strip this file down to one method or  
-#  a small number of methods, with each method in its own (possibly very long) 
-#  cell.  Once I have these methods built, I'll go create the Guppy class and 
-#  hang all this off of there.
-
-#  2013.07.14 - BTL
-#  Converted to python.
-
-#  2013.04 - BTL
-#  Split out of guppy.test.maxent.v9.R and later versions of runMaxent.R.
-
-# <codecell>
-
 #  NOTE:
 #
 #  Many things in here have an absolute path that looks like this:
@@ -91,20 +68,92 @@ verbose = False
 
 # <codecell>
 
-    #---------------------------------------------------------------------
-    #  Things that should or need to be set up outside of Guppy class.
-    #---------------------------------------------------------------------
+#===============================================================================
+#  This bar is just here to show the 80 character margin since I can't currently
+#  see a way to do that in ipython itself.
+#===============================================================================
 
+#  History:
 
+#  2013.07.24 - BTL
+#  Had converted to python by doing it all inside an ipython notebook and 
+#  incrementally testing each little bit of code.  Now want to create a 
+#  class for Guppy and turn this initialization code into a method for that 
+#  class.  Unfortunately, ipython cannot execute multiple cells at once 
+#  and if you make a method that spans multiple cells, there will be 
+#  indentation and ipython will get upset about that indentation when it tries 
+#  to run just one cell where the reason for the indentation is not visible 
+#  in that cell.  So, I'm now going to strip this file down to one method or  
+#  a small number of methods, with each method in its own (possibly very long) 
+#  cell.  Once I have these methods built, I'll go create the Guppy class and 
+#  hang all this off of there.
 
-# <codecell>
+#  2013.07.14 - BTL
+#  Converted to python.
+
+#  2013.04 - BTL
+#  Split out of guppy.test.maxent.v9.R and later versions of runMaxent.R.
+
+#===============================================================================
+
+#  NOTE:
+#
+#  Many things in here have an absolute path that looks like this:
+#
+#			/Users/Bill/D/rdv-framework/lib/maxent
+#
+#  This will fail when moved to windows or linux because rdv is not in:
+#
+#			/Users/Bill/D
+#
+#  Is that lead-in for rdv's location available somewhere as a variable
+#  in the variables list?
+
+#===============================================================================
+
+#  Output from log file of a tzar run of the R version to show what values 
+#  should be produced:
+#
+#  Location of log file this output is taken from:
+#
+#  (paths copied from TextWrangler top bar's File Path pulldown)
+#
+#  path ========> ~/tzar/outputdata/Guppy/default_runset/114_Scen_1/logging.log
+#
+#  full path =====> /Users/Bill/tzar/outputdata/Guppy/default_runset/114_Scen_1/logging.log
+#
+#  url =========> file://localhost/Users/Bill/tzar/outputdata/Guppy/default_runset/114_Scen_1/logging.log
+#
+#  At svn guppy revision 259, have removed the full output echo that was in 
+#  the next cell for now because it's quite large and I'm not doing anything 
+#  with it. 
+#  If you need to see it, look at svn version 259 of guppyInitializations.ipynb.
+#  (BTL - 2013.07.24).
+
+#===============================================================================
+
+    #  BTL - 2013.07.15
+    #  This is just while I'm figuring out how to do tests of things in ipython, 
+    #  particularly when they involve creating and moving to directories that 
+    #  may be very different for tzar.
+    
+    #  ONCE THINGS ARE FIGURED OUT, ALL USES OF tempDontMakeDirsYet 
+    #  NEED TO BE REMOVED AND THIS LITTLE BLOCK NEEDS TO BE REMOVED.
+
+tempDontMakeDirsYet = True
+print "\n\n\n====>>>  tempDontMakeDirsYet = ", tempDontMakeDirsYet, "\n\n\n"
+
+verbose = False
 
 #===============================================================================
 
 import os
 from pprint import pprint
-import yaml
 import random
+
+    #  For testing only?
+import yaml
+import pickle
 
 #===============================================================================
 
@@ -247,10 +296,6 @@ class Guppy (object):
             print "    PARinputDirectory may be messed up." + "\n***********           ***********"
         print "\nPARinputDirectory = '" + self.PARinputDirectory + "'"        
         
-        
-        
-        
-        
     def pprintParamValues (self):
         print "\n\nconstants ="
         pprint (self.constants)
@@ -280,40 +325,55 @@ guppyDir = '/Users/Bill/D/rdv-framework/projects/guppy/'
 os.chdir (guppyDir)
 print "\nMoved to directory: " + os.getcwd()
 
-yamlFile = open("projectparams.yaml", "r")
+oldStyleTest = False
+if oldStyleTest:
+    yamlFile = open("projectparams.yaml", "r")
+    
+    projectParams = yaml.load(yamlFile)
+    baseParams = projectParams ['base_params']
+    variables = baseParams ['variables']
+    outputFiles = baseParams ['output_files']
+    inputFiles = baseParams ['input_files']
 
-projectParams = yaml.load(yamlFile)
-baseParams = projectParams ['base_params']
-variables = baseParams ['variables']
-outputFiles = baseParams ['output_files']
-inputFiles = baseParams ['input_files']
-
-'''
-print "\n===============================\n"
-print "PROJECTPARAMS = \n"
-pprint (projectParams)
-
-print "\n===============================\n"
-print "BASEPARAMS = \n"
-pprint (baseParams)
-'''
-
-if verbose:
+    '''
     print "\n===============================\n"
-    print "INPUTFILES = \n"
-    pprint (inputFiles)
+    print "PROJECTPARAMS = \n"
+    pprint (projectParams)
     
     print "\n===============================\n"
-    print "OUTPUTFILES = \n"
-    pprint (outputFiles)
+    print "BASEPARAMS = \n"
+    pprint (baseParams)
+    '''
+
+    if verbose:
+        print "\n===============================\n"
+        print "INPUTFILES = \n"
+        pprint (inputFiles)
+        
+        print "\n===============================\n"
+        print "OUTPUTFILES = \n"
+        pprint (outputFiles)
     
-    print "\n===============================\n"
-    print "VARIABLES = \n"
-    pprint (variables)
+
+else:
+    pickleFileName = '/Users/Bill/D/rdv-framework/projects/guppy/pickeledGuppyInitializationTestParams.pkl'
+    pkl_file = open (pickleFileName, 'rb')
+    qualifiedparams = pickle.load (pkl_file)
+    variables = pickle.load (pkl_file)
+    pkl_file.close ()
+
+    if verbose:
+        print "\n===============================\n"
+        print "qualifiedparams = \n"
+        pprint (qualifiedparams)
+        
+        print "\n===============================\n"
+        print "variables = \n"
+        pprint (variables)
+        
+        print "\n===============================\n"
     
-    print "\n===============================\n"
-    
-g = Guppy (None, variables)
+g = Guppy (None, variables, qualifiedparams)
 print ("\nCreated a Guppy.\n")
 
 if (verbose):
@@ -322,48 +382,6 @@ if (verbose):
     
     
 #===============================================================================
-
-# <markdowncell>
-
-# =================================================================================================
-# 
-# NOTE: There is a ***BUG*** here in stripping the first two characters off the start of the PARinputDirectoryFromYaml string.  
-# 
-# Not sure why this was done in the R version, but in the test python version where the string is "inputData", it reduces that string to "putData", which is definitely wrong.  Might have been stripping something like "D/" off of the R version?
-# 
-# After having a look at an example tzar log, I can see what's going on now.
-# 
-# This code assumes that whatever string is handed to it will need the first two characters removed and then it will splice the rdv directory together with a slash and whatever came after the first two characters.  For example, in the example log file this means that you will splice:
-# 
-# rdv.dir = ""
-# 
-# dirSlash = "/"
-# 
-# "./projects/guppy/input_data" minus the two lead characters to give:  "projects/guppy/input_data"
-# 
-# The result is then:
-# 
-# "" + "/" + "projects/guppy/input_data"    =    "/projects/guppy/input_data"
-# 
-# So, it looks like this is all setting up to tack this onto the end of another directory path that lacks a trailing slash - though I think that you can actually splice "x/" + "./project" to get "x/./project" and it will still work as a legal path.  The main problem here is that the yaml file doesn't guarantee anything at all about what variables ['PAR.input.directory'] looks like.  That will have to be dealt with here.  
-# 
-# Still, it worked before so for the moment, I'm just going to flag the lead character condition as a WARNING.  Should probably throw some kind of exception...
-# 
-# This is all partly related to whatever tzar does in building the 3 dictionaries that I'm reading in directly here, but tzar modifies.  
-# 
-# =================================================================================================
-
-# <codecell>
-
-leadChars = PARinputDirectoryFromYaml [0:2]
-print "\nleadChars = '" + leadChars + "'"
-if leadChars == "./":
-    PARinputDirectory = PARrdvDirectory + dirSlash + PARinputDirectoryFromYaml [2:]
-else:
-    PARinputDirectory = PARrdvDirectory + dirSlash + PARinputDirectoryFromYaml
-    print "\n***********  WARNING  ***********\n" + "    leadChars of PARinputDirectoryFromYaml = '" + leadChars + "' rather than './' so not stripping."
-    print "    PARinputDirectory may be messed up." + "\n***********           ***********"
-print "\nPARinputDirectory = '" + PARinputDirectory + "'"
 
 # <codecell>
 
