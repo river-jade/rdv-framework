@@ -5,6 +5,8 @@ import basemodel
 
 from pprint import pprint
 
+import pickle
+
 """
 To run example code using jython:
 java -jar tzar.jar execlocalruns --runnerclass=JythonRunner  --projectspec=projects/example-jython/projectparams.yaml --localcodepath=. --commandlineflags="-p example-jython"
@@ -13,6 +15,7 @@ java -jar tzar.jar execlocalruns --runnerclass=JythonRunner  --projectspec=proje
 
 To run guppy code using PYTHON:
 
+cd rdv-framework
 java -jar tzar.jar execlocalruns --runnerclass=PythonRunner  --projectspec=projects/guppy/projectparams.yaml --localcodepath=. --commandlineflags="-p guppy"
 
 """
@@ -74,6 +77,24 @@ class Model(basemodel.BaseModel):
         print(runparams)
 #        pprint(runparams)
         print ("\n\n")
+
+
+
+		# write python dict to a file
+#		mydict = {'a': 1, 'b': 2, 'c': 3}
+		pickleFileName = 'testParams.pkl'
+		output = open (pickleFileName, 'wb')
+		pickle.dump (qualifiedparams, output)
+		output.close ()
+
+		# read python dict back from the file
+		pkl_file = open (pickleFileName, 'rb')
+		qp = pickle.load (pkl_file)
+		pkl_file.close ()
+
+		print "\n\n=========================\nunpickled qualifiedparams = \n"
+		pprint (qp)
+
 
         # NOTE: this run_r_code fucntion calls the example on the R
         # directory ie rdv-framework/R/example.R
