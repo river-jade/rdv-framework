@@ -15,7 +15,7 @@ java -jar tzar.jar execlocalruns --runnerclass=JythonRunner  --projectspec=proje
 
 To run guppy code using PYTHON:
 
-cd rdv-framework
+cd /Users/Bill/D/rdv-framework
 java -jar tzar.jar execlocalruns --runnerclass=PythonRunner  --projectspec=projects/guppy/projectparams.yaml --localcodepath=. --commandlineflags="-p guppy"
 
 """
@@ -44,8 +44,6 @@ class Model(basemodel.BaseModel):
 #         self.run_r_code( "run.zonation.guppy.R", runparams )
 
 
-
-
         # the logging levels are (in descending order): severe, warning, info, config, fine,
         # finer, finest
         # by default tzar will log all at info and above to the console, and all logging to a logfile.
@@ -57,7 +55,6 @@ class Model(basemodel.BaseModel):
         qualifiedparams = runparams.getQualifiedParams(self.inputpath, self.outputpath)
 
         print("qualifiedparams = ")
-#        print(qualifiedparams)
         pprint(qualifiedparams)
         print ("\n\n")
 
@@ -66,44 +63,49 @@ class Model(basemodel.BaseModel):
         variables = self.get_decimal_params(runparams)
 
         print("variables = ")
-#        print(variables)
         pprint(variables)
         print ("\n\n")
 
         print("current directory = ")
         print(os.getcwd())
-
-        print("runparams = ")
-        print(runparams)
-#        pprint(runparams)
         print ("\n\n")
 
+            #-------------------------------------------------------------------
+            #  Write the qualifiedparams and variables dictionaries to
+            #  a pickle file so that they can be unpickled by a test program
+            #  that runs independent of tzar and just needs a pair of
+            #  realistic dictionaries to test initialization of guppy values.
+            #  Will remove this little code section once initialization
+            #  code is working.
+        pickleDictionariesForTesting = True
+        if pickleDictionariesForTesting:
+            self.pickleDictionaries (qualifiedparams, variables)
+            #-------------------------------------------------------------------
+
+    def pickleDictionaries (self, qualifiedparams, variables):
+
+            #  Based on:
+            #  http://www.saltycrane.com/blog/2008/01/saving-python-dict-to-file-using-pickle/
+
+        pickleFileName = '/Users/Bill/D/rdv-framework/projects/guppy/pickeledGuppyInitializationTestParams.pkl'
+
+            #  Write python dicts to a file.
+        output = open (pickleFileName, 'wb')
+        pickle.dump (qualifiedparams, output)
+        pickle.dump (variables, output)
+        output.close ()
+
+            #  Read python dicts back from the file and echo to log file
+            #  for comparison later.
+        pkl_file = open (pickleFileName, 'rb')
+        qp = pickle.load (pkl_file)
+        v = pickle.load (pkl_file)
+        pkl_file.close ()
+
+        print "\n\n=========================\nunpickled qualifiedparams = \n"
+        pprint (qp)
+        print "\n\n=========================\nunpickled variables = \n"
+        pprint (v)
 
 
-		# write python dict to a file
-#		mydict = {'a': 1, 'b': 2, 'c': 3}
-		pickleFileName = 'testParams.pkl'
-		output = open (pickleFileName, 'wb')
-		pickle.dump (qualifiedparams, output)
-		output.close ()
-
-		# read python dict back from the file
-		pkl_file = open (pickleFileName, 'rb')
-		qp = pickle.load (pkl_file)
-		pkl_file.close ()
-
-		print "\n\n=========================\nunpickled qualifiedparams = \n"
-		pprint (qp)
-
-
-        # NOTE: this run_r_code fucntion calls the example on the R
-        # directory ie rdv-framework/R/example.R
-
-#         self.run_r_code("example.R", runparams)
-###        self.run_r_code("                                         example.R", runparams)
-
-    def __init__(self):			#  Just dummying this in for the moment...
-        self.qualifiedparams = {}
-        self.variables = {}
-        self.runparams = {}
 
