@@ -35,11 +35,11 @@
 #
 #  Many things in here have an absolute path that looks like this:
 #
-#			/Users/Bill/D/rdv-framework/lib/maxent
+#            /Users/Bill/D/rdv-framework/lib/maxent
 #
 #  This will fail when moved to windows or linux because rdv is not in:
 #
-#			/Users/Bill/D
+#            /Users/Bill/D
 #
 #  Is that lead-in for rdv's location available somewhere as a variable
 #  in the variables list?
@@ -98,11 +98,11 @@ import pickle
     #  it out altogether when things are working right.
 
 def createDirIfDoesntExist (dirToMake):
-	if tempDontMakeDirsYet:
-		print "\n====>>>  Would make dir '" + dirToMake + "' now."
-	else:
-		if not os.path.isdir (dirToMake):
-			os.makedirs (dirToMake)
+    if tempDontMakeDirsYet:
+        print "\n====>>>  Would make dir '" + dirToMake + "' now."
+    else:
+        if not os.path.isdir (dirToMake):
+            os.makedirs (dirToMake)
 
 #===============================================================================
 
@@ -230,6 +230,197 @@ class Guppy (object):
             print "\n***********  WARNING  ***********\n" + "    leadChars of PARinputDirectoryFromYaml = '" + leadChars + "' rather than './' so not stripping."
             print "    PARinputDirectory may be messed up." + "\n***********           ***********"
         print "\nPARinputDirectory = '" + self.PARinputDirectory + "'"
+
+        #---------------------
+        #  start new
+        #---------------------
+
+        PARcurrentRunDirectory = self.qualifiedParams ['PAR.current.run.directory']
+        print "\nPARcurrentRunDirectory = '" + PARcurrentRunDirectory + "'"
+
+#  PARcurrentRunDirectory = ''
+
+        #probDistLayersDir = "./MaxentProbDistLayers/"    #7/17#  what we want maxent to generate, i.e., the true layers?
+        #PARprobDistLayersDirName = "MaxentProbDistLayers"
+        ##probDistLayersDir = paste (PARcurrentRunDirectory, "/",
+        ##                              PARprobDistLayersDirName, "/"
+
+        probDistLayersDir = self.qualifiedParams ['PAR.prob.dist.layers.dir.name']
+        probDistLayersDirWithSlash = probDistLayersDir + "/"
+
+        print "\nprobDistLayersDir = '" + probDistLayersDir + "'"
+        createDirIfDoesntExist (probDistLayersDir)
+
+#  probDistLayersDir = 'MaxentProbDistLayers'
+#
+#  ====>>>  Would make dir 'MaxentProbDistLayers' now.
+
+
+        #PARmaxentOutputDirName = "MaxentOutputs"
+
+        maxentOutputDir = self.qualifiedParams ['PAR.maxent.output.dir.name']
+        maxentOutputDirWithSlash = maxentOutputDir + self.constants ['dirSlash']
+
+        print "\nmaxentOutputDir = '" + maxentOutputDir + "'"
+        createDirIfDoesntExist (maxentOutputDir)
+
+#  maxentOutputDir = 'MaxentOutputs'
+#
+#  ====>>>  Would make dir 'MaxentOutputs' now.
+
+
+        #PARmaxentGenOutputDirName = "MaxentGenOutputs"
+
+        maxentGenOutputDir = self.qualifiedParams ['PAR.maxent.gen.output.dir.name']
+        maxentGenOutputDirWithSlash = maxentGenOutputDir + "/"
+
+        print "\nmaxentGenOutputDir = '" + maxentGenOutputDir + "'"
+        createDirIfDoesntExist (maxentGenOutputDir)
+
+#  maxentGenOutputDir = 'MaxentGenOutputs'
+#
+#  ====>>>  Would make dir 'MaxentGenOutputs' now.
+
+
+        #analysisDir = "./ResultsAnalysis/"
+        #PARanalysisDirName = "ResultsAnalysis"
+
+        analysisDirWithSlash = PARcurrentRunDirectory +  self.constants ['dirSlash'] + variables ['PAR.analysis.dir.name'] + self.constants ['dirSlash']
+        print "\nanalysisDirWithSlash = '" + analysisDirWithSlash + "'"
+        createDirIfDoesntExist (analysisDirWithSlash)
+
+#  analysisDirWithSlash = '/ResultsAnalysis/'
+#
+#  ====>>>  Would make dir '/ResultsAnalysis/' now.
+
+
+            #  NOTE:  DOES THIS output directory move below NEED TO BE DONE NOW?
+            #         IE, ARE ALL THE DIRECTORY CREATIONS BELOW ABSOLUTE OR ARE THEY
+            #         RELATIVE TO BEING IN THE CURRENTRUNDIRECTORY?
+            #
+            #         It makes testing all this in python easier if I can separate
+            #         the moving to a directory from the creation of directories.
+
+            #  IN GENERAL, IT SEEMS LIKE I NEED TO MAKE SURE THAT PATHS ARE ALWAYS BUILT WITH AS LITTLE
+            #  DEPENDENCE AS POSSIBLE ON WHAT DIRECTORY YOU HAPPEN TO BE SITTING IN AT A GIVEN TIME.
+            #  THAT WILL MAKE IT MUCH EASIER TO TEST.  OR WILL IT?  MAYBE A RELATIVE PATH IS A BETTER
+            #  THING SO THAT YOU CAN CREATE A DUMMY LITTLE TEST AREA AND WORK THERE WITHOUT HURTING
+            #  ANYTHING ELSE...
+
+
+            #  Move to the output directory.
+
+        if tempDontMakeDirsYet:
+            print "\n====>>>  Would move to dir '", PARcurrentRunDirectory, "' now."
+        else:
+                #  Move to the output directory, e.g.,
+                #  "/Users/Bill/tzar/outputdata/Guppy/default_runset/114_Scen_1.inprogress/"
+            os.chdir (PARcurrentRunDirectory)
+
+#  ====>>>  Would move to dir '  ' now.
+
+        ##if (!file.exists ("MaxentOutputs"))
+        ##    {
+        ##    dir.create ("MaxentOutputs")
+        ##    }
+
+        curFullMaxentEnvLayersDirName = \
+            PARcurrentRunDirectory + variables ['PAR.maxent.env.layers.base.name']
+
+        print "\n\ncurFullMaxentEnvLayersDirName = '" + curFullMaxentEnvLayersDirName + "'"
+
+        createDirIfDoesntExist (curFullMaxentEnvLayersDirName)
+
+#  curFullMaxentEnvLayersDirName = 'MaxentEnvLayers'
+#
+#  ====>>>  Would make dir 'MaxentEnvLayers' now.
+
+
+        ##if (not file.exists ("MaxentSamples"))
+        ##    {
+        ##    dir.create ("MaxentSamples")
+        ##    }
+
+        curFullMaxentSamplesDirName = \
+            PARcurrentRunDirectory + variables ['PAR.maxent.samples.base.name']
+
+        print "\n\ncurFullMaxentSamplesDirName = '" + curFullMaxentSamplesDirName + "'"
+
+        createDirIfDoesntExist (curFullMaxentSamplesDirName)
+
+#  curFullMaxentSamplesDirName = 'MaxentSamples'
+#
+#  ====>>>  Would make dir 'MaxentSamples' now.
+
+        #       write.to.file : TRUE,
+        writeToFile = variables ['PAR.write.to.file']
+
+        #         use.draw.image : FALSE,
+        useDrawImage = variables ['PAR.use.draw.image']
+
+        #         use.filled.contour : TRUE,
+        useFilledContour = variables ['PAR.use.filled.contour']
+
+                    #  BEWARE: if this is FALSE, the get.env.layers() routine in
+                    #          guppy.maxent.functions.v6.R does something vestigial
+                    #          that you may not expect (or want) at all !
+                    #          Need to fix that.
+                    #          BTL - 2011.09.20
+                    #  BTL - 2011.10.03 - Is this note even relevant anymore?
+                    #                     Looks like this variable isn't even used now.
+        #         use.pnm.env.layers : TRUE ,
+        usePnmEnvLayers = variables ['PAR.use.pnm.env.layers']
+
+
+
+        combinedSppTruePresencesTable = None        #  correct Null for PYTHON ???
+        combinedSppSampledPresencesTable = None
+
+
+        PARnumSppToCreate = variables ['PAR.num.spp.to.create']
+        PARnumSppInReserveSelection = variables ['PAR.num.spp.in.reserve.selection']
+        PARuseOldMaxentOutputForInput = variables ['PAR.use.old.maxent.output.for.input']
+
+
+        PARuseAllSamples = variables ['PAR.use.all.samples']
+
+
+        CONSTproductRule = variables ['CONST.product.rule']
+        CONSTaddRule = variables ['CONST.add.rule']
+
+
+        combinedPresSamplesFileName = curFullMaxentSamplesDirName + self.constants ['dirSlash'] + \
+                                'spp.sampledPres.combined.csv'
+        print "\n\ncombinedPresSamplesFileName = '" + combinedPresSamplesFileName + "'\n\n"
+
+#  combinedPresSamplesFileName = 'MaxentSamples/spp.sampledPres.combined.csv'
+
+
+
+        PARpathToMaxent = variables ['PAR.path.to.maxent']
+        print "\n\nPARpathToMaxent = '" + PARpathToMaxent + "'"
+
+        maxentFullPathName = self.startingDir + self.constants ['dirSlash'] + PARpathToMaxent + self.constants ['dirSlash'] + 'maxent.jar'
+
+        print "\n\nmaxentFullPathName = '" + maxentFullPathName, "'"
+
+#  PARpathToMaxent = 'lib/maxent'
+#
+#
+#  maxentFullPathName = '/Users/Bill/D/rdv-framework/projects/guppy/lib/maxent/maxent.jar '
+
+
+
+        #  Look at this ipython notebook under the Subplots heading to see the
+        #  matplotlib way to do this.
+        #      http://nbviewer.ipython.org/urls/raw.github.com/swcarpentry/notebooks/master/matplotlib.ipynb
+
+        #####    par (mfrow=c(2,2))
+
+
+        #---------------------
+        #  end new
+        #---------------------
 
     def pprintParamValues (self):
         print "\n\nconstants ="
