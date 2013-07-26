@@ -75,7 +75,7 @@
     #  ONCE THINGS ARE FIGURED OUT, ALL USES OF tempDontMakeDirsYet
     #  NEED TO BE REMOVED AND THIS LITTLE BLOCK NEEDS TO BE REMOVED.
 
-tempDontMakeDirsYet = True
+tempDontMakeDirsYet = False
 print "\n\n\n====>>>  tempDontMakeDirsYet = ", tempDontMakeDirsYet, "\n\n\n"
 
 verbose = False
@@ -122,9 +122,9 @@ class Guppy (object):
             print ("\n-----------------------------\n\nPARAMS AS PASSED IN:")
             self.pprintParamValues()
 
-        self.variables ["test"] = "varTest"
-        self.qualifiedParams ["test"] = "qpTest"
-        self.runParams ["test"] = "rpTest"
+#        self.variables ["test"] = "varTest"
+#        self.qualifiedParams ["test"] = "qpTest"
+#        self.runParams ["test"] = "rpTest"
 
         self.createConstants ()
         self.setRandomSeed ()
@@ -285,7 +285,8 @@ class Guppy (object):
         #analysisDir = "./ResultsAnalysis/"
         #PARanalysisDirName = "ResultsAnalysis"
 
-        analysisDirWithSlash = PARcurrentRunDirectory +  self.constants ['dirSlash'] + variables ['PAR.analysis.dir.name'] + self.constants ['dirSlash']
+##        analysisDirWithSlash = PARcurrentRunDirectory +  self.constants ['dirSlash'] + self.variables ['PAR.analysis.dir.name'] + self.constants ['dirSlash']
+        analysisDirWithSlash = PARcurrentRunDirectory + self.variables ['PAR.analysis.dir.name'] + self.constants ['dirSlash']
         print "\nanalysisDirWithSlash = '" + analysisDirWithSlash + "'"
         createDirIfDoesntExist (analysisDirWithSlash)
 
@@ -311,7 +312,7 @@ class Guppy (object):
             #  Move to the output directory.
 
         if tempDontMakeDirsYet:
-            print "\n====>>>  Would move to dir '", PARcurrentRunDirectory, "' now."
+            print "\n====>>>  Would move to dir '" + PARcurrentRunDirectory + "' now."
         else:
                 #  Move to the output directory, e.g.,
                 #  "/Users/Bill/tzar/outputdata/Guppy/default_runset/114_Scen_1.inprogress/"
@@ -325,7 +326,7 @@ class Guppy (object):
         ##    }
 
         curFullMaxentEnvLayersDirName = \
-            PARcurrentRunDirectory + variables ['PAR.maxent.env.layers.base.name']
+            PARcurrentRunDirectory + self.variables ['PAR.maxent.env.layers.base.name']
 
         print "\n\ncurFullMaxentEnvLayersDirName = '" + curFullMaxentEnvLayersDirName + "'"
 
@@ -342,7 +343,7 @@ class Guppy (object):
         ##    }
 
         curFullMaxentSamplesDirName = \
-            PARcurrentRunDirectory + variables ['PAR.maxent.samples.base.name']
+            PARcurrentRunDirectory + self.variables ['PAR.maxent.samples.base.name']
 
         print "\n\ncurFullMaxentSamplesDirName = '" + curFullMaxentSamplesDirName + "'"
 
@@ -353,13 +354,13 @@ class Guppy (object):
 #  ====>>>  Would make dir 'MaxentSamples' now.
 
         #       write.to.file : TRUE,
-        writeToFile = variables ['PAR.write.to.file']
+        writeToFile = self.variables ['PAR.write.to.file']
 
         #         use.draw.image : FALSE,
-        useDrawImage = variables ['PAR.use.draw.image']
+        useDrawImage = self.variables ['PAR.use.draw.image']
 
         #         use.filled.contour : TRUE,
-        useFilledContour = variables ['PAR.use.filled.contour']
+        useFilledContour = self.variables ['PAR.use.filled.contour']
 
                     #  BEWARE: if this is FALSE, the get.env.layers() routine in
                     #          guppy.maxent.functions.v6.R does something vestigial
@@ -369,7 +370,7 @@ class Guppy (object):
                     #  BTL - 2011.10.03 - Is this note even relevant anymore?
                     #                     Looks like this variable isn't even used now.
         #         use.pnm.env.layers : TRUE ,
-        usePnmEnvLayers = variables ['PAR.use.pnm.env.layers']
+        usePnmEnvLayers = self.variables ['PAR.use.pnm.env.layers']
 
 
 
@@ -377,16 +378,16 @@ class Guppy (object):
         combinedSppSampledPresencesTable = None
 
 
-        PARnumSppToCreate = variables ['PAR.num.spp.to.create']
-        PARnumSppInReserveSelection = variables ['PAR.num.spp.in.reserve.selection']
-        PARuseOldMaxentOutputForInput = variables ['PAR.use.old.maxent.output.for.input']
+        PARnumSppToCreate = self.variables ['PAR.num.spp.to.create']
+        PARnumSppInReserveSelection = self.variables ['PAR.num.spp.in.reserve.selection']
+        PARuseOldMaxentOutputForInput = self.variables ['PAR.use.old.maxent.output.for.input']
 
 
-        PARuseAllSamples = variables ['PAR.use.all.samples']
+        PARuseAllSamples = self.variables ['PAR.use.all.samples']
 
 
-        CONSTproductRule = variables ['CONST.product.rule']
-        CONSTaddRule = variables ['CONST.add.rule']
+        CONSTproductRule = self.variables ['CONST.product.rule']
+        CONSTaddRule = self.variables ['CONST.add.rule']
 
 
         combinedPresSamplesFileName = curFullMaxentSamplesDirName + self.constants ['dirSlash'] + \
@@ -397,7 +398,7 @@ class Guppy (object):
 
 
 
-        PARpathToMaxent = variables ['PAR.path.to.maxent']
+        PARpathToMaxent = self.variables ['PAR.path.to.maxent']
         print "\n\nPARpathToMaxent = '" + PARpathToMaxent + "'"
 
         maxentFullPathName = self.startingDir + self.constants ['dirSlash'] + PARpathToMaxent + self.constants ['dirSlash'] + 'maxent.jar'
@@ -435,75 +436,70 @@ class Guppy (object):
 
 #===============================================================================
 
-#  Uncomment "name=main" line and indent following lines when all of this
-#  becomes a full, standalone python file.
-#  For now, just want the code below to run automatically on every test
-#  in ipython.
+if __name__ == '__main__':
 
-#if __name__ == '__main__':
+        #  Move to the guppy working directory.
+        #  NOTE:  This may be an issue in the long run when running under tzar.
+        #         I need to move there now so that netpbmfile will be found when imported.
+        #         However, when running under tzar, we will have cd-ed to the tzar directory.
+        #         Or will we?  Not sure if that move will show up inside this python code...
+    guppyDir = '/Users/Bill/D/rdv-framework/projects/guppy/'
+    os.chdir (guppyDir)
+    print "\nMoved to directory: " + os.getcwd()
 
-    #  Move to the guppy working directory.
-    #  NOTE:  This may be an issue in the long run when running under tzar.
-    #         I need to move there now so that netpbmfile will be found when imported.
-    #         However, when running under tzar, we will have cd-ed to the tzar directory.
-    #         Or will we?  Not sure if that move will show up inside this python code...
-guppyDir = '/Users/Bill/D/rdv-framework/projects/guppy/'
-os.chdir (guppyDir)
-print "\nMoved to directory: " + os.getcwd()
+    oldStyleTest = False
+    if oldStyleTest:
+        yamlFile = open("projectparams.yaml", "r")
 
-oldStyleTest = False
-if oldStyleTest:
-    yamlFile = open("projectparams.yaml", "r")
+        projectParams = yaml.load(yamlFile)
+        baseParams = projectParams ['base_params']
+        variables = baseParams ['variables']
+        outputFiles = baseParams ['output_files']
+        inputFiles = baseParams ['input_files']
 
-    projectParams = yaml.load(yamlFile)
-    baseParams = projectParams ['base_params']
-    variables = baseParams ['variables']
-    outputFiles = baseParams ['output_files']
-    inputFiles = baseParams ['input_files']
-
-    '''
-    print "\n===============================\n"
-    print "PROJECTPARAMS = \n"
-    pprint (projectParams)
-
-    print "\n===============================\n"
-    print "BASEPARAMS = \n"
-    pprint (baseParams)
-    '''
-
-    if verbose:
+        '''
         print "\n===============================\n"
-        print "INPUTFILES = \n"
-        pprint (inputFiles)
+        print "PROJECTPARAMS = \n"
+        pprint (projectParams)
 
         print "\n===============================\n"
-        print "OUTPUTFILES = \n"
-        pprint (outputFiles)
+        print "BASEPARAMS = \n"
+        pprint (baseParams)
+        '''
+
+        if verbose:
+            print "\n===============================\n"
+            print "INPUTFILES = \n"
+            pprint (inputFiles)
+
+            print "\n===============================\n"
+            print "OUTPUTFILES = \n"
+            pprint (outputFiles)
 
 
-else:
-    pickleFileName = '/Users/Bill/D/rdv-framework/projects/guppy/pickeledGuppyInitializationTestParams.pkl'
-    pkl_file = open (pickleFileName, 'rb')
-    qualifiedparams = pickle.load (pkl_file)
-    variables = pickle.load (pkl_file)
-    pkl_file.close ()
+    else:
+        pickleFileName = '/Users/Bill/D/rdv-framework/projects/guppy/pickeledGuppyInitializationTestParams.pkl'
+        pkl_file = open (pickleFileName, 'rb')
+        qualifiedparams = pickle.load (pkl_file)
+        variables = pickle.load (pkl_file)
+        pkl_file.close ()
 
-    if verbose:
-        print "\n===============================\n"
-        print "qualifiedparams = \n"
-        pprint (qualifiedparams)
+        if verbose:
+            print "\n===============================\n"
+            print "qualifiedparams = \n"
+            pprint (qualifiedparams)
 
-        print "\n===============================\n"
-        print "variables = \n"
-        pprint (variables)
+            print "\n===============================\n"
+            print "variables = \n"
+            pprint (variables)
 
-        print "\n===============================\n"
+            print "\n===============================\n"
 
-g = Guppy (None, variables, qualifiedparams)
-print ("\nCreated a Guppy.\n")
+    g = Guppy (None, variables, qualifiedparams)
+    print ("\nCreated a Guppy.\n")
 
-if (verbose):
-    print ("-----------------------------\n\nINITIALIZED PARAMS:")
-    g.pprintParamValues()
+    if (verbose):
+        print ("-----------------------------\n\nINITIALIZED PARAMS:")
+        g.pprintParamValues()
 
 #===============================================================================

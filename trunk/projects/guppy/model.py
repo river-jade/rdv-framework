@@ -7,6 +7,8 @@ from pprint import pprint
 
 import pickle
 
+from Guppy import Guppy
+
 """
 To run example code using jython:
 java -jar tzar.jar execlocalruns --runnerclass=JythonRunner  --projectspec=projects/example-jython/projectparams.yaml --localcodepath=. --commandlineflags="-p example-jython"
@@ -77,10 +79,13 @@ class Model(basemodel.BaseModel):
             #  realistic dictionaries to test initialization of guppy values.
             #  Will remove this little code section once initialization
             #  code is working.
-        pickleDictionariesForTesting = True
+        pickleDictionariesForTesting = False
         if pickleDictionariesForTesting:
             self.pickleDictionaries (qualifiedparams, variables)
             #-------------------------------------------------------------------
+
+        constants = None
+        guppy = Guppy (constants, variables, qualifiedparams)
 
     def pickleDictionaries (self, qualifiedparams, variables):
 
