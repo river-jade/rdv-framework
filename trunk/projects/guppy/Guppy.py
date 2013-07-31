@@ -90,6 +90,10 @@ import random
 import yaml
 import pickle
 
+from sys import platform
+
+import GuppyConstants
+
 #===============================================================================
 
     #  Note that the function below will need its reference to
@@ -116,7 +120,12 @@ class Guppy (object):
         self.variables = variables or {}
         self.qualifiedParams = qualifiedParams or {}
         self.runParams = runParams or {}
+
         self.curDir = os.getcwd()
+        self.curOS = platform
+
+        self.envLayersDir = None
+        self.numEnvLayers = self.variables ['PAR.numEnvLayers']
 
         if (verbose):
             print ("\n-----------------------------\n\nPARAMS AS PASSED IN:")
@@ -138,12 +147,18 @@ class Guppy (object):
             #  or ???
         self.constants ["dirSlash"] = "/"
 
+            #  Names provided by python for the different operating systems
+            #  vary based on the call you use to get the name.
+            #  in particular, os.name gives a coarser version that
+            #  sys.platform or os.uname().  For example, all unix versions
+            #  are called "posix" using os.name, but the others break unix
+            #  up into finer categories.  I'll use the values from sys.platform
+            #  here.
         self.constants ["windowsOSnameInR"] = "mingw32"
-        self.constants ["windowsOSnameInPython"] = "os2"		#  NOT SURE ABOUT THIS...
-                                                  #  SEE os.name variable in python documentation
+        self.constants ["windowsOSnameInPython"] = "win32"
         self.constants ["windowsOSname"] = self.constants ["windowsOSnameInPython"]
 
-        self.constants ["macOSname"] = "posix"
+        self.constants ["macOSname"] = "darwin"
 
     def setRandomSeed (self):
         randomSeed = self.variables ['PAR.random.seed']
@@ -445,6 +460,14 @@ class Guppy (object):
         print "variables ['PAR.localEnvDirMac'] = " + self.variables ['PAR.localEnvDirMac']
         print "variables ['PAR.localEnvDirWin'] = " + self.variables ['PAR.localEnvDirWin']
 
+        if (self.variables ['PAR.useRemoteEnvDir']):
+           self.envLayersDir = self.variables ['PAR.remoteEnvDir']
+        elif (self.curOS == self.constants ['windowsOSname']):
+           self.envLayersDir = self.variables ['PAR.localEnvDirWin']
+        else:
+           self.envLayersDir = self.variables ['PAR.localEnvDirMac']
+        print "\nenvLayersDir = '" + self.envLayersDir + "'"
+
 
 
         #---------------------
@@ -460,7 +483,10 @@ class Guppy (object):
         pprint (self.qualifiedParams)
         print "\n\nrunParams ="
         pprint (self.runParams)
-        print "\n\ncurDir =" + self.curDir + "\n\n"
+        print "\n\nself.curDir = " + self.curDir
+        print "\n\nself.curOS = " + self.curOS
+        print "\n\nself.envLayersDir = " + self.envLayersDir + "'"
+        print "\n\nnumEnvLayers = '" + str (self.numEnvLayers) + "'"
 
 #===============================================================================
 

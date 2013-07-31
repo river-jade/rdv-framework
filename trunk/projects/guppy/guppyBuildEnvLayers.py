@@ -320,4 +320,36 @@ def genEnvLayers (variables):
 
 # <codecell>
 
+import os
+print os.name
+
+from sys import platform as _platform
+
+"""
+if _platform == "linux" or _platform == "linux2":
+    # linux
+elif _platform == "darwin":
+    # OS X
+elif _platform == "win32":
+    # Windows...
+"""
+
+print _platform
+
+print "_platform startswith linux"
+print _platform.startswith ("linux")
+
+print "_platform startswith dar"
+print _platform.startswith ("dar")
+
+print "os.name startswith linux"
+print os.name.startswith ("linux")
+
+print "os.name startswith posi"
+print os.name.startswith ("posi")
+
+print os.uname()
+
+# <codecell>
+
 
