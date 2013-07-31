@@ -32,44 +32,9 @@ import os
 import shutil
 import netpbmfile
 
+import GuppyConstants
+
 os.chdir ("/Users/Bill/D/rdv-framework/projects/guppy/")
-
-#  NOTE the difference between the mac path in R and in python.
-#       In R, you need the backslash in front of the spaces, but in python,
-#       the backslash can't be there.
-
-#			 "PAR.localEnvDirMac" : "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H",
-variables = { "PAR.useRemoteEnvDir" : False,
-				"PAR.localEnvDir" : "/Users/Bill/D/Projects_RMIT/",
-				"PAR.localEnvDirMac" : "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H",
-				"PAR.localEnvDirWin" : "Z:/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H",
-				"PAR.remoteEnvDir" : "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H",
-                "PAR.numEnvLayers" : 2 }
-
-#----------------------
-
-outputFiles = { 'PAR.current.run.directory' : "xxx" }
-
-PAR.current.run.directory = outputFiles ['PAR.current.run.directory']
-print "\nPAR.current.run.directory = '" + PAR.current.run.directory + "'"
-
-#---------------------
-
-cur.full.maxent.env.layers.dir.name = PAR.current.run.directory + variables ['PAR.maxent.env.layers.base.name']
-
-print "\ncur.full.maxent.env.layers.dir.name = '" + cur.full.maxent.env.layers.dir.name + "'"
-
-if (not file.exists (cur.full.maxent.env.layers.dir.name)):    #  PYTHON file and dir commands here???
-	dir.create (cur.full.maxent.env.layers.dir.name)           #  shutils???  os???
-
-#---------------------
-
-print "\nvariables ['PAR.useRemoteEnvDir'] = " + variables ['PAR.useRemoteEnvDir']
-print "variables ['PAR.remoteEnvDir'] = " + variables ['PAR.remoteEnvDir']
-print "variables ['PAR.localEnvDirMac'] = " + variables ['PAR.localEnvDirMac']
-print "variables ['PAR.localEnvDirWin'] = " + variables ['PAR.localEnvDirWin']
-
-#---------------------
 
 #===============================================================================
 
@@ -80,8 +45,7 @@ class GuppyEnvLayers (GuppyEnvLayers):
 
     #---------------------------------------------------------------------------
 
-    def __init__ (self, constants=None, variables=None, \
-                        qualifiedParams=None, runParams=None):
+    def __init__ (self):
 
         print ("\nDummy __init__ routine for GuppyEnvLayers class that isn't active yet.\n")
 
@@ -94,27 +58,17 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
     #---------------------------------------------------------------------------
 
-    def __init__ (self, constants=None, variables=None, \
-                        qualifiedParams=None, runParams=None):
+    def __init__ (self, envLayersDir, numEnvLayers):
+
+        self.envLayersDir = envLayersDir
+        self.numEnvLayers = numEnvLayers
 
         self.minH = 1
         #	self.maxH = 10       #  For some reason I didn't create .256 images for H=10.
         self.maxH = 9
+
         self.minImgNum = 1
         self.maxImgNum = 100
-
-    #---------------------------------------------------------------------------
-
-    def getEnvLayersDirPrefix (variables, useRemoteEnvDir, curOS):
-
-        if (useRemoteEnvDir):
-           envLayersDir = variables ['PAR.remoteEnvDir']
-        elif (curOS == CONSTwindowsOSname):
-           envLayersDir = variables ['PAR.localEnvDirWin']
-        else:
-           envLayersDir = variables ['PAR.localEnvDirMac']
-
-        return envLayersDir
 
     #---------------------------------------------------------------------------
 
@@ -144,7 +98,7 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
     #---------------------------------------------------------------------------
 
-    def buildImgFilenameRoot (envLayersDir):
+    def buildImgFilenameRoot ():
 
             #  Choose an H level at random.
             #  H is the factor that controls the amount of spatial autocorrelation in
@@ -158,7 +112,7 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
         #----------
 
-        envSrcDir = envLayersDir + Hstring + dirSlash
+        envSrcDir = self.envLayersDir + Hstring + dirSlash
         print "\n\nenvSrcDir = '" + envSrcDir + "'\n"
 
         #----------
@@ -172,32 +126,19 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
     #---------------------------------------------------------------------------
 
-    envLayersDir = "xxx/"
-    imgFileRoot = buildImgFilenameRoot (envLayersDir)
-    print "\nimgFileRoot = " + imgFileRoot
-
-    #---------------------------------------------------------------------------
-
    # Define the higher level function that gets the environment layers.
 
-    def genEnvLayers (variables):
+    def getEnvLayers ():
 
-        envLayersDir = getEnvLayersDirPrefix (variables)
+        envLayers = [None] * self.numEnvLayers
 
-        numEnvLayers = variables ['PAR.numEnvLayers']
-        print "\n\nnumEnvLayers = '" + str (numEnvLayers) + "'"
-
-        envLayers = [None] * numEnvLayers
-
-        for curEnvLayerIdx in range (numEnvLayers):
+        for curEnvLayerIdx in range (self.numEnvLayers):
 
             eLayerFileNamePrefix = buildEnvLayerOutputPrefix (curEnvLayerIdx)
 
                     #----------
 
-            imgFileRoot = buildImgFilenameRoot (envLayersDir)
-
-
+            imgFileRoot = buildImgFilenameRoot ()
 
                 #-------------------------------------------------------------------
                 #  May want to use the 256x256 images instead of the 1024x1024 images...
@@ -212,8 +153,9 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     #-----------------------------------------------
 
                 imgFileName = imgFileRoot + suffix
-                fullImgFileDestPath = curFullMaxentEnvLayersDirName + dirSlash + \
-                                             eLayerFileNamePrefix + imgFileName
+                fullImgFileDestPath = curFullMaxentEnvLayersDirName + \
+                                        GuppyConstants.dirSlash + \
+                                        eLayerFileNamePrefix + imgFileName
                 print "\n\nfullImgFileDestPath = '" + fullImgFileDestPath +  "'"
 
                 srcImgFileName = imgFileRoot + variables ['PAR.fileSizeSuffix'] + suffix
@@ -268,7 +210,7 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
                 print '\n curFullMaxentEnvLayersDirName = ', curFullMaxentEnvLayersDirName
 
-        return (env.layers)
+        return (envLayers)
 
     #---------------------------------------------------------------------------
     #---------------------------------------------------------------------------
@@ -280,7 +222,7 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
     #    Tests for the getEnvLayersDirPrefix() function.
     #
     #    Normally you would set args to this call:
-    #        getEnvLayersDirPrefix (variables, useRemoteEnvDir, curOS)
+    #        getEnvLayersDirPrefix (variables, useRemoteEnvDir, o.n)
     #
     #    something like this:
     #        useRemoteEnvDir = variables ["PAR.useRemoteEnvDir"]
