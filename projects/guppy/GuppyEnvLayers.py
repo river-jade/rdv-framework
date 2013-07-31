@@ -58,10 +58,13 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
     #---------------------------------------------------------------------------
 
-    def __init__ (self, envLayersDir, numEnvLayers):
+    def __init__ (self, envLayersDir, numEnvLayers, fileSizeSuffix):
 
         self.envLayersDir = envLayersDir
         self.numEnvLayers = numEnvLayers
+        self.envLayers = [None] * self.numEnvLayers
+
+        self.fileSizeSuffix = fileSizeSuffix
 
         self.minH = 1
         #	self.maxH = 10       #  For some reason I didn't create .256 images for H=10.
@@ -74,27 +77,22 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
     def buildEnvLayerOutputPrefix (curEnvLayerIdx):
 
-        #  It's highly unlikely that you'll draw the same environmental layer twice, but
-        #  you need to make sure that you don't end up with a name conflict or too few
-        #  layers.
-        #  Since it's ok biologically to have two env layers be highly correlated,
-        #  (in the case of duplicate layers, they'd be perfectly correlated),
-        #  I'll just create image names that have a unique ID prefixed to them and if
-        #  the same layer is drawn twice it will just have a different prefix on it.
-        #  I'll make the prefixes just be e01_, e02_, etc.
-        #  This isn't a perfect solution, but since we're just drawing random images
-        #  at this point, it really isn't important.  It just needs to not crash the
-        #  program.
-
+            #  It's highly unlikely that you'll draw the same environmental layer twice, but
+            #  you need to make sure that you don't end up with a name conflict or too few
+            #  layers.
+            #  Since it's ok biologically to have two env layers be highly correlated,
+            #  (in the case of duplicate layers, they'd be perfectly correlated),
+            #  I'll just create image names that have a unique ID prefixed to them and if
+            #  the same layer is drawn twice it will just have a different prefix on it.
+            #  I'll make the prefixes just be e01_, e02_, etc.
+            #  This isn't a perfect solution, but since we're just drawing random images
+            #  at this point, it really isn't important.  It just needs to not crash the
+            #  program.
 
         idxString = ('0' + str (curEnvLayerIdx)) if (curEnvLayerIdx < 10) else str (curEnvLayerIdx)
-
         eLayerFileNamePrefix = "e" + idxString + "_"
-
         print "\n\neLayerFileNamePrefix = '" + eLayerFileNamePrefix + "'"
-
         return eLayerFileNamePrefix
-
 
     #---------------------------------------------------------------------------
 
@@ -110,34 +108,23 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
         H = random.randint (minH, maxH)
         Hstring = ('0'+ str (H)) if (H < 10) else str (H)
 
-        #----------
-
         envSrcDir = self.envLayersDir + Hstring + dirSlash
         print "\n\nenvSrcDir = '" + envSrcDir + "'\n"
 
-        #----------
-
         imgNum = random.randint (minImgNum, maxImgNum)
         imgFileRoot = "H" + Hstring + "_" + str (imgNum)
-
-        #----------
 
         return imgFileRoot
 
     #---------------------------------------------------------------------------
 
-   # Define the higher level function that gets the environment layers.
+       # Define the higher level function that gets the environment layers.
 
-    def getEnvLayers ():
-
-        envLayers = [None] * self.numEnvLayers
+    def genEnvLayers ():
 
         for curEnvLayerIdx in range (self.numEnvLayers):
 
             eLayerFileNamePrefix = buildEnvLayerOutputPrefix (curEnvLayerIdx)
-
-                    #----------
-
             imgFileRoot = buildImgFilenameRoot ()
 
                 #-------------------------------------------------------------------
@@ -145,20 +132,20 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                 #  http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H01/H01_1.256.asc
                 #-------------------------------------------------------------------
 
-            for suffix in [".asc", ".pgm"]:
+            for imgTypeSuffix in [".asc", ".pgm"]:
 
                     #-----------------------------------------------
                     #  Build the file name and retrieve the file.
                     #  File may be on local disk or on web server.
                     #-----------------------------------------------
 
-                imgFileName = imgFileRoot + suffix
+                imgFileName = imgFileRoot + imgTypeSuffix
                 fullImgFileDestPath = curFullMaxentEnvLayersDirName + \
-                                        GuppyConstants.dirSlash + \
+                                        CONST_dirSlash + \
                                         eLayerFileNamePrefix + imgFileName
                 print "\n\nfullImgFileDestPath = '" + fullImgFileDestPath +  "'"
 
-                srcImgFileName = imgFileRoot + variables ['PAR.fileSizeSuffix'] + suffix
+                srcImgFileName = imgFileRoot + self.fileSizeSuffix + imgTypeSuffix
                 srcFile = envSrcDir + srcImgFileName
                 print "\nsrcFile = '" + srcFile + "'"
 
@@ -168,10 +155,12 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     #  as specified by user option.
                     #--------------------------------------------------
 
+*** HOW TO DO THIS IN PYTHON? ***
                 if useRemoteEnvDir:
                     urllib.urlretrieve (srcFile, fullImgFileDestPath)
                 else:
                     shutil.copy (srcFile, fullImgFileDestPath)
+***                           ***
 
                     #--------------------------------------------------------------
                     #  Now have the file copied to local work area.
@@ -184,11 +173,11 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     #  for debugging purposes and can be removed later.
                     #--------------------------------------------------------------
 
-                print "\n\nsuffix = '" + suffix + "'\n"
-    #			if (suffix == ".pnm"):
-                if (suffix == ".pgm"):
-                    print "\n\nsuffix is .pnm so adding env.layer\n"
-                    print "\nlen (env.layers) before = '", len (env.layers)
+                print "\n\nimgTypeSuffix = '" + imgTypeSuffix + "'\n"
+    #			if (imgTypeSuffix == ".pnm"):
+                if (imgTypeSuffix == ".pgm"):
+                    print "\n\nimgTypeSuffix is .pnm so adding env.layer\n"
+                    print "\nlen (self.envLayers) before = '", len (self.envLayers)
 
     #  NEEDS REPLACEMENT WITH NETPBM CODE IN PYTHON.
                     new.env.layer = get.img.matrix.from.pnm (fullImgFileDestPath)	###  PYTHON???
@@ -198,9 +187,9 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     print "\n\nis.vector(new.env.layer) in get.img.matrix.from.pnm = '", is.vector(new.env.layer), "\n"	###  PYTHON???
                     print "\n\nclass(new.env.layer) in get.img.matrix.from.pnm = '", class(new.env.layer), "\n"	###  PYTHON???
 
-                    env.layers [curEnvLayerIdx]= new.env.layer    #  Add to stack.
+                    self.envLayers [curEnvLayerIdx]= new.env.layer    #  Add to stack.
 
-                    print "\nlen (env.layers) AFTER = '", len (env.layers)
+                    print "\nlen (self.envLayers) AFTER = '", len (self.envLayers)
     #  IS THIS THE CORRECT WAY TO INDEX THE ARRAY RETURNED BY READING THE PGM FILE?
                     print "\n\nnew.env.layer [1:3,1:3] = \n", new.env.layer [1:3,1:3], "\n"     #  Echo a bit of the result...	###  PYTHON???
                     for (row in 1:3):

@@ -9,16 +9,12 @@
 
 #===============================================================================
 
-    #  THIS PROBABLY NEEDS TO BE CHANGED SOMEHOW TO MAKE IT SO THAT THERE
-    #  IS ONLY ONE INSTANCE OF THIS CLASS AND THE VALUES ARE CLASS VALUES
-    #  RATHER THAN INSTANCE VALUES AND THEY ARE IMMUTABLE.
+CONST_unixDirSlash = "/"
+CONST_windowsDirSlash = "\\"
 
-class GuppyConstants (object):
-    """Definitions for constants used throughout the Guppy system.
-    """
-    def __init__ (self):
-
-        self.dirSlash = "/"
+    #  May need to make this an IF statement based on determining which
+    #  operating system is being used.
+CONST_dirSlash = CONST_unixDirSlash
 
             #  Names provided by python for the different operating systems
             #  vary based on the call you use to get the name.
@@ -27,11 +23,11 @@ class GuppyConstants (object):
             #  are called "posix" using os.name, but the others break unix
             #  up into finer categories.  I'll use the values from sys.platform
             #  here.
-        self.windowsOSnameInR = "mingw32"
-        self.windowsOSnameInPython = "win32"
-        self.windowsOSname = self.windowsOSnameInPython
+CONST_windowsOSnameInR = "mingw32"
+CONST_windowsOSnameInPython = "win32"
+CONST_windowsOSname = self.windowsOSnameInPython
 
-        self.macOSname = "darwin"
+CONST_macOSname = "darwin"
 
 #===============================================================================
 
