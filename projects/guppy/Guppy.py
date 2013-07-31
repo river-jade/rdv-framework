@@ -138,9 +138,16 @@ class Guppy (object):
             #  or ???
         self.constants ["dirSlash"] = "/"
 
+        self.constants ["windowsOSnameInR"] = "mingw32"
+        self.constants ["windowsOSnameInPython"] = "os2"		#  NOT SURE ABOUT THIS...
+                                                  #  SEE os.name variable in python documentation
+        self.constants ["windowsOSname"] = self.constants ["windowsOSnameInPython"]
+
+        self.constants ["macOSname"] = "posix"
+
     def setRandomSeed (self):
         randomSeed = self.variables ['PAR.random.seed']
-        print "\nrandom.seed = '" + str(randomSeed) + "', class (randomSeed) = '" + randomSeed.__class__.__name__
+        print "\nrandom.seed = '" + str (randomSeed) + "', class (randomSeed) = '" + randomSeed.__class__.__name__
         random.seed (randomSeed)
 
     def initNumProcessors (self):
@@ -421,6 +428,27 @@ class Guppy (object):
 
         #---------------------
         #  end new
+        #---------------------
+
+        #---------------------
+        #  start newer
+        #---------------------
+
+        curFullMaxentEnvLayersDirName = PARcurrentRunDirectory + self.variables ['PAR.maxent.env.layers.base.name']
+        print "\ncurFullMaxentEnvLayersDirName = '" + curFullMaxentEnvLayersDirName + "'"
+        createDirIfDoesntExist (curFullMaxentEnvLayersDirName)
+
+            #  NOTE the difference between the mac path in R and in python.
+            #       In R, you need the backslash in front of the spaces, but in python,
+        print "\nvariables ['PAR.useRemoteEnvDir'] = " + str (self.variables ['PAR.useRemoteEnvDir'])
+        print "variables ['PAR.remoteEnvDir'] = " + self.variables ['PAR.remoteEnvDir']
+        print "variables ['PAR.localEnvDirMac'] = " + self.variables ['PAR.localEnvDirMac']
+        print "variables ['PAR.localEnvDirWin'] = " + self.variables ['PAR.localEnvDirWin']
+
+
+
+        #---------------------
+        #  end newer
         #---------------------
 
     def pprintParamValues (self):
