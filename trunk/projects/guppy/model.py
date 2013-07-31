@@ -85,7 +85,7 @@ class Model(basemodel.BaseModel):
             #-------------------------------------------------------------------
 
         constants = None
-        guppy = Guppy (constants, variables, qualifiedparams)
+        guppy = Guppy (variables, qualifiedparams)
 
     def pickleDictionaries (self, qualifiedparams, variables):
 

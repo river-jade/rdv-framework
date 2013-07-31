@@ -113,13 +113,10 @@ def createDirIfDoesntExist (dirToMake):
 class Guppy (object):
     """Overarching class for everything about managing a Guppy run.
     """
-    def __init__ (self, constants=None, variables=None, \
-                        qualifiedParams=None, runParams=None):
+    def __init__ (self, variables=None, qualifiedParams=None):
 
-        self.constants = constants or {}
         self.variables = variables or {}
         self.qualifiedParams = qualifiedParams or {}
-        self.runParams = runParams or {}
 
         self.curDir = os.getcwd()
         self.curOS = platform
@@ -127,38 +124,18 @@ class Guppy (object):
         self.envLayersDir = None
         self.numEnvLayers = self.variables ['PAR.numEnvLayers']
 
+        self.fileSizeSuffix = variables ['PAR.fileSizeSuffix']
+
         if (verbose):
             print ("\n-----------------------------\n\nPARAMS AS PASSED IN:")
             self.pprintParamValues()
 
 #        self.variables ["test"] = "varTest"
 #        self.qualifiedParams ["test"] = "qpTest"
-#        self.runParams ["test"] = "rpTest"
 
-        self.createConstants ()
         self.setRandomSeed ()
         self.initNumProcessors ()
         self.initDirectories ()
-
-    def createConstants (self):
-
-            #  How does python sense this for each OS?
-            #  Should this be in the yaml file or deduced somehow from the OS
-            #  or ???
-        self.constants ["dirSlash"] = "/"
-
-            #  Names provided by python for the different operating systems
-            #  vary based on the call you use to get the name.
-            #  in particular, os.name gives a coarser version that
-            #  sys.platform or os.uname().  For example, all unix versions
-            #  are called "posix" using os.name, but the others break unix
-            #  up into finer categories.  I'll use the values from sys.platform
-            #  here.
-        self.constants ["windowsOSnameInR"] = "mingw32"
-        self.constants ["windowsOSnameInPython"] = "win32"
-        self.constants ["windowsOSname"] = self.constants ["windowsOSnameInPython"]
-
-        self.constants ["macOSname"] = "darwin"
 
     def setRandomSeed (self):
         randomSeed = self.variables ['PAR.random.seed']
@@ -246,9 +223,9 @@ class Guppy (object):
         leadChars = self.PARinputDirectoryFromYaml [0:2]
         print "\nleadChars = '" + leadChars + "'"
         if leadChars == "./":
-            self.PARinputDirectory = self.PARrdvDirectory + self.constants ['dirSlash'] + self.PARinputDirectoryFromYaml [2:]
+            self.PARinputDirectory = self.PARrdvDirectory + CONST_dirSlash + self.PARinputDirectoryFromYaml [2:]
         else:
-            self.PARinputDirectory = self.PARrdvDirectory + self.constants ['dirSlash'] + self.PARinputDirectoryFromYaml
+            self.PARinputDirectory = self.PARrdvDirectory + CONST_dirSlash + self.PARinputDirectoryFromYaml
             print "\n***********  WARNING  ***********\n" + "    leadChars of PARinputDirectoryFromYaml = '" + leadChars + "' rather than './' so not stripping."
             print "    PARinputDirectory may be messed up." + "\n***********           ***********"
         print "\nPARinputDirectory = '" + self.PARinputDirectory + "'"
@@ -281,7 +258,7 @@ class Guppy (object):
         #PARmaxentOutputDirName = "MaxentOutputs"
 
         maxentOutputDir = self.qualifiedParams ['PAR.maxent.output.dir.name']
-        maxentOutputDirWithSlash = maxentOutputDir + self.constants ['dirSlash']
+        maxentOutputDirWithSlash = maxentOutputDir + CONST_dirSlash
 
         print "\nmaxentOutputDir = '" + maxentOutputDir + "'"
         createDirIfDoesntExist (maxentOutputDir)
@@ -307,8 +284,8 @@ class Guppy (object):
         #analysisDir = "./ResultsAnalysis/"
         #PARanalysisDirName = "ResultsAnalysis"
 
-##        analysisDirWithSlash = PARcurrentRunDirectory +  self.constants ['dirSlash'] + self.variables ['PAR.analysis.dir.name'] + self.constants ['dirSlash']
-        analysisDirWithSlash = PARcurrentRunDirectory + self.variables ['PAR.analysis.dir.name'] + self.constants ['dirSlash']
+##        analysisDirWithSlash = PARcurrentRunDirectory +  CONST_dirSlash + self.variables ['PAR.analysis.dir.name'] + CONST_dirSlash
+        analysisDirWithSlash = PARcurrentRunDirectory + self.variables ['PAR.analysis.dir.name'] + CONST_dirSlash
         print "\nanalysisDirWithSlash = '" + analysisDirWithSlash + "'"
         createDirIfDoesntExist (analysisDirWithSlash)
 
@@ -412,7 +389,7 @@ class Guppy (object):
         CONSTaddRule = self.variables ['CONST.add.rule']
 
 
-        combinedPresSamplesFileName = curFullMaxentSamplesDirName + self.constants ['dirSlash'] + \
+        combinedPresSamplesFileName = curFullMaxentSamplesDirName + CONST_dirSlash + \
                                 'spp.sampledPres.combined.csv'
         print "\n\ncombinedPresSamplesFileName = '" + combinedPresSamplesFileName + "'\n\n"
 
@@ -423,7 +400,7 @@ class Guppy (object):
         PARpathToMaxent = self.variables ['PAR.path.to.maxent']
         print "\n\nPARpathToMaxent = '" + PARpathToMaxent + "'"
 
-        maxentFullPathName = self.startingDir + self.constants ['dirSlash'] + PARpathToMaxent + self.constants ['dirSlash'] + 'maxent.jar'
+        maxentFullPathName = self.startingDir + CONST_dirSlash + PARpathToMaxent + CONST_dirSlash + 'maxent.jar'
 
         print "\n\nmaxentFullPathName = '" + maxentFullPathName, "'"
 
@@ -462,7 +439,7 @@ class Guppy (object):
 
         if (self.variables ['PAR.useRemoteEnvDir']):
            self.envLayersDir = self.variables ['PAR.remoteEnvDir']
-        elif (self.curOS == self.constants ['windowsOSname']):
+        elif (self.curOS == CONST_windowsOSname):
            self.envLayersDir = self.variables ['PAR.localEnvDirWin']
         else:
            self.envLayersDir = self.variables ['PAR.localEnvDirMac']
@@ -475,18 +452,15 @@ class Guppy (object):
         #---------------------
 
     def pprintParamValues (self):
-        print "\n\nconstants ="
-        pprint (self.constants)
         print "\n\nvariables ="
         pprint (self.variables)
         print "\n\nqualifiedParams ="
         pprint (self.qualifiedParams)
-        print "\n\nrunParams ="
-        pprint (self.runParams)
         print "\n\nself.curDir = " + self.curDir
         print "\n\nself.curOS = " + self.curOS
         print "\n\nself.envLayersDir = " + self.envLayersDir + "'"
         print "\n\nnumEnvLayers = '" + str (self.numEnvLayers) + "'"
+        print "\n\nfileSizeSuffix = '" + self.fileSizeSuffix + "'"
 
 #===============================================================================
 
@@ -549,7 +523,7 @@ if __name__ == '__main__':
 
             print "\n===============================\n"
 
-    g = Guppy (None, variables, qualifiedparams)
+    g = Guppy (variables, qualifiedparams)
     print ("\nCreated a Guppy.\n")
 
     if (verbose):

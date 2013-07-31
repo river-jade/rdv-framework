@@ -10,7 +10,7 @@ base_params:
 
 #                    ***VERY IMPORTANT***
 #  THIS HAS TO BE SET TO TRUE TO RUN ON NECTAR AND FALSE TO RUN AT HOME!
-        PAR.useRemoteEnvDir: TRUE
+        PAR.useRemoteEnvDir: FALSE
 
     #  Bigger example
         PAR.numEnvLayers: 10
