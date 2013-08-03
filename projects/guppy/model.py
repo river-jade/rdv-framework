@@ -86,6 +86,7 @@ class Model(basemodel.BaseModel):
 
         constants = None
         guppy = Guppy (variables, qualifiedparams)
+        guppy.loadEnvLayers ()
 
     def pickleDictionaries (self, qualifiedparams, variables):
 

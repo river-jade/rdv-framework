@@ -92,7 +92,8 @@ import pickle
 
 from sys import platform
 
-import GuppyConstants
+import GuppyConstants as CONST
+import GuppyEnvLayers
 
 #===============================================================================
 
@@ -124,6 +125,8 @@ class Guppy (object):
         self.envLayersDir = None
         self.numEnvLayers = self.variables ['PAR.numEnvLayers']
 
+        self.imgNumRows = variables ['PAR.imgNumRows']
+        self.imgNumCols = variables ['PAR.imgNumCols']
         self.fileSizeSuffix = variables ['PAR.fileSizeSuffix']
 
         if (verbose):
@@ -135,7 +138,13 @@ class Guppy (object):
 
         self.setRandomSeed ()
         self.initNumProcessors ()
+
+        self.useRemoteEnvDir = self.variables ['PAR.useRemoteEnvDir']
+
+        self.curFullMaxentEnvLayersDirName = None
         self.initDirectories ()
+
+        self.envLayers = None
 
     def setRandomSeed (self):
         randomSeed = self.variables ['PAR.random.seed']
@@ -223,9 +232,9 @@ class Guppy (object):
         leadChars = self.PARinputDirectoryFromYaml [0:2]
         print "\nleadChars = '" + leadChars + "'"
         if leadChars == "./":
-            self.PARinputDirectory = self.PARrdvDirectory + CONST_dirSlash + self.PARinputDirectoryFromYaml [2:]
+            self.PARinputDirectory = self.PARrdvDirectory + CONST.dirSlash + self.PARinputDirectoryFromYaml [2:]
         else:
-            self.PARinputDirectory = self.PARrdvDirectory + CONST_dirSlash + self.PARinputDirectoryFromYaml
+            self.PARinputDirectory = self.PARrdvDirectory + CONST.dirSlash + self.PARinputDirectoryFromYaml
             print "\n***********  WARNING  ***********\n" + "    leadChars of PARinputDirectoryFromYaml = '" + leadChars + "' rather than './' so not stripping."
             print "    PARinputDirectory may be messed up." + "\n***********           ***********"
         print "\nPARinputDirectory = '" + self.PARinputDirectory + "'"
@@ -258,7 +267,7 @@ class Guppy (object):
         #PARmaxentOutputDirName = "MaxentOutputs"
 
         maxentOutputDir = self.qualifiedParams ['PAR.maxent.output.dir.name']
-        maxentOutputDirWithSlash = maxentOutputDir + CONST_dirSlash
+        maxentOutputDirWithSlash = maxentOutputDir + CONST.dirSlash
 
         print "\nmaxentOutputDir = '" + maxentOutputDir + "'"
         createDirIfDoesntExist (maxentOutputDir)
@@ -284,8 +293,8 @@ class Guppy (object):
         #analysisDir = "./ResultsAnalysis/"
         #PARanalysisDirName = "ResultsAnalysis"
 
-##        analysisDirWithSlash = PARcurrentRunDirectory +  CONST_dirSlash + self.variables ['PAR.analysis.dir.name'] + CONST_dirSlash
-        analysisDirWithSlash = PARcurrentRunDirectory + self.variables ['PAR.analysis.dir.name'] + CONST_dirSlash
+##        analysisDirWithSlash = PARcurrentRunDirectory +  CONST.dirSlash + self.variables ['PAR.analysis.dir.name'] + CONST.dirSlash
+        analysisDirWithSlash = PARcurrentRunDirectory + self.variables ['PAR.analysis.dir.name'] + CONST.dirSlash
         print "\nanalysisDirWithSlash = '" + analysisDirWithSlash + "'"
         createDirIfDoesntExist (analysisDirWithSlash)
 
@@ -324,12 +333,12 @@ class Guppy (object):
         ##    dir.create ("MaxentOutputs")
         ##    }
 
-        curFullMaxentEnvLayersDirName = \
+        self.curFullMaxentEnvLayersDirName = \
             PARcurrentRunDirectory + self.variables ['PAR.maxent.env.layers.base.name']
 
-        print "\n\ncurFullMaxentEnvLayersDirName = '" + curFullMaxentEnvLayersDirName + "'"
+        print "\n\nself.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
 
-        createDirIfDoesntExist (curFullMaxentEnvLayersDirName)
+        createDirIfDoesntExist (self.curFullMaxentEnvLayersDirName)
 
 #  curFullMaxentEnvLayersDirName = 'MaxentEnvLayers'
 #
@@ -385,11 +394,11 @@ class Guppy (object):
         PARuseAllSamples = self.variables ['PAR.use.all.samples']
 
 
-        CONSTproductRule = self.variables ['CONST.product.rule']
-        CONSTaddRule = self.variables ['CONST.add.rule']
+        CONST.productRule = self.variables ['CONST.product.rule']
+        CONST.addRule = self.variables ['CONST.add.rule']
 
 
-        combinedPresSamplesFileName = curFullMaxentSamplesDirName + CONST_dirSlash + \
+        combinedPresSamplesFileName = curFullMaxentSamplesDirName + CONST.dirSlash + \
                                 'spp.sampledPres.combined.csv'
         print "\n\ncombinedPresSamplesFileName = '" + combinedPresSamplesFileName + "'\n\n"
 
@@ -400,7 +409,7 @@ class Guppy (object):
         PARpathToMaxent = self.variables ['PAR.path.to.maxent']
         print "\n\nPARpathToMaxent = '" + PARpathToMaxent + "'"
 
-        maxentFullPathName = self.startingDir + CONST_dirSlash + PARpathToMaxent + CONST_dirSlash + 'maxent.jar'
+        maxentFullPathName = self.startingDir + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'
 
         print "\n\nmaxentFullPathName = '" + maxentFullPathName, "'"
 
@@ -426,9 +435,9 @@ class Guppy (object):
         #  start newer
         #---------------------
 
-        curFullMaxentEnvLayersDirName = PARcurrentRunDirectory + self.variables ['PAR.maxent.env.layers.base.name']
-        print "\ncurFullMaxentEnvLayersDirName = '" + curFullMaxentEnvLayersDirName + "'"
-        createDirIfDoesntExist (curFullMaxentEnvLayersDirName)
+###        curFullMaxentEnvLayersDirName = PARcurrentRunDirectory + self.variables ['PAR.maxent.env.layers.base.name']
+###        print "\ncurFullMaxentEnvLayersDirName = '" + curFullMaxentEnvLayersDirName + "'"
+###        createDirIfDoesntExist (curFullMaxentEnvLayersDirName)
 
             #  NOTE the difference between the mac path in R and in python.
             #       In R, you need the backslash in front of the spaces, but in python,
@@ -437,9 +446,10 @@ class Guppy (object):
         print "variables ['PAR.localEnvDirMac'] = " + self.variables ['PAR.localEnvDirMac']
         print "variables ['PAR.localEnvDirWin'] = " + self.variables ['PAR.localEnvDirWin']
 
-        if (self.variables ['PAR.useRemoteEnvDir']):
+###        if (self.variables ['PAR.useRemoteEnvDir']):
+        if (self.useRemoteEnvDir):
            self.envLayersDir = self.variables ['PAR.remoteEnvDir']
-        elif (self.curOS == CONST_windowsOSname):
+        elif (self.curOS == CONST.windowsOSname):
            self.envLayersDir = self.variables ['PAR.localEnvDirWin']
         else:
            self.envLayersDir = self.variables ['PAR.localEnvDirMac']
@@ -461,6 +471,16 @@ class Guppy (object):
         print "\n\nself.envLayersDir = " + self.envLayersDir + "'"
         print "\n\nnumEnvLayers = '" + str (self.numEnvLayers) + "'"
         print "\n\nfileSizeSuffix = '" + self.fileSizeSuffix + "'"
+
+    def loadEnvLayers (self):
+        print "\n====>  IN loadEnvLayers:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
+
+        envLayers = GuppyEnvLayers.GuppyFractalEnvLayers (self.curFullMaxentEnvLayersDirName, \
+                        self.useRemoteEnvDir, \
+                        self.envLayersDir, \
+                        self.numEnvLayers, self.fileSizeSuffix, \
+                        self.imgNumRows, self.imgNumCols)
+
 
 #===============================================================================
 

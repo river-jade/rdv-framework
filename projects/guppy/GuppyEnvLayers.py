@@ -31,14 +31,15 @@ import urllib
 import os
 import shutil
 import netpbmfile
+import numpy
 
-import GuppyConstants
+import GuppyConstants as CONST
 
 os.chdir ("/Users/Bill/D/rdv-framework/projects/guppy/")
 
 #===============================================================================
 
-class GuppyEnvLayers (GuppyEnvLayers):
+class GuppyEnvLayers ():
     """Support for managing, getting, and/or building environment
     layers for a Guppy run.
     """
@@ -58,11 +59,22 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
     #---------------------------------------------------------------------------
 
-    def __init__ (self, envLayersDir, numEnvLayers, fileSizeSuffix):
+    def __init__ (self, curFullMaxentEnvLayersDirName, \
+                        useRemoteEnvDir, \
+                        envLayersDir, numEnvLayers, \
+                        fileSizeSuffix, imgNumRows, imgNumCols):
+
+        self.curFullMaxentEnvLayersDirName = curFullMaxentEnvLayersDirName
+        print "\n====>  IN FRACTAL INIT:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
+
+        self.useRemoteEnvDir = useRemoteEnvDir
 
         self.envLayersDir = envLayersDir
         self.numEnvLayers = numEnvLayers
-        self.envLayers = [None] * self.numEnvLayers
+        self.imgNumRows = imgNumRows
+        self.imgNumCols = imgNumCols
+#        self.envLayers = [None] * self.numEnvLayers
+        self.envLayers = numpy.zeros ((self.numEnvLayers, self.imgNumRows, self.imgNumCols))
 
         self.fileSizeSuffix = fileSizeSuffix
 
@@ -73,9 +85,22 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
         self.minImgNum = 1
         self.maxImgNum = 100
 
+        #-----------------------------------------------------------------------
+            #  Move these up into an __init__ routine for this class or its
+            #  superclass?
+##        self.imgNumRows = 256
+##        self.imgNumCols = 256
+##        self.numEnvLayers = variables ["numEnvLayers"]
+##        self.envLayers = zeros ((self.numEnvLayers, self.imgNumRows, self.imgNumCols)))
+        #-----------------------------------------------------------------------
+
+        self.envSrcDir = None
+
+        self.genEnvLayers ()
+
     #---------------------------------------------------------------------------
 
-    def buildEnvLayerOutputPrefix (curEnvLayerIdx):
+    def buildEnvLayerOutputPrefix (self, curEnvLayerIdx):
 
             #  It's highly unlikely that you'll draw the same environmental layer twice, but
             #  you need to make sure that you don't end up with a name conflict or too few
@@ -96,7 +121,7 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
     #---------------------------------------------------------------------------
 
-    def buildImgFilenameRoot ():
+    def buildImgFilenameRoot (self):
 
             #  Choose an H level at random.
             #  H is the factor that controls the amount of spatial autocorrelation in
@@ -105,13 +130,13 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
             #  If the value is a single digit, then it needs a 0 in front of it to
             #  make file names line up in listings for easier reading.
 
-        H = random.randint (minH, maxH)
+        H = random.randint (self.minH, self.maxH)
         Hstring = ('0'+ str (H)) if (H < 10) else str (H)
 
-        envSrcDir = self.envLayersDir + Hstring + dirSlash
-        print "\n\nenvSrcDir = '" + envSrcDir + "'\n"
+        self.envSrcDir = self.envLayersDir + Hstring + CONST.dirSlash
+        print "\n\nself.envSrcDir = '" + self.envSrcDir + "'\n"
 
-        imgNum = random.randint (minImgNum, maxImgNum)
+        imgNum = random.randint (self.minImgNum, self.maxImgNum)
         imgFileRoot = "H" + Hstring + "_" + str (imgNum)
 
         return imgFileRoot
@@ -120,12 +145,12 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
        # Define the higher level function that gets the environment layers.
 
-    def genEnvLayers ():
+    def genEnvLayers (self):
 
         for curEnvLayerIdx in range (self.numEnvLayers):
 
-            eLayerFileNamePrefix = buildEnvLayerOutputPrefix (curEnvLayerIdx)
-            imgFileRoot = buildImgFilenameRoot ()
+            eLayerFileNamePrefix = self.buildEnvLayerOutputPrefix (curEnvLayerIdx)
+            imgFileRoot = self.buildImgFilenameRoot ()
 
                 #-------------------------------------------------------------------
                 #  May want to use the 256x256 images instead of the 1024x1024 images...
@@ -140,13 +165,17 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     #-----------------------------------------------
 
                 imgFileName = imgFileRoot + imgTypeSuffix
-                fullImgFileDestPath = curFullMaxentEnvLayersDirName + \
-                                        CONST_dirSlash + \
+                print "\n====>  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
+                print "\n====>  CONST.dirSlash = '" + CONST.dirSlash + "'"
+                print "\n====>  eLayerFileNamePrefix = '" + eLayerFileNamePrefix + "'"
+                print "\n====>  imgFileName = '" + imgFileName + "'"
+                fullImgFileDestPath = self.curFullMaxentEnvLayersDirName + \
+                                        CONST.dirSlash + \
                                         eLayerFileNamePrefix + imgFileName
                 print "\n\nfullImgFileDestPath = '" + fullImgFileDestPath +  "'"
 
                 srcImgFileName = imgFileRoot + self.fileSizeSuffix + imgTypeSuffix
-                srcFile = envSrcDir + srcImgFileName
+                srcFile = self.envSrcDir + srcImgFileName
                 print "\nsrcFile = '" + srcFile + "'"
 
                     #--------------------------------------------------
@@ -155,12 +184,10 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     #  as specified by user option.
                     #--------------------------------------------------
 
-*** HOW TO DO THIS IN PYTHON? ***
-                if useRemoteEnvDir:
+                if self.useRemoteEnvDir:
                     urllib.urlretrieve (srcFile, fullImgFileDestPath)
                 else:
                     shutil.copy (srcFile, fullImgFileDestPath)
-***                           ***
 
                     #--------------------------------------------------------------
                     #  Now have the file copied to local work area.
@@ -180,26 +207,31 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     print "\nlen (self.envLayers) before = '", len (self.envLayers)
 
     #  NEEDS REPLACEMENT WITH NETPBM CODE IN PYTHON.
-                    new.env.layer = get.img.matrix.from.pnm (fullImgFileDestPath)	###  PYTHON???
+###                    newEnvLayer = get.img.matrix.from.pnm (fullImgFileDestPath)	###  PYTHON???
+                    newEnvLayer = (curEnvLayerIdx + 1) * numpy.ones ((self.imgNumRows, self.imgNumCols))
 
-                    print "\ndim (new.env.layer) before = '", dim (new.env.layer)	###  PYTHON???
-                    print "\n\nis.matrix(new.env.layer) in get.img.matrix.from.pnm = '", is.matrix(new.env.layer), "\n"	###  PYTHON???
-                    print "\n\nis.vector(new.env.layer) in get.img.matrix.from.pnm = '", is.vector(new.env.layer), "\n"	###  PYTHON???
-                    print "\n\nclass(new.env.layer) in get.img.matrix.from.pnm = '", class(new.env.layer), "\n"	###  PYTHON???
 
-                    self.envLayers [curEnvLayerIdx]= new.env.layer    #  Add to stack.
+###                    print "\ndim (newEnvLayer) before = '", dim (newEnvLayer)	###  PYTHON???
+###                    print "\n\nis.matrix(newEnvLayer) in get.img.matrix.from.pnm = '", is.matrix(newEnvLayer), "\n"	###  PYTHON???
+###                    print "\n\nis.vector(newEnvLayer) in get.img.matrix.from.pnm = '", is.vector(newEnvLayer), "\n"	###  PYTHON???
+###                    print "\n\nclass(newEnvLayer) in get.img.matrix.from.pnm = '", class(newEnvLayer), "\n"	###  PYTHON???
+
+                    self.envLayers [curEnvLayerIdx, :, :]= newEnvLayer    #  Add to stack.
 
                     print "\nlen (self.envLayers) AFTER = '", len (self.envLayers)
-    #  IS THIS THE CORRECT WAY TO INDEX THE ARRAY RETURNED BY READING THE PGM FILE?
-                    print "\n\nnew.env.layer [1:3,1:3] = \n", new.env.layer [1:3,1:3], "\n"     #  Echo a bit of the result...	###  PYTHON???
-                    for (row in 1:3):
-                        for (col in 1:3):
-                            print "\nnew.env.layer [", row, ", ", col, "] = ", new.env.layer[row,col], ", and class = ", class(new.env.layer[row,col])	###  PYTHON???
-                    #print (new.env.layer [1:3,1:3])    #  Echo a bit of the result...	###  PYTHON???
+                    print "\n\nnewEnvLayer [0:2,0:2] = \n", \
+                        newEnvLayer [0:3,0:3], "\n"     #  Echo a bit of the result...	###  PYTHON???
+                    for row in range (3):
+                        for col in range(3):
+                            print "\nnewEnvLayer [", row, ", ", col, "] = ", \
+                            newEnvLayer[row,col]
+###                            newEnvLayer[row,col], ", and class = "
+###                            class(newEnvLayer[row,col])	###  PYTHON???
+                    #print (newEnvLayer [0:3,0:3])    #  Echo a bit of the result...	###  PYTHON???
 
-                print '\n curFullMaxentEnvLayersDirName = ', curFullMaxentEnvLayersDirName
+                print '\n self.curFullMaxentEnvLayersDirName = ', self.curFullMaxentEnvLayersDirName
 
-        return (envLayers)
+###        return (envLayers)
 
     #---------------------------------------------------------------------------
     #---------------------------------------------------------------------------
@@ -227,21 +259,21 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
         #  Test for MAC local copy.
     def test_getEnvLayersDirPrefix_mac ():
-        envLayersDirPrefix = testHelper_getEnvLayersDirPrefix ("MAC", False, CONSTmacOSname)
+        envLayersDirPrefix = testHelper_getEnvLayersDirPrefix ("MAC", False, CONST.macOSname)
         assert envLayersDirPrefix == variables ['PAR.localEnvDirMac']
-    test_getEnvLayersDirPrefix_mac ()
+###    test_getEnvLayersDirPrefix_mac ()
 
         #  Test for Windows local copy.
     def test_getEnvLayersDirPrefix_windows ():
-        envLayersDirPrefix = testHelper_getEnvLayersDirPrefix ("WIN", False, CONSTwindowsOSname)
+        envLayersDirPrefix = testHelper_getEnvLayersDirPrefix ("WIN", False, CONST.windowsOSname)
         assert envLayersDirPrefix == variables ['PAR.localEnvDirWin']
-    test_getEnvLayersDirPrefix_windows ()
+###    test_getEnvLayersDirPrefix_windows ()
 
         #  Test for download from web server.
     def test_getEnvLayersDirPrefix_remote ():
-        envLayersDirPrefix = testHelper_getEnvLayersDirPrefix ("REMOTE", True, CONSTmacOSname)
+        envLayersDirPrefix = testHelper_getEnvLayersDirPrefix ("REMOTE", True, CONST.macOSname)
         assert envLayersDirPrefix == variables ['PAR.remoteEnvDir']
-    test_getEnvLayersDirPrefix_remote ()
+###    test_getEnvLayersDirPrefix_remote ()
 
 #===============================================================================
 

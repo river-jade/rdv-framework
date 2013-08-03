@@ -123,6 +123,8 @@ base_params:
         PAR.remoteEnvDir: "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
 
 
+        PAR.imgNumRows: 256      #  if using 256x256 env layers
+        PAR.imgNumCols: 256      #  if using 256x256 env layers
         PAR.fileSizeSuffix: ".256"      #  if using 256x256 env layers
         #PAR.fileSizeSuffix: ""         #  if using full size env layers
 
