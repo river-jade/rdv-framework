@@ -352,4 +352,48 @@ print os.uname()
 
 # <codecell>
 
+#  Based on:
+#  http://stackoverflow.com/questions/13753251/median-combining-fits-images-in-python
+
+import numpy
+from pprint import pprint
+a = numpy.array([[1,2,3,4],[5,6,7,8]])
+b = numpy.array([[11,12,13,14],[15,16,17,18]])
+c = numpy.array([[21,22,23,24],[25,26,27,28]])
+x = numpy.array([[31,32,33,34],[35,36,37,38]])
+
+#d = numpy.array([a,b,c])
+d = numpy.zeros((4,2,4))
+
+pprint (a)
+print a.shape
+pprint (b)
+print b.shape
+pprint (c)
+print c.shape
+
+pprint (d)
+print d.shape
+
+d[0,:,:] = a
+d[1,:,:] = b
+d[2,:,:] = c
+d[3,:,:] = x
+
+print d[1,1,1]
+print d[2,0,2]
+print d[0,0,3]
+
+pprint (d)
+print d.shape
+
+numpy.median (d, axis=0)
+
+# <codecell>
+
+import GuppyConstants
+print GuppyConstants.dirSlash
+
+# <codecell>
+
 

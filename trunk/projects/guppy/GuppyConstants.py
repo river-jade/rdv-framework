@@ -9,12 +9,12 @@
 
 #===============================================================================
 
-CONST_unixDirSlash = "/"
-CONST_windowsDirSlash = "\\"
+unixDirSlash = "/"
+windowsDirSlash = "\\"
 
     #  May need to make this an IF statement based on determining which
     #  operating system is being used.
-CONST_dirSlash = CONST_unixDirSlash
+dirSlash = unixDirSlash
 
             #  Names provided by python for the different operating systems
             #  vary based on the call you use to get the name.
@@ -23,11 +23,11 @@ CONST_dirSlash = CONST_unixDirSlash
             #  are called "posix" using os.name, but the others break unix
             #  up into finer categories.  I'll use the values from sys.platform
             #  here.
-CONST_windowsOSnameInR = "mingw32"
-CONST_windowsOSnameInPython = "win32"
-CONST_windowsOSname = self.windowsOSnameInPython
+windowsOSnameInR = "mingw32"
+windowsOSnameInPython = "win32"
+windowsOSname = windowsOSnameInPython
 
-CONST_macOSname = "darwin"
+macOSname = "darwin"
 
 #===============================================================================
 
