@@ -56,7 +56,7 @@
 # PAR.current.run.directory = outputFiles$'PAR.current.run.directory'
 # PAR.path.to.maxent = variables$'PAR.path.to.maxent'
 # PAR.input.directory = inputFiles$'PAR.input.directory'
-# PAR.maxent.env.layers.base.name = variables$'PAR.maxent.env.layers.base.name'
+# PAR.maxent.envLayers.base.name = variables$'PAR.maxent.envLayers.base.name'
 # PAR.path.to.maxent.input.data = variables$'PAR.path.to.maxent.input.data'
 
 #===============================================================================
@@ -135,17 +135,17 @@ source (paste (guppyProjectRsrcDirWithSlash, 'evaluateMaxentResults.R', sep=''))
 	#  Generate environment layers.
 	#--------------------------------
 
-env.layers = genEnvLayers ()
-num.env.layers = length (env.layers)
+envLayers = genEnvLayers ()
+numEnvLayers = length (envLayers)
 
-imgDimensions = dim (env.layers[[1]])
-num.rows = imgDimensions [1]
-num.cols = imgDimensions [2]
-num.cells = num.rows * num.cols
+imgDimensions = dim (envLayers[[1]])
+numRows = imgDimensions [1]
+numCols = imgDimensions [2]
+numCells = numRows * numCols
 
-cat ("\n\n>>>  After genEnvLayers(), num.env.layers = ", num.env.layers, sep='')
+cat ("\n\n>>>  After genEnvLayers(), numEnvLayers = ", numEnvLayers, sep='')
 cat ("\n>>>                        imgDimensions = ", imgDimensions)
-cat ("\n>>>                        img is ", num.rows, " rows by ", num.cols, " cols for total cell ct = ", num.cells, sep='')
+cat ("\n>>>                        img is ", numRows, " rows by ", numCols, " cols for total cell ct = ", numCells, sep='')
 
 	#--------------------------------------------
 	#  Generate true relative probability maps.
@@ -155,7 +155,7 @@ if (variables$PAR.genTruePresWithArithmeticCombinations)
 	{
 	#num.true.presences = get.num.true.presences.for.each.spp ()
 #	true.rel.prob.dists.for.spp =
-		get.true.rel.prob.dists.for.all.spp.ARITH (env.layers, num.env.layers
+		get.true.rel.prob.dists.for.all.spp.ARITH (envLayers, numEnvLayers
 		#,
 		#									 num.true.presences
 											 )
@@ -172,7 +172,7 @@ if (variables$PAR.genTruePresWithArithmeticCombinations)
 		#--------------------------------------------------------------------
 
 #	true.rel.prob.dists.for.spp =
-		get.true.rel.prob.dists.for.all.spp.MAXENT (env.layers, num.env.layers)
+		get.true.rel.prob.dists.for.all.spp.MAXENT (envLayers, numEnvLayers)
 	}
 
 	#----------------------------
