@@ -475,11 +475,43 @@ class Guppy (object):
     def loadEnvLayers (self):
         print "\n====>  IN loadEnvLayers:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
 
-        envLayers = GuppyEnvLayers.GuppyFractalEnvLayers (self.curFullMaxentEnvLayersDirName, \
+        self.guppyEnvLayers = GuppyEnvLayers.GuppyFractalEnvLayers (self.curFullMaxentEnvLayersDirName, \
                         self.useRemoteEnvDir, \
                         self.envLayersDir, \
                         self.numEnvLayers, self.fileSizeSuffix, \
                         self.imgNumRows, self.imgNumCols)
+
+        self.envLayers = self.guppyEnvLayers.genEnvLayers()
+
+        print "\nIn Guppy:loadEnvLayers:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
+
+
+    def run (self):
+
+            #--------------------------------
+            #  Generate environment layers.
+            #--------------------------------
+
+        self.loadEnvLayers ()
+        print "\nIn Guppy:run:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
+
+
+        envLayersShape = self.envLayers.shape
+        print "\nenvLayersShape = " + str (envLayersShape)
+
+        numEnvLayers = envLayersShape [0]
+
+
+        numRows = envLayersShape [1]
+        numCols = envLayersShape [2]
+        numCells = numRows * numCols
+#        imgDimensions = dim (envLayers[[1]])
+        imgDimensions = numRows
+
+        print "\n\n>>>  After genEnvLayers(), numEnvLayers = " + str (numEnvLayers)
+        print "\n>>>                        imgDimensions = " + str (imgDimensions)
+        print "\n>>>                        img is " + str (numRows) + " rows by " + str (numCols) + " cols for total cell ct = " + str (numCells)
+
 
 
 #===============================================================================
