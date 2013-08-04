@@ -98,8 +98,6 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
         self.envSrcDir = None
 
-        self.genEnvLayers ()
-
     #---------------------------------------------------------------------------
 
     def buildEnvLayerOutputPrefix (self, curEnvLayerIdx):
@@ -231,13 +229,15 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     print "    img.ndim = '" + str(img.ndim) + "'"
                     print "    img.shape = '" + str(img.shape) + "'"
 
-                    _shape = img.shape
-                    if img.ndim > 3 or (img.ndim > 2 and img.shape[-1] not in (3, 4)):    #  I have no idea what second clause is doing here...
-                        img = img[0]
-                    pyplot.imshow(img, cmap, interpolation='nearest')
-                    pyplot.title("%s\n%s %s %s" % (filename, unicode(netpbm.magicnum),
-                                                  _shape, img.dtype))
-                    pyplot.show()
+                    displayImagesOnScreen = False
+                    if displayImagesOnScreen:
+                        _shape = img.shape
+                        if img.ndim > 3 or (img.ndim > 2 and img.shape[-1] not in (3, 4)):    #  I have no idea what second clause is doing here...
+                            img = img[0]
+                        pyplot.imshow(img, cmap, interpolation='nearest')
+                        pyplot.title("%s\n%s %s %s" % (filename, unicode(netpbm.magicnum),
+                                                      _shape, img.dtype))
+                        pyplot.show()
 
 ######                    newEnvLayer = get.img.matrix.from.pnm (fullImgFileDestPath)	###  PYTHON???
 ###                    newEnvLayer = (curEnvLayerIdx + 1) * numpy.ones ((self.imgNumRows, self.imgNumCols))
@@ -256,15 +256,17 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                         newEnvLayer [0:3,0:3], "\n"     #  Echo a bit of the result...	###  PYTHON???
                     for row in range (3):
                         for col in range(3):
-                            print "\nnewEnvLayer [", row, ", ", col, "] = ", \
+                            print "newEnvLayer [", row, ", ", col, "] = ", \
                             newEnvLayer[row,col]
 ###                            newEnvLayer[row,col], ", and class = "
 ###                            class(newEnvLayer[row,col])	###  PYTHON???
                     #print (newEnvLayer [0:3,0:3])    #  Echo a bit of the result...	###  PYTHON???
 
                 print '\n self.curFullMaxentEnvLayersDirName = ', self.curFullMaxentEnvLayersDirName
+                print "\nself.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
+######                print '\n self.envLayers.shape = ' + str (self.envLayers.shape)
 
-###        return (envLayers)
+        return (self.envLayers)
 
     #---------------------------------------------------------------------------
     #---------------------------------------------------------------------------
