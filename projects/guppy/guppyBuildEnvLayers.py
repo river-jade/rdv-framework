@@ -396,4 +396,43 @@ print GuppyConstants.dirSlash
 
 # <codecell>
 
+import numpy
+import netpbmfile
+import os
+from matplotlib import pyplot
+
+print "\nIn directory: '" + os.getcwd() + "'"
+filename = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H02/H02_96.256.pgm"
+###"H00_1.256.pgm"
+
+
+if True:
+    img = netpbmfile.imread (filename)
+    cmap = 'gray'
+else:
+    try:
+        netpbm = netpbmfile.NetpbmFile(filename)
+        img = netpbm.asarray()
+        netpbm.close()
+        cmap = 'gray' if netpbm.maxval > 1 else 'binary'
+    except ValueError as e:
+        print(filename, e)
+    #    continue    #  only do this if reading through a loop of filenames and you want to jump over the display logic below
+
+print "    img.ndim = '" + str(img.ndim) + "'"
+print "    img.shape = '" + str(img.shape) + "'"
+
+_shape = img.shape
+if img.ndim > 3 or (img.ndim > 2 and img.shape[-1] not in (3, 4)):    #  I have no idea what second clause is doing here...
+    img = img[0]
+pyplot.imshow(img, cmap, interpolation='nearest')
+pyplot.title("%s\n%s %s %s" % (filename, unicode(netpbm.magicnum),
+                              _shape, img.dtype))
+pyplot.show()
+
+# <codecell>
+
+
+# <codecell>
+
 
