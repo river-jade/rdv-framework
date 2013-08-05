@@ -1,0 +1,61 @@
+#=========================================================================================
+
+#                       genCombinedSppPresTable.py.scratch
+
+# source( 'genCombinedSppPresTable.R' )
+
+#=========================================================================================
+
+#  History:
+
+#  2013.08.05 - BTL
+#  Converted to python and added to Guppy class.
+
+#  2013.04.18 - BTL
+#  Cloned from genTruePresences() in createTruePresences.R.
+
+#=========================================================================================
+
+def genCombinedSppPresTable (self, numImgRows, numCells):
+
+	numSpp = self.variables ["PAR.num.spp.to.create"]
+	minNumPres = self.variables ["PAR.minNumPres"]
+	maxNumPres = self.variables ["PAR.maxNumPres"]
+
+	combinedSppPresTable = None
+
+	numPresForEachSpp = sample (minNumPres:maxNumPres, numSpp, replace=True)
+
+	cat ("\n\nnumPresForEachSpp = ", numPresForEachSpp)
+
+	for (sppId in 1:numSpp):
+
+		sppName = 'spp.' + sppId
+
+		presIndices = sample (1:numCells, numPresForEachSpp [sppId], replace = False)
+		print "\n\npresIndices for sppId " + str (sppId) + " = " + presIndices
+
+		presLocsXY =
+			matrix (rep (0, (numPresForEachSpp [sppId] * 2)),
+					nrow = numPresForEachSpp [sppId], ncol = 2, byrow = True)
+
+			#  Can probably replace this with an apply() call instead...
+		for (curPresIdx in 1:numPresForEachSpp [sppId]):
+
+			presLocsXY [curPresIdx, ] = \
+				xyRelToLowerLeft (presIndices [curPresIdx], numImgRows)
+
+		species = rep (sppName, numPresForEachSpp [sppId])
+		PresTable =
+			data.frame (cbind (species, presLocsXY))
+		names (PresTable) = c('species', 'longitude', 'latitude')
+
+		combinedSppPresTable =
+			rbind (combinedSppPresTable, PresTable)
+		}
+
+	return (combinedSppPresTable)
+	}
+
+#=========================================================================================
+
