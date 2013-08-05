@@ -95,6 +95,8 @@ from sys import platform
 import GuppyConstants as CONST
 import GuppyEnvLayers
 
+import GuppyGenTrueRelProbPres as TrueRelProbGen
+
 #===============================================================================
 
     #  Note that the function below will need its reference to
@@ -146,12 +148,18 @@ class Guppy (object):
 
         self.envLayers = None
 
+#-------------------------------------------------------------------------------
+
     def setRandomSeed (self):
+
         randomSeed = self.variables ['PAR.random.seed']
         print "\nrandom.seed = '" + str (randomSeed) + "', class (randomSeed) = '" + randomSeed.__class__.__name__
         random.seed (randomSeed)
 
+#-------------------------------------------------------------------------------
+
     def initNumProcessors (self):
+
             #---------------------------------------------------
             #  default value for number of processors in the
             #  current machine.
@@ -164,7 +172,10 @@ class Guppy (object):
         self.PARnumProcessors = self.variables ['PAR.num.processors']
         print "\nPARnumProcessors =", self.PARnumProcessors
 
+#-------------------------------------------------------------------------------
+
     def initDirectories (self):
+
         self.startingDir = os.getcwd()
         print "\nstartingDir = '" + self.startingDir + "'"
 
@@ -239,9 +250,6 @@ class Guppy (object):
             print "    PARinputDirectory may be messed up." + "\n***********           ***********"
         print "\nPARinputDirectory = '" + self.PARinputDirectory + "'"
 
-        #---------------------
-        #  start new
-        #---------------------
 
         PARcurrentRunDirectory = self.qualifiedParams ['PAR.current.run.directory']
         print "\nPARcurrentRunDirectory = '" + PARcurrentRunDirectory + "'"
@@ -397,6 +405,7 @@ class Guppy (object):
         CONST.productRule = self.variables ['CONST.product.rule']
         CONST.addRule = self.variables ['CONST.add.rule']
 
+        #-----------------------------------
 
         combinedPresSamplesFileName = curFullMaxentSamplesDirName + CONST.dirSlash + \
                                 'spp.sampledPres.combined.csv'
@@ -404,7 +413,7 @@ class Guppy (object):
 
 #  combinedPresSamplesFileName = 'MaxentSamples/spp.sampledPres.combined.csv'
 
-
+        #-----------------------------------
 
         PARpathToMaxent = self.variables ['PAR.path.to.maxent']
         print "\n\nPARpathToMaxent = '" + PARpathToMaxent + "'"
@@ -418,26 +427,22 @@ class Guppy (object):
 #
 #  maxentFullPathName = '/Users/Bill/D/rdv-framework/projects/guppy/lib/maxent/maxent.jar '
 
+         #-----------------------------------
 
-
-        #  Look at this ipython notebook under the Subplots heading to see the
+       #  Look at this ipython notebook under the Subplots heading to see the
         #  matplotlib way to do this.
         #      http://nbviewer.ipython.org/urls/raw.github.com/swcarpentry/notebooks/master/matplotlib.ipynb
 
         #####    par (mfrow=c(2,2))
 
 
-        #---------------------
-        #  end new
-        #---------------------
-
-        #---------------------
-        #  start newer
-        #---------------------
+        #-----------------------------------
 
 ###        curFullMaxentEnvLayersDirName = PARcurrentRunDirectory + self.variables ['PAR.maxent.env.layers.base.name']
 ###        print "\ncurFullMaxentEnvLayersDirName = '" + curFullMaxentEnvLayersDirName + "'"
 ###        createDirIfDoesntExist (curFullMaxentEnvLayersDirName)
+
+        #-----------------------------------
 
             #  NOTE the difference between the mac path in R and in python.
             #       In R, you need the backslash in front of the spaces, but in python,
@@ -445,6 +450,8 @@ class Guppy (object):
         print "variables ['PAR.remoteEnvDir'] = " + self.variables ['PAR.remoteEnvDir']
         print "variables ['PAR.localEnvDirMac'] = " + self.variables ['PAR.localEnvDirMac']
         print "variables ['PAR.localEnvDirWin'] = " + self.variables ['PAR.localEnvDirWin']
+
+        #-----------------------------------
 
 ###        if (self.variables ['PAR.useRemoteEnvDir']):
         if (self.useRemoteEnvDir):
@@ -455,13 +462,23 @@ class Guppy (object):
            self.envLayersDir = self.variables ['PAR.localEnvDirMac']
         print "\nenvLayersDir = '" + self.envLayersDir + "'"
 
+        #-----------------------------------
 
+            #  Get generator to use for true relative probability
+            #  distributions.
 
-        #---------------------
-        #  end newer
-        #---------------------
+        self.trueRelProbDistGen = None
+
+        if self.variables ["PAR.genTruePresWithArithmeticCombinations"]:
+            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresARITH (self.variables)
+
+        elif self.variables ["PAR.genTruePresWithMaxent"]:
+            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresMAXENT (self.variables)
+
+#-------------------------------------------------------------------------------
 
     def pprintParamValues (self):
+
         print "\n\nvariables ="
         pprint (self.variables)
         print "\n\nqualifiedParams ="
@@ -472,7 +489,10 @@ class Guppy (object):
         print "\n\nnumEnvLayers = '" + str (self.numEnvLayers) + "'"
         print "\n\nfileSizeSuffix = '" + self.fileSizeSuffix + "'"
 
+#-------------------------------------------------------------------------------
+
     def loadEnvLayers (self):
+
         print "\n====>  IN loadEnvLayers:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
 
         self.guppyEnvLayers = GuppyEnvLayers.GuppyFractalEnvLayers (self.curFullMaxentEnvLayersDirName, \
@@ -485,6 +505,8 @@ class Guppy (object):
 
         print "\nIn Guppy:loadEnvLayers:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
 
+
+#-------------------------------------------------------------------------------
 
     def run (self):
 
@@ -500,19 +522,19 @@ class Guppy (object):
         print "\nenvLayersShape = " + str (envLayersShape)
 
         numEnvLayers = envLayersShape [0]
-
-
         numRows = envLayersShape [1]
         numCols = envLayersShape [2]
         numCells = numRows * numCols
-#        imgDimensions = dim (envLayers[[1]])
-        imgDimensions = numRows
 
         print "\n\n>>>  After genEnvLayers(), numEnvLayers = " + str (numEnvLayers)
-        print "\n>>>                        imgDimensions = " + str (imgDimensions)
         print "\n>>>                        img is " + str (numRows) + " rows by " + str (numCols) + " cols for total cell ct = " + str (numCells)
 
+            #--------------------------------------------
+            #  Generate true relative probability maps.
+            #--------------------------------------------
 
+        self.trueRelProbDistGen.getTrueRelProbDistsForAllSpp (self.envLayers, \
+                                                                numEnvLayers)
 
 #===============================================================================
 
