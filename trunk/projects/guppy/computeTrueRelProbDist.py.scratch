@@ -55,24 +55,14 @@
 
 #===============================================================================
 
-def normalizeProbDistributionFromEnvLayers (self, relProbMatrix):
-        #normalizeProbDistributionFromEnvLayers = function (envLayers)
+def normalizeMatrix (aMatrix):
 
 		#--------------------------------------------------------------------------
-    	#  Normalize the values to get a probability distribution over the image,
-    	#  i.e., make them all sum to one.
+    	#  Normalize the values so that the sum of all entries in the matrix
+    	#  is 1 (e.g., to make it a probability distribution).
 		#--------------------------------------------------------------------------
 
-	#print "\nAt start of normalizeProb...()\n"
-
-
-	totRelProbMatrix = sum (relProbMatrix)
-	print "\ntotRelProbMatrix = " + totRelProbMatrix + "\n"
-
-	normProbMatrix = relProbMatrix / totRelProbMatrix
-	print "\nsum of normProbMatrix = " + str (sum (normProbMatrix)) + " (should = 1).\n"
-
-	return (normProbMatrix)
+	return (aMatrix / aMatrix.sum ())
 
 #===============================================================================
 
@@ -83,78 +73,79 @@ def computeRelProbDistARITH (self, sppId, sppName, self.envLayers, numEnvLayers)
 
 	normProbMatrix = None
 
-	if PARuseOldMaxentOutputForInput:
-		normProbMatrix = readAscFileToMatrix (sppName, \
-#									           (sppName + ".asc"),
-									            PARoldMaxentOutputDir)
-		normProbMatrix = \
-				normalizeProbDistributionFromEnvLayers (normProbMatrix)
+###	if PARuseOldMaxentOutputForInput:
+###		normProbMatrix = readAscFileToMatrix (sppName, \
+####									           (sppName + ".asc"),
+###									            PARoldMaxentOutputDir)
+###		normProbMatrix = normalizeMatrix (normProbMatrix)
+####				normalizeProbDistributionFromEnvLayers (normProbMatrix)
 
-	else:
-		relProbMatrix = matrix ()
+###	else:
 
-		if sppId == 1:
-			combinationRule = CONST.productRule
-		else:
-			combinationRule = CONST.addRule
+    relProbMatrix = numpy.zeros ((self.imgNumRows, self.imgNumCols))    #  How to specify size?
 
-		if combinationRule == CONST.productRule:
-			print "\n\nusing product rule\n"
-			relProbMatrix = self.envLayers [[1]]
-			print "\n\nlength (self.envLayers) BEFORE product = '" + \
-			        str (length (self.envLayers)) + "'\n"
-			for (curEnvLayerIdx in 2:numEnvLayers):
-				print "\n\ndim (relProbMatrix) BEFORE product = '" + \
-				        dim (relProbMatrix) + "'\n"
-				print "\n\nclass (relProbMatrix) BEFORE product = '" + \
-				        class (relProbMatrix) + "'\n"
-				print "\n\nrelProbMatrix [1:3,1:3] = \n" + \
-				        relProbMatrix [1:3,1:3]  #  Echo a bit of the result...
-				for (row in 1:3):
-					for (col in 1:3):
-						print "\nrelProbMatrix [" + str (row) + ", " + \
-						        str (col) + "] = " + \
-						        relProbMatrix [row, col] + \
-						        ", and class = " + \
-						        class(relProbMatrix[row,col])
-				#*****#
-				#print "\n\n    All done     \n\n"
-				#stop ("\nSTOP\n")
-				#*****#
+    if sppId == 1:
+        combinationRule = CONST.productRule
+    else:
+        combinationRule = CONST.addRule
 
-				print "\n\ndim (relProbMatrix) BEFORE product = '" + \
-				        dim (relProbMatrix) + "'\n"
-				print "\n\nself.envLayers [[curEnvLayerIdx]] [1:3,1:3] = \n" + \
-				        self.envLayers [[curEnvLayerIdx]] [1:3,1:3]    #  Echo a bit of the result...
-				for (row in 1:3):
-					for (col in 1:3):
-						print "\nself.envLayers [[curEnvLayerIdx]] [" + \
-						        str (row) + ", " + str (col) + "] = " + \
-						        self.envLayers [[curEnvLayerIdx]][row,col] + \
-						        ", and class = " + \
-						        class(self.envLayers [[curEnvLayerIdx]][row,col])
+    if combinationRule == CONST.productRule:
+        print "\n\nusing product rule\n"
+        relProbMatrix = self.envLayers [[1]]
+        print "\n\nlength (self.envLayers) BEFORE product = '" + \
+                str (length (self.envLayers)) + "'\n"
+        for (curEnvLayerIdx in 2:numEnvLayers):
+            print "\n\ndim (relProbMatrix) BEFORE product = '" + \
+                    dim (relProbMatrix) + "'\n"
+            print "\n\nclass (relProbMatrix) BEFORE product = '" + \
+                    class (relProbMatrix) + "'\n"
+            print "\n\nrelProbMatrix [1:3,1:3] = \n" + \
+                    relProbMatrix [1:3,1:3]  #  Echo a bit of the result...
+            for (row in 1:3):
+                for (col in 1:3):
+                    print "\nrelProbMatrix [" + str (row) + ", " + \
+                            str (col) + "] = " + \
+                            relProbMatrix [row, col] + \
+                            ", and class = " + \
+                            class(relProbMatrix[row,col])
+            #*****#
+            #print "\n\n    All done     \n\n"
+            #stop ("\nSTOP\n")
+            #*****#
 
-				relProbMatrix = relProbMatrix * self.envLayers [[curEnvLayerIdx]]
-				print "\n\ndim (relProbMatrix) AFTER product = '" + \
-				    dim (relProbMatrix) + "'\n"
+            print "\n\ndim (relProbMatrix) BEFORE product = '" + \
+                    dim (relProbMatrix) + "'\n"
+            print "\n\nself.envLayers [[curEnvLayerIdx]] [1:3,1:3] = \n" + \
+                    self.envLayers [[curEnvLayerIdx]] [1:3,1:3]    #  Echo a bit of the result...
+            for (row in 1:3):
+                for (col in 1:3):
+                    print "\nself.envLayers [[curEnvLayerIdx]] [" + \
+                            str (row) + ", " + str (col) + "] = " + \
+                            self.envLayers [[curEnvLayerIdx]][row,col] + \
+                            ", and class = " + \
+                            class(self.envLayers [[curEnvLayerIdx]][row,col])
 
-	    elif (combinationRule == CONST.addRule):
+            relProbMatrix = relProbMatrix * self.envLayers [[curEnvLayerIdx]]
+            print "\n\ndim (relProbMatrix) AFTER product = '" + \
+                dim (relProbMatrix) + "'\n"
 
-            print "\n\nusing add rule\n"
-            relProbMatrix = self.envLayers [[1]]
-            for (curEnvLayerIdx in 2:numEnvLayers):
-                relProbMatrix = relProbMatrix + self.envLayers [[curEnvLayerIdx]]
+    elif (combinationRule == CONST.addRule):
 
-	    else:  #  unknown combination rule
-			stop ("\n\nUndefined combination rule for environmental layers.\n\n")
+        print "\n\nusing add rule\n"
+        relProbMatrix = self.envLayers [[1]]
+        for (curEnvLayerIdx in 2:numEnvLayers):
+            relProbMatrix = relProbMatrix + self.envLayers [[curEnvLayerIdx]]
+
+    else:  #  unknown combination rule
+        stop ("\n\nUndefined combination rule for environmental layers.\n\n")
 
 
-		print "\n\ndim (relProbMatrix) = '" + dim (relProbMatrix) + "'\n"
+    print "\n\ndim (relProbMatrix) = '" + dim (relProbMatrix) + "'\n"
 
-		print relProbMatrix [1:3,1:3]    #  Echo a bit of the result...
+    print relProbMatrix [1:3,1:3]    #  Echo a bit of the result...
 
-		normProbMatrix =
-				normalizeProbDistributionFromEnvLayers (relProbMatrix)
+    normProbMatrix = normalizeMatrix (relProbMatrix)
+#				normalizeProbDistributionFromEnvLayers (relProbMatrix)
 
 	return (normProbMatrix)
 

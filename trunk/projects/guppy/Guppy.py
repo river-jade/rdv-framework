@@ -138,7 +138,9 @@ class Guppy (object):
 #        self.variables ["test"] = "varTest"
 #        self.qualifiedParams ["test"] = "qpTest"
 
+        self.randomSeed = 1
         self.setRandomSeed ()
+
         self.initNumProcessors ()
 
         self.useRemoteEnvDir = self.variables ['PAR.useRemoteEnvDir']
@@ -152,9 +154,9 @@ class Guppy (object):
 
     def setRandomSeed (self):
 
-        randomSeed = self.variables ['PAR.random.seed']
-        print "\nrandom.seed = '" + str (randomSeed) + "', class (randomSeed) = '" + randomSeed.__class__.__name__
-        random.seed (randomSeed)
+        self.randomSeed = self.variables ['PAR.random.seed']
+        print "\nrandomSeed = '" + str (self.randomSeed) + "', class (randomSeed) = '" + self.randomSeed.__class__.__name__
+        random.seed (self.randomSeed)
 
 #-------------------------------------------------------------------------------
 
