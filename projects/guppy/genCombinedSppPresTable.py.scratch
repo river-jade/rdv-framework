@@ -16,7 +16,73 @@
 
 #=========================================================================================
 
+    #  NOTE: The R version of this routine seems to have been wrong.
+    #        For one thing, it only asked for the number of columns
+    #        rather than both rows and columns, since it assumed that
+    #        the image would be square.
+    #        Not sure if everything else about the routine was right.
+    #        Needs to be tested if it's going to be used again.
+    #        This routine could be converted back to R, but if so,
+    #        need to modify to account for the fact that python arrays
+    #        start at 0 and R arrays start at 1.
+
+def xyRelToLowerLeft (n, numRows, numCols):
+    """  Compute the x,y coordinates of a given
+    index into the image array where the index starts with 0 in the
+    UPPER left and goes row by row.  The x,y coordinates that are
+    output (to give to maxent) have their origin in the LOWER left
+    and go row by row upward like a typical x,y plot.
+    Also, numbering of the rows and columns in the output considers
+    the origin to be just outside the array, so that the lower left
+    corner of the array is called location [1,1] instead of [0,0].
+    """
+    return [ (n % numCols) + 1   ,   numRows - (n // numCols) ]
+
+#-------------------------------------------------------------------------------
+
+def verbose_xyRelToLowerLeft (n, numRows, numCols):
+    """  Verbose form of: Compute the x,y coordinates of a given
+    index into the image array where the index starts with 0 in the
+    UPPER left and goes row by row.  The x,y coordinates that are
+    output (to give to maxent) have their origin in the LOWER left
+    and go row by row upward like a typical x,y plot.
+    Also, numbering of the rows and columns in the output considers
+    the origin to be just outside the array, so that the lower left
+    corner of the array is called location [1,1] instead of [0,0].
+
+    NOTE: This routine is just to explain and test what the non-verbose
+    version above does.  You don't want to use it unless there's a problem
+    with the x,y value and you need to investigate with verbose echoing
+    of intermediate steps.
+    """
+    print "In xyRelToLowerLeft (" + str (n) + ", " + str (numRows) + ", " + str (numCols) + ")"
+
+    x = (n % numCols) + 1
+    print "    x = " + str (x)
+
+    rowFromTop = (n // numCols)
+    print "    rowFromTop = " + str (rowFromTop)
+    y = numRows - rowFromTop
+    print "    y = " + str (y)
+
+    retVal = [ x, y ]
+    print "    retVal = "
+    print retVal
+    print
+
+    return retVal
+
+#=========================================================================================
+
 def genCombinedSppPresTable (self, numImgRows, numCells):
+    """
+    Generate and return a table specifying all true species locations
+    (x,y values) for every species.
+    The table has 3 columns and each row gives the species ID
+    and then the x and y location of a true presence for that species
+    (relative to the lower left corner of the map, since that is what
+    maxent expects).
+    """
 
 	numSpp = self.variables ["PAR.num.spp.to.create"]
 	minNumPres = self.variables ["PAR.minNumPres"]
@@ -24,16 +90,55 @@ def genCombinedSppPresTable (self, numImgRows, numCells):
 
 	combinedSppPresTable = None
 
-	numPresForEachSpp = sample (minNumPres:maxNumPres, numSpp, replace=True)
+        #  Randomly choose the number of presences each species will have.
+#	numPresForEachSpp = sample (minNumPres:maxNumPres, numSpp, replace=True)
+	numPresForEachSpp = zeros (numSpp)
+	for sppId in range (numSpp):
+        numPresForEachSpp [sppId] = random.randint (minNumPres, maxNumPres)
 
 	cat ("\n\nnumPresForEachSpp = ", numPresForEachSpp)
 
-	for (sppId in 1:numSpp):
+        #  Given the number of presences for each species,
+        #  randomly choose the locations of each of those presences
+        #  for each species.
+	for sppId in range (numSpp):
 
-		sppName = 'spp.' + sppId
+		sppName = 'spp.' + str (sppId)
 
-		presIndices = sample (1:numCells, numPresForEachSpp [sppId], replace = False)
-		print "\n\npresIndices for sppId " + str (sppId) + " = " + presIndices
+#		presIndices = sample (1:numCells, numPresForEachSpp [sppId], replace = False)
+		presIndices = random.sample (range (numCells), numPresForEachSpp [sppId])
+		print "\n\npresIndices for sppId " + str (sppId) + " = "
+		print presIndices
+
+import numpy as np
+x = np.zeros (20, dtype=int)
+print x
+x = x.reshape (10,2)
+print x
+print range(10)
+x [range(10),0] = range(10)
+print x
+
+
+    repeatedSppNames = array(totNumPres * None)
+    curSppPresIdxStart = 0
+    for sppId in range (1,numSpp + 1):
+        sppName = 'spp.' + str (sppId)
+        curSppPresIdxEnd = curSppIdxStart + numPresForEachSpp [sppId] + 1
+        repeatedSppNames [k] = sppName \
+            for k in range (curSppIdxStart, curSppPresIdxStart + numPresForEachSpp [sppId]
+        curSppIdxStart = curSppPresIdxEnd
+
+    sppNames = ['spp.' + str(sppId) for sppId in range(numSpp)]
+    repeatedSppNames = spp.id
+    totNumPres = numPresForEachSpp.sum ()
+
+    PresTable = pd.DataFrame (zeros (totNumPres,2),
+                                #  numpy.random.randn (totNumPres,2), \
+                                index=repeatedSppNames, \
+                                columns=list('XY'))
+    PresTable [,'X'] = [random.randint (x) for x in range (1, imgNumRows + 1)]
+    PresTable [,'Y'] = [random.randint (y) for y in range (1, imgNumCols + 1)]
 
 		presLocsXY =
 			matrix (rep (0, (numPresForEachSpp [sppId] * 2)),
@@ -52,10 +157,8 @@ def genCombinedSppPresTable (self, numImgRows, numCells):
 
 		combinedSppPresTable =
 			rbind (combinedSppPresTable, PresTable)
-		}
 
 	return (combinedSppPresTable)
-	}
 
 #=========================================================================================
 
