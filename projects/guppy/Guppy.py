@@ -146,6 +146,11 @@ class Guppy (object):
         self.useRemoteEnvDir = self.variables ['PAR.useRemoteEnvDir']
 
         self.curFullMaxentEnvLayersDirName = None
+        self.curFullMaxentSamplesDirName = None
+
+        self.maxentGenOutputDir = None
+        self.maxentGenOutputDirWithSlash = None
+
         self.initDirectories ()
 
         self.envLayers = None
@@ -289,11 +294,11 @@ class Guppy (object):
 
         #PARmaxentGenOutputDirName = "MaxentGenOutputs"
 
-        maxentGenOutputDir = self.qualifiedParams ['PAR.maxent.gen.output.dir.name']
-        maxentGenOutputDirWithSlash = maxentGenOutputDir + "/"
+        self.maxentGenOutputDir = self.qualifiedParams ['PAR.maxent.gen.output.dir.name']
+        self.maxentGenOutputDirWithSlash = self.maxentGenOutputDir + "/"
 
-        print "\nmaxentGenOutputDir = '" + maxentGenOutputDir + "'"
-        createDirIfDoesntExist (maxentGenOutputDir)
+        print "\nself.maxentGenOutputDir = '" + self.maxentGenOutputDir + "'"
+        createDirIfDoesntExist (self.maxentGenOutputDir)
 
 #  maxentGenOutputDir = 'MaxentGenOutputs'
 #
@@ -360,12 +365,12 @@ class Guppy (object):
         ##    dir.create ("MaxentSamples")
         ##    }
 
-        curFullMaxentSamplesDirName = \
+        self.curFullMaxentSamplesDirName = \
             PARcurrentRunDirectory + self.variables ['PAR.maxent.samples.base.name']
 
-        print "\n\ncurFullMaxentSamplesDirName = '" + curFullMaxentSamplesDirName + "'"
+        print "\n\nself.curFullMaxentSamplesDirName = '" + self.curFullMaxentSamplesDirName + "'"
 
-        createDirIfDoesntExist (curFullMaxentSamplesDirName)
+        createDirIfDoesntExist (self.curFullMaxentSamplesDirName)
 
 #  curFullMaxentSamplesDirName = 'MaxentSamples'
 #
@@ -409,7 +414,7 @@ class Guppy (object):
 
         #-----------------------------------
 
-        combinedPresSamplesFileName = curFullMaxentSamplesDirName + CONST.dirSlash + \
+        combinedPresSamplesFileName = self.curFullMaxentSamplesDirName + CONST.dirSlash + \
                                 'spp.sampledPres.combined.csv'
         print "\n\ncombinedPresSamplesFileName = '" + combinedPresSamplesFileName + "'\n\n"
 
@@ -536,7 +541,9 @@ class Guppy (object):
             #--------------------------------------------
 
         self.trueRelProbDistGen.getTrueRelProbDistsForAllSpp (self.envLayers, \
-                                                                numEnvLayers)
+                    numEnvLayers, numRows, numCols, \
+                    self.curFullMaxentSamplesDirName, \
+                    self.maxentGenOutputDir)
 
 #===============================================================================
 

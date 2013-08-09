@@ -257,10 +257,12 @@ def getTrueRelProbDistsForAllSppMAXENT (envLayers, numEnvLayers):
     combinedSppPresencesFilename = curFullMaxentSamplesDirName + \
                                     CONST.dirSlash + \
                                     "maxentGenSppPresCombined" + ".csv"
-    writeCsv (combinedSppPresTable,
-               file = combinedSppPresencesFilename,
-               rowNames = FALSE,
-               quote=FALSE)
+
+    combinedSppPresTable.to_csv (combinedSppPresencesFilename, index=False)
+#    writeCsv (combinedSppPresTable,
+#               file = combinedSppPresencesFilename,
+#               rowNames = FALSE,
+#               quote=FALSE)
 
 
 		#  Now have to make whatever changes and initializations are necessary to
