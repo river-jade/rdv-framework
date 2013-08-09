@@ -204,7 +204,7 @@ print x.sum()
 
 # <codecell>
 
-from rpy2 import r
+from rpy2.robjects import r
 
 r('''
 print("Hello World!")
@@ -415,7 +415,8 @@ def genCombinedSppPresTable (numImgRows, numImgCols):
     
         #  This is writing column headers to the data frame, but I'm not sure 
         #  if it should be doing that since maxent may not expect it.
-    combinedSppPresTable = pd.DataFrame(xyPairs,index=repeatedSppNames,columns=['longitude','latitude'])
+###    combinedSppPresTable = pd.DataFrame(xyPairs,index=repeatedSppNames,columns=['longitude','latitude'])
+    combinedSppPresTable = pd.DataFrame.from_items ([('spp', repeatedSppNames), ('longitude', xyPairs [:,0]), ('latitude', xyPairs [:,1])])
 #    print combinedSppPresTable
     
     return combinedSppPresTable
@@ -430,12 +431,321 @@ else:
     print x
     x.to_csv('combinedSppPresTable.csv')
 
+# <markdowncell>
+
+# #  Figuring out how to merge species names with xy pairs into a pandas dataframe
+
 # <codecell>
+
+import pandas as pd
+import numpy
 
 repeatedSppNames = ['spp.1', 'spp.1', 'spp.2', 'spp.2', 'spp.2', 'spp.3']
 df = pd.DataFrame.from_items([('spp', repeatedSppNames), ('longitude', range(6)), ('latitude', range(6))])
 print df
 df.to_csv('df.csv', index=False)
+
+df2 = pd.DataFrame.from_items ([('spp', repeatedSppNames)])
+df2 ['longitude'] = range(6)
+print df2
+
+xyPairs = numpy.zeros ((6,2), dtype=int)
+print
+
+xyPairs [:,0] = range(6)
+print xyPairs
+
+xyPairs [:,1] = range(6)
+print xyPairs
+
+xyPairs [:,1] = xyPairs [:,1] + 5
+print xyPairs
+
+df3 = pd.DataFrame.from_items ([('spp', repeatedSppNames)])
+df3 ['longitude'] = xyPairs [:,0]
+df3 ['latitude'] = xyPairs [:,1]
+print df3
+
+###  df4 = pd.DataFrame.from_items ([('spp', repeatedSppNames), (['longitude', 'latitude'], xyPairs))
+###  print df4
+###  
+###      Gives
+    
+###   File "<ipython-input-29-1adeab7d5450>", line 30
+###      df4 = pd.DataFrame.from_items ([('spp', repeatedSppNames), (['longitude', 'latitude'], xyPairs))
+###                                                                                                     ^
+###  SyntaxError: invalid syntax
+
+df5 = pd.DataFrame.from_items ([('spp', repeatedSppNames), ('longitude', xyPairs [:,0]), ('latitude', xyPairs [:,1])])
+print "\ndf5 = "
+print df5
+
+# <markdowncell>
+
+# #  Test whether rpy2 has installed correctly and is working
+# 
+# Examples taken from Matloff web page:
+# http://heather.cs.ucdavis.edu/~matloff/rpy2.html
+# 
+# NOTES:
+# 
+# * Everything seems to work fine except for one line that I have flagged in the code.
+# 
+# * When a plot is generated, it appears in R's plot window, not in this ipython page.  
+#     * Is it possible to make them appear inline here?
+#     * Also, that external plot has a beachball when I move the cursor over it and CMD-OPT-ESC tells me that python is hung.  Not sure if this will always happen or if something odd is going on just this one time.
+
+# <codecell>
+
+from rpy2.robjects import r
+
+    #  Generate vectors x and y in R, do a scatter plot, fit a least-squares line, etc.: 
+r('x <- rnorm(100)')  # generate x at R
+r('y <- x + rnorm(100,sd=0.5)')  # generate y at R
+r('plot(x,y)')  # have R plot them
+r('lmout <- lm(y~x)')  # run the regression
+r('print(lmout)')  # print from R
+loclmout = r('lmout') # download lmout from R to Python
+print loclmout  # print locally
+
+#-----------------------------------------------------------------------------
+    #  This statement generates the error shown below it...
+#  print loclmout.r['coefficients']  # print one component
+#  ---------------------------------------------------------------------------
+#  AttributeError                            Traceback (most recent call last)
+#  <ipython-input-5-6dbb6373c865> in <module>()
+#        7 loclmout = r('lmout') # download lmout from R to Python
+#        8 print loclmout  # print locally
+#  ----> 9 print loclmout.r['coefficients']  # print one component
+#  
+#  AttributeError: 'ListVector' object has no attribute 'r'
+#-----------------------------------------------------------------------------
+
+    #  Apply some R operations to some Python variables:
+
+u = range(10)  # set up another scatter plot, this one local
+e = 5*[0.25,-0.25]
+v = u[:]
+for i in range(10): v[i] += e[i]
+r.plot(u,v)
+r.assign('remoteu',u)  # ship local u to R
+r.assign('remotev',v)  # ship local v to R
+r('plot(remoteu,remotev)')  # plot there
+
+# <markdowncell>
+
+# #Another example of trying to use rpy2, this time with clustering in R (hclust)
+# 
+# Taken from:
+# http://baoilleach.blogspot.com.au/2007/11/using-r-from-python-best-of-both-worlds.html
+# 
+# NOTE: This fails for two reasons:  
+# 
+# - It's using rpy instead of rpy2 (since it's an old article, from 2007), but that's easily fixed by changing the import statement the way that I have done below.  
+# 
+# - It tries to read in a table called cpOfSimMatrix.txt that's never built or defined anywhere.
+# 
+# Still, it may be useful to come back and look at this when I do clustering and have a proper input file of my own.
+
+# <codecell>
+
+#from rpy import *
+from rpy2.robjects import r
+
+# START OF METHOD 1
+hclust = r("""
+    a <- read.table("cpOfSimMatrix.txt")
+    mydist <- dist(1-a)
+    hclust(mydist)
+""")
+r("rm(a)") # Ends with an error if you leave anything in memory
+# END OF METHOD 1
+
+# START OF METHOD 2
+set_default_mode(NO_CONVERSION)
+a = r.read_table("cpOfSimMatrix.txt")
+mydist = r.dist(r["-"](1,a)) # Note the trick for '1-a' here
+set_default_mode(BASIC_CONVERSION)
+hclust = r.hclust(mydist) # Converts R object to Python dict
+# END OF METHOD 2
+
+# START OF METHOD 3 (here's one I created earlier)
+r.load(".RData")
+hclust = r('myHclust')
+# END OF METHOD 3
+
+# <markdowncell>
+
+# #  Testing PypeR installation and execution
+# 
+# Code below is taken from:
+# http://statcompute.wordpress.com/2012/11/29/another-way-to-access-r-from-python-pyper/
+# 
+# Unfortunately, this is yet another web example where they read the data in but don't provide the data for someone trying to reproduce their run, so it fails as soon as it hits the read_table() line.
+
+# <codecell>
+
+    # LOAD PYTHON PACKAGES 
+import pandas as pd
+import pyper as pr
+ 
+    # READ DATA
+data = pd.read_table("/home/liuwensui/Documents/data/csdata.txt", header = 0)
+ 
+    # CREATE A R INSTANCE WITH PYPER
+r = pr.R(use_pandas = True)
+ 
+    # PASS DATA FROM PYTHON TO R
+r.assign("rdata", data)
+ 
+    # SHOW DATA SUMMARY
+print r("summary(rdata)")
+
+    # LOAD R PACKAGE
+r("library(betareg)")
+
+    # ESTIMATE A BETA REGRESSION 
+r("m <- betareg(LEV_LT3 ~ SIZE1 + PROF2 + GROWTH2 + AGE + IND3A, data = rdata, subset = LEV_LT3 > 0)")
+ 
+    # OUTPUT MODEL SUMMARY 
+print r("summary(m)")
+ 
+    # CALCULATE MODEL PREDICTION 
+r("beta_fit <- predict(m, link = 'response')")
+
+    # SHOW PREDICTION SUMMARY IN R
+print r("summary(beta_fit)")
+
+    # PASS DATA FROM R TO PYTHON
+pydata = pd.DataFrame(r.get("beta_fit"), columns = ["y_hat"])
+ 
+    # SHOW PREDICTION SUMMARY IN PYTHON 
+pydata.y_hat.describe()
+
+# <markdowncell>
+
+# #  Testing PypeR using code from the original PypeR paper:
+# 
+# Xia et al. 2010."PypeR, A Python Package for Using R in Python", Journal of Statistical Software, July 2010, vol 35, code snippet 2, http://www.jstatsoft.org/
+
+# <codecell>
+
+from pyper import *
+
+    #  For a single run of R, the function runR may be used:
+outputs = runR("a <- 3; print(a + 5)")
+print outputs
+
+    #  or if there is an R script (e.g., “RScript.R”) to run: 
+#  runR("source('RScript.R')")
+
+    #  In cases where more interactive operations are involved, 
+    #  the better way is to create a Python object - an instance of the class R:
+r = R(use_numpy=True)
+
+    #  The function Str4R can be applied to translate Python objects 
+    #  to R objects in the form of string. In the following examples, 
+    #  a Python list, an iterator, and a string are passed to the 
+    #  R child process as vectors, while a NumPy record array is 
+    #  converted as an R data frame:
+
+r("a <- %s" %  Str4R([0, 1, 2, 3, 4]) )
+r.assign("a", xrange(5) )
+r.An_IMPORTANT_Notice = """You CANNOT use dot (.) for a variable
+    name in this format, and leading underscore (_) is INVALID
+    in any R variable name."""
+r["salary"] = numpy.array([(1, "Joe", 35820.0), \
+    (2, "Jane", 41235.0), (3, "Kate", 37932.0)], \
+    dtype=[("id", "<i4"), ("employee", "|S4"), ("salary", "<f4")] )
+print r["salary"]
+del r["An_IMPORTANT_Notice"], r.salary
+
+    #  It is also possible to make plots, however the plotting is 
+    #  done in the background and the output are saved in a file:
+r("png('test.png')")
+r("plot(1:5)")
+r("dev.off()")
+
+    #  Usage details and more examples can be found in the module 
+    #  documents and in the test script (“test.py”) in the 
+    #  distribution package.
+    
+
+# <markdowncell>
+
+# #  Testing PypeR again
+# 
+# Using code from test.py file distributed with pyper module.
+# 
+# On my machine,test.py is in:
+# /Users/Bill/anaconda/pkgs/PypeR-1.1.0/test.py
+# 
+# This whole set of examples actually seems to work for a change...
+
+# <codecell>
+
+import numpy
+from pyper import *
+
+myR = R()
+a = range(5)
+
+# test simple command
+myR.run('a <- 3')
+myR('print(a)')
+
+# test parameter conversion
+myR('b <- %s' % Str4R(a))
+
+# set variable in R
+myR.assign('b', a)
+#    or 
+myR['b'] = a
+#	or
+myR.b = a
+
+# get value from R 
+# from R variables
+b = myR['b']
+bb = myR.get('bb', 'No this variable!')
+print(b, bb, myR['pi'], myR.pi)
+# or from an R expression
+print(myR['(2*pi + 3:9)/5'])
+del myR.a, myR['b']
+
+# test R list
+myR['alst'] = [1, (2, 3, 'any strings'), 4+5j]
+print(myR['alst'])
+
+# test plotting
+myR('png("abc.png"); plot(1:5); dev.off()')
+
+if has_numpy:
+    arange, array, reshape = numpy.arange, numpy.array, numpy.reshape
+    # numpy arrays
+    # one-dimenstion numpy array will be converted to R vector
+    myR['avec'] = arange(5)
+    print(myR['avec'])
+    # one-dimenstion numpy record array will be converted to R data.framme
+    myR['adfm'] = array([(1, 'Joe', 35820.0), (2, 'Jane', 41235.0), (3, 'Kate', 37932.0)], \
+            dtype=[('id', '<i4'), ('employee', '|S4'), ('salary', '<f4')])
+    print(myR['adfm'])
+    # two-dimenstion numpy array will be converted to R matrix
+    myR['amat'] = reshape(arange(12), (3, 4)) # a 3-row, 4-column matrix
+    print(myR['amat'])
+    # numpy array of three or higher dimensions will be converted to R array
+    myR['aary'] = reshape(arange(24), (2, 3, 4)) # a 3-row, 4-column, 2-layer array 
+    print(myR['aary'])
+
+# test huge data sets and the function runR
+a = range(10000) #00)
+sa = 'a <- ' + Str4R(a)
+rlt = runR(sa)
+print(rlt)
+print('\nTest passed!\n\n')
+
+# to use an R on remote server, you need to provide correct parameter to initialize the R instance:
+# rsrv = R(RCMD='/usr/local/bin/R', host='My_server_name_or_IP', user='username')
 
 # <codecell>
 

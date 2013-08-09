@@ -22,6 +22,16 @@ xy.rel.to.lower.left <- function (n, nrow)    #**** the key function ****#
 		   )
 	}
 
+xy.rel.to.lower.left <- function (n, nrow, ncol)    #**** the key function ****#
+	{
+	n.minus.1 <- n - 1
+	return ( c (1 + (n.minus.1 %/% ncol),
+			    nrow - (n.minus.1 %% nrow)
+			   )
+		   )
+	}
+
+
 #===============================================================================
 
 build.presence.sample =
