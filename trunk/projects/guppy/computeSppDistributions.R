@@ -6,6 +6,12 @@
 
 #  History:
 
+#  2013.08.10 - BTL
+#  IMPORTANT: See notes in comment near the call to runMaxentCmd() below.
+#  There may be a bug in here that needs to be fixed if this code is used again.
+#  Since I'm in the process of converting everything to python, that may
+#  never happen though...
+
 #  2013.04.14 - BTL -  v2
 #  Inserting bits that write the matrix to a file that used to be in
 #  computeTrueRelProbDist.R.  There, you're only normalizing
@@ -306,6 +312,24 @@ get.true.rel.prob.dists.for.all.spp.MAXENT = function (env.layers, num.env.layer
 	maxentSamplesFileName = combinedSppPresencesFilename
 	maxentOutputDir = maxent.gen.output.dir
 	bootstrapMaxent = FALSE
+
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+#  2013 08 10 - BTL
+#  runMaxentCmd() had some arguments beyond the 3 that it has here added to it
+#  in mid-May 2013 in runMaxentCmd.R according to svn.
+#  Those arguments were also added to the call of runMaxentCmd() in
+#  runMaxent.R around the same time, but nothing seems to have happened here.
+#  What's puzzling is that this seems to have continued to run after that
+#  even though it shouldn't have...
+#  In any case, if I come back to using this R code, I need to change the call
+#  here to match the other two files mentione above.
+#  I can't find any run logs in May or June after about the 11th of May, so
+#  maybe I started making all these changes and never got around to testing
+#  them in R before moving on to python...
+#----------------------------------------------------------------
+system.exit ("\n\n*****  Quitting due to probable bug in calling maxent in computeSppDistributions.R.  Fix it!  *****\n\n")
+#----------------------------------------------------------------
 
 	runMaxentCmd (maxentSamplesFileName, maxentOutputDir, bootstrapMaxent)
 

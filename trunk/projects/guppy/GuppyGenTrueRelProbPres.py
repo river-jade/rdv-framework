@@ -14,6 +14,7 @@ import numpy
 import random
 import pandas as pd
 import GuppyConstants as CONST
+from runMaxentCmd import runMaxentCmd
 
 #===============================================================================
 
@@ -29,7 +30,7 @@ class GuppyGenTrueRelProbPres (object):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistsForAllSpp (envLayers, numEnvLayers):
+    def getTrueRelProbDistsForAllSpp (self, guppy):
         raise NotImplementedError ()
 
 #-------------------------------------------------------------------------------
@@ -176,8 +177,8 @@ class GuppyGenTrueRelProbPresARITH (GuppyGenTrueRelProbPres):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistsForAllSpp (self, envLayers, numEnvLayers):
-        print "\n\nNot implemented yet.\n"
+    def getTrueRelProbDistsForAllSpp (self, guppy):
+        raise NotImplementedError ()
 
 #===============================================================================
 #===============================================================================
@@ -197,10 +198,7 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistsForAllSpp (self, envLayers, numEnvLayers, \
-                                            numRows, numCols, \
-                                            curFullMaxentSamplesDirName, \
-                                            maxentGenOutputDir):
+    def getTrueRelProbDistsForAllSpp (self, guppy):
         """
         #--------------------------------------------------------------------
         #  Here, we now want to have the option to create the true relative
@@ -216,12 +214,13 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 
         print "\n\nGenerate true rel prob map using maxent.\n\n"
 
-        combinedSppPresTable = self.genCombinedSppPresTable (numRows, numCols)
+        combinedSppPresTable = \
+            self.genCombinedSppPresTable (guppy.imgNumRows, guppy.imgNumCols)
 
         print "\n\ncombinedSppPresTable = \n"
         print combinedSppPresTable
 
-        combinedSppPresencesFilename = curFullMaxentSamplesDirName + \
+        combinedSppPresencesFilename = guppy.curFullMaxentSamplesDirName + \
                                         CONST.dirSlash + \
                                         "maxentGenSppPresCombined" + ".csv"
 
@@ -250,9 +249,16 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
             #  Run maxent to generate a true relative probability map.
             #----------------------------------------------------------------
 
-        maxentSamplesFileName = combinedSppPresencesFilename
-        maxentOutputDir = maxentGenOutputDir
-        bootstrapMaxent = False
+        runMaxentCmd (combinedSppPresencesFilename,
+                        guppy.maxentGenOutputDir, \
+                        guppy.doMaxentReplicates,
+                        guppy.maxentReplicateType, \
+                        guppy.numMaxentReplicates, \
+                        guppy.maxentFullPathName, \
+                        guppy.curFullMaxentEnvLayersDirName, \
+                        guppy.numProcessors, \
+                        guppy.verboseMaxent \
+                        )
 
 
 
@@ -260,9 +266,7 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
     '''
     def getTrueRelProbDistsForAllSppMAXENT (self, envLayers, numEnvLayers):
 
-        runMaxentCmd (maxentSamplesFileName, maxentOutputDir, bootstrapMaxent)
-
-            #  NOW NEED TO CONVERT THE MAXENT OUTPUTS IN MaxentGenOutputs/plots/spp.?.asc
+           #  NOW NEED TO CONVERT THE MAXENT OUTPUTS IN MaxentGenOutputs/plots/spp.?.asc
             #  into pgm and tiff?  Regardless, need to copy the .asc files into the
             #  MaxentProbDistLayers area as:
             #		true.prob.dist.spp.?.asc

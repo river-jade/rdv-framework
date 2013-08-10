@@ -78,7 +78,7 @@
 tempDontMakeDirsYet = False
 print "\n\n\n====>>>  tempDontMakeDirsYet = ", tempDontMakeDirsYet, "\n\n\n"
 
-verbose = False
+verbose = True
 
 #===============================================================================
 
@@ -150,10 +150,16 @@ class Guppy (object):
 
         self.maxentGenOutputDir = None
         self.maxentGenOutputDirWithSlash = None
+        self.maxentFullPathName = None
 
         self.initDirectories ()
 
         self.envLayers = None
+
+        self.doMaxentReplicates = self.variables ['PAR.do.maxent.replicates']
+        self.numMaxentReplicates = self.variables ['PAR.num.maxent.replicates']
+        self.maxentReplicateType = self.variables ['PAR.maxent.replicateType']
+        self.verboseMaxent = False
 
 #-------------------------------------------------------------------------------
 
@@ -176,8 +182,8 @@ class Guppy (object):
             #  reason.
             #---------------------------------------------------
 
-        self.PARnumProcessors = self.variables ['PAR.num.processors']
-        print "\nPARnumProcessors =", self.PARnumProcessors
+        self.numProcessors = self.variables ['PAR.num.processors']
+        print "\nself.numProcessors =", self.numProcessors
 
 #-------------------------------------------------------------------------------
 
@@ -425,14 +431,15 @@ class Guppy (object):
         PARpathToMaxent = self.variables ['PAR.path.to.maxent']
         print "\n\nPARpathToMaxent = '" + PARpathToMaxent + "'"
 
-        maxentFullPathName = self.startingDir + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'
+#        self.maxentFullPathName = self.PARrdvDirectory + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'
+        self.maxentFullPathName = self.startingDir + "/../.." + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'
 
-        print "\n\nmaxentFullPathName = '" + maxentFullPathName, "'"
+        print "\n\nself.maxentFullPathName = '" + self.maxentFullPathName, "'"
 
 #  PARpathToMaxent = 'lib/maxent'
 #
 #
-#  maxentFullPathName = '/Users/Bill/D/rdv-framework/projects/guppy/lib/maxent/maxent.jar '
+#  self.maxentFullPathName = '/Users/Bill/D/rdv-framework/projects/guppy/lib/maxent/maxent.jar '
 
          #-----------------------------------
 
@@ -461,12 +468,17 @@ class Guppy (object):
         #-----------------------------------
 
 ###        if (self.variables ['PAR.useRemoteEnvDir']):
+        print "***  self.useRemoteEnvDir = " + str (self.useRemoteEnvDir)
+        print "***  self.curOS = " + self.curOS
         if (self.useRemoteEnvDir):
            self.envLayersDir = self.variables ['PAR.remoteEnvDir']
+           print "in branch 1"
         elif (self.curOS == CONST.windowsOSname):
            self.envLayersDir = self.variables ['PAR.localEnvDirWin']
+           print "in branch 2"
         else:
            self.envLayersDir = self.variables ['PAR.localEnvDirMac']
+           print "in branch 3"
         print "\nenvLayersDir = '" + self.envLayersDir + "'"
 
         #-----------------------------------
@@ -492,9 +504,9 @@ class Guppy (object):
         pprint (self.qualifiedParams)
         print "\n\nself.curDir = " + self.curDir
         print "\n\nself.curOS = " + self.curOS
-        print "\n\nself.envLayersDir = " + self.envLayersDir + "'"
-        print "\n\nnumEnvLayers = '" + str (self.numEnvLayers) + "'"
-        print "\n\nfileSizeSuffix = '" + self.fileSizeSuffix + "'"
+#        print "\n\nself.envLayersDir = " + self.envLayersDir + "'"
+#        print "\n\nnumEnvLayers = '" + str (self.numEnvLayers) + "'"
+#        print "\n\nfileSizeSuffix = '" + self.fileSizeSuffix + "'"
 
 #-------------------------------------------------------------------------------
 
@@ -540,10 +552,7 @@ class Guppy (object):
             #  Generate true relative probability maps.
             #--------------------------------------------
 
-        self.trueRelProbDistGen.getTrueRelProbDistsForAllSpp (self.envLayers, \
-                    numEnvLayers, numRows, numCols, \
-                    self.curFullMaxentSamplesDirName, \
-                    self.maxentGenOutputDir)
+        self.trueRelProbDistGen.getTrueRelProbDistsForAllSpp (self)
 
 #===============================================================================
 
