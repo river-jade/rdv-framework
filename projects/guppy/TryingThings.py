@@ -749,4 +749,17 @@ print('\nTest passed!\n\n')
 
 # <codecell>
 
+%run runMaxentCmd
+
+# <codecell>
+
+import autoreload
+autoreload?
+
+# <codecell>
+
+import os
+import subprocess
+
+maxentExitCode = subprocess.call ("echo Hello World", shell=True)
 
