@@ -996,12 +996,11 @@ random.uniform (0.0002, 0.002)
 import numpy
 sppTruePresenceFractionsOfLandscape = []
 numSppToCreate = 5
-sppTruePresenceFractionsOfLandscape = \
-    [sppTruePresenceFractionsOfLandscape.append ( \
+for k in range (numSppToCreate):
+    sppTruePresenceFractionsOfLandscape.append ( \
         random.uniform ( \
                0.0002, \
-               0.002)) \
-     for k in range (numSppToCreate)]
+               0.002))
 print sppTruePresenceFractionsOfLandscape
                 
 
@@ -1014,4 +1013,128 @@ print sppTruePresenceFractionsOfLandscape
                            self.variables ["PAR.min.true.presence.fraction.of.landscape"], \
                            self.variables ["PAR.max.true.presence.fraction.of.landscape"])) \
                  for k in range (self.numSppToCreate)]
+
+# <codecell>
+
+#  Based on:
+#      http://pymotw.com/2/csv/#module-csv
+
+import csv
+import sys
+
+ascFileName = '/Users/Bill/tzar/outputdata/Guppy/default_runset/152_Scen_1/MaxentProbDistLayers/true.prob.dist.spp.1.asc'
+numHeaderLines = 6
+
+f = open(ascFileName, 'rt')
+try:
+    reader = csv.reader(f, delimiter=' ')
+    for k in range (numHeaderLines):
+        next (reader)
+    ct = 0
+    maxCt = 5
+    for row in reader:
+        if ct < maxCt:
+            print "row " + str (ct)
+            print row.__class__.__name__
+            print len (row)
+            print row [0:3]
+        ct += 1
+finally:
+    f.close()
+
+def readAscFileToMatrix (base.asc.filename.to.read, input.dir = "")
+  {
+##  name.of.file.to.read <- paste (base.asc.filename.to.read, '.asc', sep='')
+##  asc.file.as.matrix <-
+#####  as.matrix (read.table (paste (input.dir, name.of.file.to.read, sep=''),
+##  as.matrix (read.table (paste (input.dir, base.asc.filename.to.read, sep=''),
+##	                       skip=6))
+
+  name.of.file.to.read <- paste (base.asc.filename.to.read, '.asc', sep='')
+
+#filename.handed.in = paste (input.dir, base.asc.filename.to.read, sep='')
+filename.handed.in = paste (input.dir, name.of.file.to.read, sep='')
+cat ("\n\n====>>  In read.asc.file.to.matrix(), \n",
+		"\tname.of.file.to.read = '", name.of.file.to.read, "\n",
+		"\tbase.asc.filename.to.read = '", base.asc.filename.to.read, "\n",
+		"\tinput.dir = '", input.dir, "\n",
+		"\tfilename.handed.in = '", filename.handed.in, "\n",
+		"\n", sep='')
+
+  asc.file.as.matrix <-
+#  as.matrix (read.table (paste (input.dir, base.asc.filename.to.read, sep=''),
+  as.matrix (read.table (paste (input.dir, name.of.file.to.read, sep=''),
+	                       skip=6))
+
+
+
+  return (asc.file.as.matrix)
+  }
+
+    
+
+# <codecell>
+
+print csv.list_dialects()
+
+# <codecell>
+
+import numpy
+import csv
+
+def readAscFileToMatrix (baseAscFilenameToRead, inputDir = ""):
+
+    nameOfFileToRead = baseAscFilenameToRead + ".asc"    #  extension should be made optional...
+    filenameHandedIn = inputDir + nameOfFileToRead
+
+    print "\n\n====>>  In read.asc.file.to.matrix(), \n" + \
+		"\tnameOfFileToRead = '" + nameOfFileToRead + "\n" + \
+		"\tbaseAscFilenameToRead = '" + baseAscFilenameToRead + "\n" + \
+		"\tinput.dir = '" + inputDir + "\n" + \
+		"\tfilenameHandedIn = '" + filenameHandedIn + "\n"
+
+#  ascFileAsMatrix = \
+#      as.matrix (read.table (paste (input.dir, nameOfFileToRead, sep=''),
+#	                       skip=6))
+
+    numHeaderLines = 6
+
+    imgNumRows = imgNumCols = 256
+    ascFileAsMatrix = numpy.zeros ((imgNumRows, imgNumCols))
+
+        #  Based on:
+        #      http://pymotw.com/2/csv/#module-csv
+    f = open (filenameHandedIn, 'rt')
+    try:
+        reader = csv.reader(f, delimiter=' ')
+        for k in range (numHeaderLines):
+            next (reader)
+        ct = 0
+        maxCt = 5
+        for row in reader:
+            ascFileAsMatrix [ct,:] = row
+            if ct < maxCt:
+                print "row " + str (ct)
+                print row.__class__.__name__
+                print len (row)
+                print row [0:3]
+                print ascFileAsMatrix [ct,0:3]
+            ct += 1
+
+    finally:
+        f.close()
+
+    return ascFileAsMatrix
+
+    
+x = readAscFileToMatrix ('true.prob.dist.spp.2', '/Users/Bill/tzar/outputdata/Guppy/default_runset/152_Scen_1/MaxentProbDistLayers/')
+
+print "\nx.shape = " + str (x.shape)
+
+# <codecell>
+
+x[1,2]
+
+# <codecell>
+
 

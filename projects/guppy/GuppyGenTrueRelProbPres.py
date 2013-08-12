@@ -80,7 +80,8 @@ class GuppyGenTrueRelProbPres (object):
         print "totNumPres = " + str (totNumPres)
 
             #  Create a species name string for each species.
-        sppNames = ['spp.' + str(sppId+1) for sppId in range(numSpp)]
+#        sppNames = ['spp.' + str(sppId+1) for sppId in range(numSpp)]
+        sppNames = ['spp.' + str(sppId) for sppId in range(numSpp)]
         print "sppNames = "
         print sppNames
 
