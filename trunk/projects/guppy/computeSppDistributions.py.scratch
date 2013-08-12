@@ -21,11 +21,15 @@
 #===============================================================================
 
 strOfCommaSepNumbersToVec = function (numberString)
-	{
-	numStrAsCatCmdStr = paste ("c(", numberString, ")", sep='')
+    '''Take a string of numbers separated by commas or spaces and
+    turn it into an array of numbers.'''
 
-	return (eval (parse (text = numStrAsCatCmdStr)))
-	}
+        #  Break up the string into a string for each number, then
+        #  convert each of these substrings into an integer individually.
+
+    strValues = re.split (r"[, ]", numberString)
+
+    return [int (aNumString) for aNumString in strValues]
 
 #===============================================================================
 

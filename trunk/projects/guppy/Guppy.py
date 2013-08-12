@@ -125,10 +125,12 @@ class Guppy (object):
         self.curOS = platform
 
         self.envLayersDir = None
+        self.numEnvLayers = None
         self.numEnvLayers = self.variables ['PAR.numEnvLayers']
-
         self.imgNumRows = variables ['PAR.imgNumRows']
         self.imgNumCols = variables ['PAR.imgNumCols']
+        self.imgNumCells = self.imgNumRows * self.imgNumCols
+
         self.fileSizeSuffix = variables ['PAR.fileSizeSuffix']
 
         if (verbose):
@@ -145,9 +147,18 @@ class Guppy (object):
 
         self.useRemoteEnvDir = self.variables ['PAR.useRemoteEnvDir']
 
+        self.numSppToCreate = None
+        self.PARnumSppInReserveSelection = None
+        self.PARuseOldMaxentOutputForInput = None
+        self.PARuseAllSamples = None
+
         self.curFullMaxentEnvLayersDirName = None
         self.curFullMaxentSamplesDirName = None
 
+        self.probDistLayersDir = None
+        self.probDistLayersDirWithSlash = None
+        self.maxentOutputDir = None
+        self.maxentOutputDirWithSlash = None
         self.maxentGenOutputDir = None
         self.maxentGenOutputDirWithSlash = None
         self.maxentFullPathName = None
@@ -274,11 +285,12 @@ class Guppy (object):
         ##probDistLayersDir = paste (PARcurrentRunDirectory, "/",
         ##                              PARprobDistLayersDirName, "/"
 
-        probDistLayersDir = self.qualifiedParams ['PAR.prob.dist.layers.dir.name']
-        probDistLayersDirWithSlash = probDistLayersDir + "/"
 
-        print "\nprobDistLayersDir = '" + probDistLayersDir + "'"
-        createDirIfDoesntExist (probDistLayersDir)
+        self.probDistLayersDir = self.qualifiedParams ['PAR.prob.dist.layers.dir.name']
+        self.probDistLayersDirWithSlash = self.probDistLayersDir + "/"
+
+        print "\nself.probDistLayersDir = '" + self.probDistLayersDir + "'"
+        createDirIfDoesntExist (self.probDistLayersDir)
 
 #  probDistLayersDir = 'MaxentProbDistLayers'
 #
@@ -287,11 +299,11 @@ class Guppy (object):
 
         #PARmaxentOutputDirName = "MaxentOutputs"
 
-        maxentOutputDir = self.qualifiedParams ['PAR.maxent.output.dir.name']
-        maxentOutputDirWithSlash = maxentOutputDir + CONST.dirSlash
+        self.maxentOutputDir = self.qualifiedParams ['PAR.maxent.output.dir.name']
+        self.maxentOutputDirWithSlash = self.maxentOutputDir + CONST.dirSlash
 
-        print "\nmaxentOutputDir = '" + maxentOutputDir + "'"
-        createDirIfDoesntExist (maxentOutputDir)
+        print "\nself.maxentOutputDir = '" + self.maxentOutputDir + "'"
+        createDirIfDoesntExist (self.maxentOutputDir)
 
 #  maxentOutputDir = 'MaxentOutputs'
 #
@@ -407,12 +419,12 @@ class Guppy (object):
         combinedSppSampledPresencesTable = None
 
 
-        PARnumSppToCreate = self.variables ['PAR.num.spp.to.create']
-        PARnumSppInReserveSelection = self.variables ['PAR.num.spp.in.reserve.selection']
-        PARuseOldMaxentOutputForInput = self.variables ['PAR.use.old.maxent.output.for.input']
+        self.numSppToCreate = self.variables ['PAR.num.spp.to.create']
+        self.PARnumSppInReserveSelection = self.variables ['PAR.num.spp.in.reserve.selection']
+        self.PARuseOldMaxentOutputForInput = self.variables ['PAR.use.old.maxent.output.for.input']
 
 
-        PARuseAllSamples = self.variables ['PAR.use.all.samples']
+        self.PARuseAllSamples = self.variables ['PAR.use.all.samples']
 
 
         CONST.productRule = self.variables ['CONST.product.rule']
@@ -527,6 +539,99 @@ class Guppy (object):
 
 #-------------------------------------------------------------------------------
 
+        #---------------------------------------------------------------
+        #  Determine the number of true presences for each species.
+        #  At the moment, you can specify the number of true presences
+        #  drawn for each species either by specifying a count for each
+        #  species to be created or by specifying the bounds of a
+        #  random fraction for each species.  The number of true
+        #  presences will then be that fraction multiplied times the
+        #  total number of pixels in the map.
+        #---------------------------------------------------------------
+
+    def getNumTruePresencesForEachSpp (self):
+
+        if self.variables ["PAR.use.random.num.true.presences"]:
+
+                #-------------------------------------------------------------
+                #  Draw random true presence fractions and then convert them
+                #  into counts.
+                #-------------------------------------------------------------
+
+            print "\n\nIn getNumTruePresencesForEachSpp, case: random true pres"
+
+
+            presmin = self.variables ["PAR.min.true.presence.fraction.of.landscape"]
+            print "presmin = " + str (presmin)
+            print "class (presmin) = " + presmin.__class__.__name__
+            presmax = self.variables ["PAR.max.true.presence.fraction.of.landscape"]
+            print "presmax = " + str (presmax)
+            print "class (presmax) = " + presmax.__class__.__name__
+
+            sppTruePresenceFractionsOfLandscape = []
+            for k in range (self.numSppToCreate):
+                sppTruePresenceFractionsOfLandscape.append ( \
+                    random.uniform ( \
+                        self.variables ["PAR.min.true.presence.fraction.of.landscape"], \
+                        self.variables ["PAR.max.true.presence.fraction.of.landscape"]))
+
+#            for k in range (self.numSppToCreate):
+#                sppTruePresenceFractionsOfLandscape [k] = k
+##                    random.uniform ( \
+##                           presmin, \
+##                           presmax)
+#                sppTruePresenceFractionsOfLandscape [k] = \
+#                    random.uniform ( \
+#                           presmin, \
+#                           presmax)
+
+            print "\n\nsppTruePresenceFractionsOfLandscape = "
+            print sppTruePresenceFractionsOfLandscape
+
+            sppTruePresenceCts = \
+                [round (self.imgNumCells * fraction) \
+                for fraction in sppTruePresenceFractionsOfLandscape]
+            print "\nsppTruePresenceCts = "
+            print sppTruePresenceCts
+
+            numTruePresences = sppTruePresenceCts
+            print "\nnumTruePresences = "
+            pprint (numTruePresences)
+
+        else:
+
+                #--------------------------------------------------
+                #  Use non-random, fixed counts of true presences
+                #  specified in the yaml file.
+                #--------------------------------------------------
+
+    #		numTruePresences = self.variables ["PAR.num.true.presences"]
+            numTruePresences = \
+                strOfCommaSepNumbersToVec (self.variables ["PAR.num.true.presences"])
+
+            print "\n\nIn getNumTruePresencesForEachSpp, case: NON-random true pres"
+            print "\n\nnumTruePresences = "
+            pprint (numTruePresences)
+    ###        print "\nclass (numTruePresences) = '" + class (numTruePresences) + "'"
+    ###        print "\nis.vector (numTruePresences) = '" + is.vector (numTruePresences) + "'"
+    ###        print "\nis.list (numTruePresences) = '" + is.list (numTruePresences) + "'"
+            print "\nlength (numTruePresences) = '" + str (len (numTruePresences)) + "'"
+    ###        for (i in 1:length (numTruePresences))
+    ###            print "\n\tnumTruePresences [" + str (i) + "] = " + str (numTruePresences[i])
+
+            if len (numTruePresences) != self.numSppToCreate:
+
+                print "\n\nlen(numTruePresences) = '" + \
+                        str (len (self.variables ["PAR.num.true.presences"])) + \
+                        "' but \nnumSppToCreate = '" + numSppToCreate + \
+                        "'.\nMust specify same number of presence cts as " + \
+                        "species to be created.\n\n"
+                os.exit ()
+
+        return (numTruePresences)
+
+#-------------------------------------------------------------------------------
+
     def run (self):
 
             #--------------------------------
@@ -540,19 +645,36 @@ class Guppy (object):
         envLayersShape = self.envLayers.shape
         print "\nenvLayersShape = " + str (envLayersShape)
 
-        numEnvLayers = envLayersShape [0]
-        numRows = envLayersShape [1]
-        numCols = envLayersShape [2]
-        numCells = numRows * numCols
+        self.numEnvLayers = envLayersShape [0]
+        self.imgNumRows = envLayersShape [1]
+        self.imgNumCols = envLayersShape [2]
+        self.imgNumCells = self.imgNumRows * self.imgNumCols
 
-        print "\n\n>>>  After genEnvLayers(), numEnvLayers = " + str (numEnvLayers)
-        print "\n>>>                        img is " + str (numRows) + " rows by " + str (numCols) + " cols for total cell ct = " + str (numCells)
+        print "\n\n>>>  After genEnvLayers(), self.numEnvLayers = " + str (self.numEnvLayers)
+        print "\n>>>                        img is " + str (self.imgNumRows) + " rows by " + str (self.imgNumCols) + " cols for total cell ct = " + str (self.imgNumCells)
 
             #--------------------------------------------
             #  Generate true relative probability maps.
             #--------------------------------------------
 
         self.trueRelProbDistGen.getTrueRelProbDistsForAllSpp (self)
+
+            #----------------------------
+            #  Generate true presences.
+            #----------------------------
+
+        print "\n\n+++++\tBefore get.num.true.presences.for.each.spp()\n"
+
+        #  moved from up above.
+        numTruePresences = self.getNumTruePresencesForEachSpp ()
+
+        print "\n\n+++++\tBefore genTruePresences\n"
+
+#        listOfTruePresencesAndXYlocs = genTruePresences (num.true.presences)
+#        combinedSppTruePresencesTable = \
+#            listOfTruePresencesAndXYlocs ["combined.spp.true.presences.table"]
+#        allSppTruePresenceLocsXY = \
+#            listOfTruePresencesAndXYlocs ["all.spp.true.presence.locs.x.y"]
 
 #===============================================================================
 

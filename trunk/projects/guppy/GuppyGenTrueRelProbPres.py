@@ -15,6 +15,11 @@ import random
 import pandas as pd
 import GuppyConstants as CONST
 from runMaxentCmd import runMaxentCmd
+from pprint import pprint
+import os
+import glob
+import fnmatch
+import shutil
 
 #===============================================================================
 
@@ -260,12 +265,6 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
                         guppy.verboseMaxent \
                         )
 
-
-
-#-------------------------------------------------------------------------------
-    '''
-    def getTrueRelProbDistsForAllSppMAXENT (self, envLayers, numEnvLayers):
-
            #  NOW NEED TO CONVERT THE MAXENT OUTPUTS IN MaxentGenOutputs/plots/spp.?.asc
             #  into pgm and tiff?  Regardless, need to copy the .asc files into the
             #  MaxentProbDistLayers area as:
@@ -292,35 +291,51 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
             #  files or directories in the named directory
         #fileRootNames = filePathSansExt (listFiles ('.','*.asc'))
 
-        filesToCopyFrom = listFiles (maxentGenOutputDir, "*.asc", fullNames=TRUE)
-        #filesToCopyFrom = filesToCopyFrom[[1]]
+###        filesToCopyFrom = listFiles (maxentGenOutputDir, "*.asc", fullNames=TRUE)
+        filesToCopyFrom = []
+        for root, dirs, files in os.walk (guppy.maxentGenOutputDir):
+            filesToCopyFrom += glob.glob (os.path.join (root, '*.asc'))
+
+###        filesToCopyFrom = filesToCopyFrom[[1]]
         print "\n\nfilesToCopyFrom = "
-        print filesToCopyFrom
+        pprint (filesToCopyFrom)
         print "\n\n"
 
         prefix = self.variables ["PAR.trueProbDistFilePrefix"] + "."
         print "\n\nprefix = " + prefix
 
-        fileRootNames = listFiles (maxentGenOutputDir, '*.asc')
-        print "\n\nfileRootNames =\n", fileRootNames
+###        fileRootNames = listFiles (maxentGenOutputDir, '*.asc')
+###        print "\n\nfileRootNames =\n", fileRootNames
+
+        fileRootNames = []
+        for root, dirs, files in os.walk (guppy.maxentGenOutputDir):
+            fileRootNames += fnmatch.filter (files, '*.asc')
+
+        pprint (fileRootNames)
 
 
         #"/Users/Bill/tzar/outputdata/Guppy/default_runset/200_Scen_1.inprogress/MaxentGenOutputs/spp.1.asc"
         #"/Users/Bill/tzar/outputdata/Guppy/default_runset/200_Scen_1.inprogress/MaxentGenOutputs/spp.1.asc"
 
-        filesToCopyTo = probDistLayersDirWithSlash + prefix + fileRootNames
-        #filesToCopyTo = probDistLayersDirWithSlash
-        print "\n\nfilesToCopyTo = "
-        print filesToCopyTo
+#        filesToCopyTo = probDistLayersDirWithSlash + prefix + fileRootNames
+        filesToCopyToPrefix = guppy.probDistLayersDirWithSlash + prefix
+        filesToCopyTo = [filesToCopyToPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
+        pprint (filesToCopyTo)
+
+#        print "\n\nfilesToCopyTo = "
+#        print filesToCopyTo
         print "\n\n"
 
         #retVals = file.copy(fileRootNames, filesToCopyTo)
-        retVals = fileCopy (filesToCopyFrom, filesToCopyTo)
+###        retVals = fileCopy (filesToCopyFrom, filesToCopyTo)
 
-        print "\n\nretVals for file.copy =\n" + retVals
-        if length (which (not retVals)):
-            print "\n\nCopy failed.\n"
-            stop()
+        for k in range (len (filesToCopyFrom)):
+            shutil.copyfile(filesToCopyFrom [k], filesToCopyTo [k])
+
+###        print "\n\nretVals for file.copy =\n" + retVals
+###        if length (which (not retVals)):
+###            print "\n\nCopy failed.\n"
+###            stop()
 
         print "\n\nDone copying files...\n\n"
 
@@ -333,8 +348,6 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 
 
     #	return (trueRelProbDistsForSpp)
-    '''
-dummy = 1
 
 #===============================================================================
 
