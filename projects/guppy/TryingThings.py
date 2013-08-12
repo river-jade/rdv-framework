@@ -763,3 +763,255 @@ import subprocess
 
 maxentExitCode = subprocess.call ("echo Hello World", shell=True)
 
+# <codecell>
+
+#  Derived from:
+#      http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-subdirectories
+
+import os
+import glob
+
+maxentGenOutputDir = '/Users/Bill/tzar/outputdata/Guppy/default_runset/277_Scen_1'
+filesToCopyFrom = []
+for root, dirs, files in os.walk(maxentGenOutputDir):
+    filesToCopyFrom += glob.glob(os.path.join(root, '*.asc'))
+    
+print "ascs = "
+print ascs[0]
+
+    #  Remove the ".asc" suffix.
+short = short[0:-4]
+print short
+
+short = ascs[0]
+print short
+
+#fileRootNames = listFiles (maxentGenOutputDir, '*.asc')
+fileRootNames = filesToCopyFrom [:,:-4]
+print fileRootNames
+
+
+#filesToCopyTo = probDistLayersDirWithSlash + prefix + fileRootNames
+#filesToCopyTo = probDistLayersDirWithSlash + prefix + fileRootNames
+
+
+# <codecell>
+
+len(ascs)
+
+# <codecell>
+
+print os.sep
+
+# <codecell>
+
+    #  Derived from:
+    #      http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-subdirectories
+import os
+import glob
+from pprint import pprint
+
+def listFiles (path = ".", pattern = '*'):
+    '''python first approximation to replacement for R function
+       list.files().
+    '''
+    print "In listFiles,\n"
+    print "    path = " + path
+    print "    pattern = " + str (pattern)
+    print
+    
+    listOfFiles = []
+    for root, dirs, files in os.walk (path):
+        listOfFiles += glob.glob (os.path.join (root, '*.pyc'))
+    return listOfFiles
+
+def test_listFiles ():
+    testPath = '/Users/Bill/D/rdv-framework/projects/guppy'
+    testPattern = "\*.pyc"
+    
+    print "current directory = " + os.getcwd() + "\n"
+    
+    listOfFiles = listFiles ()
+    print "listFiles() = \n"
+    pprint (listOfFiles)
+    print
+    
+    listOfFiles = listFiles (testPath)
+    print "listFiles ('" + testPath + "') = \n"
+    pprint (listOfFiles)
+    print
+    
+    listOfFiles = listFiles (testPath, testPattern)
+    print "listFiles ('" + testPath + "', '" + testPattern + "') = \n"
+    pprint (listOfFiles)
+    print
+    
+test_listFiles()
+
+# <codecell>
+
+import fnmatch
+from pprint import pprint
+
+asps = []
+for root, dirs, files in os.walk('/Users/Bill/D/rdv-framework/projects/guppy'):
+    asps += fnmatch.filter(files, '*.R')
+    
+pprint (asps)
+
+print len(asps)
+
+prefixAsps = ["pre." + asps[i] for i in range(len(asps))]
+pprint (prefixAsps)
+
+# <codecell>
+
+#  http://www.adamlaiacano.com/post/14987215771/python-function-for-sampling-from-an-arbitrary-discrete
+
+from numpy.random import uniform
+import numpy
+import random
+
+def slice_sampler(px, N = 1, x = None):
+    """
+    Provides samples from a user-defined distribution.
+    slice_sampler(px, N = 1, x = None)
+    Inputs:
+    px = A discrete probability distribution.
+    N = Number of samples to return, default is 1
+    x = Optional list/array of observation values to return, where prob(x) = px.
+     
+    Outputs:
+    If x=None (default) or if len(x) != len(px), it will return an array of integers
+    between 0 and len(px)-1. If x is supplied, it will return the
+    samples from x according to the distribution px.
+    """
+    values = numpy.zeros(N, dtype=numpy.int)
+    samples = numpy.arange(len(px))
+    px = numpy.array(px) / (1.*sum(px))
+    u = uniform(0, max(px))
+    for n in xrange(N):
+        included = px>=u
+        choice = random.sample(range(numpy.sum(included)), 1)[0]
+        values[n] = samples[included][choice]
+        u = uniform(0, px[included][choice])
+    if x:
+        if len(x) == len(px):
+            x=numpy.array(x)
+            values = x[values]
+        else:
+            print "px and x are different lengths. Returning index locations for px."
+    if N == 1:
+        return values[0]
+    return values
+
+px = [.2, .4, .1, .3]
+
+slice_sampler (px, N=5)
+#array([2, 3, 3, 3, 3]) 
+
+slice_sampler(px, N=5, x=[100, 200, 300, 400])
+#array([200, 200, 400, 200, 200])
+
+from pylab import *
+samples = slice_sampler(px, N=10000, x=[100, 200, 300, 400]) 
+hist(samples)
+grid()
+
+
+# <codecell>
+
+from scipy.stats import rv_discrete
+from numpy.random import uniform
+import numpy
+import random
+from pylab import *
+
+px = [.2, .4, .1, .3]
+x=[100, 200, 300, 400]
+N = 10000
+
+samples = rv_discrete (values=(x, px)).rvs(size=N)
+hist (samples)
+grid()
+
+# <codecell>
+
+import numpy
+
+numTruePresences = numpy.zeros(10)
+print numTruePresences
+print "len(numTruePresences) = " + str(len(numTruePresences))
+
+numSppToCreate = 5
+print "numSppToCreate = " + str(numSppToCreate)
+
+if len (numTruePresences) != numSppToCreate:
+    print "they are NOT equal"
+else:
+    print "they are equal"
+
+# <codecell>
+
+import re
+
+def strOfCommaSepNumbersToVec (numberString):
+    '''Take a string of numbers separated by commas or spaces and
+    turn it into an array of numbers.'''
+
+        #  Break up the string into a string for each number, then
+        #  convert each of these substrings into an integer individually.
+
+    strValues = re.split (r"[, ]", numberString)
+
+    return [int (aNumString) for aNumString in strValues]
+
+numTruePresences = \
+    strOfCommaSepNumbersToVec ("10,20,30,40,50,60,70,80,90,100")
+print "\n\nIn getNumTruePresencesForEachSpp, case: NON-random true pres"
+print "numTruePresences = "
+print numTruePresences
+
+###        print "\nclass (numTruePresences) = '" + class (numTruePresences) + "'"
+###        print "\nis.vector (numTruePresences) = '" + is.vector (numTruePresences) + "'"
+###        print "\nis.list (numTruePresences) = '" + is.list (numTruePresences) + "'"
+print "\nlength (numTruePresences) = '" + str (len (numTruePresences)) + "'"
+###        for (i in 1:length (numTruePresences))
+###            print "\n\tnumTruePresences [" + str (i) + "] = " + str (numTruePresences[i])
+
+if len (numTruePresences) != numSppToCreate:
+    print "they are NOT equal"
+else:
+    print "they are equal"
+
+
+# <codecell>
+
+import random
+
+random.uniform (0.0002, 0.002)
+
+# <codecell>
+
+import numpy
+sppTruePresenceFractionsOfLandscape = []
+numSppToCreate = 5
+sppTruePresenceFractionsOfLandscape = \
+    [sppTruePresenceFractionsOfLandscape.append ( \
+        random.uniform ( \
+               0.0002, \
+               0.002)) \
+     for k in range (numSppToCreate)]
+print sppTruePresenceFractionsOfLandscape
+                
+
+# <codecell>
+
+            sppTruePresenceFractionsOfLandscape = []
+            sppTruePresenceFractionsOfLandscape = \
+                [sppTruePresenceFractionsOfLandscape.append ( \
+                    random.uniform ( \
+                           self.variables ["PAR.min.true.presence.fraction.of.landscape"], \
+                           self.variables ["PAR.max.true.presence.fraction.of.landscape"])) \
+                 for k in range (self.numSppToCreate)]
+

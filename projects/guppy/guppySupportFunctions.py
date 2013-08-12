@@ -17,6 +17,10 @@
 
 #=========================================================================================
 
+from re import split
+
+#=========================================================================================
+
     #  NOTE: The R version of this routine seems to have been wrong.
     #        For one thing, it only asked for the number of columns
     #        rather than both rows and columns, since it assumed that
@@ -41,6 +45,19 @@ def xyRelToLowerLeft (n, numRows, numCols):
         #  (n // numCols) gives the number of rows from the top of the arrray.
 
     return [ (n % numCols) + 1   ,   numRows - (n // numCols) ]
+
+#===============================================================================
+
+def strOfCommaSepNumbersToVec (numberString):
+    '''Take a string of numbers separated by commas or spaces and
+    turn it into an array of numbers.'''
+
+        #  Break up the string into a string for each number, then
+        #  convert each of these substrings into an integer individually.
+
+    strValues = re.split (r"[, ]", numberString)
+
+    return [int (aNumString) for aNumString in strValues]
 
 #=========================================================================================
 
