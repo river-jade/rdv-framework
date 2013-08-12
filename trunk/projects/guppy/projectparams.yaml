@@ -13,9 +13,9 @@ base_params:
         PAR.useRemoteEnvDir: FALSE
 
     #  Bigger example
-        PAR.numEnvLayers: 10
-        PAR.num.spp.to.create: 100
-        PAR.num.spp.in.reserve.selection: 100    #  No reserve selection yet.
+        PAR.numEnvLayers: 8
+        PAR.num.spp.to.create: 8    ##  100
+        PAR.num.spp.in.reserve.selection: 10    ##  100    #  No reserve selection yet.
 
     #  Smaller example
 #        PAR.numEnvLayers: 5
