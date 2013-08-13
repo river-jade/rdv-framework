@@ -92,6 +92,10 @@ import pickle
 
 from sys import platform
 
+from rpy2.robjects import r
+
+#----------------------------------------
+
 import GuppyConstants as CONST
 import guppySupportFunctions as gsf
 import GuppyEnvLayers
@@ -163,6 +167,7 @@ class Guppy (object):
         self.maxentGenOutputDir = None
         self.maxentGenOutputDirWithSlash = None
         self.maxentFullPathName = None
+        self.combinedPresSamplesFileName = None
 
         self.initDirectories ()
 
@@ -433,11 +438,11 @@ class Guppy (object):
 
         #-----------------------------------
 
-        combinedPresSamplesFileName = self.curFullMaxentSamplesDirName + CONST.dirSlash + \
+        self.combinedPresSamplesFileName = self.curFullMaxentSamplesDirName + CONST.dirSlash + \
                                 'spp.sampledPres.combined.csv'
-        print "\n\ncombinedPresSamplesFileName = '" + combinedPresSamplesFileName + "'\n\n"
+        print "\n\nself.combinedPresSamplesFileName = '" + self.combinedPresSamplesFileName + "'\n\n"
 
-#  combinedPresSamplesFileName = 'MaxentSamples/spp.sampledPres.combined.csv'
+#  self.combinedPresSamplesFileName = 'MaxentSamples/spp.sampledPres.combined.csv'
 
         #-----------------------------------
 
@@ -664,6 +669,32 @@ class Guppy (object):
             print "\n\nnumRows = " + str (numRows)
             print "numCols = " + str (numCols)
             print "\nnumCells = " + str (numCells)
+
+            #-----------------------------------------------------------------------
+
+            #numTruePresences = [3,5,6]
+            r.assign ('rNumTruePresences', numTruePresences)
+
+            #probDistLayersDirWithSlash = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentProbDistLayers/'
+            r.assign ('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
+
+            #trueProbDistFilePrefix = 'true.prob.dist'
+            r.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
+
+            #curFullMaxentSamplesDirName = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentSamples'
+            r.assign ('rCurFullMaxentSamplesDirName', self.curFullMaxentSamplesDirName)
+
+            #PARuseAllSamples = False
+            r.assign ('rPARuseAllSamples', self.PARuseAllSamples)
+
+            #combinedPresSamplesFileName = curFullMaxentSamplesDirName + "/" + "spp.sampledPres.combined" + ".csv"
+            r.assign ('rCombinedPresSamplesFileName', self.combinedPresSamplesFileName)
+
+            #randomSeed = 1
+            r.assign ('rRandomSeed', self.randomSeed)
+
+            r("source ('/Users/Bill/D/rdv-framework/projects/guppy/genTruePresencesPyper.R')")
+            r('genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
 
             #-----------------------------------------------------------------------
 

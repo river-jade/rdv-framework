@@ -1082,6 +1082,8 @@ print csv.list_dialects()
 import numpy
 import csv
 
+imgNumRows = imgNumCols = 256
+
 def readAscFileToMatrix (baseAscFilenameToRead, inputDir = ""):
 
     nameOfFileToRead = baseAscFilenameToRead + ".asc"    #  extension should be made optional...
@@ -1099,7 +1101,6 @@ def readAscFileToMatrix (baseAscFilenameToRead, inputDir = ""):
 
     numHeaderLines = 6
 
-    imgNumRows = imgNumCols = 256
     ascFileAsMatrix = numpy.zeros ((imgNumRows, imgNumCols))
 
         #  Based on:
@@ -1127,13 +1128,52 @@ def readAscFileToMatrix (baseAscFilenameToRead, inputDir = ""):
     return ascFileAsMatrix
 
     
-x = readAscFileToMatrix ('true.prob.dist.spp.2', '/Users/Bill/tzar/outputdata/Guppy/default_runset/152_Scen_1/MaxentProbDistLayers/')
+normProbMatrix = readAscFileToMatrix ('true.prob.dist.spp.2', '/Users/Bill/tzar/outputdata/Guppy/default_runset/152_Scen_1/MaxentProbDistLayers/')
 
-print "\nx.shape = " + str (x.shape)
+print "\nnormProbMatrix.shape = " + str (normProbMatrix.shape)
+
+from rpy2.robjects import r
+
+numCells = imgNumRows * imgNumCols
+numTruePresences = [3,5,10]
+sppId = 1
+r.assign ('rNumCells',numCells)
+r.assign ('rNormProbMatrix',normProbMatrix)
+r.assign ('rNumTruePresencesSppId', numTruePresences [sppId])
+r('cat ("\n\nrNumCells = ", rNumCells, "\nrNumTruePresencesSppId = ", rNumTruePresencesSppId, "\ndim(rNormProbMatrix) = ', dim(rNormProbMatrix), "\n\n")
 
 # <codecell>
 
 x[1,2]
+
+# <codecell>
+
+from rpy2.robjects import r
+
+numTruePresences = [3,5,6]
+r.assign ('rNumTruePresences', numTruePresences)
+
+probDistLayersDirWithSlash = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentProbDistLayers/'
+r.assign ('rProbDistLayersDirWithSlash', probDistLayersDirWithSlash)
+
+trueProbDistFilePrefix = 'true.prob.dist'
+r.assign ('rTrueProbDistFilePrefix', trueProbDistFilePrefix)
+          
+curFullMaxentSamplesDirName = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentSamples'
+r.assign ('rCurFullMaxentSamplesDirName', curFullMaxentSamplesDirName)
+
+PARuseAllSamples = False
+r.assign ('rPARuseAllSamples', PARuseAllSamples)
+
+combinedPresSamplesFileName = curFullMaxentSamplesDirName + "/" + "spp.sampledPres.combined" + ".csv"
+r.assign ('rCombinedPresSamplesFileName', combinedPresSamplesFileName)
+
+randomSeed = 1
+r.assign ('rRandomSeed', randomSeed)
+
+r("source ('genTruePresencesPyper.R')")
+r('genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
+
 
 # <codecell>
 

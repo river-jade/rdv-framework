@@ -8,6 +8,10 @@
 
 #  History:
 
+#  2013.08.13 - BTL
+#  Made two changes to fix bugs that I came across in converting this code
+#  to run under pyper in python.  They're flagged below with BTL comments.
+
 #  2013.04 - BTL
 #  Split out of guppy.test.maxent.v9.R and later versions of runMaxent.R.
 
@@ -44,7 +48,14 @@ for (spp.id in 1:variables$PAR.num.spp.to.create)
 
 	  } else
 	  {
-	  num.samples.to.take = min (num.true.presences [spp.id], PAR.num.samples.to.take)
+	        #  BTL - 2013.08.13
+	        #  Changed this to index into PAR.num.samples.to.take.
+	        #  I think that this was a bug before, i.e., when no index was given.
+	        #  It ran only because R would string out all the values in the
+	        #  vector and take the minimum of all of them.
+#	  num.samples.to.take = min (num.true.presences [spp.id], PAR.num.samples.to.take)
+	  num.samples.to.take = min (num.true.presences [spp.id], PAR.num.samples.to.take [spp.id])
+
 	  sample.presence.indices.into.true.presence.indices =
 			sample (1:(num.true.presences [spp.id]),
 					num.samples.to.take,
@@ -73,6 +84,12 @@ cat ("\n\n>>>  sample.presence.indices.into.true.presence.indices = '", sample.p
 	# 	  )
 
 #-------------------
+        #  Have now fixed the number of samples problem described just below by
+        #  changing the place up above where num.samples.to.take was first set.
+        #  No action was necessary down here as a result, but I did delete an
+        #  old version of the "species <-" line below that was commented out
+        #  and seemed to suggest an incorrect fix for the problem.
+        #  BTL - 2013.08.13
 		#  Need to change this line to make it act the same way that
 		#  true presences behave, i.e., can have a different number of
 		#  of samples for each species.  Right now, I think that all
@@ -88,8 +105,19 @@ cat ("\n\n>>>  sample.presence.indices.into.true.presence.indices = '", sample.p
 			#  loop, so the species vector just happened to have been defined
 			#  already.  Now that I've added a definition of the species
 			#  vector here, it works again.
-#	species <- rep (spp.name, num.samples.to.take [spp.id])
 	species <- rep (spp.name, num.samples.to.take)
+
+        #  BTL - 2013.08.13
+        #  Added this test because I found that the cbind was doing weird
+        #  things when the sampled.locs.x.y had just one row in it but
+        #  had not been created as a matrix. The cbind would treat the
+        #  2 element vector of x and y as a column vector and replicate
+        #  the species and split x and y onto separate rows, making a
+        #  2x2 matrix instead of a 1 row x 3 column matrix.
+        #  Making it explicit here that that sampled.locs.x.y is to be
+        #  treated as a matrix instead of a vector fixed the problem.
+    if (is.vector (sampled.locs.x.y))
+        sampled.locs.x.y = matrix (sampled.locs.x.y, nrow=1)
 
 	sampled.presences.table <-
 		data.frame (cbind (species, sampled.locs.x.y))
