@@ -8,19 +8,24 @@
 
 #  History:
 
+#  2013.08.12 - BTL
+#  Added ncol argument to xy.rel.to.lower.left so that it no longer assumes
+#  that ncol == nrow.
+
 #  2013.04 - BTL
 #  Split out of guppy.test.maxent.v9.R and later versions of runMaxent.R.
 
 #=========================================================================================
 
-xy.rel.to.lower.left <- function (n, nrow)    #**** the key function ****#
-	{
-	n.minus.1 <- n - 1
-	return ( c (1 + (n.minus.1 %/% nrow),
-			    nrow - (n.minus.1 %% nrow)
-			   )
-		   )
-	}
+    #  Old version that assumed nrow == ncol.
+#xy.rel.to.lower.left <- function (n, nrow)    #**** the key function ****#
+#	{
+#	n.minus.1 <- n - 1
+#	return ( c (1 + (n.minus.1 %/% nrow),
+#			    nrow - (n.minus.1 %% nrow)
+#			   )
+#		   )
+#	}
 
 xy.rel.to.lower.left <- function (n, nrow, ncol)    #**** the key function ****#
 	{
@@ -30,7 +35,6 @@ xy.rel.to.lower.left <- function (n, nrow, ncol)    #**** the key function ****#
 			   )
 		   )
 	}
-
 
 #===============================================================================
 
