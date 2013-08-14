@@ -93,6 +93,7 @@ import pickle
 from sys import platform
 
 from rpy2.robjects import r
+from rpy2 import rinterface
 
 #----------------------------------------
 
@@ -153,6 +154,10 @@ class Guppy (object):
         self.initNumProcessors ()
 
         self.useRemoteEnvDir = self.variables ['PAR.useRemoteEnvDir']
+        self.writeToFile = None
+        self.useDrawImage = None
+        self.useFilledContour = None
+        self.usePnmEnvLayers = None
 
         self.numSppToCreate = None
         self.PARnumSppInReserveSelection = None
@@ -170,6 +175,7 @@ class Guppy (object):
         self.maxentGenOutputDirWithSlash = None
         self.maxentFullPathName = None
         self.combinedPresSamplesFileName = None
+        self.analysisDirWithSlash = None
 
         self.initDirectories ()
 
@@ -179,6 +185,15 @@ class Guppy (object):
         self.numMaxentReplicates = self.variables ['PAR.num.maxent.replicates']
         self.maxentReplicateType = self.variables ['PAR.maxent.replicateType']
         self.verboseMaxent = False
+
+        self.trueProbDistFilePrefix = self.variables ["PAR.trueProbDistFilePrefix"]
+
+        self.showRawErrorInDist = self.variables ['PAR.show.raw.error.in.dist']
+        self.showAbsErrorInDist = self.variables ['PAR.show.abs.error.in.dist']
+        self.showPercentErrorInDist = self.variables ['PAR.show.percent.error.in.dist']
+        self.showAbsPercentErrorInDist = self.variables ['PAR.show.abs.percent.error.in.dist']
+        self.showTruncatedPercentErrImg = self.variables ['PAR.truncated.percent.err.img']
+        self.showHeatmap = self.variables ['PAR.show.heatmap']
 
 #-------------------------------------------------------------------------------
 
@@ -335,9 +350,9 @@ class Guppy (object):
         #PARanalysisDirName = "ResultsAnalysis"
 
 ##        analysisDirWithSlash = PARcurrentRunDirectory +  CONST.dirSlash + self.variables ['PAR.analysis.dir.name'] + CONST.dirSlash
-        analysisDirWithSlash = PARcurrentRunDirectory + self.variables ['PAR.analysis.dir.name'] + CONST.dirSlash
-        print "\nanalysisDirWithSlash = '" + analysisDirWithSlash + "'"
-        createDirIfDoesntExist (analysisDirWithSlash)
+        self.analysisDirWithSlash = PARcurrentRunDirectory + self.variables ['PAR.analysis.dir.name'] + CONST.dirSlash
+        print "\nself.analysisDirWithSlash = '" + self.analysisDirWithSlash + "'"
+        createDirIfDoesntExist (self.analysisDirWithSlash)
 
 #  analysisDirWithSlash = '/ResultsAnalysis/'
 #
@@ -403,13 +418,13 @@ class Guppy (object):
 #  ====>>>  Would make dir 'MaxentSamples' now.
 
         #       write.to.file : TRUE,
-        writeToFile = self.variables ['PAR.write.to.file']
+        self.writeToFile = self.variables ['PAR.write.to.file']
 
         #         use.draw.image : FALSE,
-        useDrawImage = self.variables ['PAR.use.draw.image']
+        self.useDrawImage = self.variables ['PAR.use.draw.image']
 
         #         use.filled.contour : TRUE,
-        useFilledContour = self.variables ['PAR.use.filled.contour']
+        self.useFilledContour = self.variables ['PAR.use.filled.contour']
 
                     #  BEWARE: if this is FALSE, the get.env.layers() routine in
                     #          guppy.maxent.functions.v6.R does something vestigial
@@ -419,8 +434,7 @@ class Guppy (object):
                     #  BTL - 2011.10.03 - Is this note even relevant anymore?
                     #                     Looks like this variable isn't even used now.
         #         use.pnm.env.layers : TRUE ,
-        usePnmEnvLayers = self.variables ['PAR.use.pnm.env.layers']
-
+        self.usePnmEnvLayers = self.variables ['PAR.use.pnm.env.layers']
 
 
         combinedSppTruePresencesTable = None        #  correct Null for PYTHON ???
@@ -655,8 +669,9 @@ class Guppy (object):
 
         #	normProbMatrix = true.rel.prob.dists.for.spp [[sppId]]
             filename = self.probDistLayersDirWithSlash + \
-                            self.variables ["PAR.trueProbDistFilePrefix"] + \
+                            self.trueProbDistFilePrefix + \
                             "." + sppName
+    #                            self.variables ["PAR.trueProbDistFilePrefix"] + \
     #                            + '.asc'
     #                                    sep='')
             print "filename = " + filename
@@ -681,7 +696,8 @@ class Guppy (object):
             r.assign ('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
 
             #trueProbDistFilePrefix = 'true.prob.dist'
-            r.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
+            r.assign ('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
+#            r.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
 
             #curFullMaxentSamplesDirName = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentSamples'
             r.assign ('rCurFullMaxentSamplesDirName', self.curFullMaxentSamplesDirName)
@@ -871,6 +887,31 @@ class Guppy (object):
         print"\n\n+++++\tBefore" + "evaluateMaxentResults" + "\n"
 
 ###        evaluateMaxentResults ()
+        ###rinterface.set_flushconsole()
+        r.assign ('rNumSppToCreate', self.numSppToCreate)
+        r.assign ('rDoMaxentReplicates', self.doMaxentReplicates)
+        r.assign ('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
+        r.assign ('rShowRawErrorInDist', self.showRawErrorInDist)
+        r.assign ('rShowAbsErrorInDist', self.showAbsErrorInDist)
+        r.assign ('rShowPercentErrorInDist', self.showPercentErrorInDist)
+        r.assign ('rShowAbsPercentErrorInDist', self.showAbsPercentErrorInDist)
+        r.assign ('rShowTruncatedPercentErrImg', self.showTruncatedPercentErrImg)
+        r.assign ('rShowHeatmap', self.showHeatmap)
+        r.assign ('rMaxentOutputDirWithSlash', self.maxentOutputDirWithSlash)
+        r.assign ('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
+        r.assign ('rAnalysisDirWithSlash', self.analysisDirWithSlash)
+        r.assign ('rUseOldMaxentOutputForInput', self.PARuseOldMaxentOutputForInput)
+        r.assign ('rWriteToFile', self.writeToFile)
+        r.assign ('rUseDrawImage', self.useDrawImage)
+
+        r("source ('/Users/Bill/D/rdv-framework/projects/guppy/evaluateMaxentResultsPyper.R')")
+        r('evaluateMaxentResults (rNumSppToCreate, rDoMaxentReplicates, \
+                rTrueProbDistFilePrefix, rShowRawErrorInDist, rShowAbsErrorInDist, \
+                rShowPercentErrorInDist, rShowAbsPercentErrorInDist, \
+                rShowTruncatedPercentErrImg, rShowHeatmap, rMaxentOutputDirWithSlash, \
+                rProbDistLayersDirWithSlash, rAnalysisDirWithSlash, \
+                rUseOldMaxentOutputForInput, rWriteToFile, rUseDrawImage)')
+        ###rinterface.get_flushconsole()
 
 #===============================================================================
 
