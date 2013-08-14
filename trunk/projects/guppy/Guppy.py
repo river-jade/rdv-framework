@@ -102,6 +102,8 @@ import GuppyEnvLayers
 
 import GuppyGenTrueRelProbPres as TrueRelProbGen
 
+from runMaxentCmd import runMaxentCmd
+
 #===============================================================================
 
     #  Note that the function below will need its reference to
@@ -842,6 +844,33 @@ class Guppy (object):
 #            listOfTruePresencesAndXYlocs ["combined.spp.true.presences.table"]
 #        allSppTruePresenceLocsXY = \
 #            listOfTruePresencesAndXYlocs ["all.spp.true.presence.locs.x.y"]
+
+            #----------------------------------------------------------------
+            #  Run maxent to generate a predicted relative probability map.
+            #----------------------------------------------------------------
+
+        maxentSamplesFileName = self.combinedPresSamplesFileName
+
+        print "\n\n+++++\tBefore", "runMaxentCmd", "\n"
+
+        runMaxentCmd (maxentSamplesFileName, \
+                        self.maxentOutputDir, \
+                        self.doMaxentReplicates, \
+                        self.maxentReplicateType, \
+                        self.numMaxentReplicates, \
+                        self.maxentFullPathName, \
+                        self.curFullMaxentEnvLayersDirName, \
+                        self.numProcessors, \
+                        self.verboseMaxent)
+
+            #----------------------------------------------------------------
+            #  Evaluate the results of maxent by comparing its output maps
+            #  to the true relative probability maps.
+            #----------------------------------------------------------------
+
+        print"\n\n+++++\tBefore" + "evaluateMaxentResults" + "\n"
+
+###        evaluateMaxentResults ()
 
 #===============================================================================
 
