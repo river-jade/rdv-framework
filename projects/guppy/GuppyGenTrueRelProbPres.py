@@ -218,7 +218,7 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
         #  NOTE:  This function is defined in computeSppDistributions.R
         """
 
-        print "\n\nGenerate true rel prob map using maxent.\n\n"
+        print "\n\nGenerate true rel prob map using MAXENT.\n\n"
 
         combinedSppPresTable = \
             self.genCombinedSppPresTable (guppy.imgNumRows, guppy.imgNumCols)
@@ -345,6 +345,78 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
     ## 		print "\n\nNo option chosen for how to generate true rel prob map.\n\n")
     ## 		stop()
     ## 		}
+
+
+
+    #	return (trueRelProbDistsForSpp)
+
+#===============================================================================
+#===============================================================================
+
+class GuppyGenTrueRelProbPresCLUSTER (GuppyGenTrueRelProbPres):
+    """
+    Class for guppy generators of true relative probability of presence
+    that are based on clustering environmental variables to generate a
+    relative probability distribution that can then be reused as a true
+    distribution.
+    """
+
+#-------------------------------------------------------------------------------
+
+    def __init__ (self, variables=None):
+        self.variables = variables or {}
+#        super.__init__ (variables)    Should I be doing this instead?
+
+#-------------------------------------------------------------------------------
+
+    def getTrueRelProbDistsForAllSpp (self, guppy):
+        """
+        Build a relative probability map for each species by clustering
+        the environmental variables and then computing the distance in
+        feature space from the point to one or more clusters chosen to be
+        representative of that species' habitat.
+        """
+
+        #--------------------------------------------------------------------
+        #  1) Start by clustering the n-dimensional environmental variables
+        #  that describe each pixel.
+        #--------------------------------------------------------------------
+
+        #--------------------------------------------------------------------
+        #  2) Once they are clustered, generate a map for each cluster
+        #  so that each pixel in that map represents the similarity of that
+        #  pixel to the cluster.
+
+        #  2a) For the case of k-means clustering, I will just use the
+        #  distance from the point to the cluster centroid in feature space
+        #  rather than geographic space.
+
+        #  2b) However, that feature vector could also include the x,y (or
+        #  lat,long) coordinates of the point too.  Not sure if that will
+        #  be a good idea or not.  Will have to experiment to decide.
+        #--------------------------------------------------------------------
+
+        #--------------------------------------------------------------------
+        #  3)  For each species, choose one or more clusters to use as the
+        #  definition of the habitat for that species.
+        #
+        #  3a)  At the moment, I'm not sure how I want to handle the case
+        #  of using more than one cluster.  For example, distance to that
+        #  the "unified" cluster could be the minimum over the distances
+        #  to all of the constituent clusters or it could be the median, etc.
+        #  There might be other ways of doing it as well, but I haven't
+        #  thought of any other yet.  It might actually be handled better
+        #  via hierarchical clustering where you just grab one branch from
+        #  a particular level down.  However, that wouldn't represent species
+        #  who had very different kinds of habitats because they were
+        #  generalists or because they had a particular thing that they
+        #  were avoiding/excluding rather than including or because they
+        #  needed different kinds of habitat for different life stages or
+        #  living needs (e.g., breeding vs feeding vs nesting, etc.).
+        #--------------------------------------------------------------------
+
+        print "\n\nGenerate true rel prob map using CLUSTERING.\n\n"
+
 
 
 

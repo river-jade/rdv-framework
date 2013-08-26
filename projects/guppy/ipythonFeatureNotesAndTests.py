@@ -228,6 +228,40 @@ pprint(x)
 
 pprint()
 
+# <markdowncell>
+
+# ### Experimenting with netpbm library for reading and writing ppm (pgm) files.
+
+# <codecell>
+
+import netpbmfile
+from matplotlib import pyplot
+
+displayImagesOnScreen = True
+filename = "distToCluster.1.pgm"
+
+try:
+    netpbm = netpbmfile.NetpbmFile (filename)
+    img = netpbm.asarray ()
+    netpbm.close ()
+    cmap = 'gray' if netpbm.maxval > 1 else 'binary'
+except ValueError as e:
+    print(filename, e)
+
+print "    img.ndim = '" + str(img.ndim) + "'"
+print "    img.shape = '" + str(img.shape) + "'"
+
+if displayImagesOnScreen:
+    _shape = img.shape
+        #  I have no idea what second clause is doing here...
+    if img.ndim > 3 or (img.ndim > 2 and img.shape[-1] not in (3, 4)):
+        img = img[0]
+    pyplot.imshow(img, cmap, interpolation='nearest')
+    pyplot.title("%s\n%s %s %s" % (filename, unicode(netpbm.magicnum),
+                                   _shape, img.dtype))
+    pyplot.show()
+
+
 # <codecell>
 
 
