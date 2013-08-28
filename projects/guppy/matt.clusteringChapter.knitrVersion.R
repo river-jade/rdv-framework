@@ -57,6 +57,9 @@
 
 rm (list = ls());    #  Remove any previously existing objects.
 
+setwd ("/Users/bill/D/Projects_RMIT/ML_working_group/Case studies/Matt_clustering_case_study/R")
+
+
 OPT.scale <- FALSE;
 OPT.PCA <- FALSE;  
 OPT.pca.cum.var.explained.cutoff <- 0.75;
