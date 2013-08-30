@@ -1,52 +1,153 @@
+#===============================================================================
 
+                    #  GuppyClusterTest.R
+
+#===============================================================================
 
 library (cluster)
 
 source ('read.R')
 source ('w.R')
 
+    #----------------
+    #  user options
+    #----------------
+
+    #  I was making scaling of input features optional, but when I removed 
+    #  scaling, it all crashed with the following error messages:
+    #
+    #            Starting hclust single...
+    #            
+    #            Starting hclust complete...
+    #            
+    #            Starting hclust average...
+    #            
+    #            Starting divisive...
+    #            Error in plot.window(...) : need finite 'xlim' values
+    #            In addition: Warning message:
+    #                In sqrt(detA * pmax(0, yl2 - y^2)) : NaNs produced
+    #
+    #  So, for now, I'm going to leave the "if" statements in place but 
+    #  set scaleInputs to TRUE.
+scaleInputs = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT ABOVE.
+
+#dataSrc = "fractalData"
+#imgFileType = "pgm"
+
+dataSrc = "mattData"
+imgFileType = "asc"
+
+numClusters = 15
+maxNumPixelsToCluster = 500
+
 randomSeed = 12
+
+
+
+    #-------------------
+    #  initializations
+    #-------------------
+
 set.seed (randomSeed)
 
 cat ("\n\n")
-numClusters = 7
 
-numImgRows = 256
-numImgCols = 256
+imgFileType = NULL
+numImgRows = NULL
+numImgCols = NULL
+imgSrcDir = NULL
+imgFileNames = NULL
+asciiImgFileNameRoots = NULL
+numEnvLayers = NULL
+
+
+if (dataSrc == "fractalData")
+    {
+    cat ("\n\nInitializing fractalData options...")
+    
+    imgFileType = "pgm"
+    
+    numImgRows = 256
+    numImgCols = 256
+    
+    imgSrcDir = '/Users/Bill/tzar/outputdata/Guppy/default_runset/201_Scen_1/MaxentEnvLayers/'
+    imgFileNames = c("e04_H03_27.pgm",
+                     "e05_H03_27.pgm",
+                     "e06_H01_33.pgm",
+                     "e07_H03_57.pgm",
+                     "e00_H07_79.pgm",
+                     "e01_H05_52.pgm",
+                     "e02_H04_100.pgm",
+                     "e03_H03_15.pgm"
+                    )
+    
+    numEnvLayers = length (imgFileNames)    
+    }
+
+cat ("\n\nimgFileType = '", imgFileType, "'")
+
+
+if (dataSrc == "mattData")
+    {
+    cat ("\n\nInitializing mattData options...")
+    
+    imgFileType = "asc"
+    
+    numImgRows = 512
+    numImgCols = 512
+    
+    imgSrcDir = "/Users/Bill/Downloads/environment.MattClusteringData.2013.08.29/"
+    asciiImgFileNameRoots = c("aniso_heat",
+                                "evap_jan",
+                                "evap_jul",
+                                "insolation",
+                                "max_temp",
+                                "min_temp",
+                                "modis_evi",
+                                "modis_mir",
+                                "ndmi",
+                                "pottassium",
+                                "raindays_jan",
+                                "raindays_jul",
+                                "rainfall_jan",
+                                "rainfall_jul",
+                                "thorium",
+                                "vert_major",
+                                "vert_minor",
+                                "vert_saline",
+                                "vis_sky"
+                            ) 
+    
+    numEnvLayers = length (asciiImgFileNameRoots)    
+    }
+
+
+
 numPixelsPerImg = numImgRows * numImgCols
-
-numRecordsToCluster = 1000
-
-imgSrcDir = '/Users/Bill/tzar/outputdata/Guppy/default_runset/201_Scen_1/MaxentEnvLayers/'
-imgFileNames = c("e04_H03_27.pgm",
-                "e05_H03_27.pgm",
-                "e06_H01_33.pgm",
-                "e07_H03_57.pgm",
-                "e00_H07_79.pgm",
-                "e01_H05_52.pgm",
-                "e02_H04_100.pgm",
-                "e03_H03_15.pgm"
-                )
-
-#numEnvLayers = 4
-numEnvLayers = length (imgFileNames)
-
+numRecordsToCluster = min (maxNumPixelsToCluster, numPixelsPerImg)
 numNonEnvDataCols = 3    #  1 col for IDs and 2 cols for x,y
 numColsInEnvLayersTable = numEnvLayers + 3
 
 combinedEnvLayersTable = matrix (0, nrow=numPixelsPerImg, ncol=numColsInEnvLayersTable, byrow=TRUE)
 cat ("\n\ndim (combinedEnvLayersTable) = ", dim (combinedEnvLayersTable), "\n\n")
-#print (combinedEnvLayersTable)
-
-
 idColIdx = 1
 #combinedEnvLayersTable [,idColIdx] = 1:numPixelsPerImg
+
+    #--------------------------------------------------------------------------
+    #  Build x and y values for each selected pixel record.
+    #  Need to replace this section with a call to the function that computes 
+    #  the x,y locations for building maxent files, but this works for now 
+    #  since it just has to get things close together.
+    #--------------------------------------------------------------------------
 
 #numPixelsInImg = 12
 #numImgRows = 3
 #numImgCols = 4
-y = ((0:(numPixelsPerImg - 1)) %/% numImgCols) + 1
+y = ((0:(numPixelsPerImg - 1)) %/% numImgRows) + 1
 x = 1:numPixelsPerImg %% numImgCols
+    #  Modulo operator leaves the last column of each row set to 0 instead of 
+    #  set to the last column number, i.e., numImgCols, so replace the 0 in 
+    #  each row's y value
 for (kkk in 1:numPixelsPerImg) { if (x[kkk] == 0) x[kkk] = numImgCols }
 
 cat ("\n\nlength (combinedEnvLayersTable [,2]) = ", length (combinedEnvLayersTable [,2]))
@@ -56,13 +157,32 @@ cat ("\n    length (y) = ", length (y))
 combinedEnvLayersTable [,2] = x
 combinedEnvLayersTable [,3] = y
 
+    #------------------------------------------------
+    #  Load all of the data layers to be clustered.
+    #------------------------------------------------
+
 curImgFileIdx = 0
 firstNonXYCol = 4
 for (curCol in firstNonXYCol:numColsInEnvLayersTable)
     {
     curImgFileIdx = curImgFileIdx + 1
-    curImgFileFullPath = paste (imgSrcDir, imgFileNames [curImgFileIdx], sep='')
-    curEnvLayer = get.img.matrix.from.pnm (curImgFileFullPath)
+    cat ('\n\nAbout to test whether imgFileType == "pgm"...')
+    
+    if (imgFileType == "pgm")
+        {
+            "PGM input images"
+        curImgFileFullPath = paste (imgSrcDir, imgFileNames [curImgFileIdx], sep='')
+        curEnvLayer = get.img.matrix.from.pnm (curImgFileFullPath)
+        } else if (imgFileType == "asc")
+        {
+            "ASC input images"
+        curEnvLayer = read.asc.file.to.matrix (asciiImgFileNameRoots [curImgFileIdx], imgSrcDir)
+        } else 
+        {
+            "Unknown input images"
+        cat ("\n\nFATAL ERROR:  Unknown input image file type = '", imgFileType, "'.\n\n")
+        quit()
+        }
 
     #curEnvLayer = matrix (sample (0:255, numPixelsPerImg, replace=TRUE), nrow = numImgRows, ncol=numImgCols)
     #curEnvLayer = get.img.matrix.from.pnm ('/Users/Bill/tzar/outputdata/Guppy/default_runset/201_Scen_1/MaxentEnvLayers/e04_H03_27.pgm')
@@ -81,6 +201,23 @@ for (curCol in firstNonXYCol:numColsInEnvLayersTable)
 #    print (combinedEnvLayersTable)
     }
 
+id.col <- 1
+##data <- data [order (data [ , id.col]), ]
+
+##dataPointIDs <- data [ , id.col]    
+##rownames (data) <- dataPointIDs
+#data <- data [ , -id.col]
+
+combinedEnvLayersTable = combinedEnvLayersTable [ , -id.col]
+
+if (scaleInputs)
+    combinedEnvLayersTable = scale (combinedEnvLayersTable)
+
+    #----------------------------------------------------------------------
+    #  Draw the subsample of records to be clustered from the full set of 
+    #  pixels.
+    #----------------------------------------------------------------------
+
 idsOfRecordsToCluster = sample (1:numPixelsPerImg, numRecordsToCluster, replace=FALSE)#clusterInputTable =
 #cat ("\nidsOfRecordsToCluster = ", idsOfRecordsToCluster, "\n")
 
@@ -88,22 +225,36 @@ recordsToCluster = combinedEnvLayersTable [idsOfRecordsToCluster,]
 #cat ("\n\nrecordsToCluster = \n")
 #print (recordsToCluster)
 
-initialClusterCenters =
-    matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable, byrow=TRUE)
-cat ("\n\ndim (initialClusterCenters) = ", dim (initialClusterCenters), "\n\n")
-cat ("\n")
+    #------------------------------------------------------------------------
+    #  Choose initial cluster centers.
+    #  I was initially trying to choose them as corners of the space, 
+    #  k-means didn't like those and threw some kind of error message 
+    #  that I can't remember at the moment, so I'm not doing this anymore.  
+    #  At some point though, I may want to replace this logic so I'll leave 
+    #  it here as a reminder.
+    #------------------------------------------------------------------------
 
-curCol = numNonEnvDataCols+1
-for (curRow in 1:min(numClusters,(numColsInEnvLayersTable-numNonEnvDataCols)))
+if (FALSE)
     {
-    cat ("\ncurRow = ", curRow, ", curCol = ", curCol, sep='')
-
-    initialClusterCenters [curRow,curCol] = 0.5
-    curCol = curCol + 1
+    initialClusterCenters =
+        matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable, byrow=TRUE)
+    cat ("\n\ndim (initialClusterCenters) = ", dim (initialClusterCenters), "\n\n")
+    cat ("\n")
+    
+    curCol = numNonEnvDataCols+1
+    for (curRow in 1:min(numClusters,(numColsInEnvLayersTable-numNonEnvDataCols)))
+        {
+        cat ("\ncurRow = ", curRow, ", curCol = ", curCol, sep='')
+    
+        initialClusterCenters [curRow,curCol] = 0.5
+        curCol = curCol + 1
+        }
+    print (initialClusterCenters)
     }
-print (initialClusterCenters)
 
-#=====================
+    #-------------------------
+    #  Cluster with k-means.  
+    #-------------------------
 
 cat("\nStarting kmeans...\n");
 clusterSet = kmeans (recordsToCluster, numClusters)
@@ -473,6 +624,9 @@ for (curClusterID in 1:numClusters)
 ##lines (distVecs [,1], lty=2)
 ##lines (distVecs [,2], lty=1)
 
+#===============================================================================
+#===============================================================================
+
 if (FALSE)
 {
 imgSrcDir = '/Users/Bill/tzar/outputdata/Guppy/default_runset/201_Scen_1/MaxentEnvLayers/'
@@ -603,3 +757,6 @@ image (ppm)
 plot(ppm)
 
 }
+
+#===============================================================================
+
