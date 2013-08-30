@@ -255,6 +255,12 @@ data <- read.csv (infileName, as.is = TRUE)
 \textbf{Need to break this whole R file up into 5(?) different files, 4(?) clones of specific analyses (i.e., Matt, Joona, Iris, plus 1 generalized function for trying lots of different things like Matt was wanting}
 and maxent) 
 
+Looks like this is here because there are so many points in an image and I was setting up to only cluster a subsample of the image points (in this case, 1000 instead of 256*256=65536).  
+
+So, it might be worth adding an option to the final function I make of all this and have that option allow you to specify that the clustering be done on a subset.  I wonder if some of these R clustering functions have that already in them since it seems like it would be a common problem.
+
+Maybe that would actually be part of a wrapping function for loading and clustering images (or rather, spatial data) since there are other issues in clustering spatial data such as whether to include the x,y coordinates in the clustering to push toward some spatial aggregation in the clusters.
+
 <<11>>=
 
 maxent.cluster.test <- FALSE
