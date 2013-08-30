@@ -13,7 +13,7 @@ Fourth change...
 
 **History**
 
-BTL - 2013.08.26
+- BTL - 2013.08.26  
 Copied to the guppy directory and renamed from matt.nonmodular.v4.R to 
 matt.clusteringChapter.knitr.R.  
 Doing this for two reasons.  First, I want to strip out all the irrelevant 
@@ -29,18 +29,19 @@ directory just to get it under version control for now because I'm going to
 able to setwd() to the ml clustering chapter directory to work on the data 
 files and not clutter up the guppy directory with all that.
 
-BTL - 2011.02.01 
+- BTL - 2011.02.01  
 Converting to run on the mac and finding various failures immediately.
 I'm commenting them out with the following comment marker before adding a 
   replacement version:  "macFail  "
   The two things that failed immediately were:
-    - The call to windows.options() to turn plot recording on.
+    - The call to windows.options() to turn plot recording on.  
       The mac seems to do it automatically and doesn't even have the 
 windows.options() call.
-- The directory separation character is different on the mac, so this:
+
+    - The directory separation character is different on the mac, so this:  
 infileName <- 
 paste (data.directory, '\\', infileNames [infileIdx], sep='')
-produces an illegal path name which leads to the following error msg:
+produces an illegal path name which leads to the following error msg:  
 Error in file(file, "rt") : cannot open the connection
 In addition: Warning message:
 In file(file, "rt") :
@@ -48,6 +49,12 @@ cannot open file 'Data\iris.test.csv': No such file or directory
 Just need to swap the backslash to be a forward slash to make it work.
 If I remember correctly, a forward slash may work on all systems in R, 
 but need to check that.
+
+### Some notes
+
+- Would be good to have some diagnostic images right at the start of all this to help explore the data.  For example:
+    - histogram of each variable
+    - scatterplot of each variable against every other variable
 
 
 #### Remove any previously existing objects.
@@ -69,6 +76,8 @@ dir ("Data")
 ```
 
 #### Set options to control the clustering algorithms.
+
+**ML book question: If you do pca, do you need to scale or does pca relieve the need for that?**
 ```{r eval=TRUE}
 OPT.scale <- FALSE
 OPT.PCA <- TRUE  
@@ -237,6 +246,13 @@ data <- read.csv (infileName, as.is = TRUE)
 
 **Need to break this whole R file up into 5(?) different files, 4(?) clones of specific analyses (i.e., Matt, Joona, Iris, plus 1 generalized function for trying lots of different things like Matt was wanting.**
 and maxent) 
+
+Looks like this is here because there are so many points in an image and I was setting up to only cluster a subsample of the image points (in this case, 1000 instead of 256*256=65536).  
+
+So, it might be worth adding an option to the final function I make of all this and have that option allow you to specify that the clustering be done on a subset.  I wonder if some of these R clustering functions have that already in them since it seems like it would be a common problem.
+
+Maybe that would actually be part of a wrapping function for loading and clustering images (or rather, spatial data) since there are other issues in clustering spatial data such as whether to include the x,y coordinates in the clustering to push toward some spatial aggregation in the clusters.
+
 ```{r eval=TRUE}
 
 maxent.cluster.test <- FALSE
@@ -307,7 +323,8 @@ data.pca.cor <- princomp (data, cor = T)
 The R Help example has a line with dots instead of bars.
 It's quite a bit easier to use to pick out the elbow.
 I'm not sure what the "$sdev" is, but it was in the sample
-argument and gets at the total number of variables in the pca.
+argument and gets at the total number of variables in the pca. (Since it sd is often an R abbreviation related to std deviation, I wonder if this somehow relates to scaling values as I have asked about in a question at the top of this file in relation to whether to do scaling when doing pca (before or after the pca?))...
+
 It also works fine just plugging in any value like 75.
 ```{r eval=TRUE}
 if (OPT.PCA)
