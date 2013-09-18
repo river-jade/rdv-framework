@@ -8,6 +8,14 @@
 
 #  History:
 
+#  2013.09.18 - BTL
+#  Changed from using rpy2 to using pyper as the mechanism for linking to R
+#  since rpy2 stopped working when I upgraded R to version 3.
+#  Various web sites suggest rpy2 might still work if you recompile it and
+#  set something in it to point to the version 3 of R since it is version
+#  dependent.  However, I don't want to have to do that every time I upgrade
+#  R, so I'm going to see if pyper is more independent of the R version.
+
 #  2013.07.25 - BTL
 #  Created Guppy.py file by copying code from what was getting to be a very
 #  large cell in guppyInitializations.ipynb.
@@ -96,8 +104,12 @@ import pickle
 
 from sys import platform
 
-from rpy2.robjects import r
-from rpy2 import rinterface
+#from rpy2.robjects import r
+#from rpy2 import rinterface
+
+import pandas as pd
+import pyper as pr
+r = pr.R (use_pandas = True)
 
 #----------------------------------------
 
@@ -135,8 +147,8 @@ class Guppy(object):
 
 
         :type self: object
-        :param variables: 
-        :param qualifiedParams: 
+        :param variables:
+        :param qualifiedParams:
         """
         self.variables = variables or {}
         self.qualifiedParams = qualifiedParams or {}
