@@ -144,12 +144,11 @@ class Guppy(object):
     def __init__(self, variables=None, qualifiedParams=None):
 
         """
-
-
         :type self: object
         :param variables:
         :param qualifiedParams:
         """
+
         self.variables = variables or {}
         self.qualifiedParams = qualifiedParams or {}
 
@@ -227,7 +226,8 @@ class Guppy(object):
         self.randomSeed = self.variables['PAR.random.seed']
         print "\nrandomSeed = '" + str(
             self.randomSeed) + "', class (randomSeed) = '" + self.randomSeed.__class__.__name__
-        random.seed(self.randomSeed)
+
+        random.seed (self.randomSeed)
 
     #-------------------------------------------------------------------------------
 
@@ -323,15 +323,9 @@ class Guppy(object):
             print "    PARinputDirectory may be messed up." + "\n***********           ***********"
         print "\nPARinputDirectory = '" + self.PARinputDirectory + "'"
 
+
         PARcurrentRunDirectory = self.qualifiedParams['PAR.current.run.directory']
         print "\nPARcurrentRunDirectory = '" + PARcurrentRunDirectory + "'"
-
-        #  PARcurrentRunDirectory = ''
-
-        #probDistLayersDir = "./MaxentProbDistLayers/"    #7/17#  what we want maxent to generate, i.e., the true layers?
-        #PARprobDistLayersDirName = "MaxentProbDistLayers"
-        ##probDistLayersDir = paste (PARcurrentRunDirectory, "/",
-        ##                              PARprobDistLayersDirName, "/"
 
 
         self.probDistLayersDir = self.qualifiedParams['PAR.prob.dist.layers.dir.name']
@@ -340,12 +334,6 @@ class Guppy(object):
         print "\nself.probDistLayersDir = '" + self.probDistLayersDir + "'"
         createDirIfDoesntExist(self.probDistLayersDir)
 
-        #  probDistLayersDir = 'MaxentProbDistLayers'
-        #
-        #  ====>>>  Would make dir 'MaxentProbDistLayers' now.
-
-
-        #PARmaxentOutputDirName = "MaxentOutputs"
 
         self.maxentOutputDir = self.qualifiedParams['PAR.maxent.output.dir.name']
         self.maxentOutputDirWithSlash = self.maxentOutputDir + CONST.dirSlash
@@ -353,12 +341,6 @@ class Guppy(object):
         print "\nself.maxentOutputDir = '" + self.maxentOutputDir + "'"
         createDirIfDoesntExist(self.maxentOutputDir)
 
-        #  maxentOutputDir = 'MaxentOutputs'
-        #
-        #  ====>>>  Would make dir 'MaxentOutputs' now.
-
-
-        #PARmaxentGenOutputDirName = "MaxentGenOutputs"
 
         self.maxentGenOutputDir = self.qualifiedParams['PAR.maxent.gen.output.dir.name']
         self.maxentGenOutputDirWithSlash = self.maxentGenOutputDir + "/"
@@ -366,22 +348,10 @@ class Guppy(object):
         print "\nself.maxentGenOutputDir = '" + self.maxentGenOutputDir + "'"
         createDirIfDoesntExist(self.maxentGenOutputDir)
 
-        #  maxentGenOutputDir = 'MaxentGenOutputs'
-        #
-        #  ====>>>  Would make dir 'MaxentGenOutputs' now.
 
-
-        #analysisDir = "./ResultsAnalysis/"
-        #PARanalysisDirName = "ResultsAnalysis"
-
-        ##        analysisDirWithSlash = PARcurrentRunDirectory +  CONST.dirSlash + self.variables ['PAR.analysis.dir.name'] + CONST.dirSlash
         self.analysisDirWithSlash = PARcurrentRunDirectory + self.variables['PAR.analysis.dir.name'] + CONST.dirSlash
         print "\nself.analysisDirWithSlash = '" + self.analysisDirWithSlash + "'"
         createDirIfDoesntExist(self.analysisDirWithSlash)
-
-        #  analysisDirWithSlash = '/ResultsAnalysis/'
-        #
-        #  ====>>>  Would make dir '/ResultsAnalysis/' now.
 
 
         #  NOTE:  DOES THIS output directory move below NEED TO BE DONE NOW?
@@ -403,52 +373,25 @@ class Guppy(object):
         if tempDontMakeDirsYet:
             print "\n====>>>  Would move to dir '" + PARcurrentRunDirectory + "' now."
         else:
-        #  Move to the output directory, e.g.,
-        #  "/Users/Bill/tzar/outputdata/Guppy/default_runset/114_Scen_1.inprogress/"
+                #  Move to the output directory, e.g.,
+                #  "/Users/Bill/tzar/outputdata/Guppy/default_runset/114_Scen_1.inprogress/"
             os.chdir(PARcurrentRunDirectory)
 
-        #  ====>>>  Would move to dir '  ' now.
-
-        ##if (!file.exists ("MaxentOutputs"))
-        ##    {
-        ##    dir.create ("MaxentOutputs")
-        ##    }
 
         self.curFullMaxentEnvLayersDirName = \
             PARcurrentRunDirectory + self.variables['PAR.maxent.env.layers.base.name']
-
         print "\n\nself.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
-
         createDirIfDoesntExist(self.curFullMaxentEnvLayersDirName)
 
-        #  curFullMaxentEnvLayersDirName = 'MaxentEnvLayers'
-        #
-        #  ====>>>  Would make dir 'MaxentEnvLayers' now.
-
-
-        ##if (not file.exists ("MaxentSamples"))
-        ##    {
-        ##    dir.create ("MaxentSamples")
-        ##    }
 
         self.curFullMaxentSamplesDirName = \
             PARcurrentRunDirectory + self.variables['PAR.maxent.samples.base.name']
-
         print "\n\nself.curFullMaxentSamplesDirName = '" + self.curFullMaxentSamplesDirName + "'"
-
         createDirIfDoesntExist(self.curFullMaxentSamplesDirName)
 
-        #  curFullMaxentSamplesDirName = 'MaxentSamples'
-        #
-        #  ====>>>  Would make dir 'MaxentSamples' now.
 
-        #       write.to.file : TRUE,
         self.writeToFile = self.variables['PAR.write.to.file']
-
-        #         use.draw.image : FALSE,
         self.useDrawImage = self.variables['PAR.use.draw.image']
-
-        #         use.filled.contour : TRUE,
         self.useFilledContour = self.variables['PAR.use.filled.contour']
 
         #  BEWARE: if this is FALSE, the get.env.layers() routine in
@@ -461,7 +404,7 @@ class Guppy(object):
         #         use.pnm.env.layers : TRUE ,
         self.usePnmEnvLayers = self.variables['PAR.use.pnm.env.layers']
 
-        combinedSppTruePresencesTable = None        #  correct Null for PYTHON ???
+        combinedSppTruePresencesTable = None  #  Is this the correct Null for PYTHON ???
         combinedSppSampledPresencesTable = None
 
         self.numSppToCreate = self.variables['PAR.num.spp.to.create']
@@ -479,8 +422,6 @@ class Guppy(object):
                                            'spp.sampledPres.combined.csv'
         print "\n\nself.combinedPresSamplesFileName = '" + self.combinedPresSamplesFileName + "'\n\n"
 
-        #  self.combinedPresSamplesFileName = 'MaxentSamples/spp.sampledPres.combined.csv'
-
         #-----------------------------------
 
         PARpathToMaxent = self.variables['PAR.path.to.maxent']
@@ -488,13 +429,7 @@ class Guppy(object):
 
         #        self.maxentFullPathName = self.PARrdvDirectory + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'
         self.maxentFullPathName = self.startingDir + "/../.." + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'
-
         print "\n\nself.maxentFullPathName = '" + self.maxentFullPathName, "'"
-
-        #  PARpathToMaxent = 'lib/maxent'
-        #
-        #
-        #  self.maxentFullPathName = '/Users/Bill/D/rdv-framework/projects/guppy/lib/maxent/maxent.jar '
 
         #-----------------------------------
 
@@ -503,7 +438,6 @@ class Guppy(object):
         #      http://nbviewer.ipython.org/urls/raw.github.com/swcarpentry/notebooks/master/matplotlib.ipynb
 
         #####    par (mfrow=c(2,2))
-
 
         #-----------------------------------
 
@@ -538,8 +472,8 @@ class Guppy(object):
 
         #-----------------------------------
 
-        #  Get generator to use for true relative probability
-        #  distributions.
+            #  Get generator to use for true relative probability
+            #  distributions.
 
         self.trueRelProbDistGen = None
 
@@ -741,103 +675,6 @@ class Guppy(object):
                 'genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
 
             #-----------------------------------------------------------------------
-
-            '''
-               #-------------------------------------------------------------
-                #  Sample presences from the mapped probability distribution
-                #  according to the true relative presence probabilities to
-                #  get the TRUE PRESENCES.
-                #-------------------------------------------------------------
-
-
-            ********************
-            BTL - 2013.08.12
-            Can test this first without using the normProbMatrix distribution.
-            Can just use a uniform distribution to get it working...
-            ********************
-
-            truePresenceIndices = sample (1:numCells,
-                                            numTruePresences [sppId],
-                                            replace = False,
-                                            prob = normProbMatrix)
-            cat ("\ntruePresenceIndices = \n")
-            print (truePresenceIndices)
-
-                #----------------------------------------------------------------
-                #  Convert the sample from single index values to x,y locations
-                #  relative to the lower left corner of the map.
-                #----------------------------------------------------------------
-
-            truePresenceLocsXY =
-                matrix (rep (0, (numTruePresences [sppId] * 2)),
-                        nrow = numTruePresences [sppId], ncol = 2, byrow = TRUE)
-
-                #  Can probably replace this with an apply() call instead...
-            for curLoc in 1:numTruePresences [sppId]:
-                truePresenceLocsXY [curLoc, ] =
-                    xyRelToLowerLeft (truePresenceIndices [cur.loc], numRows)
-
-                #-----------------------------------------------------------------------
-                #  Bind the species names to the presence locations to make a data frame
-                #  that can be written out in one call rather than writing it out one
-                #  line at a time.
-                #  Unfortunately, this cbind call turns the numbers into quoted strings
-                #  too.  There may be a way to fix that, but at the moment, I don't
-                #  know how to do that so I'll strip all quotes in the write.csv call.
-                #  That, in turn, may cause a problem for the species name if it has a
-                #  space in it.  Not sure what maxent thinks of that form.
-                #-----------------------------------------------------------------------
-
-            species = rep (sppName, numTruePresences [sppId])
-            truePresencesTable =
-                data.frame (cbind (species, truePresenceLocsXY))
-            names (truePresencesTable) = ['species', 'longitude', 'latitude']
-
-                #--------------------------------------------------------------------
-                #  Write the true presences out to a .csv file to be fed to maxent.
-                #  This will represent the case of "perfect" information
-                #  (for a given population size), i.e., it contains the true
-                #  location of every member of the population at the time of the
-                #  sampling.  For stationary species like plants, this will be
-                #  "more perfect" than for things that can move around.
-                #--------------------------------------------------------------------
-
-
-                    #  2011.09.21 - BTL - Have changed the name sampledPresencesFilename
-                    #                     to truePresencesFilename here because that
-                    #                     seems like it was an error before but didn't
-                    #                     show up because it gets written over further
-                    #                     down in the file.  I may be wrong so I'm flagging
-                    #                     it for the moment with '###'.
-            outfile.root = sppName + ".truePres"
-            ###sampledPresencesFilename = paste (samples.dir, outfile.root, ".csv", sep='')
-        ##	truePresencesFilename = paste (samples.dir, outfile.root, ".csv", sep='')
-            truePresencesFilename = paste (cur.full.maxent.samples.dir.name, "/",
-                                                outfile.root, ".csv", sep='')
-            cat ("\n\ntruePresencesFilename = '", truePresencesFilename, "'", sep='')
-
-            write.csv (truePresencesTable,
-            ###  	   file = sampledPresencesFilename,
-                   file = truePresencesFilename,
-                       row.names = False,
-                       quote=False)
-
-
-            allSppTruePresenceLocsXY [[sppId]] = truePresenceLocsXY
-
-                #-----------------------------------------------------------------
-                #  Append the true presences to a combined table of presences
-                #  for all species.
-                #-----------------------------------------------------------------
-
-            combinedSppTruePresencesTable =
-                rbind (combinedSppTruePresencesTable, truePresencesTable)
-
-            #-----------------------------------------------------------------------
-
-        return {("combinedSppTruePresencesTable", combinedSppTruePresencesTable), \
-                ("allSppTruePresenceLocsXY", allSppTruePresenceLocsXY)}
-            '''
 
         return allSppTruePresenceLocsXY
 
