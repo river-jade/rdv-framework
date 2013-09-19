@@ -83,16 +83,9 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                         useRemoteEnvDir, envLayersDir, \
                         numEnvLayers, imgNumRows, imgNumCols)
 
-#        self.curFullMaxentEnvLayersDirName = curFullMaxentEnvLayersDirName
-#        print "\n====>  IN FRACTAL INIT:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
-
-#        self.useRemoteEnvDir = useRemoteEnvDir
-#        self.envLayersDir = envLayersDir
-#         self.numEnvLayers = numEnvLayers
-#         self.imgNumRows = imgNumRows
-#         self.imgNumCols = imgNumCols
-###        self.envLayers = [None] * self.numEnvLayers
-        self.envLayers = numpy.zeros ((self.numEnvLayers, self.imgNumRows, self.imgNumCols))
+        self.keepEnvLayersInMem = False
+        if (self.keepEnvLayersInMem):
+            self.envLayers = numpy.zeros ((self.numEnvLayers, self.imgNumRows, self.imgNumCols))
 
         self.fileSizeSuffix = fileSizeSuffix
 
@@ -102,15 +95,6 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
         self.minImgNum = 1
         self.maxImgNum = 100
-
-        #-----------------------------------------------------------------------
-            #  Move these up into an __init__ routine for this class or its
-            #  superclass?
-##        self.imgNumRows = 256
-##        self.imgNumCols = 256
-##        self.numEnvLayers = variables ["numEnvLayers"]
-##        self.envLayers = zeros ((self.numEnvLayers, self.imgNumRows, self.imgNumCols)))
-        #-----------------------------------------------------------------------
 
         self.envSrcDir = None
 
@@ -159,6 +143,55 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
 
     #---------------------------------------------------------------------------
 
+    def loadCurPgmEnvLayerToMem (self, fullImgFileDestPath, \
+                                    displayImagesOnScreen = False):
+            #--------------------------------------------------------------
+            #  Now have the file copied to local work area.
+            #  Need to load the image into an array.
+            #  Only do this if it's a pgm since the pgm and asc file
+            #  will contain the same image and we know how to read a pgm.
+            #
+            #  Note that only a couple of lines below are actually doing
+            #  anything relevant.  The rest are there to print things
+            #  for debugging purposes and can be removed later.
+            #--------------------------------------------------------------
+
+        print "\n\nimgTypeSuffix is .pgm so adding env.layer\n"
+
+        print "\nIn directory: '" + os.getcwd() + "'"
+        filename = fullImgFileDestPath
+##                "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H02/H02_96.256.pgm"
+        print "\npgm file to read = '" + filename + "'"
+
+        if False:
+            img = netpbmfile.imread (filename)
+            cmap = 'gray'
+        else:
+            try:
+                netpbm = netpbmfile.NetpbmFile(filename)
+                img = netpbm.asarray()
+                netpbm.close()
+                cmap = 'gray' if netpbm.maxval > 1 else 'binary'
+            except ValueError as e:
+                print(filename, e)
+            #    continue    #  only do this if reading through a loop of filenames and you want to jump over the display logic below
+
+        print "    img.ndim = '" + str(img.ndim) + "'"
+        print "    img.shape = '" + str(img.shape) + "'"
+
+        if displayImagesOnScreen:
+            _shape = img.shape
+            if img.ndim > 3 or (img.ndim > 2 and img.shape[-1] not in (3, 4)):    #  I have no idea what second clause is doing here...
+                img = img[0]
+            pyplot.imshow(img, cmap, interpolation='nearest')
+            pyplot.title("%s\n%s %s %s" % (filename, unicode(netpbm.magicnum),
+                                          _shape, img.dtype))
+            pyplot.show()
+
+        return img
+
+    #---------------------------------------------------------------------------
+
        # Define the higher level function that gets the environment layers.
 
     def genEnvLayers (self):
@@ -181,10 +214,13 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                     #-----------------------------------------------
 
                 imgFileName = imgFileRoot + imgTypeSuffix
+                print "\n====>  imgTypeSuffix = '" + imgTypeSuffix + "'\n"
                 print "\n====>  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
                 print "\n====>  CONST.dirSlash = '" + CONST.dirSlash + "'"
                 print "\n====>  eLayerFileNamePrefix = '" + eLayerFileNamePrefix + "'"
                 print "\n====>  imgFileName = '" + imgFileName + "'"
+                print '\n====>  self.curFullMaxentEnvLayersDirName = ', self.curFullMaxentEnvLayersDirName
+
                 fullImgFileDestPath = self.curFullMaxentEnvLayersDirName + \
                                         CONST.dirSlash + \
                                         eLayerFileNamePrefix + imgFileName
@@ -205,84 +241,23 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
                 else:
                     shutil.copy (srcFile, fullImgFileDestPath)
 
-                    #--------------------------------------------------------------
-                    #  Now have the file copied to local work area.
-                    #  Need to load the image into an array.
-                    #  Only do this if it's a pgm since the pgm and asc file
-                    #  will contain the same image and we know how to read a pgm.
+                    #--------------------------------------------------
+                    #  Add the current environment layer to the stack of them
+                    #  in memory if you're saving them and it's a pgm file.
                     #
-                    #  Note that only a couple of lines below are actually doing
-                    #  anything relevant.  The rest are there to print things
-                    #  for debugging purposes and can be removed later.
-                    #--------------------------------------------------------------
+                    #  This is really just a vestigial thing at the moment.
+                    #  I'm only keeping it now in case there was something
+                    #  that I DID need it for and just can't remember it.
+                    #  However, I think that everything is currently done
+                    #  by having maxent work on the envLayer files rather
+                    #  than on the layers themselves, so there is no need
+                    #  to read them in.
+                    #--------------------------------------------------
 
-                print "\n\nimgTypeSuffix = '" + imgTypeSuffix + "'\n"
-    #			if (imgTypeSuffix == ".pnm"):
-                if (imgTypeSuffix == ".pgm"):
-                    print "\n\nimgTypeSuffix is .pnm so adding env.layer\n"
-                    print "\nlen (self.envLayers) before = '", len (self.envLayers)
+                if (self.keepEnvLayersInMem and (imgTypeSuffix == ".pgm")):
+                    newEnvLayer = self.loadCurPgmEnvLayerToMem (fullImgFileDestPath)
+                    self.envLayers [curEnvLayerIdx, :, :] = newEnvLayer
 
-###-------------------------------
-    #  NEEDS REPLACEMENT WITH NETPBM CODE IN PYTHON.
-                    print "\nIn directory: '" + os.getcwd() + "'"
-                    filename = fullImgFileDestPath
-    ##                "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H02/H02_96.256.pgm"
-                    print "\npgm file to read = '" + filename + "'"
-
-                    if False:
-                        img = netpbmfile.imread (filename)
-                        cmap = 'gray'
-                    else:
-                        try:
-                            netpbm = netpbmfile.NetpbmFile(filename)
-                            img = netpbm.asarray()
-                            netpbm.close()
-                            cmap = 'gray' if netpbm.maxval > 1 else 'binary'
-                        except ValueError as e:
-                            print(filename, e)
-                        #    continue    #  only do this if reading through a loop of filenames and you want to jump over the display logic below
-
-                    print "    img.ndim = '" + str(img.ndim) + "'"
-                    print "    img.shape = '" + str(img.shape) + "'"
-
-                    displayImagesOnScreen = False
-                    if displayImagesOnScreen:
-                        _shape = img.shape
-                        if img.ndim > 3 or (img.ndim > 2 and img.shape[-1] not in (3, 4)):    #  I have no idea what second clause is doing here...
-                            img = img[0]
-                        pyplot.imshow(img, cmap, interpolation='nearest')
-                        pyplot.title("%s\n%s %s %s" % (filename, unicode(netpbm.magicnum),
-                                                      _shape, img.dtype))
-                        pyplot.show()
-
-######                    newEnvLayer = get.img.matrix.from.pnm (fullImgFileDestPath)	###  PYTHON???
-###                    newEnvLayer = (curEnvLayerIdx + 1) * numpy.ones ((self.imgNumRows, self.imgNumCols))
-                    newEnvLayer = img
-###-------------------------------
-
-###                    print "\ndim (newEnvLayer) before = '", dim (newEnvLayer)	###  PYTHON???
-###                    print "\n\nis.matrix(newEnvLayer) in get.img.matrix.from.pnm = '", is.matrix(newEnvLayer), "\n"	###  PYTHON???
-###                    print "\n\nis.vector(newEnvLayer) in get.img.matrix.from.pnm = '", is.vector(newEnvLayer), "\n"	###  PYTHON???
-###                    print "\n\nclass(newEnvLayer) in get.img.matrix.from.pnm = '", class(newEnvLayer), "\n"	###  PYTHON???
-
-                    self.envLayers [curEnvLayerIdx, :, :]= newEnvLayer    #  Add to stack.
-
-                    print "\nlen (self.envLayers) AFTER = '", len (self.envLayers)
-                    print "\n\nnewEnvLayer [0:2,0:2] = \n", \
-                        newEnvLayer [0:3,0:3], "\n"     #  Echo a bit of the result...	###  PYTHON???
-                    for row in range (3):
-                        for col in range(3):
-                            print "newEnvLayer [", row, ", ", col, "] = ", \
-                            newEnvLayer[row,col]
-###                            newEnvLayer[row,col], ", and class = "
-###                            class(newEnvLayer[row,col])	###  PYTHON???
-                    #print (newEnvLayer [0:3,0:3])    #  Echo a bit of the result...	###  PYTHON???
-
-                print '\n self.curFullMaxentEnvLayersDirName = ', self.curFullMaxentEnvLayersDirName
-                print "\nself.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
-######                print '\n self.envLayers.shape = ' + str (self.envLayers.shape)
-
-        return (self.envLayers)
 
     #---------------------------------------------------------------------------
     #---------------------------------------------------------------------------
