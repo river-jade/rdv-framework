@@ -511,8 +511,30 @@ class Guppy(object):
                                                                    self.imgNumRows, self.imgNumCols)
 
         self.envLayers = self.guppyEnvLayers.genEnvLayers()
-
         print "\nIn Guppy:loadEnvLayers:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
+
+        if (False):
+            envLayersShape = self.envLayers.shape
+            print "\nenvLayersShape = " + str(envLayersShape)
+
+            self.numEnvLayers = envLayersShape[0]
+            self.imgNumRows = envLayersShape[1]
+            self.imgNumCols = envLayersShape[2]
+
+        else:
+            envLayersShape = self.envLayers.shape
+            print "\nenvLayersShape = " + str(envLayersShape)
+
+            self.numEnvLayers = self.guppyEnvLayers.numEnvLayers
+            self.imgNumRows = self.guppyEnvLayers.imgNumRows
+            self.imgNumCols = self.guppyEnvLayers.imgNumCols
+
+        self.imgNumCells = self.imgNumRows * self.imgNumCols
+
+        print "\n\n>>>  After genEnvLayers(), self.numEnvLayers = " + str(self.numEnvLayers)
+        print "\n>>>                        img is " + str(self.imgNumRows) + " rows by " + str(
+            self.imgNumCols) + " cols for total cell ct = " + str(self.imgNumCells)
+
 
 
     #-------------------------------------------------------------------------------
@@ -530,8 +552,6 @@ class Guppy(object):
     def getNumTruePresencesForEachSpp(self):
 
         """
-
-
         :return:
         """
         if self.variables["PAR.use.random.num.true.presences"]:
@@ -682,34 +702,35 @@ class Guppy(object):
 
     def run(self):
 
-    #--------------------------------
-    #  Generate environment layers.
-    #--------------------------------
+            #--------------------------------
+            #  Generate environment layers.
+            #--------------------------------
 
         self.loadEnvLayers()
         print "\nIn Guppy:run:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
 
-        envLayersShape = self.envLayers.shape
-        print "\nenvLayersShape = " + str(envLayersShape)
+#               Moved these into the loadEnvLayers() routine.
+#         envLayersShape = self.envLayers.shape
+#         print "\nenvLayersShape = " + str(envLayersShape)
+#
+#         self.numEnvLayers = envLayersShape[0]
+#         self.imgNumRows = envLayersShape[1]
+#         self.imgNumCols = envLayersShape[2]
+#         self.imgNumCells = self.imgNumRows * self.imgNumCols
+#
+#         print "\n\n>>>  After genEnvLayers(), self.numEnvLayers = " + str(self.numEnvLayers)
+#         print "\n>>>                        img is " + str(self.imgNumRows) + " rows by " + str(
+#             self.imgNumCols) + " cols for total cell ct = " + str(self.imgNumCells)
 
-        self.numEnvLayers = envLayersShape[0]
-        self.imgNumRows = envLayersShape[1]
-        self.imgNumCols = envLayersShape[2]
-        self.imgNumCells = self.imgNumRows * self.imgNumCols
-
-        print "\n\n>>>  After genEnvLayers(), self.numEnvLayers = " + str(self.numEnvLayers)
-        print "\n>>>                        img is " + str(self.imgNumRows) + " rows by " + str(
-            self.imgNumCols) + " cols for total cell ct = " + str(self.imgNumCells)
-
-        #--------------------------------------------
-        #  Generate true relative probability maps.
-        #--------------------------------------------
+            #--------------------------------------------
+            #  Generate true relative probability maps.
+            #--------------------------------------------
 
         self.trueRelProbDistGen.getTrueRelProbDistsForAllSpp(self)
 
-        #----------------------------
-        #  Generate true presences.
-        #----------------------------
+            #----------------------------
+            #  Generate true presences.
+            #----------------------------
 
         print "\n\n+++++\tBefore get.num.true.presences.for.each.spp()\n"
 
@@ -724,9 +745,9 @@ class Guppy(object):
         #        allSppTruePresenceLocsXY = \
         #            listOfTruePresencesAndXYlocs ["all.spp.true.presence.locs.x.y"]
 
-        #----------------------------------------------------------------
-        #  Run maxent to generate a predicted relative probability map.
-        #----------------------------------------------------------------
+            #----------------------------------------------------------------
+            #  Run maxent to generate a predicted relative probability map.
+            #----------------------------------------------------------------
 
         maxentSamplesFileName = self.combinedPresSamplesFileName
 
@@ -742,10 +763,10 @@ class Guppy(object):
                      self.numProcessors, \
                      self.verboseMaxent)
 
-        #----------------------------------------------------------------
-        #  Evaluate the results of maxent by comparing its output maps
-        #  to the true relative probability maps.
-        #----------------------------------------------------------------
+            #----------------------------------------------------------------
+            #  Evaluate the results of maxent by comparing its output maps
+            #  to the true relative probability maps.
+            #----------------------------------------------------------------
 
         print"\n\n+++++\tBefore" + "evaluateMaxentResults" + "\n"
 
