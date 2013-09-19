@@ -41,16 +41,28 @@ os.chdir ("/Users/Bill/D/rdv-framework/projects/guppy/")
 
 #===============================================================================
 
-class GuppyEnvLayers ():
+class GuppyEnvLayers (object):
     """Support for managing, getting, and/or building environment
     layers for a Guppy run.
     """
 
     #---------------------------------------------------------------------------
 
-    def __init__ (self):
+    def __init__ (self, curFullMaxentEnvLayersDirName, useRemoteEnvDir, envLayersDir, \
+                        numEnvLayers, imgNumRows, imgNumCols):
 
-        print ("\nDummy __init__ routine for GuppyEnvLayers class that isn't active yet.\n")
+        print ("\n__init__ routine for GuppyEnvLayers class.\n")
+
+        self.curFullMaxentEnvLayersDirName = curFullMaxentEnvLayersDirName
+        print "\n====>  IN GuppyEnvLayers INIT:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
+
+        self.useRemoteEnvDir = useRemoteEnvDir
+        self.envLayersDir = envLayersDir
+
+        self.numEnvLayers = numEnvLayers
+        self.imgNumRows = imgNumRows
+        self.imgNumCols = imgNumCols
+        self.imgNumCells = self.imgNumRows * self.imgNumCols
 
 #===============================================================================
 
@@ -62,20 +74,24 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
     #---------------------------------------------------------------------------
 
     def __init__ (self, curFullMaxentEnvLayersDirName, \
-                        useRemoteEnvDir, \
-                        envLayersDir, numEnvLayers, \
-                        fileSizeSuffix, imgNumRows, imgNumCols):
+                        useRemoteEnvDir, envLayersDir, \
+                        numEnvLayers, fileSizeSuffix, imgNumRows, imgNumCols):
 
-        self.curFullMaxentEnvLayersDirName = curFullMaxentEnvLayersDirName
-        print "\n====>  IN FRACTAL INIT:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
+        print ("\n__init__ routine for GuppyFractalEnvLayers class.\n")
 
-        self.useRemoteEnvDir = useRemoteEnvDir
+        super (GuppyFractalEnvLayers, self).__init__ (curFullMaxentEnvLayersDirName, \
+                        useRemoteEnvDir, envLayersDir, \
+                        numEnvLayers, imgNumRows, imgNumCols)
 
-        self.envLayersDir = envLayersDir
-        self.numEnvLayers = numEnvLayers
-        self.imgNumRows = imgNumRows
-        self.imgNumCols = imgNumCols
-#        self.envLayers = [None] * self.numEnvLayers
+#        self.curFullMaxentEnvLayersDirName = curFullMaxentEnvLayersDirName
+#        print "\n====>  IN FRACTAL INIT:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
+
+#        self.useRemoteEnvDir = useRemoteEnvDir
+#        self.envLayersDir = envLayersDir
+#         self.numEnvLayers = numEnvLayers
+#         self.imgNumRows = imgNumRows
+#         self.imgNumCols = imgNumCols
+###        self.envLayers = [None] * self.numEnvLayers
         self.envLayers = numpy.zeros ((self.numEnvLayers, self.imgNumRows, self.imgNumCols))
 
         self.fileSizeSuffix = fileSizeSuffix

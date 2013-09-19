@@ -13,22 +13,31 @@ source ('w.R')
     #  user options
     #----------------
 
-    #  I was making scaling of input features optional, but when I removed 
+    #  I was making scaling of input features optional, but when I removed
     #  scaling, it all crashed with the following error messages:
     #
     #            Starting hclust single...
-    #            
+    #
     #            Starting hclust complete...
-    #            
+    #
     #            Starting hclust average...
-    #            
+    #
     #            Starting divisive...
     #            Error in plot.window(...) : need finite 'xlim' values
     #            In addition: Warning message:
     #                In sqrt(detA * pmax(0, yl2 - y^2)) : NaNs produced
     #
-    #  So, for now, I'm going to leave the "if" statements in place but 
+    #  So, for now, I'm going to leave the "if" statements in place but
     #  set scaleInputs to TRUE.
+    #
+    #  GENERAL QUESTION (FOR ML BOOK TOO):
+    #  How do scaling and PCA interact?
+    #  Do you need to scale before doing PCA?
+    #  Does it change the results of PCA if you do or don't scale beforehand?
+    #  Does it make any sense to scale afterwards?
+    #  Is there an analytical answer to all this?
+    #  I don't think I've seen it discussed in a book, but I need to go back
+    #  and look to be sure...
 scaleInputs = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT ABOVE.
 
 #dataSrc = "fractalData"
@@ -64,12 +73,12 @@ numEnvLayers = NULL
 if (dataSrc == "fractalData")
     {
     cat ("\n\nInitializing fractalData options...")
-    
+
     imgFileType = "pgm"
-    
+
     numImgRows = 256
     numImgCols = 256
-    
+
     imgSrcDir = '/Users/Bill/tzar/outputdata/Guppy/default_runset/201_Scen_1/MaxentEnvLayers/'
     imgFileNames = c("e04_H03_27.pgm",
                      "e05_H03_27.pgm",
@@ -80,8 +89,8 @@ if (dataSrc == "fractalData")
                      "e02_H04_100.pgm",
                      "e03_H03_15.pgm"
                     )
-    
-    numEnvLayers = length (imgFileNames)    
+
+    numEnvLayers = length (imgFileNames)
     }
 
 cat ("\n\nimgFileType = '", imgFileType, "'")
@@ -90,12 +99,12 @@ cat ("\n\nimgFileType = '", imgFileType, "'")
 if (dataSrc == "mattData")
     {
     cat ("\n\nInitializing mattData options...")
-    
+
     imgFileType = "asc"
-    
+
     numImgRows = 512
     numImgCols = 512
-    
+
     imgSrcDir = "/Users/Bill/Downloads/environment.MattClusteringData.2013.08.29/"
     asciiImgFileNameRoots = c("aniso_heat",
                                 "evap_jan",
@@ -115,9 +124,9 @@ if (dataSrc == "mattData")
                                 "vert_minor",
                                 "vert_saline",
                                 "vis_sky"
-                            ) 
-    
-    numEnvLayers = length (asciiImgFileNameRoots)    
+                            )
+
+    numEnvLayers = length (asciiImgFileNameRoots)
     }
 
 
@@ -134,8 +143,8 @@ idColIdx = 1
 
     #--------------------------------------------------------------------------
     #  Build x and y values for each selected pixel record.
-    #  Need to replace this section with a call to the function that computes 
-    #  the x,y locations for building maxent files, but this works for now 
+    #  Need to replace this section with a call to the function that computes
+    #  the x,y locations for building maxent files, but this works for now
     #  since it just has to get things close together.
     #--------------------------------------------------------------------------
 
@@ -144,8 +153,8 @@ idColIdx = 1
 #numImgCols = 4
 y = ((0:(numPixelsPerImg - 1)) %/% numImgRows) + 1
 x = 1:numPixelsPerImg %% numImgCols
-    #  Modulo operator leaves the last column of each row set to 0 instead of 
-    #  set to the last column number, i.e., numImgCols, so replace the 0 in 
+    #  Modulo operator leaves the last column of each row set to 0 instead of
+    #  set to the last column number, i.e., numImgCols, so replace the 0 in
     #  each row's y value
 for (kkk in 1:numPixelsPerImg) { if (x[kkk] == 0) x[kkk] = numImgCols }
 
@@ -166,7 +175,7 @@ for (curCol in firstNonXYCol:numColsInEnvLayersTable)
     {
     curImgFileIdx = curImgFileIdx + 1
     cat ('\n\nAbout to test whether imgFileType == "pgm"...')
-    
+
     if (imgFileType == "pgm")
         {
             "PGM input images"
@@ -176,7 +185,7 @@ for (curCol in firstNonXYCol:numColsInEnvLayersTable)
         {
             "ASC input images"
         curEnvLayer = read.asc.file.to.matrix (asciiImgFileNameRoots [curImgFileIdx], imgSrcDir)
-        } else 
+        } else
         {
             "Unknown input images"
         cat ("\n\nFATAL ERROR:  Unknown input image file type = '", imgFileType, "'.\n\n")
@@ -203,7 +212,7 @@ for (curCol in firstNonXYCol:numColsInEnvLayersTable)
 id.col <- 1
 ##data <- data [order (data [ , id.col]), ]
 
-##dataPointIDs <- data [ , id.col]    
+##dataPointIDs <- data [ , id.col]
 ##rownames (data) <- dataPointIDs
 #data <- data [ , -id.col]
 
@@ -213,7 +222,7 @@ if (scaleInputs)
     combinedEnvLayersTable = scale (combinedEnvLayersTable)
 
     #----------------------------------------------------------------------
-    #  Draw the subsample of records to be clustered from the full set of 
+    #  Draw the subsample of records to be clustered from the full set of
     #  pixels.
     #----------------------------------------------------------------------
 
@@ -226,10 +235,10 @@ recordsToCluster = combinedEnvLayersTable [idsOfRecordsToCluster,]
 
     #------------------------------------------------------------------------
     #  Choose initial cluster centers.
-    #  I was initially trying to choose them as corners of the space, 
-    #  k-means didn't like those and threw some kind of error message 
-    #  that I can't remember at the moment, so I'm not doing this anymore.  
-    #  At some point though, I may want to replace this logic so I'll leave 
+    #  I was initially trying to choose them as corners of the space,
+    #  k-means didn't like those and threw some kind of error message
+    #  that I can't remember at the moment, so I'm not doing this anymore.
+    #  At some point though, I may want to replace this logic so I'll leave
     #  it here as a reminder.
     #------------------------------------------------------------------------
 
@@ -239,12 +248,12 @@ if (FALSE)
         matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable, byrow=TRUE)
     cat ("\n\ndim (initialClusterCenters) = ", dim (initialClusterCenters), "\n\n")
     cat ("\n")
-    
+
     curCol = numNonEnvDataCols+1
     for (curRow in 1:min(numClusters,(numColsInEnvLayersTable-numNonEnvDataCols)))
         {
         cat ("\ncurRow = ", curRow, ", curCol = ", curCol, sep='')
-    
+
         initialClusterCenters [curRow,curCol] = 0.5
         curCol = curCol + 1
         }
@@ -252,7 +261,7 @@ if (FALSE)
     }
 
     #-------------------------
-    #  Cluster with k-means.  
+    #  Cluster with k-means.
     #-------------------------
 
 cat("\nStarting kmeans...\n");
