@@ -137,7 +137,7 @@ def createDirIfDoesntExist(dirToMake):
 
 #===============================================================================
 
-class Guppy(object):
+class Guppy (object):
     """Overarching class for everything about managing a Guppy run.
     """
 
@@ -510,8 +510,9 @@ class Guppy(object):
                                                                    self.numEnvLayers, self.fileSizeSuffix, \
                                                                    self.imgNumRows, self.imgNumCols)
 
-        self.envLayers = self.guppyEnvLayers.genEnvLayers()
-        print "\nIn Guppy:loadEnvLayers:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
+        self.guppyEnvLayers.genEnvLayers()
+#        self.envLayers = self.guppyEnvLayers.genEnvLayers()
+#        print "\nIn Guppy:loadEnvLayers:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
 
         if (False):
             envLayersShape = self.envLayers.shape
@@ -522,14 +523,12 @@ class Guppy(object):
             self.imgNumCols = envLayersShape[2]
 
         else:
-            envLayersShape = self.envLayers.shape
-            print "\nenvLayersShape = " + str(envLayersShape)
-
             self.numEnvLayers = self.guppyEnvLayers.numEnvLayers
             self.imgNumRows = self.guppyEnvLayers.imgNumRows
             self.imgNumCols = self.guppyEnvLayers.imgNumCols
 
-        self.imgNumCells = self.imgNumRows * self.imgNumCols
+#        self.imgNumCells = self.imgNumRows * self.imgNumCols
+        self.imgNumCells = self.guppyEnvLayers.imgNumCells
 
         print "\n\n>>>  After genEnvLayers(), self.numEnvLayers = " + str(self.numEnvLayers)
         print "\n>>>                        img is " + str(self.imgNumRows) + " rows by " + str(
@@ -707,7 +706,7 @@ class Guppy(object):
             #--------------------------------
 
         self.loadEnvLayers()
-        print "\nIn Guppy:run:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
+#        print "\nIn Guppy:run:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
 
 #               Moved these into the loadEnvLayers() routine.
 #         envLayersShape = self.envLayers.shape
