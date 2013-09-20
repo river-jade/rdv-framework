@@ -500,15 +500,24 @@ class Guppy (object):
 
     #-------------------------------------------------------------------------------
 
-    def loadEnvLayers(self):
+    def loadEnvLayers(self, useMattEnvData):
 
         print "\n====>  IN loadEnvLayers:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
 
-        self.guppyEnvLayers = GuppyEnvLayers.GuppyFractalEnvLayers(self.curFullMaxentEnvLayersDirName, \
-                                                                   self.useRemoteEnvDir, \
-                                                                   self.envLayersDir, \
-                                                                   self.numEnvLayers, self.fileSizeSuffix, \
-                                                                   self.imgNumRows, self.imgNumCols)
+        if useMattEnvData:
+            self.guppyEnvLayers = GuppyEnvLayers.GuppyMattEnvLayers(self.curFullMaxentEnvLayersDirName, \
+                                                                       self.useRemoteEnvDir, \
+                                                                       self.envLayersDir, \
+                                                                       self.numEnvLayers, \
+                                                                       self.imgNumRows, self.imgNumCols)
+
+        else:   #  Use Alex's fractal data
+            self.guppyEnvLayers = GuppyEnvLayers.GuppyFractalEnvLayers(self.curFullMaxentEnvLayersDirName, \
+                                                                       self.useRemoteEnvDir, \
+                                                                       self.envLayersDir, \
+                                                                       self.numEnvLayers, \
+                                                                       self.imgNumRows, self.imgNumCols, \
+                                                                       self.fileSizeSuffix)
 
         self.guppyEnvLayers.genEnvLayers()
 #        self.envLayers = self.guppyEnvLayers.genEnvLayers()
@@ -705,7 +714,8 @@ class Guppy (object):
             #  Generate environment layers.
             #--------------------------------
 
-        self.loadEnvLayers()
+        useMattEnvData = True      #  Will add this to the yaml file and Guppy __init__() when finished with testing...
+        self.loadEnvLayers(useMattEnvData)
 #        print "\nIn Guppy:run:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
 
 #               Moved these into the loadEnvLayers() routine.

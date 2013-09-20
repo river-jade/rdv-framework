@@ -288,6 +288,11 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
         #maxentGenOutputDir = "../MaxentGenOutputs"
         #probDistLayersDir = "../MaxentProbDistLayers/"
 
+            #  The file handling logic below is derived from code at:
+            #      http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-subdirectories
+
+
+
             #  In R, list.files() produces a character vector of the names of
             #  files or directories in the named directory
         #fileRootNames = filePathSansExt (listFiles ('.','*.asc'))

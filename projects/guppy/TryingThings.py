@@ -978,6 +978,124 @@ pprint (prefixAsps)
 
 # <codecell>
 
+import fnmatch
+from pprint import pprint
+
+asps = []
+for root, dirs, files in os.walk('/Users/Bill/D/rdv-framework/projects/guppy'):
+    asps += fnmatch.filter(files, '*.R')
+    
+pprint (asps)
+
+print len(asps)
+
+prefixAsps = ["pre." + asps[i] for i in range(len(asps))]
+pprint (prefixAsps)
+
+# <codecell>
+
+from pprint import pprint
+import os
+import glob
+import fnmatch
+import shutil
+
+#imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars"
+imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars"
+#imgSrcDir = "/Users/Bill/D/rdv-framework/projects/guppy"
+
+filespec = "*.asc"
+
+filesToCopyFrom = []
+for root, dirs, files in os.walk (imgSrcDir):
+    filesToCopyFrom += glob.glob (os.path.join (root, filespec))
+
+###        filesToCopyFrom = filesToCopyFrom[[1]]
+print "\n\nfilesToCopyFrom = "
+pprint (filesToCopyFrom)
+print "\n\n"
+
+fileRootNames = []
+for root, dirs, files in os.walk (imgSrcDir):
+    fileRootNames += fnmatch.filter (files, filespec)
+
+pprint (fileRootNames)
+
+print "\nIn directory: '" + os.getcwd() + "'"
+
+targetDirWithSlash = "./tempTarget/"
+#        filesToCopyToPrefix = targetDirWithSlash + prefix
+filesToCopyToPrefix = targetDirWithSlash
+filesToCopyTo = [filesToCopyToPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
+pprint (filesToCopyTo)
+
+#        print "\n\nfilesToCopyTo = "
+#        print filesToCopyTo
+print "\n\n"
+
+for k in range (len (filesToCopyFrom)):
+    shutil.copyfile(filesToCopyFrom [k], filesToCopyTo [k])
+
+print "\n\nDone copying files...\n\n"
+
+# <codecell>
+
+from pprint import pprint
+import os
+import glob
+import fnmatch
+import shutil
+
+def copyFiles_Matt (imgSrcDir, filespec, targetDirWithSlash):
+
+        #  Get a list of the source files to copy from.
+        #  The copy command will need the names to have their full path
+        #  so include that for each file name retrieved.
+    filesToCopyFrom = []
+    for root, dirs, files in os.walk (imgSrcDir):
+        filesToCopyFrom += glob.glob (os.path.join (root, filespec))
+    print "\n\nfilesToCopyFrom = "
+    pprint (filesToCopyFrom)
+    print "\n\n"
+
+
+        #  Now, need a list of the destination names for the file copies.
+        #  Want the results of the copy to have the same root file names,
+        #  so get the source file names without the path prepended.
+    fileRootNames = []
+    for root, dirs, files in os.walk (imgSrcDir):
+        fileRootNames += fnmatch.filter (files, filespec)
+    print "\n\nfilesRootnames = "
+    pprint (fileRootNames)
+    print "\n\n"
+
+
+        #  Finally, need to prepend those destination names with ?????
+######        prefix = self.variables ["PAR.trueProbDistFilePrefix"] + "."
+######        print "\n\nprefix = " + prefix
+#        filesToCopyTo = probDistLayersDirWithSlash + prefix + fileRootNames
+##        targetDirWithSlash = guppy.probDistLayersDirWithSlash
+#####    targetDirWithSlash = "./tempTarget/"
+#        filesToCopyToPrefix = targetDirWithSlash + prefix
+    filesToCopyToPrefix = targetDirWithSlash
+    filesToCopyTo = [filesToCopyToPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
+    pprint (filesToCopyTo)
+    print "\n\n"
+
+
+        #  Have src and dest file names now, so copy the files.
+    for k in range (len (filesToCopyFrom)):
+        shutil.copyfile(filesToCopyFrom [k], filesToCopyTo [k])
+    print "\n\nDone copying files...\n\n"
+
+imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars"
+filespec = "*.asc"
+targetDirWithSlash = "./tempTarget/"
+
+copyFiles_Matt (imgSrcDir, filespec, targetDirWithSlash)
+
+# <codecell>
+
 #  http://www.adamlaiacano.com/post/14987215771/python-function-for-sampling-from-an-arbitrary-discrete
 
 from numpy.random import uniform
