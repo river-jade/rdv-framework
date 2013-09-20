@@ -105,7 +105,9 @@ if (dataSrc == "mattData")
     numImgRows = 512
     numImgCols = 512
 
-    imgSrcDir = "/Users/Bill/Downloads/environment.MattClusteringData.2013.08.29/"
+#    imgSrcDir = "/Users/Bill/Downloads/environment.MattClusteringData.2013.08.29/"
+    imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars/"
+
     asciiImgFileNameRoots = c("aniso_heat",
                                 "evap_jan",
                                 "evap_jul",
@@ -114,12 +116,14 @@ if (dataSrc == "mattData")
                                 "min_temp",
                                 "modis_evi",
                                 "modis_mir",
-                                "n             "pottassium",
+                                "ndmi",
+                                "pottassium",
                               #####  "raindays_jan",
                               #####  "raindays_jul",
                               #####  "rainfall_jan",
                               #####  "rainfall_jul",
                                 "thorium",
+                                "twi_topocrop",
                                 "vert_major",
                                 "vert_minor",
                                 "vert_saline",
