@@ -33,13 +33,35 @@ base_params:
 
 #        PAR.num.spp.in.reserve.selection: -1    #  No reserve selection yet.
 
+#--------------------------------------------------------------------
+#  Environment layers location (e.g., local dir or on dir on glass)
+#--------------------------------------------------------------------
+
+#  For using Matt's Mt. Buffalo images...
+
+        PAR.envLayersType: "MattMtBuffaloEnvLayers"
+
+            #  NOTE:  Haven't put this on glass yet since I'm not sure what
+            #         this will finally look like.
+            #         Also not sure about whether the slash should be at the
+            #         end of the path name or not.  Have to check...
+        PAR.remoteEnvDir: "http://glass.eres.rmit.edu.au/tzar_input/guppy/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
+
             #  These should be ok on nectar as long as PAR.useRemoteEnvDir is
             #  set to TRUE so that these two variables are ignored.
             #  They're only meant to be used when testing locally on my mac
             #  in either the mac or vmware windows environment.
-        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
-        PAR.localEnvDirWin: "Z:/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
 
+        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
+        PAR.localEnvDirWin: "Z:/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
+
+#  For using Alex's fractal images...
+#        PAR.envLayersType: "AlexFractalEnvLayers"
+#        PAR.remoteEnvDir: "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
+#        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
+#        PAR.localEnvDirWin: "Z:/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
+
+#---------------------------------------
 
             #  Looks like this is no longer used and can probably be deleted.
         #PAR.zonation.parameter.filename: "Z:\\Bill\\D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
@@ -119,8 +141,6 @@ base_params:
 #        PAR.pathToRfiles: '/Users/Bill/D/rdv-framework/projects/guppy/'
         PAR.pathToRfiles: './projects/guppy/'
 
-        #  Location of environment layers (e.g., local dir or on dir on glass)
-        PAR.remoteEnvDir: "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
 
 
         PAR.imgNumRows: 512      #  if using 512x512 env layers
@@ -172,7 +192,8 @@ base_params:
         PAR.testing.output.filename: test_output_file.txt
         PAR.prob.dist.layers.dir.name: "MaxentProbDistLayers"
         PAR.maxent.output.dir.name: "MaxentOutputs"
-        PAR.maxent.gen.output.dir.name: "MaxentGenOutputs"
+#        PAR.maxent.gen.output.dir.name: "MaxentGenOutputs"
+        PAR.spp.gen.output.dir.name: "SppGenOutputs"
         PAR.zonation.files.dir.name: "Zonation"
 
 
