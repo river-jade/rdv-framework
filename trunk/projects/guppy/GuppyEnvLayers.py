@@ -57,7 +57,7 @@ os.chdir ("/Users/Bill/D/rdv-framework/projects/guppy/")
 
         #  This is a utility that will end up elsewhere as well as being used
         #  to replace the code that it was cloned from.
-        #  Cloned from GuppyGenTrueRelProbPres.py function getTrueRelProbDistsForAllSpp().
+        #  Cloned from GuppyGenTrueRelProbPres.py function getTrueRelProbDistMapsForAllSpp().
         #  Currently (2013.09.19), this code is in the area of lines 269-341.
 
         #  NOTE:  The file handling logic below is derived from code at:
@@ -172,10 +172,12 @@ class GuppyMattEnvLayers (GuppyEnvLayers):
 
     def genEnvLayers (self):
 
-        imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
+#        imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
+        imgSrcDir = self.envLayersDir
         targetDirWithSlash = self.curFullMaxentEnvLayersDirName + CONST.dirSlash
 
             #  NOTE:  THIS DOESN'T WORK FOR REMOTE (URL) FILES YET...
+
         copyFiles_Matt (imgSrcDir, "*.asc", targetDirWithSlash)
 
 #===============================================================================

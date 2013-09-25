@@ -155,6 +155,7 @@ class Guppy (object):
         self.curDir = os.getcwd()
         self.curOS = platform
 
+        self.envLayersType = self.variables['PAR.envLayersType']
         self.envLayersDir = None
         self.numEnvLayers = None
         self.numEnvLayers = self.variables['PAR.numEnvLayers']
@@ -194,9 +195,11 @@ class Guppy (object):
         self.probDistLayersDirWithSlash = None
         self.maxentOutputDir = None
         self.maxentOutputDirWithSlash = None
+#        self.maxentGenOutputDir = None
         self.maxentGenOutputDir = None
+#        self.sppGenOutputDirWithSlash = None
         self.maxentGenOutputDirWithSlash = None
-        self.maxentFullPathName = None
+        self.sppFullPathName = None
         self.combinedPresSamplesFileName = None
         self.analysisDirWithSlash = None
 
@@ -342,11 +345,14 @@ class Guppy (object):
         createDirIfDoesntExist(self.maxentOutputDir)
 
 
-        self.maxentGenOutputDir = self.qualifiedParams['PAR.maxent.gen.output.dir.name']
-        self.maxentGenOutputDirWithSlash = self.maxentGenOutputDir + "/"
+#        self.maxentGenOutputDir = self.qualifiedParams['PAR.maxent.gen.output.dir.name']
+        self.sppGenOutputDir = self.qualifiedParams['PAR.spp.gen.output.dir.name']
+#        self.sppGenOutputDirWithSlash = self.sppGenOutputDir + "/"
 
-        print "\nself.maxentGenOutputDir = '" + self.maxentGenOutputDir + "'"
-        createDirIfDoesntExist(self.maxentGenOutputDir)
+#        print "\nself.maxentGenOutputDir = '" + self.maxentGenOutputDir + "'"
+        print "\nself.sppGenOutputDir = '" + self.sppGenOutputDir + "'"
+#        createDirIfDoesntExist(self.maxentGenOutputDir)
+        createDirIfDoesntExist(self.sppGenOutputDir)
 
 
         self.analysisDirWithSlash = PARcurrentRunDirectory + self.variables['PAR.analysis.dir.name'] + CONST.dirSlash
@@ -500,24 +506,28 @@ class Guppy (object):
 
     #-------------------------------------------------------------------------------
 
-    def loadEnvLayers(self, useMattEnvData):
+    def loadEnvLayers(self):
 
         print "\n====>  IN loadEnvLayers:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
 
-        if useMattEnvData:
+        if self.envLayersType == "MattMtBuffaloEnvLayers":
             self.guppyEnvLayers = GuppyEnvLayers.GuppyMattEnvLayers(self.curFullMaxentEnvLayersDirName, \
                                                                        self.useRemoteEnvDir, \
                                                                        self.envLayersDir, \
                                                                        self.numEnvLayers, \
                                                                        self.imgNumRows, self.imgNumCols)
 
-        else:   #  Use Alex's fractal data
+        elif self.envLayersType == "AlexFractalEnvLayers":
             self.guppyEnvLayers = GuppyEnvLayers.GuppyFractalEnvLayers(self.curFullMaxentEnvLayersDirName, \
                                                                        self.useRemoteEnvDir, \
                                                                        self.envLayersDir, \
                                                                        self.numEnvLayers, \
                                                                        self.imgNumRows, self.imgNumCols, \
                                                                        self.fileSizeSuffix)
+
+        else:
+            print ("\n\nERROR: unknown envLayersType in Guppy::loadEnvLayers() - '" + self.envLayersType + "'\n\n")
+            quit()
 
         self.guppyEnvLayers.genEnvLayers()
 #        self.envLayers = self.guppyEnvLayers.genEnvLayers()
@@ -714,8 +724,8 @@ class Guppy (object):
             #  Generate environment layers.
             #--------------------------------
 
-        useMattEnvData = True      #  Will add this to the yaml file and Guppy __init__() when finished with testing...
-        self.loadEnvLayers(useMattEnvData)
+#        useMattEnvData = True      #  Will add this to the yaml file and Guppy __init__() when finished with testing...
+        self.loadEnvLayers ()
 #        print "\nIn Guppy:run:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
 
 #               Moved these into the loadEnvLayers() routine.
@@ -735,7 +745,7 @@ class Guppy (object):
             #  Generate true relative probability maps.
             #--------------------------------------------
 
-        self.trueRelProbDistGen.getTrueRelProbDistsForAllSpp(self)
+        self.trueRelProbDistGen.getTrueRelProbDistMapsForAllSpp(self)
 
             #----------------------------
             #  Generate true presences.

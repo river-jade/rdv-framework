@@ -35,7 +35,7 @@ class GuppyGenTrueRelProbPres (object):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistsForAllSpp (self, guppy):
+    def getTrueRelProbDistMapsForAllSpp (self, guppy):
         raise NotImplementedError ()
 
 #-------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ class GuppyGenTrueRelProbPresARITH (GuppyGenTrueRelProbPres):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistsForAllSpp (self, guppy):
+    def getTrueRelProbDistMapsForAllSpp (self, guppy):
         raise NotImplementedError ()
 
 #===============================================================================
@@ -204,7 +204,7 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistsForAllSpp (self, guppy):
+    def getTrueRelProbDistMapsForAllSpp (self, guppy):
         """
         #--------------------------------------------------------------------
         #  Here, we now want to have the option to create the true relative
@@ -256,7 +256,8 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
             #----------------------------------------------------------------
 
         runMaxentCmd (combinedSppPresencesFilename,
-                        guppy.maxentGenOutputDir, \
+#                        guppy.maxentGenOutputDir, \
+                        guppy.sppGenOutputDir, \
                         guppy.doMaxentReplicates,
                         guppy.maxentReplicateType, \
                         guppy.numMaxentReplicates, \
@@ -265,6 +266,24 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
                         guppy.numProcessors, \
                         guppy.verboseMaxent \
                         )
+
+#####
+###  THE CODE FROM HERE ON IN THIS ROUTINE IS GENERIC FOR ANY SPP GENERATOR
+###  SO IT NEEDS TO BE ABSTRACTED OUT OF HERE IN A SUPERCLASS ROUTINE THAT
+###  CALLS THE SPP GENERATION CODE AND THEN THE CODE TO COPY THE RESULTS
+###  OF SPP GENERATION INTO THE PROBABILITY DISTRIBUTION AREA.
+###  IN FACT, EVEN THAT MIGHT TURN OUT TO BE SPECIFIC TO THE USE OF MAXENT
+###  AS THE SDM.
+#####
+
+#  NEED TO REPLACE THE CODE BELOW WITH THE COPYFILES() ROUTINE THAT I JUST
+#  BUILT FOR THE GuppyMattEnvLayers CLASS SINCE IT'S VIRTUALLY IDENTICAL.
+#  IN FACT, I WANT TO MOVE THAT FUNCTION OUT INTO THE GUPPY UTILITIES FILE.
+#  HOWEVER, MAY NEED TO BREAK IT DOWN INTO ITS COMPONENT SUBFUNCTIONS SO
+#  THAT IT CAN ACCOMODATE THE DIFFERENCE BETWEEN THE COPY HERE AND THE
+#  COPY IN THE NEW FUNCTION, NOT TO MENTION THE NEED TO BE ABLE TO HANDLE
+#  URLS THERE (WHICH I HAVEN'T DEALT WITH YET).
+#  BTL - 2013 09 20.
 
            #  NOW NEED TO CONVERT THE MAXENT OUTPUTS IN MaxentGenOutputs/plots/spp.?.asc
             #  into pgm and tiff?  Regardless, need to copy the .asc files into the
@@ -288,10 +307,8 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
         #maxentGenOutputDir = "../MaxentGenOutputs"
         #probDistLayersDir = "../MaxentProbDistLayers/"
 
-            #  The file handling logic below is derived from code at:
+            #  NOTE:  The file handling logic below is derived from code at:
             #      http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-subdirectories
-
-
 
             #  In R, list.files() produces a character vector of the names of
             #  files or directories in the named directory
@@ -299,7 +316,8 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 
 ###        filesToCopyFrom = listFiles (maxentGenOutputDir, "*.asc", fullNames=TRUE)
         filesToCopyFrom = []
-        for root, dirs, files in os.walk (guppy.maxentGenOutputDir):
+#        for root, dirs, files in os.walk (guppy.maxentGenOutputDir):
+        for root, dirs, files in os.walk (guppy.sppGenOutputDir):
             filesToCopyFrom += glob.glob (os.path.join (root, '*.asc'))
 
 ###        filesToCopyFrom = filesToCopyFrom[[1]]
@@ -314,7 +332,8 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 ###        print "\n\nfileRootNames =\n", fileRootNames
 
         fileRootNames = []
-        for root, dirs, files in os.walk (guppy.maxentGenOutputDir):
+#        for root, dirs, files in os.walk (guppy.maxentGenOutputDir):
+        for root, dirs, files in os.walk (guppy.sppGenOutputDir):
             fileRootNames += fnmatch.filter (files, '*.asc')
 
         pprint (fileRootNames)
@@ -374,7 +393,7 @@ class GuppyGenTrueRelProbPresCLUSTER (GuppyGenTrueRelProbPres):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistsForAllSpp (self, guppy):
+    def getTrueRelProbDistMapsForAllSpp (self, guppy):
         """
         Build a relative probability map for each species by clustering
         the environmental variables and then computing the distance in
