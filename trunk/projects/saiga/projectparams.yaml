@@ -1,4 +1,6 @@
 project_name: Saiga
+runner_class: RRunner
+
 base_params:
     variables:
         test.variable.1: 123
@@ -43,3 +45,51 @@ scenarios:
   #
   #
   #
+
+repetitions:
+    # Note that also the original value of the variable is not used.
+    # Note that this file does all repetitions on scen 1, then on scen 2 etc...
+
+    repetitions:
+      - variables:
+            #test.variable.2: 777
+            PAR.Prate: 0.50    #annual mean poaching rate
+
+      - variables:
+            #test.variable.2: 888
+            PAR.kaz.poach: 0.3
+
+      - variables:
+            #test.variable.2: 888
+            PAR.uz.imm: 0.25
+
+    generators:
+      - key: PAR.Prate
+        generator_type: linear_step
+        start: 0.25
+        step_size: 0.25
+        count: 3
+
+
+    #
+    #  - key: test.variable.4
+    #    generator_type: normal_distribution
+    #    mean: 10
+    #    std_dev: 1
+    #    count: 10
+    #
+
+
+      - key: PAR.kaz.poach
+        generator_type: linear_step
+        start: 0.15
+        step_size: 0.15
+        count: 3
+
+
+
+      - key: PAR.uz.imm
+        generator_type: linear_step
+        start: 0.00
+        step_size: 0.25
+        count: 3
