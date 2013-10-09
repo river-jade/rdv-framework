@@ -1,4 +1,6 @@
 project_name: Guppy
+#runner_class: PythonRunner
+
 base_params:
     variables:
 

@@ -1,4 +1,5 @@
 project_name: CPW_simple
+runner_class: PythonRunner
 base_params:
   variables:
 

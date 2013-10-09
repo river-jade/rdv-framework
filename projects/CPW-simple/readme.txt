@@ -1,0 +1,1 @@
+This project has been modified to run with tzar 0.4.0 and above. It will not run with < 0.4.0 without modification.
