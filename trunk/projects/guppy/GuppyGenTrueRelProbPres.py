@@ -9,7 +9,7 @@
 
 #===============================================================================
 
-from guppySupportFunctions import xyRelToLowerLeft
+import guppySupportFunctions as gsf
 import numpy
 import random
 import pandas as pd
@@ -154,7 +154,7 @@ class GuppyGenTrueRelProbPres (object):
     #    print xyPairs
 
         for k in range (totNumPres):
-            xyPairs [k,:] = xyRelToLowerLeft (curSppPresIndices [k], numImgRows, numImgCols)
+            xyPairs [k,:] = gsf.xyRelToLowerLeft (curSppPresIndices [k], numImgRows, numImgCols)
         print "xyPairs = "
         print xyPairs
 
@@ -165,6 +165,45 @@ class GuppyGenTrueRelProbPres (object):
     #    print combinedSppPresTable
 
         return combinedSppPresTable
+
+#-------------------------------------------------------------------------------
+
+    def copyTrueRelProbDistMapsForAllSpp (self, guppy):
+
+        filespec = "*.asc"
+            #  2013 10 23 - BTL
+            #  Guppy was crashing when there were 8 species and 3 env layers.
+            #  It would crash when trying to read in the 8 generated species
+            #  because there were only 3 species in the directory the
+            #  generated species were copied into.
+            #  For some reason, it was copying the env files as the
+            #  generated species files.  Seems to work now that I've changed
+            #  the srcFile directory.
+###2013.10.23###        srcFiles = gsf.buildNamesOfSrcFiles (guppy.curFullMaxentEnvLayersDirName, filespec)
+        srcFiles = gsf.buildNamesOfSrcFiles (guppy.sppGenOutputDir, filespec)
+###        print "\n\nvvvvvvvvvvvvvvvvvvvvvvvvvv\n\n*****  srcFiles = \n"
+###        pprint (srcFiles)
+        fileRootNames = gsf.buildDestFileRootNames (guppy.sppGenOutputDir, filespec)
+###        print "\n\n*****  srcFiles = \n"
+###        pprint (srcFiles)
+
+        prefix = self.variables ["PAR.trueProbDistFilePrefix"] + "."
+        print "\n\nprefix = " + prefix
+        destFilesPrefix = guppy.probDistLayersDirWithSlash + prefix
+
+        destFiles = [destFilesPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
+        pprint (destFiles)
+        print "\n\n"
+###        print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+
+        gsf.copyFiles (srcFiles, destFiles)
+
+#-------------------------------------------------------------------------------
+
+    def getTrueRelProbDistMapsForAllSpp (self, guppy):
+
+        self.generateTrueRelProbDistMapsForAllSpp (guppy)
+        self.copyTrueRelProbDistMapsForAllSpp (guppy)
 
 #===============================================================================
 #===============================================================================
@@ -204,7 +243,7 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistMapsForAllSpp (self, guppy):
+    def generateTrueRelProbDistMapsForAllSpp (self, guppy):
         """
         #--------------------------------------------------------------------
         #  Here, we now want to have the option to create the true relative
@@ -267,112 +306,6 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
                         guppy.verboseMaxent \
                         )
 
-#####
-###  THE CODE FROM HERE ON IN THIS ROUTINE IS GENERIC FOR ANY SPP GENERATOR
-###  SO IT NEEDS TO BE ABSTRACTED OUT OF HERE IN A SUPERCLASS ROUTINE THAT
-###  CALLS THE SPP GENERATION CODE AND THEN THE CODE TO COPY THE RESULTS
-###  OF SPP GENERATION INTO THE PROBABILITY DISTRIBUTION AREA.
-###  IN FACT, EVEN THAT MIGHT TURN OUT TO BE SPECIFIC TO THE USE OF MAXENT
-###  AS THE SDM.
-#####
-
-#  NEED TO REPLACE THE CODE BELOW WITH THE COPYFILES() ROUTINE THAT I JUST
-#  BUILT FOR THE GuppyMattEnvLayers CLASS SINCE IT'S VIRTUALLY IDENTICAL.
-#  IN FACT, I WANT TO MOVE THAT FUNCTION OUT INTO THE GUPPY UTILITIES FILE.
-#  HOWEVER, MAY NEED TO BREAK IT DOWN INTO ITS COMPONENT SUBFUNCTIONS SO
-#  THAT IT CAN ACCOMODATE THE DIFFERENCE BETWEEN THE COPY HERE AND THE
-#  COPY IN THE NEW FUNCTION, NOT TO MENTION THE NEED TO BE ABLE TO HANDLE
-#  URLS THERE (WHICH I HAVEN'T DEALT WITH YET).
-#  BTL - 2013 09 20.
-
-           #  NOW NEED TO CONVERT THE MAXENT OUTPUTS IN MaxentGenOutputs/plots/spp.?.asc
-            #  into pgm and tiff?  Regardless, need to copy the .asc files into the
-            #  MaxentProbDistLayers area as:
-            #		true.prob.dist.spp.?.asc
-            #  Then, possibly need to create these as well, just for diagnosis I think.
-            #  I believe that maxent will run as soon as I get the asc files in there.
-            #		true.prob.dist.spp.?.pgm
-            #		true.prob.dist.spp.?.csv   ARE THESE CSV FILES REALLY NECESSARY?
-            #									SEEMS LIKE I NEVER LOOK AT THEM...
-
-            #  As soon as these files are moved and renamed, then I should be able to
-            #  remove the stop() command below and the temporary call to get.true...()
-            #  at the start of this else branch (surrounded by exclamation points)
-            #  and the whole thing should run to completion.
-
-            #  Once that works, then the only major thing left to do is to create
-            #  smaller versions of all the files on the fly so that I can do more runs
-            #  and use some parts Alex's big images as cross-validation and testing fodder.
-
-        #maxentGenOutputDir = "../MaxentGenOutputs"
-        #probDistLayersDir = "../MaxentProbDistLayers/"
-
-            #  NOTE:  The file handling logic below is derived from code at:
-            #      http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-subdirectories
-
-            #  In R, list.files() produces a character vector of the names of
-            #  files or directories in the named directory
-        #fileRootNames = filePathSansExt (listFiles ('.','*.asc'))
-
-###        filesToCopyFrom = listFiles (maxentGenOutputDir, "*.asc", fullNames=TRUE)
-        filesToCopyFrom = []
-#        for root, dirs, files in os.walk (guppy.maxentGenOutputDir):
-        for root, dirs, files in os.walk (guppy.sppGenOutputDir):
-            filesToCopyFrom += glob.glob (os.path.join (root, '*.asc'))
-
-###        filesToCopyFrom = filesToCopyFrom[[1]]
-        print "\n\nfilesToCopyFrom = "
-        pprint (filesToCopyFrom)
-        print "\n\n"
-
-        prefix = self.variables ["PAR.trueProbDistFilePrefix"] + "."
-        print "\n\nprefix = " + prefix
-
-###        fileRootNames = listFiles (maxentGenOutputDir, '*.asc')
-###        print "\n\nfileRootNames =\n", fileRootNames
-
-        fileRootNames = []
-#        for root, dirs, files in os.walk (guppy.maxentGenOutputDir):
-        for root, dirs, files in os.walk (guppy.sppGenOutputDir):
-            fileRootNames += fnmatch.filter (files, '*.asc')
-
-        pprint (fileRootNames)
-
-
-        #"/Users/Bill/tzar/outputdata/Guppy/default_runset/200_Scen_1.inprogress/MaxentGenOutputs/spp.1.asc"
-        #"/Users/Bill/tzar/outputdata/Guppy/default_runset/200_Scen_1.inprogress/MaxentGenOutputs/spp.1.asc"
-
-#        filesToCopyTo = probDistLayersDirWithSlash + prefix + fileRootNames
-        filesToCopyToPrefix = guppy.probDistLayersDirWithSlash + prefix
-        filesToCopyTo = [filesToCopyToPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
-        pprint (filesToCopyTo)
-
-#        print "\n\nfilesToCopyTo = "
-#        print filesToCopyTo
-        print "\n\n"
-
-        #retVals = file.copy(fileRootNames, filesToCopyTo)
-###        retVals = fileCopy (filesToCopyFrom, filesToCopyTo)
-
-        for k in range (len (filesToCopyFrom)):
-            shutil.copyfile(filesToCopyFrom [k], filesToCopyTo [k])
-
-###        print "\n\nretVals for file.copy =\n" + retVals
-###        if length (which (not retVals)):
-###            print "\n\nCopy failed.\n"
-###            stop()
-
-        print "\n\nDone copying files...\n\n"
-
-    ## 		} else  #  No option chosen
-    ## 		{
-    ## 		print "\n\nNo option chosen for how to generate true rel prob map.\n\n")
-    ## 		stop()
-    ## 		}
-
-
-
-    #	return (trueRelProbDistsForSpp)
 
 #===============================================================================
 #===============================================================================
