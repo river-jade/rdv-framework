@@ -31,91 +31,13 @@ import urllib
 import shutil
 import netpbmfile
 import numpy
+from matplotlib import pyplot
 
 import GuppyConstants as CONST
-
-from matplotlib import pyplot
+import guppySupportFunctions as gsf
 
 
 os.chdir ("/Users/Bill/D/rdv-framework/projects/guppy/")
-
-#===============================================================================
-
-
-# BTL - 2013.09.19 - AM IN THE MIDDLE OF GETTING THIS TO WORK AND BE CALLED
-# DOWN BELOW WHEN I WANT TO COPY MATTS IMAGES OVER INTO THE MAXENT ENV AREA.
-# SEEMS TO WORK OK RIGHT NOW IN THE IPYTHON TEST AREA, BUT NEED TO FIGURE OUT
-# WHAT THE WHOLE THING IS ABOUT PREFIXS.  IT WAS IN THERE FOR THE CODE THAT
-# THIS WAS CLONED FROM, BUT NOT SURE WHAT THOSE PREFIXS WERE THERE.
-# HERE, THEY MAY JUST BE SET TO AN EMPTY STRING BUT STILL NEED TO BE PASSED
-# IN THROUGH THE ARGUMENT LIST IF THIS IS GOING TO BE A GENERIC UTILITY FOR
-# GUPPY.
-
-# THIS ALSO NEEDS TO BE MODIFIED TO HANDLE THE REMOTE URL LOOKUP CASE.
-# IT MAY BE BETTER TO DO THAT AS A SEPARATE FUNCTION, BUT I'LL CHECK THAT
-# OUT LATER.  JUST WANT TO GET THIS TO DO SOMETHING FOR THE MOMENT...
-
-        #  This is a utility that will end up elsewhere as well as being used
-        #  to replace the code that it was cloned from.
-        #  Cloned from GuppyGenTrueRelProbPres.py function getTrueRelProbDistMapsForAllSpp().
-        #  Currently (2013.09.19), this code is in the area of lines 269-341.
-
-        #  NOTE:  The file handling logic below is derived from code at:
-        #      http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-subdirectories
-
-from pprint import pprint
-import glob
-import fnmatch
-
-
-def copyFiles_Matt (imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset", \
-                    filespec = "*.asc", \
-                    targetDirWithSlash = "./tempTarget/"):
-
-        #  Get a list of the source files to copy from.
-        #  The copy command will need the names to have their full path
-        #  so include that for each file name retrieved.
-    filesToCopyFrom = []
-    for root, dirs, files in os.walk (imgSrcDir):
-        filesToCopyFrom += glob.glob (os.path.join (root, filespec))
-    print "\n\nfilesToCopyFrom = "
-    pprint (filesToCopyFrom)
-    print "\n\n"
-
-
-        #  Now, need a list of the destination names for the file copies.
-        #  Want the results of the copy to have the same root file names,
-        #  so get the source file names without the path prepended.
-    fileRootNames = []
-    for root, dirs, files in os.walk (imgSrcDir):
-        fileRootNames += fnmatch.filter (files, filespec)
-    print "\n\nfilesRootnames = "
-    pprint (fileRootNames)
-    print "\n\n"
-
-
-        #  Finally, need to prepend those destination names with ?????
-######        prefix = self.variables ["PAR.trueProbDistFilePrefix"] + "."
-######        print "\n\nprefix = " + prefix
-
-
-##        targetDirWithSlash = guppy.probDistLayersDirWithSlash
-#####    targetDirWithSlash = "./tempTarget/"
-
-
-#        filesToCopyToPrefix = targetDirWithSlash + prefix
-    filesToCopyToPrefix = targetDirWithSlash
-
-#        filesToCopyTo = probDistLayersDirWithSlash + prefix + fileRootNames
-    filesToCopyTo = [filesToCopyToPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
-    pprint (filesToCopyTo)
-    print "\n\n"
-
-
-        #  Have src and dest file names now, so copy the files.
-    for k in range (len (filesToCopyFrom)):
-        shutil.copyfile(filesToCopyFrom [k], filesToCopyTo [k])
-    print "\n\nDone copying files...\n\n"
 
 #===============================================================================
 
@@ -173,12 +95,17 @@ class GuppyMattEnvLayers (GuppyEnvLayers):
     def genEnvLayers (self):
 
 #        imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
-        imgSrcDir = self.envLayersDir
+        srcDir = self.envLayersDir
+        filespec = "*.asc"
         targetDirWithSlash = self.curFullMaxentEnvLayersDirName + CONST.dirSlash
 
             #  NOTE:  THIS DOESN'T WORK FOR REMOTE (URL) FILES YET...
 
-        copyFiles_Matt (imgSrcDir, "*.asc", targetDirWithSlash)
+#        copyFiles_Matt (imgSrcDir, "*.asc", targetDirWithSlash)
+        srcFiles = gsf.buildNamesOfSrcFiles (srcDir, filespec)
+        destFiles = gsf.buildNamesOfDestFiles (srcDir, filespec, targetDirWithSlash)
+
+        gsf.copyFiles (srcFiles, destFiles)
 
 #===============================================================================
 
@@ -306,17 +233,6 @@ class GuppyFractalEnvLayers (GuppyEnvLayers):
             pyplot.show()
 
         return img
-
-    #---------------------------------------------------------------------------
-
-       # Define the higher level function that gets the environment layers.
-
-    def genEnvLayers_Matt (self):
-
-        imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
-        targetDirWithSlash = self.curFullMaxentEnvLayersDirName + CONST.dirSlash
-
-        copyFiles_Matt (imgSrcDir, "*.asc", targetDirWithSlash)
 
     #---------------------------------------------------------------------------
 

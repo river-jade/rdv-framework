@@ -751,7 +751,7 @@ class Guppy (object):
             #  Generate true presences.
             #----------------------------
 
-        print "\n\n+++++\tBefore get.num.true.presences.for.each.spp()\n"
+        print "\n\n+++++\tBefore getNumTruePresencesForEachSpp()\n"
 
         #  moved from up above.
         numTruePresences = self.getNumTruePresencesForEachSpp()
