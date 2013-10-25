@@ -105,8 +105,9 @@ if (dataSrc == "mattData")
     numImgRows = 512
     numImgCols = 512
 
-#    imgSrcDir = "/Users/Bill/Downloads/environment.MattClusteringData.2013.08.29/"
-    imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars/"
+##    imgSrcDir = "/Users/Bill/Downloads/environment.MattClusteringData.2013.08.29/"
+#    imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars/"
+    imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
 
     asciiImgFileNameRoots = c("aniso_heat",
                                 "evap_jan",
