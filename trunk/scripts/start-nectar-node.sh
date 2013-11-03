@@ -10,8 +10,8 @@ cd /home/ubuntu
 mkdir bin
 cd bin
 
-wget http://tzar-framework.googlecode.com/files/tzar-0.3.0.jar
-ln -s tzar-0.3.0.jar tzar.jar
+wget http://tzar-framework.googlecode.com/files/tzar-0.4.2.jar
+ln -s tzar-0.4.2.jar tzar.jar
 
 wget http://rdv-framework.googlecode.com/svn/trunk/R/install.packages.R
 wget http://rdv-framework.googlecode.com/svn/trunk/scripts/start-tzar.sh
