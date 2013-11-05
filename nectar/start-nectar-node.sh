@@ -23,6 +23,7 @@ apt-get -y install default-jre $EXTRA_PACKAGES
 # run whatever code is specified to run after installing packages
 eval $POST_APT_INSTALL
 
-ln -s /var/log/upstart/tzar.log /home/ubuntu/tzar/consolelog
+mkdir /home/ubuntu/tzar
+chown ubuntu /home/ubuntu/tzar
 
 start tzar
