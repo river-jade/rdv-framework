@@ -1,8 +1,8 @@
 #!/bin/bash
-export TZAR_DIR="$HOME/tzar"
+export TZAR_DIR="/home/ubuntu/tzar"
 
 echo -n "Starting tzar node client:"
-. $HOME/env.sh
+. /home/ubuntu/env.sh
 
 # if tzar directory doesn't exist, create it
 if [ ! -d $TZAR_DIR ]; then
