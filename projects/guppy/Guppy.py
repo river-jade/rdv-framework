@@ -109,7 +109,7 @@ from sys import platform
 
 import pandas as pd
 import pyper as pr
-r = pr.R (use_pandas = True)
+Rcaller = pr.R (use_pandas = True)
 
 #----------------------------------------
 
@@ -690,32 +690,32 @@ class Guppy (object):
             #-----------------------------------------------------------------------
 
             #numTruePresences = [3,5,6]
-            r.assign('rNumTruePresences', numTruePresences)
+            Rcaller.assign('rNumTruePresences', numTruePresences)
 
             #probDistLayersDirWithSlash = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentProbDistLayers/'
-            r.assign('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
+            Rcaller.assign('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
 
             #trueProbDistFilePrefix = 'true.prob.dist'
-            r.assign('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
-            #            r.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
+            Rcaller.assign('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
+            #            Rcaller.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
 
             #curFullMaxentSamplesDirName = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentSamples'
-            r.assign('rCurFullMaxentSamplesDirName', self.curFullMaxentSamplesDirName)
+            Rcaller.assign('rCurFullMaxentSamplesDirName', self.curFullMaxentSamplesDirName)
 
             #PARuseAllSamples = False
-            r.assign('rPARuseAllSamples', self.PARuseAllSamples)
+            Rcaller.assign('rPARuseAllSamples', self.PARuseAllSamples)
 
             #combinedPresSamplesFileName = curFullMaxentSamplesDirName + "/" + "spp.sampledPres.combined" + ".csv"
-            r.assign('rCombinedPresSamplesFileName', self.combinedPresSamplesFileName)
+            Rcaller.assign('rCombinedPresSamplesFileName', self.combinedPresSamplesFileName)
 
             #randomSeed = 1
-            r.assign('rRandomSeed', self.randomSeed)
+            Rcaller.assign('rRandomSeed', self.randomSeed)
 
             print "\n\n>>>>> About to pyper source genTruePresencesPyper.R"
-            r("source ('/Users/Bill/D/rdv-framework/projects/guppy/genTruePresencesPyper.R')")
+            Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/genTruePresencesPyper.R')")
             print "\n\n>>>>> Back from pyper source genTruePresencesPyper.R"
             print "\n\n>>>>> About to pyper call genPresences()"
-            r(
+            Rcaller (
                 'genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
             print "\n\n>>>>> Back from pyper call genPresences()"
             print ">>>>> Bottom of loop..."
@@ -799,24 +799,24 @@ class Guppy (object):
 
         ###        evaluateMaxentResults ()
         ###rinterface.set_flushconsole()
-        r.assign('rNumSppToCreate', self.numSppToCreate)
-        r.assign('rDoMaxentReplicates', self.doMaxentReplicates)
-        r.assign('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
-        r.assign('rShowRawErrorInDist', self.showRawErrorInDist)
-        r.assign('rShowAbsErrorInDist', self.showAbsErrorInDist)
-        r.assign('rShowPercentErrorInDist', self.showPercentErrorInDist)
-        r.assign('rShowAbsPercentErrorInDist', self.showAbsPercentErrorInDist)
-        r.assign('rShowTruncatedPercentErrImg', self.showTruncatedPercentErrImg)
-        r.assign('rShowHeatmap', self.showHeatmap)
-        r.assign('rMaxentOutputDirWithSlash', self.maxentOutputDirWithSlash)
-        r.assign('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
-        r.assign('rAnalysisDirWithSlash', self.analysisDirWithSlash)
-        r.assign('rUseOldMaxentOutputForInput', self.PARuseOldMaxentOutputForInput)
-        r.assign('rWriteToFile', self.writeToFile)
-        r.assign('rUseDrawImage', self.useDrawImage)
+        Rcaller.assign('rNumSppToCreate', self.numSppToCreate)
+        Rcaller.assign('rDoMaxentReplicates', self.doMaxentReplicates)
+        Rcaller.assign('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
+        Rcaller.assign('rShowRawErrorInDist', self.showRawErrorInDist)
+        Rcaller.assign('rShowAbsErrorInDist', self.showAbsErrorInDist)
+        Rcaller.assign('rShowPercentErrorInDist', self.showPercentErrorInDist)
+        Rcaller.assign('rShowAbsPercentErrorInDist', self.showAbsPercentErrorInDist)
+        Rcaller.assign('rShowTruncatedPercentErrImg', self.showTruncatedPercentErrImg)
+        Rcaller.assign('rShowHeatmap', self.showHeatmap)
+        Rcaller.assign('rMaxentOutputDirWithSlash', self.maxentOutputDirWithSlash)
+        Rcaller.assign('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
+        Rcaller.assign('rAnalysisDirWithSlash', self.analysisDirWithSlash)
+        Rcaller.assign('rUseOldMaxentOutputForInput', self.PARuseOldMaxentOutputForInput)
+        Rcaller.assign('rWriteToFile', self.writeToFile)
+        Rcaller.assign('rUseDrawImage', self.useDrawImage)
 
-        r("source ('/Users/Bill/D/rdv-framework/projects/guppy/evaluateMaxentResultsPyper.R')")
-        r('evaluateMaxentResults (rNumSppToCreate, rDoMaxentReplicates, \
+        Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/evaluateMaxentResultsPyper.R')")
+        Rcaller ('evaluateMaxentResults (rNumSppToCreate, rDoMaxentReplicates, \
                 rTrueProbDistFilePrefix, rShowRawErrorInDist, rShowAbsErrorInDist, \
                 rShowPercentErrorInDist, rShowAbsPercentErrorInDist, \
                 rShowTruncatedPercentErrImg, rShowHeatmap, rMaxentOutputDirWithSlash, \
