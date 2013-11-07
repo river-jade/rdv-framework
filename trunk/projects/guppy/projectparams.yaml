@@ -182,6 +182,7 @@ base_params:
 
         PAR.genTruePresWithArithmeticCombinations: FALSE
         PAR.genTruePresWithMaxent: TRUE
+        PAR.genTruePresWithClustering: FALSE
         PAR.minNumPres: 3
         PAR.maxNumPres: 9
 
