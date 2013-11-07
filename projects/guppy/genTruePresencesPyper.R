@@ -79,6 +79,8 @@ build.presence.sample =
 	    #  subsample of the original population with no errors.
 		#-------------------------------------------------------------------
 
+cat ("\n\n+++PYPER+++  STARTING build.presence.sample()")
+
 cat ("\n\n+++  sample.presence.indices.into.true.presence.indices = '", sample.presence.indices.into.true.presence.indices, "'")
 cat ("\n\n+++  true.presence.locs.x.y = \n")
 print (true.presence.locs.x.y)
@@ -98,6 +100,8 @@ cat ("\n")
     if (is.vector (sample.locs.x.y))
         sample.locs.x.y = matrix (sample.locs.x.y, nrow=1)
 
+cat ("\n\n+++PYPER+++  ENDING build.presence.sample()")
+
 	return (sample.locs.x.y)
 	}
 
@@ -112,6 +116,8 @@ genTruePresences = function (num.true.presences,    #  a vector, not a scalar
                         cur.full.maxent.samples.dir.name
                         )
     {
+cat ("\n\n+++PYPER+++  STARTING genTruePresences()")
+
     numSppToCreate = length (num.true.presences)
     combined.spp.true.presences.table = NULL
 
@@ -267,6 +273,8 @@ print (num.true.presences)
 			   row.names = FALSE,
 			   quote=FALSE)
 
+cat ("\n\n+++PYPER+++  ENDING genTruePresences()")
+
     return (all.spp.true.presence.locs.x.y)
     }
 
@@ -285,6 +293,8 @@ createSampledPresences = function (num.true.presences,
                                     combinedPresSamplesFileName
                                     )
     {
+cat ("\n\n+++PYPER+++  STARTING createSampledPresences()")
+
     numSppToCreate = length (num.true.presences)
     combined.spp.sampled.presences.table = NULL
 
@@ -435,6 +445,8 @@ createSampledPresences = function (num.true.presences,
     #-------------------------------------------
     #-------------------------------------------
 
+cat ("\n\n+++PYPER+++  ENDING createSampledPresences()")
+
 #    return (combined.spp.sampled.presences.table)
     }
 
@@ -449,6 +461,8 @@ genPresences = function (num.true.presences,    #  a vector, not a scalar
                         randomSeed
                         )
     {
+cat ("\n\n+++PYPER+++  STARTING genPresences()")
+
     set.seed (randomSeed)
 
         #  When I create a vector in python as x = [1,2,5], it gets passed
@@ -469,6 +483,7 @@ genPresences = function (num.true.presences,    #  a vector, not a scalar
                             cur.full.maxent.samples.dir.name,
                             combinedPresSamplesFileName
                             )
+cat ("\n\n+++PYPER+++  ENDING genPresences()")
     }
 
 #===============================================================================
