@@ -486,6 +486,9 @@ class Guppy (object):
         if self.variables["PAR.genTruePresWithArithmeticCombinations"]:
             self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresARITH(self.variables)
 
+        elif self.variables["PAR.genTruePresWithClustering"]:
+            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresCLUSTERpyper(self.variables)
+
         elif self.variables["PAR.genTruePresWithMaxent"]:
             self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresMAXENT(self.variables)
 
@@ -682,7 +685,7 @@ class Guppy (object):
 
             print "\n\nnumRows = " + str(numRows)
             print "numCols = " + str(numCols)
-            print "\nnumCells = " + str(numCells)
+            print "numCells = " + str(numCells)
 
             #-----------------------------------------------------------------------
 
@@ -708,9 +711,14 @@ class Guppy (object):
             #randomSeed = 1
             r.assign('rRandomSeed', self.randomSeed)
 
+            print "\n\n>>>>> About to pyper source genTruePresencesPyper.R"
             r("source ('/Users/Bill/D/rdv-framework/projects/guppy/genTruePresencesPyper.R')")
+            print "\n\n>>>>> Back from pyper source genTruePresencesPyper.R"
+            print "\n\n>>>>> About to pyper call genPresences()"
             r(
                 'genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
+            print "\n\n>>>>> Back from pyper call genPresences()"
+            print ">>>>> Bottom of loop..."
 
             #-----------------------------------------------------------------------
 
@@ -758,7 +766,7 @@ class Guppy (object):
 
         print "\n\n+++++\tBefore genTruePresences\n"
 
-        listOfTruePresencesAndXYlocs = self.genTruePresences(numTruePresences)
+        listOfTruePresencesAndXYlocs = self.genTruePresences (numTruePresences)
         #        combinedSppTruePresencesTable = \
         #            listOfTruePresencesAndXYlocs ["combined.spp.true.presences.table"]
         #        allSppTruePresenceLocsXY = \

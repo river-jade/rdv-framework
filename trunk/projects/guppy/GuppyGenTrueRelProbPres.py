@@ -40,6 +40,81 @@ class GuppyGenTrueRelProbPres (object):
 
 #-------------------------------------------------------------------------------
 
+    def copyTrueRelProbDistMapsForAllSpp (self, guppy):
+
+        filespec = "*.asc"
+            #  2013 10 23 - BTL
+            #  Guppy was crashing when there were 8 species and 3 env layers.
+            #  It would crash when trying to read in the 8 generated species
+            #  because there were only 3 species in the directory the
+            #  generated species were copied into.
+            #  For some reason, it was copying the env files as the
+            #  generated species files.  Seems to work now that I've changed
+            #  the srcFile directory.
+###2013.10.23###        srcFiles = gsf.buildNamesOfSrcFiles (guppy.curFullMaxentEnvLayersDirName, filespec)
+        srcFiles = gsf.buildNamesOfSrcFiles (guppy.sppGenOutputDir, filespec)
+###        print "\n\nvvvvvvvvvvvvvvvvvvvvvvvvvv\n\n*****  srcFiles = \n"
+###        pprint (srcFiles)
+        fileRootNames = gsf.buildDestFileRootNames (guppy.sppGenOutputDir, filespec)
+###        print "\n\n*****  srcFiles = \n"
+###        pprint (srcFiles)
+
+        prefix = self.variables ["PAR.trueProbDistFilePrefix"] + "."
+        print "\n\nprefix = " + prefix
+        destFilesPrefix = guppy.probDistLayersDirWithSlash + prefix
+
+        destFiles = [destFilesPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
+        pprint (destFiles)
+        print "\n\n"
+###        print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+
+        gsf.copyFiles (srcFiles, destFiles)
+
+#-------------------------------------------------------------------------------
+
+    def getTrueRelProbDistMapsForAllSpp (self, guppy):
+
+        self.generateTrueRelProbDistMapsForAllSpp (guppy)
+        self.copyTrueRelProbDistMapsForAllSpp (guppy)
+
+#===============================================================================
+#===============================================================================
+
+class GuppyGenTrueRelProbPresARITH (GuppyGenTrueRelProbPres):
+    """
+    Class for guppy generators of true relative probability of presence
+    that are based on doing simple arithmetic between environmental layers.
+    """
+
+#-------------------------------------------------------------------------------
+
+    def __init__ (self, variables=None):
+        self.variables = variables or {}
+#        super.__init__ (variables)    Should I be doing this instead?
+
+#-------------------------------------------------------------------------------
+
+    def getTrueRelProbDistMapsForAllSpp (self, guppy):
+        raise NotImplementedError ()
+
+#===============================================================================
+#===============================================================================
+
+class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
+    """
+    Class for guppy generators of true relative probability of presence
+    that are based on running Maxent to generate a relative probability
+    distribution that can then be reused as a true distribution.
+    """
+
+#-------------------------------------------------------------------------------
+
+    def __init__ (self, variables=None):
+        self.variables = variables or {}
+#        super.__init__ (variables)    Should I be doing this instead?
+
+#-------------------------------------------------------------------------------
+
     def genCombinedSppPresTable (self, numImgRows, numImgCols):
         """
         Generate and return a table specifying all true species locations
@@ -165,81 +240,6 @@ class GuppyGenTrueRelProbPres (object):
     #    print combinedSppPresTable
 
         return combinedSppPresTable
-
-#-------------------------------------------------------------------------------
-
-    def copyTrueRelProbDistMapsForAllSpp (self, guppy):
-
-        filespec = "*.asc"
-            #  2013 10 23 - BTL
-            #  Guppy was crashing when there were 8 species and 3 env layers.
-            #  It would crash when trying to read in the 8 generated species
-            #  because there were only 3 species in the directory the
-            #  generated species were copied into.
-            #  For some reason, it was copying the env files as the
-            #  generated species files.  Seems to work now that I've changed
-            #  the srcFile directory.
-###2013.10.23###        srcFiles = gsf.buildNamesOfSrcFiles (guppy.curFullMaxentEnvLayersDirName, filespec)
-        srcFiles = gsf.buildNamesOfSrcFiles (guppy.sppGenOutputDir, filespec)
-###        print "\n\nvvvvvvvvvvvvvvvvvvvvvvvvvv\n\n*****  srcFiles = \n"
-###        pprint (srcFiles)
-        fileRootNames = gsf.buildDestFileRootNames (guppy.sppGenOutputDir, filespec)
-###        print "\n\n*****  srcFiles = \n"
-###        pprint (srcFiles)
-
-        prefix = self.variables ["PAR.trueProbDistFilePrefix"] + "."
-        print "\n\nprefix = " + prefix
-        destFilesPrefix = guppy.probDistLayersDirWithSlash + prefix
-
-        destFiles = [destFilesPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
-        pprint (destFiles)
-        print "\n\n"
-###        print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
-
-        gsf.copyFiles (srcFiles, destFiles)
-
-#-------------------------------------------------------------------------------
-
-    def getTrueRelProbDistMapsForAllSpp (self, guppy):
-
-        self.generateTrueRelProbDistMapsForAllSpp (guppy)
-        self.copyTrueRelProbDistMapsForAllSpp (guppy)
-
-#===============================================================================
-#===============================================================================
-
-class GuppyGenTrueRelProbPresARITH (GuppyGenTrueRelProbPres):
-    """
-    Class for guppy generators of true relative probability of presence
-    that are based on doing simple arithmetic between environmental layers.
-    """
-
-#-------------------------------------------------------------------------------
-
-    def __init__ (self, variables=None):
-        self.variables = variables or {}
-#        super.__init__ (variables)    Should I be doing this instead?
-
-#-------------------------------------------------------------------------------
-
-    def getTrueRelProbDistMapsForAllSpp (self, guppy):
-        raise NotImplementedError ()
-
-#===============================================================================
-#===============================================================================
-
-class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
-    """
-    Class for guppy generators of true relative probability of presence
-    that are based on running Maxent to generate a relative probability
-    distribution that can then be reused as a true distribution.
-    """
-
-#-------------------------------------------------------------------------------
-
-    def __init__ (self, variables=None):
-        self.variables = variables or {}
-#        super.__init__ (variables)    Should I be doing this instead?
 
 #-------------------------------------------------------------------------------
 
@@ -374,7 +374,7 @@ class GuppyGenTrueRelProbPresCLUSTER (GuppyGenTrueRelProbPres):
 
         print "\n\nGenerate true rel prob map using CLUSTERING.\n\n"
 
-
+#guppy.sppGenOutputDir
 
 
     #	return (trueRelProbDistsForSpp)
