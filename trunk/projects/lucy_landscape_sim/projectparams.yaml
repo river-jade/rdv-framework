@@ -1,4 +1,6 @@
 project_name: lucy_landscape_sim
+runner_class: PythonRunner
+
 base_params: 
     variables: 
       max_level: 9
@@ -31,4 +33,24 @@ scenarios:
       parameters: 
         variables: 
           H: 0.8
+
+repetitions:
+  - variables:
+      test.variable.2: 777
+
+  - variables:
+      test.variable.2: 888
+
+generators:
+  - key: test.variable.3
+    generator_type: linear_step
+    start: 0
+    step_size: 1
+    count: 10
+
+  - key: test.variable.4
+    generator_type: normal_distribution
+    mean: 10
+    std_dev: 1
+    count: 10
 
