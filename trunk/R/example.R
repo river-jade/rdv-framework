@@ -1,8 +1,6 @@
-source( 'variables.R' )
-
 # R file for testing the output during dry runs
 
-cat('In test.for.python.dry.run.R...\n')
+cat('In example.R...\n')
 
 print('')
 for (i in 1:20) {
