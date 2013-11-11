@@ -6,7 +6,7 @@ base_params:
       max_level: 9
       sigma: 1
       seed: 0
-      H: 0.7
+      H: 0.5
       normalise: True
       lowerBound: 0
       upperBound: 255
@@ -25,29 +25,29 @@ base_params:
     
 
 scenarios:
-    - name: Example scenario
+    - name: Medium-H scenario
       parameters: 
         variables: 
 
-    - name: Example scenario 2
+    - name: High-H scenario
       parameters: 
         variables: 
           H: 0.8
 
 repetitions:
-    static_repetitions:
-      - variables:
-          test.variable.2: 777
-      - variables:
-          test.variable.2: 888
+    # static_repetitions:
+    #   - variables:
+    #       test.variable.2: 777
+    #   - variables:
+    #       test.variable.2: 888
     generators:
-      - key: test.variable.3
+      - key: H3wt
         generator_type: linear_step
-        start: 0
-        step_size: 1
-        count: 10
-      - key: test.variable.4
+        start: 0.1
+        step_size: 0.2
+        count: 5
+      - key: max_level
         generator_type: normal_distribution
-        mean: 10
-        std_dev: 1
-        count: 10
+        mean: 5
+        std_dev: 2
+        count: 5
