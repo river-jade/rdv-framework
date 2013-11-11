@@ -102,8 +102,12 @@ class GuppyMattEnvLayers (GuppyEnvLayers):
             #  NOTE:  THIS DOESN'T WORK FOR REMOTE (URL) FILES YET...
 
 #        copyFiles_Matt (imgSrcDir, "*.asc", targetDirWithSlash)
+
+        print "\n>>> About to build srcFiles with call to gsf.buildNamesOfSrcFiles() in GuppyEnvLayers::genEnvLayers()\n"
         srcFiles = gsf.buildNamesOfSrcFiles (srcDir, filespec)
+        print "\n>>> About to build destFiles with call to gsf.buildNamesOfSrcFiles() in GuppyEnvLayers::genEnvLayers()\n"
         destFiles = gsf.buildNamesOfDestFiles (srcDir, filespec, targetDirWithSlash)
+        print "\n>>> About to copy srcFiles to destFiles with call to gsf.copyFiles() in GuppyEnvLayers::genEnvLayers()\n"
 
         gsf.copyFiles (srcFiles, destFiles)
 
