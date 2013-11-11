@@ -135,7 +135,7 @@ def buildNamesOfSrcFiles (srcDir, filespec):
     srcFiles = []
     for root, dirs, files in os.walk (srcDir):
         srcFiles += glob.glob (os.path.join (root, filespec))
-    print "\n\nsrcFiles = "
+    print "\n\nsrcFiles in buildNamesOfSrcFiles() = "
     pprint (srcFiles)
     print "\n\n"
 
@@ -173,6 +173,14 @@ def buildNamesOfDestFiles (srcDir, filespec, targetDirWithSlash):
     #----------
 
 def copyFiles (srcFiles, destFiles):
+
+    print "\n\n>>>>>>>>>>  In copyFiles, "
+    print "\nlen (srcFiles) = "
+    print len (srcFiles)
+    print "\nlen (destFiles) = "
+    print len (destFiles)
+    print "\nrange (len (srcFiles)) = "
+    print range (len (srcFiles))
 
         #  Have src and dest file names now, so copy the files.
     for k in range (len (srcFiles)):
