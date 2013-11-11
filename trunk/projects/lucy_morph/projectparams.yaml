@@ -73,17 +73,17 @@ repetitions:
       generator_type: normal_distribution
       mean: 50
       std_dev: 5
-      count: 1
+      count: 2
   
     - key: seed2
       generator_type: normal_distribution
       mean: 50
       std_dev: 5
-      count: 1
+      count: 2
   
   
     - key: seed3
       generator_type: normal_distribution
       mean: 50
       std_dev: 5
-      count: 1
+      count: 2
