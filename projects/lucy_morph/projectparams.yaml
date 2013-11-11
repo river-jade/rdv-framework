@@ -1,4 +1,5 @@
 project_name: Lucy_Morph
+runner_class: PythonRunner
 base_params: 
     variables: 
         window_size: 7
@@ -52,3 +53,37 @@ scenarios:
 #            H1: 0.9
 #            H2: 0.35
 #            H3: 0.20
+
+repetitions:
+      
+  generators:
+    - key: H2wt
+      generator_type: linear_step
+      start: 0.35
+      step_size: 0.3
+      count: 3
+  
+    - key: H3wt
+      generator_type: linear_step
+      start: 0.35
+      step_size: 0.3
+      count: 3
+  
+    - key: seed1
+      generator_type: normal_distribution
+      mean: 50
+      std_dev: 5
+      count: 1
+  
+    - key: seed2
+      generator_type: normal_distribution
+      mean: 50
+      std_dev: 5
+      count: 1
+  
+  
+    - key: seed3
+      generator_type: normal_distribution
+      mean: 50
+      std_dev: 5
+      count: 1
