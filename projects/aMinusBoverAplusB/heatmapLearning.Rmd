@@ -1,0 +1,427 @@
+#==============================================================================
+
+                           heatmapLearning.Rmd
+
+#  Random bits of code I was testing to learn how to use heatmaps in R.
+#  Originally started doing this in the file heatmapLearning.R, then
+#  moved that stuff here to be able to capture the outputs too.
+
+#==============================================================================
+
+#  History:
+
+#    BTL - 2013.11.12
+#    Moved from /Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/P04 a-b over a+b/R_files/heatmapLearning.Rmd
+#    to /Users/Bill/D/rdv-framework/projects/aMinusBoverAplusB/heatmapLearning.Rmd
+#    to try running it under tzar and keeping the project under version control.
+
+========================================================
+
+Learning to generate heatmaps in R
+
+========================================================
+
+BTL 2013 11 04
+
+This file contains a bunch of random notes and code snippets from web pages found while I was trying to figure out how to do heatmaps in R without having it stick all the cluster dendrogram stuff on the sides of the figure.
+
+
+```{r fig.width=7, fig.height=6}
+```
+
+Simple heat map with means but not cluster dendrograms
+-------------------------------------------
+From  May 16, 2008; 2:02am post at:
+
+http://r.789695.n4.nabble.com/Heatmap-2-eliminate-cluster-and-dendrogram-td857723.html
+
+I've modified the posted code slightly to:
+- get the gplots library (since the posted code seemted to assume to that it was already loaded) and
+- use an 11x11 matrix to match the ones used in
+  the (A-B)/(A+B) code.
+```{r}
+library (gplots)
+x <- matrix(rnorm(121), ncol = 11)
+heatmap.2(x, dendrogram="none", Colv = FALSE, Rowv = FALSE)
+```
+
+Very simple heatmap without even showing means
+---
+This also runs well and looks decent:
+
+From http://stackoverflow.com/questions/10048543/r-centering-heatmap-2-key-gplots-package
+
+```{r}
+library(gplots)
+#read your example data
+heatmapInputActual <- read.table(textConnection(
+"8.408458 5.661144 0.00000000
+4.620846 4.932283 -0.46570468
+-4.638912 -3.471838 -0.12146109
+-4.822829 -3.946024 0.06403327
+3.948832 4.520447 -0.31945941
+"),as.is=TRUE)
+#convert sample data to matrix
+heatmapInputActual <- as.matrix(heatmapInputActual)
+#just add symbreaks to the end of your code
+heatmap.2(heatmapInputActual, dendrogram="none", Rowv=FALSE, Colv=FALSE,
+          col = bluered(256), scale="none", key=TRUE, density.info="none",
+          trace="none", cexRow=0.125, cexCol=0.125, symm=F,symkey=T,symbreaks=T)
+```
+
+Large, clean and simple heatmap (1000x1000)
+-------------------------------------------
+*** This looks exceptionally useful since it:
+- draws a really large heat map (1000x1000)
+- has very nice clean, simple labelling
+From the last or nearly last comment in:
+    http://stackoverflow.com/questions/5667107/r-how-can-i-make-a-heatmap-with-a-large-matrix
+
+```{r largePlot, cache=TRUE}
+ library(lattice)
+
+ #Build the data
+ nrowcol <- 1000
+ dat <- matrix(ifelse(runif(nrowcol*nrowcol) > 0.5, 1, 0), nrow=nrowcol)
+
+ #Build the palette and plot it
+ pal <- colorRampPalette(c("red", "yellow"), space = "rgb")
+ levelplot(dat, main="1000 X 1000 Levelplot", xlab="", ylab="", col.regions=pal(4), cuts=3, at=seq(0,1,0.5))
+```
+
+Fairly simple correlation heat map
+----------------------------------
+Another very useful one, especially for plotting correlations.
+
+From:
+    http://martinsbioblogg.wordpress.com/2013/03/21/using-r-correlation-heatmap-with-ggplot2/
+
+```{r correlationPlot, cache=TRUE}
+data(attitude)
+library(ggplot2)
+library(reshape2)
+qplot(x=Var1, y=Var2, data=melt(cor(attitude)), fill=value, geom="tile")
+```
+
+Complex incremental development of a heatmap with notes in cells
+---------
+The following site shows a complex incremental
+development of a heat map.  It's too complex to
+replicate here right now, however, it's worth
+going through when you're ready to build the
+final, fancy heatmaps.
+
+In particular, there is a line about 3/4 of the
+way through the posting that talks about using
+the "cellnote" parameter to heatmap.2().  It
+allows you to write something into each cell of
+the heatmap based on the values in a matrix that
+you hand in.  The author uses it to encode
+something about p-values, but we could use it for
+something like showing the magnification, etc.
+>    'To write the p.values over the heatmap,
+     we use the parameter cellnote, and if
+     we want them in black, we need to set
+     notecol = "black". ...'
+
+http://mannheimiagoesprogramming.blogspot.com.au/2012/06/drawing-heatmaps-in-r-with-heatmap2.html
+
+Heatmap as a call to image()
+---
+Interesting incidental explanation of heatmap in a comment at:
+https://stat.ethz.ch/pipermail/bioconductor/2009-February/026500.html
+
+>    "heatmap() is essentially a call to image()
+     so try image(t(your.data)). I found you can
+     get nice control over the colours & the
+     overall appearance this way, although it
+     does take a bit more messing around."
+
+###  Or as a levelplot in lattice library
+
+Further comments in the thread are also interesting:
+https://stat.ethz.ch/pipermail/bioconductor/2009-February/026510.html
+
+> "levelplot" in the "lattice" package is a
+    better alternative to
+    "graphics::image" (however, as far as I know,
+    and I'd love to be
+    corrected, it does not easily integrate into
+    layouts of multiple panels).
+    For straightforward image display, "display" in
+    "EBImage" (please use
+    the development version,
+    http://www.bioconductor.org/packages/devel/bioc/html/EBImage.html) can
+    be efficient.
+    "heatmap.2" in the "gplots" package is a better
+    alternative to "stats::heatmap".
+    For even more flexible reordering of rows and
+    columns, have a look at
+    the example of the "dendrogramGrob" function in
+    the "latticeExtra" package.
+    "
+
+***
+
+**Note that the large, simple heatmap above (orange and red, 1000x1000) is done using levelplot().**
+
+*May want to investigate levelplot() and use it instead of heatmap...*
+
+filled.contour(), colorRamp(), and colorRampPalette() functions
+---
+Might also want to consider filled.contour() as shown in the help given by ?colorRampPalette.
+
+The help page explains what colorRamp() and colorRampPalette() return:
+
+> colorRamp returns a function that maps values between 0 and 1 to colors.
+
+> colorRampPalette returns a function that takes an integer argument and returns that number of colors interpolating the given sequence (similar to heat.colors or terrain.colors).
+
+
+The examples in the code at the end of that help file are all really nice and appear to be fairly easy to control.  I'll paste that example code in here:
+
+```{r filledContourExamples1, cache=TRUE}
+## Both return a *function* :
+colorRamp(c("red", "green"))( (0:4)/4 ) ## (x) , x in [0,1]
+colorRampPalette(c("blue", "red"))( 4 ) ## (n)
+
+require(graphics)
+
+## Here space="rgb" gives palettes that vary only in saturation,
+## as intended.
+## With space="Lab" the steps are more uniform, but the hues
+## are slightly purple.
+filled.contour(volcano,
+               color.palette =
+                   colorRampPalette(c("red", "white", "blue")),
+               asp = 1)
+filled.contour(volcano,
+               color.palette =
+                   colorRampPalette(c("red", "white", "blue"),
+                                    space = "Lab"),
+               asp = 1)
+
+## Interpolating a 'sequential' ColorBrewer palette
+YlOrBr <- c("#FFFFD4", "#FED98E", "#FE9929", "#D95F0E", "#993404")
+filled.contour(volcano,
+               color.palette = colorRampPalette(YlOrBr, space = "Lab"),
+               asp = 1)
+filled.contour(volcano,
+               color.palette = colorRampPalette(YlOrBr, space = "Lab",
+                                                bias = 0.5),
+               asp = 1)
+
+## 'jet.colors' is "as in Matlab"
+## (and hurting the eyes by over-saturation)
+jet.colors <-
+    colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
+                       "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
+filled.contour(volcano, color = jet.colors, asp = 1)
+
+## space="Lab" helps when colors don't form a natural sequence
+m <- outer(1:20,1:20,function(x,y) sin(sqrt(x*y)/3))
+rgb.palette <- colorRampPalette(c("red", "orange", "blue"),
+                                space = "rgb")
+Lab.palette <- colorRampPalette(c("red", "orange", "blue"),
+                                space = "Lab")
+filled.contour(m, col = rgb.palette(20))
+filled.contour(m, col = Lab.palette(20))
+```
+***
+Some examples from filled.contour help page
+---
+```{r filledContourExamples2, cache=TRUE}
+require(grDevices) # for colours
+filled.contour(volcano, color = terrain.colors, asp = 1) # simple
+
+x <- 10*1:nrow(volcano)
+y <- 10*1:ncol(volcano)
+filled.contour(x, y, volcano, color = terrain.colors,
+    plot.title = title(main = "The Topography of Maunga Whau",
+    xlab = "Meters North", ylab = "Meters West"),
+    plot.axes = { axis(1, seq(100, 800, by = 100))
+                  axis(2, seq(100, 600, by = 100)) },
+    key.title = title(main = "Height\n(meters)"),
+    key.axes = axis(4, seq(90, 190, by = 10)))  # maybe also asp = 1
+mtext(paste("filled.contour(.) from", R.version.string),
+      side = 1, line = 4, adj = 1, cex = .66)
+
+# Annotating a filled contour plot
+a <- expand.grid(1:20, 1:20)
+b <- matrix(a[,1] + a[,2], 20)
+filled.contour(x = 1:20, y = 1:20, z = b,
+               plot.axes = { axis(1); axis(2); points(10, 10) })
+
+## Persian Rug Art:
+x <- y <- seq(-4*pi, 4*pi, len = 27)
+r <- sqrt(outer(x^2, y^2, "+"))
+filled.contour(cos(r^2)*exp(-r/(2*pi)), axes = FALSE)
+## rather, the key *should* be labeled:
+filled.contour(cos(r^2)*exp(-r/(2*pi)), frame.plot = FALSE,
+               plot.axes = {})
+```
+***
+Experimenting with turning the terrain example above into A-B plot
+---
+```{r filledContoursA-B, cache=TRUE}
+set.seed (1)
+errSteps = seq (-0.1, 0.1, 0.01)
+numErrSteps = length (errSteps)
+magValues =
+    10 * abs (matrix (rnorm(numErrSteps*numErrSteps),
+                      ncol = numErrSteps))
+x <- errSteps  # 10*1:nrow(magValues)
+y <- errSteps  # 10*1:ncol(magValues)
+
+
+
+YlOrBr <- c("#FFFFD4", "#FED98E", "#FE9929", "#D95F0E", "#993404")
+#               color.palette = colorRampPalette(YlOrBr, space = "Lab"),
+ #               color.palette = colorRampPalette(YlOrBr, space = "Lab",
+ #                                               bias = 0.5),
+#               asp = 1)
+
+
+#  NOTE: colorRampPalette() help page says that bias is a positive
+#        number and higher values give more widely spaced colors at
+#        the high end.
+filled.contour(x, y, magValues,
+               #color = terrain.colors,
+
+               color.palette =
+#                   colorRampPalette(c("green", "white", "red")),
+#                   colorRampPalette(c("light yellow", "orange", "red")),
+#                   colorRampPalette(c("light blue", "red")),
+                   colorRampPalette(c("yellow", "red")),
+
+#                    colorRampPalette(YlOrBr, space = "Lab"
+#                                     , bias = 0.75
+#                                     ),
+
+    plot.title = title(main = "Error Magnification\nin current metric",
+    xlab = "err in A", ylab = "err in B"),
+#    plot.axes = { axis(1, seq(100, 800, by = 100))    #  x axis (bottom)
+#                  axis(2, seq(100, 600, by = 100)) }, #  y axis (left)
+    key.title = title(main = "Err Mag")
+#    key.axes = axis(4, seq(90, 190, by = 10))
+    , key.axes = axis(4, seq(0, 4, by = 0.2))
+               )  # maybe also asp = 1
+mtext(paste("Drawn using filled.contour(.) from", R.version.string),
+      side = 1, line = 4, adj = 1, cex = .66)
+```
+
+Documentation, downloads, and comments for various heatmap packages
+---
+### Documentation for heatmap.2():
+    http://hosho.ees.hokudai.ac.jp/~kubo/Rdoc/library/gplots/html/heatmap.2.html
+
+### Documentation and downloads for heatmap.plus():
+- http://crantastic.org/packages/heatmap-plus
+- http://rgm3.lab.nig.ac.jp/RGM/R_rdfile?f=heatmap.plus/man/heatmap.plus.package.Rd&d=R_CC
+- http://www.biomedcentral.com/1471-2105/13/S16/S10
+  - That link is to a paper giving an example:
+      - "A tutorial in displaying mass spectrometry-based proteomic data using heat maps"
+- http://cran.r-project.org/web/packages/heatmap.plus/heatmap.plus.pdf
+
+#### This review talks about heatmap.plus():
+http://crantastic.org/packages/heatmap-plus/reviews/46
+> "Just like heatmap but with 1 essential extra.
+     Almost exactly the same as the package
+     ‘heatmap’ but has the added features of
+     being able to generate multiple
+     RowSide/ColSide Colors - a very useful
+     feature, and implemented in an extremely
+     easy way to use.""
+
+### Google search that gave me all the useful things above
+https://www.google.com.au/?gfe_rd=ctrl&ei=OPd2UtqoMOzC8gfzqIHADA&gws_rd=cr#q=heatmap.2+library+r&safe=off
+
+### Some other possibly useful pages I found but have not cited/used here:
+- http://www.biostars.org/p/70847/#70853
+- http://digitheadslabnotebook.blogspot.com.au/2011/06/drawing-heatmaps-in-r.html
+- http://flowingdata.com/2010/01/21/how-to-make-a-heatmap-a-quick-and-easy-solution/
+- http://www.biostars.org/p/18211/
+
+Matlab heatmaps
+===
+Also did a quick search for "matlab heatmap"
+to see if that is any better.  Found these:
+- http://stackoverflow.com/questions/15676363/matlab-how-does-one-plot-a-heatmap-from-nxn-matrix
+- http://stackoverflow.com/questions/12851352/matlab-heat-map
+- http://www.mathworks.com.au/help/bioinfo/ref/heatmap.html
+
+Old Stuff
+=========
+From  http://mintgene.wordpress.com/
+
+```{r oldStuff, cache=TRUE}
+
+## required packages (plot, melt data frame, and rolling function)
+library(ggplot2)
+library(reshape)
+library(zoo)
+
+setwd ('/Users/Bill/D/Projects_RMITget/AAA_PapersInProgress/P04\ a-b\ over\ a+b/R_files')
+cat ("\n\nCurrent working directory = \n'", getwd(), "'\n\n")
+
+## repeat random selection
+set.seed(1)
+
+## create 50x10 matrix of random values from [-1, +1]
+#random_matrix <- matrix(runif(500, min = -1, max = 1), nrow = 50)
+#random_matrix <- matrix(runif(21*21, min = -1, max = 1), nrow = 21)
+#random_matrix <- read.csv ('AmBoApB_0.3_0.35_err.ratio.magnify.M')
+random_matrix <- as.matrix(read.csv ('/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/P04\ a-b\ over\ a+b/R_files/AmBoApB_0.3_0.35_err.ratio.magnify.M.csv'))
+#cat ("\nrandom_matrix = \n")
+#print (random_matrix)
+#cat ("\n\n")
+random_matrix <- apply(random_matrix,c(1,2),function (z) {if(is.na (z)) return (0)})
+
+## set color representation for specific values of the data distribution
+quantile_range <- quantile(random_matrix, probs = seq(0, 1, 0.2), na.rm=TRUE)
+
+## use http://colorbrewer2.org/ to find optimal divergent color palette (or set own)
+color_palette <- colorRampPalette(c("#3794bf", "#FFFFFF", "#df8640"))(length(quantile_range) - 1)
+
+## prepare label text (use two adjacent values for range text)
+label_text <- rollapply(round(quantile_range, 2), width = 2, by = 1, FUN = function(i) paste(i, collapse = " : "))
+
+## discretize matrix; this is the most important step, where for each value we find category of predefined ranges (modify probs argument of quantile to detail the colors)
+mod_mat <- matrix(findInterval(random_matrix, quantile_range, all.inside = TRUE), nrow = nrow(random_matrix))
+
+## remove background and axis from plot
+theme_change <- theme(
+    plot.background = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+)
+
+## output the graphics
+ggplot(melt(mod_mat), aes(x = X1, y = X2, fill = factor(value))) +
+    geom_tile(color = "black") +
+    scale_fill_manual(values = color_palette, name = "", labels = label_text) +
+    theme_change  +
+    coord_fixed()        #  Make plot square (http://stackoverflow.com/questions/7056836/r-how-to-fix-the-aspect-ratio-in-ggplot)
+
+
+
+
+#  You can change interval to color relationship by modifying quantile_range
+#  and color_palette objects. Each sliding pair within quantile_range
+#  corresponds to a single color (upper and lower boundary).
+
+#  To change the colors within ranges, you’d write something like:
+#      color_palette[4] <- "#a95af6"
+
+# …, which would generate a heatmap like this:
+#    http://s12.postimg.org/58ph022lp/comment.png
+```
+
