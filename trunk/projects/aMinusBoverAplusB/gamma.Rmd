@@ -1,0 +1,24 @@
+==============================================================================
+
+                                 gamma.Rmd
+
+Usage:
+    setwd ('/Users/Bill/D/rdv-framework/projects/aMinusBoverAplusB')
+    Click on "knit HTML" in RStudio after this file is open in RStudio
+
+==============================================================================
+
+History:
+
+BTL - 2013.11.12
+- Moved from /Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/P04 a-b over a+b/R_files/gamma.v13.Rmd
+  to /Users/Bill/D/rdv-framework/projects/aMinusBoverAplusB/gamma.Rmd
+  to try running it under tzar and keeping the project under version control.
+
+#==============================================================================
+
+```{r fig.width=7, fig.height=6}
+setwd ('/Users/Bill/D/rdv-framework/projects/aMinusBoverAplusB')
+source ('gamma.R')
+```
+
