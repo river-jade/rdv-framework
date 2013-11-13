@@ -59,15 +59,15 @@ repetitions:
   generators:
     - key: H2wt
       generator_type: linear_step
-      start: 0.35
+      start: 0.05
       step_size: 0.3
-      count: 1
+      count: 4
   
     - key: H3wt
       generator_type: linear_step
-      start: 0.35
+      start: 0.05
       step_size: 0.3
-      count: 1
+      count: 4
   
     - key: seed1
       generator_type: normal_distribution
