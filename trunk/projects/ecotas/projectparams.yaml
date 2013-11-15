@@ -3,19 +3,20 @@ runner_class: RRunner
 
 base_params:
     variables: 
-        test.variable.1: 123
-        test.variable.2: 456
-        test.variable.3: xyz
-        test.variable.4: abc
-    
+        reps: 50
+        no.timesteps: 50
+        init.pop.size: 1000
+        mu: -0.1
+        sd: 0.1
+        run.id: $$run_id$$
+
+
     input_files: 
     output_files: 
-        PAR.testing.output.filename: test_output_file.txt
-        PAR.testing.output.filename2: test_output_file2.txt
-    
-
+        output.plot : poptraj
+        output.dump : projtraj.R
 scenarios:
-    - name: Ecotas scenario 1
+    - name: S1 base params
       parameters: 
         variables: 
 

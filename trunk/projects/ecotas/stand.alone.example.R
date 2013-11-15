@@ -32,3 +32,4 @@ str(inputFiles)
 str(outputFiles)
 str(variables)
 
+dump( 'inputFiles', "paramfile.R' )
