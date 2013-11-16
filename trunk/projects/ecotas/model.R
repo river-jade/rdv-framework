@@ -21,6 +21,18 @@ for( r in 1:variables$reps ) {
 
 }
 
+# calculate the mean pop trajectories
+mean.traj.log <- apply( pop.traj.log, 2, mean)
+mean.traj <- apply( pop.traj, 2, mean)
+
+#cat('\n***mean traj = \n' )
+#print( mean.traj.log )
+
+
+       #------------------------
+       #  Calculate statistics
+       #-------------------------
+
 
 
        #------------------------
@@ -41,18 +53,25 @@ dev.off()
 pdf( paste(outputFiles$output.plot, 'multiple.pdf',sep='') )
 
 for( r in 1:variables$reps) {
-    if( r==1 ) plot( 0:variables$no.timesteps, pop.traj.log[r,], type='l', ylim=c(2,8),
+    if( r==1 ) plot( 0:variables$no.timesteps, pop.traj.log[r,], type='l', ylim=c(0,8),
             xlab="Time (years)", ylab="Log of population size" )
     else lines (0:variables$no.timesteps, pop.traj.log[r,], type='l' )
 }
+# plot the mean line
+lines(0:variables$no.timesteps, mean.traj.log, type='l', col='red', lwd=4  )
+
+# show the version without the log transformation
 for( r in 1:variables$reps) {
     if( r==1 ) plot( 0:variables$no.timesteps, pop.traj[r,], type='l', ylim=c(0,1200),
             xlab="Time (years)", ylab="Population size" )
-    else lines (0:variables$no.timesteps, pop.traj[r,], type='l' )
+    else lines (0:variables$no.timesteps, pop.traj[r,], type='l')
 }
+# plot the mean line
+lines(0:variables$no.timesteps, mean.traj, type='l', col='red', lwd=4  )
 
 dev.off()
 
+# Dumpt all the matrix with all the poptrajectories. 
 dump( "pop.traj", outputFiles$output.dump )
 
 
@@ -61,5 +80,6 @@ dump( "pop.traj", outputFiles$output.dump )
 ## plot( 0:50, pop.traj, type='l' )
 ## dev.off()
 
+#c(variables$run.id, mean.traj.log, 
 
 #dev.copy( png, outputFiles$output.plot); dev.off()
