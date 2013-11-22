@@ -10,6 +10,29 @@
 
 #===============================================================================
 
+#  options warn:
+#    sets the handling of warning messages.
+
+#    If warn is negative all warnings are ignored.
+
+#    If warn is 0 (the default) warnings are stored until
+#    the top–level function returns.
+#    If 10 or fewer warnings were signalled they will be printed
+#    otherwise a message saying how many were signalled.
+#    An object called last.warning is created and can be printed
+#    through the function warnings.
+
+#    If warn is 1, warnings are printed as they occur.
+
+#    If warn is 2 or larger all warnings are turned into errors.
+
+#options (warn = -1)
+options (warn = 0)
+#options (warn = 1)
+#options (warn = 2)
+
+#-------------------------------------------------------------------------------
+
 library (cluster)
 
 source ('read.R')
@@ -112,7 +135,6 @@ getPrincipalComponents = function (data, OPT.pca.cum.var.explained.cutoff = 0.75
             #  i.e., e1 == data.pca.cor$scores[1,].
     ####e1 <- predict (data.pca.cor, data[1,]);
 
-
     #data.pca.cov <- princomp (data, cor = F);
     ##data.pca.cov <- prcomp (data, cor = F);
     #plot (data.pca.cov, main= 'Screeplot (COV Approach)');
@@ -168,6 +190,7 @@ getPrincipalComponents = function (data, OPT.pca.cum.var.explained.cutoff = 0.75
     {
     pca.output.points <- as.matrix (data.pca.cor$scores, nrow = length (data.pca.cor$scores), ncol = 1);
     plot(0);
+
     } else
     {
     pca.output.points <- data.pca.cor$scores [ , 1:pca.elbow];
@@ -227,7 +250,18 @@ imgFileType = "asc"
 numClusters = 3
 maxNumPixelsToCluster = 500
 
-randomSeed = 12
+randomSeed = 17
+
+callingFromGuppy = TRUE
+if (callingFromGuppy & exists ("rSppGenOutputDir"))
+    {
+    sppGenOutputDir = rSppGenOutputDir
+    curFullMaxentEnvLayersDirName = rCurFullMaxentEnvLayersDirName
+    numSpp = rNumSpp
+    randomSeed = rRandomSeed
+
+    numClusters = numSpp
+    }
 
     #-------------------
     #  initializations
@@ -285,26 +319,27 @@ if (dataSrc == "mattData")
 #    imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars/"
     imgSrcDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
 
-    asciiImgFileNameRoots = c("aniso_heat",
-                                "evap_jan",
-                                "evap_jul",
-                                "insolation",
-                                "max_temp",
-                                "min_temp",
-                                "modis_evi",
-                                "modis_mir",
-                                "ndmi",
-                                "pottassium",
-                              #####  "raindays_jan",
-                              #####  "raindays_jul",
-                              #####  "rainfall_jan",
-                              #####  "rainfall_jul",
-                                "thorium",
-                                "twi_topocrop",
-                                "vert_major",
-                                "vert_minor",
-                                "vert_saline",
-                                "vis_sky"
+#  weights at end of following lines...
+    asciiImgFileNameRoots = c("aniso_heat",      #  0-1
+                                "evap_jan",  #  0.5
+                                "evap_jul",  #  0.5
+                                "insolation",      #  0-1
+                                "max_temp",  #  0.5
+                                "min_temp",  #  0.5
+                                "modis_evi",  #  0.5
+                                "modis_mir",  #  0.5
+                                "ndmi",  #  0.5
+                                "pottassium",      #  0-1
+                                "raindays_jan",  #  0.5
+                                "raindays_jul",  #  0.5
+                                "rainfall_jan",  #  0.5
+                                "rainfall_jul",  #  0.5
+                                "thorium",      #  0-1
+                                "twi_topocrop",      #  0-1
+                                "vert_major",      #  0-1
+                                "vert_minor",      #  0-1
+                                "vert_saline",      #  0-1
+                                "vis_sky"      #  0-1
                             )
 
     numEnvLayers = length (asciiImgFileNameRoots)
@@ -572,7 +607,10 @@ for (curClusterID in 1:numClusters)
     for (curRow in 1:numPixelsPerImg)
         {
         #cat ("\nLOOP START: curRow = ", curRow)
-        point1 = combinedEnvLayersTable [curRow,]
+
+###        point1 = combinedEnvLayersTable [curRow,]
+        point1 = combinedEnvLayersTableInPCAcoords [curRow,]
+
         #cat ("\npoint1 = ", point1)
         point2 = curClusterCenter
         #cat ("\npoint2 = ", point2)
@@ -591,11 +629,16 @@ for (curClusterID in 1:numClusters)
             #  BTL - 2013.10.29
 #        distVecs [curRow, curClusterID] = eucDist (point1, point2)
 
+##########  btl - 11/08/13 - noon - I think this is fixed now...
+##########                          Leaving the comment below just in
+##########                          case it's still not right.
 #####  btl - 10/28/13 - 7 pm
 #####  FORGOT THAT WHEN I CONVERT THE POINTS TO PCA VALUES,
 #####  I NEED TO ALSO CONVERT THE POINTS IN THIS CALCULATION.
 #####  RIGHT NOW, IT IS COMPUTING THE DIFF BETWEEN THE RAW POINT
 #####  VALUES (18D) AND THE PCA VALUES (5D))
+
+#browser()
 
         distVecs [curRow, curClusterID] = sumSquaredDist (point1, point2)
         }
@@ -620,8 +663,26 @@ for (curClusterID in 1:numClusters)
     curDir = "./"
     curDistImg = matrix (distVecs[,curClusterID], nrow=numImgRows, ncol=numImgCols, byrow=TRUE)
     write.pgm.file (curDistImg,
-                    paste (curDir, "distToCluster.", curClusterID, sep=''),
+                    paste (curDir, "distToCluster.", (curClusterID - 1), sep=''),
                     numImgRows, numImgCols)
+
+
+    #---------------
+        #  BTL - 11/8/13 - added for compatibility with tzar runs
+
+    filenameRoot = paste (curDir, "spp.", (curClusterID - 1), sep='')
+    write.asc.file (curDistImg,
+                    filenameRoot,
+                      numImgRows, numImgCols
+                      , xllcorner = 1    #  Looks like maxent adds the xy values to xllcorner, yllcorner
+                      , yllcorner = 1    #  so they must be (0,0) instead of (1,1), i.e., the origin
+                                         #  is not actually on the map.  It's just off the lower
+                                         #  left corner.
+                      , no.data.value = -9999
+                      , cellsize = 1
+                     )
+    #---------------
+
 
     if (curClusterID > 1)
         {

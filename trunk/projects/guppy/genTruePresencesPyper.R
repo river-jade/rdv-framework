@@ -17,16 +17,51 @@
 
 #===============================================================================
 
-    #  Copied from guppySupportFunctions.R
+debuggingOutputFile = "/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt"
 
-xy.rel.to.lower.left <- function (n, nrow, ncol)    #**** the key function ****#
-	{
-	n.minus.1 <- n - 1
-	return ( c (1 + (n.minus.1 %/% ncol),
-			    nrow - (n.minus.1 %% nrow)
-			   )
-		   )
-	}
+#===============================================================================
+
+xy.rel.to.lower.left.by.row <- function (n, nrow, ncol)
+    {
+    x = 1 + ((n-1) %% ncol)        #  modulo
+    y = nrow - ((n-1) %/% ncol)    #  integer divide
+
+    return ( c (x,y) )
+    }
+
+#===============================================================================
+
+#  Copied from guppySupportFunctions.R
+#  BUT modified 2013.11.21 by BTL because of error in the original version
+#  where it did an integer divide by ncol instead of nrow in calculating the
+#  x coordinate.
+
+xy.rel.to.lower.left.by.col <- function (n, nrow, ncol)
+    {
+###    x = 1 + ((n-1) %/% ncol)      #  integer divide  ERROR IN guppySupportFunctions.R VERSION ***
+    x = 1 + ((n-1) %/% nrow)      #  integer divide
+
+    y = nrow - ((n-1) %% nrow)    #  modulo
+
+    return (c (x,y) )
+    }
+
+#===============================================================================
+
+spatial.xy.rel.to.lower.left.by.row <- function (n, nrow, ncol, llcorner,  cellsize)    #**** the key function ****#
+    {
+cat (file = debuggingOutputFile, "\n\nat START of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+    xy = xy.rel.to.lower.left.by.row (n, nrow, ncol)
+
+###    return ( c (xllcorner + (cellsize * x), yllcorner + (cellsize * y) ) )
+##    return (llcorner + (cellsize * xy))
+#    return (llcorner + ((cellsize * xy) -(cellsize * 0.5)))
+
+#    cat (">>>> (xy - 0.5) = ", (xy - 0.5), ", cellsize = ", cellsize, ", llcorner = ", llcorner)
+cat (file = debuggingOutputFile, "\n\nat END of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+
+    return (llcorner + (cellsize * (xy - 0.5)))
+    }
 
 #===============================================================================
 
@@ -79,12 +114,12 @@ build.presence.sample =
 	    #  subsample of the original population with no errors.
 		#-------------------------------------------------------------------
 
-cat ("\n\n+++PYPER+++  STARTING build.presence.sample()")
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING build.presence.sample()", append = TRUE)
 
-cat ("\n\n+++  sample.presence.indices.into.true.presence.indices = '", sample.presence.indices.into.true.presence.indices, "'")
-cat ("\n\n+++  true.presence.locs.x.y = \n")
+cat (file = debuggingOutputFile, "\n\n+++  sample.presence.indices.into.true.presence.indices = '", sample.presence.indices.into.true.presence.indices, "'", append = TRUE)
+cat (file = debuggingOutputFile, "\n\n+++  true.presence.locs.x.y = \n", append = TRUE)
 print (true.presence.locs.x.y)
-cat ("\n")
+cat (file = debuggingOutputFile, "\n", append = TRUE)
 
 	sample.locs.x.y =
 	    true.presence.locs.x.y [sample.presence.indices.into.true.presence.indices,]
@@ -100,7 +135,7 @@ cat ("\n")
     if (is.vector (sample.locs.x.y))
         sample.locs.x.y = matrix (sample.locs.x.y, nrow=1)
 
-cat ("\n\n+++PYPER+++  ENDING build.presence.sample()")
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING build.presence.sample()", append = TRUE)
 
 	return (sample.locs.x.y)
 	}
@@ -116,7 +151,7 @@ genTruePresences = function (num.true.presences,    #  a vector, not a scalar
                         cur.full.maxent.samples.dir.name
                         )
     {
-cat ("\n\n+++PYPER+++  STARTING genTruePresences()")
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING genTruePresences()", append = TRUE)
 
     numSppToCreate = length (num.true.presences)
     combined.spp.true.presences.table = NULL
@@ -124,8 +159,11 @@ cat ("\n\n+++PYPER+++  STARTING genTruePresences()")
     all.spp.true.presence.locs.x.y =
             vector (mode="list", length=numSppToCreate)
 
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  just before For Loop over numSppToCreate = ", numSppToCreate, " in genTruePresences()", append = TRUE)
+
     for (spp.id in 1:numSppToCreate)
         {
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  top of For Loop over numSppToCreate with spp.id = ", spp.id, " in genTruePresences()", append = TRUE)
     #	spp.name <- paste ('spp.', spp.id, sep='')
         spp.name <- paste ('spp.', (spp.id - 1), sep='')    #  to match python...
 
@@ -140,6 +178,14 @@ cat ("\n\n+++PYPER+++  STARTING genTruePresences()")
                                     ".", spp.name,
     #								'.asc',
                                     sep='')
+
+
+#  IS THIS USING THE OLD ASCII READER OR THE NEW ONE?
+#  LOOKS LIKE IT'S PROBABLY THE OLD ONE SINCE IT LOOKS LIKE IT'S RETURNING
+#  A MATRIX RATHER THAN AN OBJECT.
+#  THIS SEEMS TO BE HAPPENING IN BOTH Guppy.py AND IN genTruePresencesPyper.R.
+#  DO I NEED BOTH A PYTHON AND AN R VERSION OF THIS?
+
         norm.prob.matrix = read.asc.file.to.matrix (filename)
 
 
@@ -160,7 +206,8 @@ cat ("\n\n+++PYPER+++  STARTING genTruePresences()")
             #  get the TRUE PRESENCES.
             #-------------------------------------------------------------
 
-cat ("\n\nspp.id = ", spp.id, "\nnum.true.presences = \n")
+cat (file = debuggingOutputFile, "\n\nspp.id = ", spp.id, append = TRUE)
+cat ("\nnum.true.presences = \n")
 print (num.true.presences)
 
 
@@ -180,13 +227,44 @@ print (num.true.presences)
             matrix (rep (0, (num.true.presences [spp.id] * 2)),
                     nrow = num.true.presences [spp.id], ncol = 2, byrow = TRUE)
 
+
+# cat ("\n\n******  HARD CODING llcorner AND cellsize in genTruePresencesPyper.R.  *****\n\n")
+# ##2618380.652817
+# ##2529528.47684
+# llcorner = c (2618380.65282, 2529528.47684)
+# cellsize = 75.0
+
+            #  Variables related to .asc file header defining spatial
+            #  origin, image dimensions, and resolution.
+            #  These are currently passed in by Rassign call via pyper.
+        num.cols = rNcols
+        num.rows = rNrows
+        llcorner = c (rXllcorner, rYllcorner)
+        cellsize = rCellsize
+        nodataValue = rNodataValue      #  probably not needed here...
+
+
+
+cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
             #  Can probably replace this with an apply() call instead...
         for (cur.loc in 1:num.true.presences [spp.id])
             {
+
+#            true.presence.locs.x.y [cur.loc, ] =
+#                xy.rel.to.lower.left (true.presence.indices [cur.loc], num.rows,
+#                                        num.cols)
+cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) BEFORE spatial.xy.rel.to.lower.left.by.row(), cur.loc = ", cur.loc, append = TRUE)
+
             true.presence.locs.x.y [cur.loc, ] =
-                xy.rel.to.lower.left (true.presence.indices [cur.loc], num.rows,
-                                        num.cols)
+#                spatial.xy.rel.to.lower.left (true.presence.indices [cur.loc],
+                spatial.xy.rel.to.lower.left.by.row (true.presence.indices [cur.loc],
+                                                num.rows, num.cols,
+                                                llcorner, cellsize
+                                                )
+cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) AFTER spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+
             }
+cat (file = debuggingOutputFile, "\n\nAFTER for (cur.loc...)", append = TRUE)
 
             #-----------------------------------------------------------------------
             #  Bind the species names to the presence locations to make a data frame
@@ -226,6 +304,7 @@ print (num.true.presences)
         true.presences.filename <- paste (cur.full.maxent.samples.dir.name, "/",
                                             outfile.root, ".csv", sep='')
         cat ("\n\ntrue.presences.filename = '", true.presences.filename, "'", sep='')
+cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)", append = TRUE)
 
         write.csv (true.presences.table,
         ###  	   file = sampled.presences.filename,
@@ -246,17 +325,19 @@ print (num.true.presences)
 
         #===========================================================================
 
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()", append = TRUE)
+
         }  #  end for - all species
 
     #-------------------------------------------
 
-    cat ("\n\ncombined.spp.true.presences.table = \n")
+    cat (file = debuggingOutputFile, "\n\ncombined.spp.true.presences.table = \n", append = TRUE)
     print (combined.spp.true.presences.table)
 
-    cat ("\n\nall.spp.true.presence.locs.x.y = \n")
+    cat (file = debuggingOutputFile, "\n\nall.spp.true.presence.locs.x.y = \n", append = TRUE)
     print (all.spp.true.presence.locs.x.y)
 
-    cat ("\n\n")
+    cat (file = debuggingOutputFile, "\n\n", append = TRUE)
 
         #  This last bit is copied from saveCombinedPresencesForMaxent.R.
         #  That looks like the only place where the
@@ -273,7 +354,7 @@ print (num.true.presences)
 			   row.names = FALSE,
 			   quote=FALSE)
 
-cat ("\n\n+++PYPER+++  ENDING genTruePresences()")
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING genTruePresences()", append = TRUE)
 
     return (all.spp.true.presence.locs.x.y)
     }
@@ -293,7 +374,7 @@ createSampledPresences = function (num.true.presences,
                                     combinedPresSamplesFileName
                                     )
     {
-cat ("\n\n+++PYPER+++  STARTING createSampledPresences()")
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING createSampledPresences()", append = TRUE)
 
     numSppToCreate = length (num.true.presences)
     combined.spp.sampled.presences.table = NULL
@@ -445,7 +526,7 @@ cat ("\n\n+++PYPER+++  STARTING createSampledPresences()")
     #-------------------------------------------
     #-------------------------------------------
 
-cat ("\n\n+++PYPER+++  ENDING createSampledPresences()")
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING createSampledPresences()", append = TRUE)
 
 #    return (combined.spp.sampled.presences.table)
     }
@@ -461,14 +542,46 @@ genPresences = function (num.true.presences,    #  a vector, not a scalar
                         randomSeed
                         )
     {
-cat ("\n\n+++PYPER+++  STARTING genPresences()")
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING genPresences()", append = TRUE)
 
-    set.seed (randomSeed)
+            #sppId = [1..numSppToCreate]
+cat (file = debuggingOutputFile, '\n             rSppId = ', rSppId, append = TRUE)
+
+            #numTruePresences = [3,5,6]
+cat (file = debuggingOutputFile, '\n             rNumTruePresences = ', rNumTruePresences, append = TRUE)
+
+            #probDistLayersDirWithSlash = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentProbDistLayers/'
+cat (file = debuggingOutputFile, '\n             rProbDistLayersDirWithSlash = ', rProbDistLayersDirWithSlash, append = TRUE)
+
+            #trueProbDistFilePrefix = 'true.prob.dist'
+cat (file = debuggingOutputFile, '\n             rTrueProbDistFilePrefix = ', rTrueProbDistFilePrefix, append = TRUE)
+            #            Rcaller.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
+
+            #curFullMaxentSamplesDirName = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentSamples'
+cat (file = debuggingOutputFile, '\n             rCurFullMaxentSamplesDirName = ', rCurFullMaxentSamplesDirName, append = TRUE)
+
+            #PARuseAllSamples = False
+cat (file = debuggingOutputFile, '\n             rPARuseAllSamples = ', rPARuseAllSamples, append = TRUE)
+
+            #combinedPresSamplesFileName = curFullMaxentSamplesDirName + "/" + "spp.sampledPres.combined" + ".csv"
+cat (file = debuggingOutputFile, '\n             rCombinedPresSamplesFileName = ', rCombinedPresSamplesFileName, append = TRUE)
+
+            #randomSeed = 1
+cat (file = debuggingOutputFile, '\n             rRandomSeed = ', rRandomSeed, append = TRUE)
+
+cat (file = debuggingOutputFile, '\n\nAbout to set.seed()', append = TRUE)
+
+#####    set.seed (randomSeed)
+    set.seed (rRandomSeed)
+
+cat (file = debuggingOutputFile, '\nAbout to unlist()', append = TRUE)
 
         #  When I create a vector in python as x = [1,2,5], it gets passed
         #  in here as a list of lists, so I need to flatten the list into
         #  a vector since that's what the functions in here are expecting.
     num.true.presences = unlist (num.true.presences)
+
+cat (file = debuggingOutputFile, '\nAbout to genTruePresences()', append = TRUE)
 
     all.spp.true.presence.locs.x.y =
         genTruePresences (num.true.presences,
@@ -477,13 +590,15 @@ cat ("\n\n+++PYPER+++  STARTING genPresences()")
                             cur.full.maxent.samples.dir.name
                             )
 
+cat (file = debuggingOutputFile, '\nAbout to createSampledPresences()', append = TRUE)
+
     createSampledPresences (num.true.presences,
                             all.spp.true.presence.locs.x.y,
                             PAR.use.all.samples,
                             cur.full.maxent.samples.dir.name,
                             combinedPresSamplesFileName
                             )
-cat ("\n\n+++PYPER+++  ENDING genPresences()")
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING genPresences()", append = TRUE)
     }
 
 #===============================================================================

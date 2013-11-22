@@ -109,6 +109,19 @@ class GuppyMattEnvLayers (GuppyEnvLayers):
         destFiles = gsf.buildNamesOfDestFiles (srcDir, filespec, targetDirWithSlash)
         print "\n>>> About to copy srcFiles to destFiles with call to gsf.copyFiles() in GuppyEnvLayers::genEnvLayers()\n"
 
+        print "\n>>>>>>  In GuppyMattEnvLayers.genEnvLayers():"
+        print "\n        len (srcFiles) = "
+        print len (srcFiles)
+        print "\n        len (destFiles) = "
+        print len (destFiles)
+        print "\n        self.numEnvLayers BEFORE setting = "
+        print self.numEnvLayers
+
+        self.numEnvLayers = len (srcFiles)
+
+        print "\n        self.numEnvLayers AFTER setting = "
+        print self.numEnvLayers
+
         gsf.copyFiles (srcFiles, destFiles)
 
 #===============================================================================
