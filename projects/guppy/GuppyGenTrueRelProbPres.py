@@ -35,14 +35,13 @@ class GuppyGenTrueRelProbPres (object):
 
 #-------------------------------------------------------------------------------
 
-    def getTrueRelProbDistMapsForAllSpp (self, guppy):
-        raise NotImplementedError ()
-
-#-------------------------------------------------------------------------------
-
     def copyTrueRelProbDistMapsForAllSpp (self, guppy):
 
-        filespec = "*.asc"
+        clusterTest = False
+        if (clusterTest):
+            filespec = "spp.*.asc"
+        else:
+            filespec = "*.asc"
             #  2013 10 23 - BTL
             #  Guppy was crashing when there were 8 species and 3 env layers.
             #  It would crash when trying to read in the 8 generated species
@@ -52,21 +51,48 @@ class GuppyGenTrueRelProbPres (object):
             #  generated species files.  Seems to work now that I've changed
             #  the srcFile directory.
 ###2013.10.23###        srcFiles = gsf.buildNamesOfSrcFiles (guppy.curFullMaxentEnvLayersDirName, filespec)
-        srcFiles = gsf.buildNamesOfSrcFiles (guppy.sppGenOutputDir, filespec)
-###        print "\n\nvvvvvvvvvvvvvvvvvvvvvvvvvv\n\n*****  srcFiles = \n"
-###        pprint (srcFiles)
+
+
+#2013.11.08 - fooling around with hacking clustering species
+#NEED TO MAKE NUMBER AND SOURCE OF ENV LAYERS MATCH THE ONES USED FOR
+#THE CLUSTER TESTS IN THE GUPPY DIRECTORY, I.E., ALL OF MATT'S ENV LAYERS
+
+#Then, need to copy the cluster output images instead of the maxent
+#generated species for this quick and dirty tests.
+
+        print "\n\nvvvvvvvvvvvvvvvvvvvvvvvvvv\n\n*****  In copyTrueRelProbDistMapsForAllSpp():\n"
+
+        if (clusterTest):
+#            srcDir = "/Users/Bill/D/rdv-framework/projects/guppy"
+            srcDir = "/Users/Bill/D/rdv-framework/projects/guppy/Clustered_kmeans_MattEnvLayers_All/ClusteredWith500pointsAnd15clusters"
+        else:
+            srcDir = guppy.sppGenOutputDir
+
+        print "\nAbout to get srcFiles with first call to gsf.buildNamesOfSrcFiles()."
+        srcFiles = gsf.buildNamesOfSrcFiles (srcDir, filespec)
+
+
+
+
+        print "srcDir = '" + srcDir + "'\n"
+        #pprint (srcFiles)
+        print "\nAbout to get fileRootNames with second call to gsf.buildNamesOfSrcFiles()."
         fileRootNames = gsf.buildDestFileRootNames (guppy.sppGenOutputDir, filespec)
-###        print "\n\n*****  srcFiles = \n"
-###        pprint (srcFiles)
+        print "fileRootNames = "
+        pprint (fileRootNames)
+        print "*****  srcFiles_1 = \n"
+        pprint (srcFiles)
 
         prefix = self.variables ["PAR.trueProbDistFilePrefix"] + "."
         print "\n\nprefix = " + prefix
         destFilesPrefix = guppy.probDistLayersDirWithSlash + prefix
 
+        print "destFilesPrefix = " + destFilesPrefix
+
         destFiles = [destFilesPrefix + fileRootNames[i] for i in range (len(fileRootNames))]
         pprint (destFiles)
         print "\n\n"
-###        print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+        print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
 
         gsf.copyFiles (srcFiles, destFiles)
 
@@ -115,7 +141,7 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 
 #-------------------------------------------------------------------------------
 
-    def genCombinedSppPresTable (self, numImgRows, numImgCols):
+    def genCombinedSppPresTable (self, guppy):      ###numImgRows, numImgCols, guppy):
         """
         Generate and return a table specifying all true species locations
         (x,y values) for every species.
@@ -125,7 +151,8 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
         maxent expects).
         """
 
-        numCells = numImgRows * numImgCols
+###        numCells = numImgRows * numImgCols
+        numCells = guppy.imgNumRows * guppy.imgNumCols
 
 #        numSpp = 3    #  self.variables ["PAR.num.spp.to.create"]
 #        minNumPres = 2    #  self.variables ["PAR.minNumPres"]
@@ -224,14 +251,21 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
             #  Now build the array of x,y pairs corresponding to each
             #  of those presences.  This 2 column array will then be
             #  joined to the repeated species names above.
-        xyPairs = numpy.zeros ((totNumPres,2), dtype=int)
+#        xyPairs = numpy.zeros ((totNumPres,2), dtype=int)
+        xyPairs = numpy.zeros ((totNumPres,2), dtype=float)
         print
     #    print xyPairs
 
         for k in range (totNumPres):
-            xyPairs [k,:] = gsf.xyRelToLowerLeft (curSppPresIndices [k], numImgRows, numImgCols)
-        print "xyPairs = "
-        print xyPairs
+###            xyPairs [k,:] = gsf.xyRelToLowerLeft (curSppPresIndices [k], guppy.imgNumRows, guppy.imgNumCols)
+##            xyPairs [k,:] = gsf.spatialXYrelToLowerLeft (curSppPresIndices [k], guppy.imgNumRows, guppy.imgNumCols)
+#            xyPairs [k,:] = gsf.spatialXYCellCenter (curSppPresIndices [k], guppy.imgNumRows, guppy.imgNumCols)
+            xyPairs [k,:] = gsf.spatialXYCellCenter (curSppPresIndices [k],
+                            guppy.imgNumRows, guppy.imgNumCols,
+                            guppy.xllcorner, guppy.yllcorner,
+                            guppy.cellsize)
+#            print "xyPairs = "
+#            pprint (xyPairs)
 
             #  This is writing column headers to the data frame, but I'm not sure
             #  if it should be doing that since maxent may not expect it.
@@ -260,7 +294,7 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
         print "\n\nGenerate true rel prob map using MAXENT.\n\n"
 
         combinedSppPresTable = \
-            self.genCombinedSppPresTable (guppy.imgNumRows, guppy.imgNumCols)
+            self.genCombinedSppPresTable (guppy)  ###  guppy.imgNumRows, guppy.imgNumCols)
 
         print "\n\ncombinedSppPresTable = \n"
         print combinedSppPresTable
@@ -309,6 +343,15 @@ class GuppyGenTrueRelProbPresMAXENT (GuppyGenTrueRelProbPres):
 
 #===============================================================================
 #===============================================================================
+
+    #  2013.11.22 - BTL
+    #  This is the class that I started working on when I was clustering
+    #  the data myself with kmeans.
+    #  After meeting with Matt last week, he thought that those clusters
+    #  didn't look very realistic and he had some that he had developed
+    #  using a supervised clustering method and they were much more realistic.
+    #  So, I'm going to work on a class using those instead and just leave
+    #  this one here as a stub for now.
 
 class GuppyGenTrueRelProbPresCLUSTER (GuppyGenTrueRelProbPres):
     """
@@ -374,7 +417,94 @@ class GuppyGenTrueRelProbPresCLUSTER (GuppyGenTrueRelProbPres):
 
         print "\n\nGenerate true rel prob map using CLUSTERING.\n\n"
 
-#guppy.sppGenOutputDir
+        Rcaller.assign ('rSppGenOutputDir', guppy.sppGenOutputDir)
+        Rcaller.assign ('rCurFullMaxentEnvLayersDirName', guppy.curFullMaxentEnvLayersDirName)
+        Rcaller.assign ('rNumSpp', self.variables ["PAR.num.spp.to.create"])
+        Rcaller.assign ('rRandomSeed', guppy.randomSeed)
+
+        print "\n\n>>>>> About to pyper source guppyClusterTest.R"
+        Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/guppyClusterTest.R')")
+
+
+    #	return (trueRelProbDistsForSpp)
+
+#===============================================================================
+
+    #  2013.11.22 - BTL
+    #  Adding this class to generate species using the supervised clustering
+    #  results that Matt had created for the Mt Buffalo data.
+
+class GuppyGenTrueRelProbPres_ExistingClusters (GuppyGenTrueRelProbPres):
+    """
+    Class for guppy generators of true relative probability of presence
+    that are based on using an existing clustering of environmental variables
+    (rather than creating one here) to generate a relative probability
+    distribution that can then be reused as a true distribution.
+    """
+
+#-------------------------------------------------------------------------------
+
+    def __init__ (self, variables=None):
+        self.variables = variables or {}
+#        super.__init__ (variables)    Should I be doing this instead?
+
+#-------------------------------------------------------------------------------
+
+    def getTrueRelProbDistMapsForAllSpp (self, guppy):
+        """
+        Build a relative probability map for each species by reading an
+        image of a clustering of the environmental variables and then
+        computing the distance in feature space from the point to one or
+        more clusters chosen to be representative of that species' habitat.
+        """
+
+        #--------------------------------------------------------------------
+        #  1) Start by reading in the n-dimensional environmental variables
+        #  that describe each pixel.
+        #--------------------------------------------------------------------
+
+        #--------------------------------------------------------------------
+        #  2)  Read an image showing the pre-generated cluster ID of each
+        #  pixel, then generate a map for each cluster so that each pixel
+        #  in that map represents the similarity of that pixel to the cluster.
+
+        #  2a) For the moment, I will just use the distance from the point
+        #  in environmental coordinates to the cluster centroid (mediod?) in
+        #  environmental space rather than geographic space.
+
+        #  2b) However, that feature vector could also include the x,y (or
+        #  lat,long) coordinates of the point too.  Not sure if that will
+        #  be a good idea or not.  Will have to experiment to decide.
+        #--------------------------------------------------------------------
+
+        #--------------------------------------------------------------------
+        #  3)  For each species, choose one or more clusters to use as the
+        #  definition of the habitat for that species.
+        #
+        #  3a)  At the moment, I'm not sure how I want to handle the case
+        #  of using more than one cluster.  For example, distance to the
+        #  "unified" cluster could be the minimum over the distances
+        #  to all of the constituent clusters or it could be the median, etc.
+        #  There might be other ways of doing it as well, but I haven't
+        #  thought of any other yet.  It might actually be handled better
+        #  via hierarchical clustering where you just grab one branch from
+        #  a particular level down.  However, that wouldn't represent species
+        #  who had very different kinds of habitats because they were
+        #  generalists or because they had a particular thing that they
+        #  were avoiding/excluding rather than including or because they
+        #  needed different kinds of habitat for different life stages or
+        #  living needs (e.g., breeding vs feeding vs nesting, etc.).
+        #--------------------------------------------------------------------
+
+        print "\n\nGenerate true rel prob map using Existing Clustering.\n\n"
+
+        Rcaller.assign ('rSppGenOutputDir', guppy.sppGenOutputDir)
+        Rcaller.assign ('rCurFullMaxentEnvLayersDirName', guppy.curFullMaxentEnvLayersDirName)
+        Rcaller.assign ('rNumSpp', self.variables ["PAR.num.spp.to.create"])
+        Rcaller.assign ('rRandomSeed', guppy.randomSeed)
+
+        print "\n\n>>>>> About to pyper source guppyClusterTest.R"
+        Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/guppyClusterTest.R')")
 
 
     #	return (trueRelProbDistsForSpp)

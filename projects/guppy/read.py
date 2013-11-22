@@ -210,9 +210,34 @@ def readAscFileToMatrix (baseAscFilenameToRead, numRows, numCols, inputDir = "")
     try:
         reader = csv.reader(f, delimiter=' ')
 
+        numColsLine = next (reader)
+        print "\nnumColsLine = "
+        print numColsLine
+
+        numRowsLine = next (reader)
+        print "\nnumRowsLine = "
+        print numRowsLine
+
+        xllcornerLine = next (reader)
+        print "\nxllcornerLine = "
+        print xllcornerLine
+
+        yllcornerLine = next (reader)
+        print "\nyllcornerLine = "
+        print yllcornerLine
+
+        cellsizeLine = next (reader)
+        print "\ncellsizeLine = "
+        print cellsizeLine
+
+        nodataValueLine = next (reader)
+        print "\nnodataValueLine = "
+        print nodataValueLine
+
+
             #  Skip header lines.
-        for k in range (numHeaderLines):
-            next (reader)
+#        for k in range (numHeaderLines):
+#            next (reader)
 
             #  Read lines after header and convert them from strings to
             #  numbers since the csv reader only returns them as strings.

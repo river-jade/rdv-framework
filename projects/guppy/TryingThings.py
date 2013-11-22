@@ -1407,4 +1407,640 @@ r('genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFi
 
 # <codecell>
 
+import numpy
+import csv
+
+def readAscFileToMatrix (baseAscFilenameToRead, numRows, numCols, inputDir = ""):
+
+    nameOfFileToRead = baseAscFilenameToRead + ".asc"    #  extension should be made optional...
+    filenameHandedIn = inputDir + nameOfFileToRead
+
+    print "\n\n====>>  In read.asc.file.to.matrix(), \n" + \
+		"\tnameOfFileToRead = '" + nameOfFileToRead + "\n" + \
+		"\tbaseAscFilenameToRead = '" + baseAscFilenameToRead + "\n" + \
+		"\tinput.dir = '" + inputDir + "\n" + \
+		"\tfilenameHandedIn = '" + filenameHandedIn + "\n"
+
+#  ascFileAsMatrix = \
+#      as.matrix (read.table (paste (input.dir, nameOfFileToRead, sep=''),
+#	                       skip=6))
+
+    numHeaderLines = 6
+
+    ascFileAsMatrix = numpy.zeros ((numRows, numCols))
+
+        #  Based on:
+        #      http://pymotw.com/2/csv/#module-csv
+    f = open (filenameHandedIn, 'rt')
+    try:
+        reader = csv.reader(f, delimiter=' ')
+
+        numColsLine = next (reader)
+        print "\nnumColsLine = "
+        print numColsLine
+        numCols = int (numColsLine [len (numColsLine) - 1])
+        print numCols
+        print
+
+        numRowsLine = next (reader)
+        print "\nnumRowsLine = "
+        print numRowsLine
+        numRows = int (numRowsLine [len (numRowsLine) - 1])
+        print numRows
+        print
+
+        xllcornerLine = next (reader)
+        print "\nxllcornerLine = "
+        print xllcornerLine
+        xllcorner = float (xllcornerLine [len (xllcornerLine) - 1])
+        print xllcorner
+        print
+
+        yllcornerLine = next (reader)
+        print "\nyllcornerLine = "
+        print yllcornerLine
+        yllcorner = float (yllcornerLine [len (yllcornerLine) - 1])
+        print yllcorner
+        print
+
+        cellsizeLine = next (reader)
+        print "\ncellsizeLine = "
+        print cellsizeLine
+        cellsize = float (cellsizeLine [len (cellsizeLine) - 1])
+        print cellsize
+        print
+
+        nodataValueLine = next (reader)
+        print "\nnodataValueLine = "
+        print nodataValueLine
+        nodataValue = nodataValueLine [len (nodataValueLine) - 1]
+        print nodataValue
+        print
+        
+        print "corner sum = "
+        tot = xllcorner + yllcorner
+        print tot
+
+
+            #  Skip header lines.
+#        for k in range (numHeaderLines):
+#            next (reader)
+
+            #  Read lines after header and convert them from strings to
+            #  numbers since the csv reader only returns them as strings.
+        nonHeaderLineNum = 0
+        for row in reader:
+#            print row
+            ascFileAsMatrix [nonHeaderLineNum,:] = row [0:numCols]
+            nonHeaderLineNum += 1
+
+    finally:
+        f.close()
+
+    return ascFileAsMatrix
+
+
+def test_readAscFileToMatrix ():
+    numRows = numCols = 512
+    x = readAscFileToMatrix ('aniso_heat', numRows, numCols, '/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/')
+    print "\nx.shape = " + str (x.shape)
+
+test_readAscFileToMatrix ()
+
+# <codecell>
+
+help("csv.reader")
+
+# <codecell>
+
+help("parse")
+
+# <codecell>
+
+#===============================================================================
+
+import numpy
+import csv
+
+import os
+
+#===============================================================================
+
+class SpatialDataXYbasis (object):
+    """Information for computing x,y locations relative to some origin and 
+        some cell size.  Originally needed this to read and write .asc files 
+        produced by ESRI GIS software.
+
+        The origin is often specified in terms of latitude and longitude 
+        with a cell size indicating a remote sensing pixel size.  
+        In other cases (e.g., simulations), the origin may just be something 
+        like a base index for a matrix (e.g., 0,0 or 1,1) and the cell size 
+        may just be 1 since it's just about array indexing instead of 
+        ground-based measures.  In these cases, the origin and cell size are 
+        only provided to satisfy the formatting requirements fo reading and 
+        writing files compatible with the i/o for real data.
+    """
+
+    #---------------------------------------------------------------------------
+
+    def __init__ (self, 
+##                    numCols = -1, 
+##                    numRows = -1, 
+                    xllcorner = 0,
+                    yllcorner = 0,
+                    cellsize = 1
+                    ):
+
+        print ("\n__init__ routine for SpatialDataXYbasis class.\n")
+
+##        self.numCols = numCols
+##        self.numRows = numRows
+
+            #  Setting the lower left corner and cell size values.
+            #  runZonation.R had this little bit of commented code in it.
+            #  It suggests that whatever location is given as the lower left 
+            #  is equivalent to 0,0 when coordinates are meant to be indices 
+            #  into an array whose indices start at 1,1 (as in R).  
+            #  This suggests that in R, the corner should be 0,0 and in 
+            #  python it might need to be -1,-1 if the values are actual 
+            #  indices, though the could be translated by 1 to match the R 
+            #  arrangement consistency...
+                # write.asc.file (err.magnitudes,
+                # 				paste (analysis.dir, "abs.error.in.dist.", spp.name, sep=''),
+                #             	num.img.rows, num.img.cols
+                #             	, xllcorner = 1    #  Looks like maxent adds the xy values to xllcorner, yllcorner
+                #                 , yllcorner = 1    #  so they must be (0,0) instead of (1,1), i.e., the origin
+                #                                       #  is not actually on the map.  It's just off the lower
+                #                                       #  left corner.
+                #                 , no.data.value = -9999
+                #                 , cellsize = 1
+                #                 )
+        
+        self.xllcorner = xllcorner
+        self.yllcorner = yllcorner
+        self.cellsize = cellsize
+
+        print "\n====>  spatial data x,y basis:\n"
+##        print "\tself.numCols = "
+##        print self.numCols
+##        print "\tself.numRows = "
+##        print self.numRows
+        print "\tself.xllcorner = "
+        print self.xllcorner 
+        print "\tself.yllcorner = "
+        print self.yllcorner 
+        print "\tself.cellsize = "
+        print self.cellsize 
+        print
+
+    #---------------------------------------------------------------------------
+
+    def xyOf (self, col, row):
+
+        print ("\nxyOf routine for SpatialDataXYbasis class.\n")
+
+        xy = (self.xllcorner + (col * self.cellsize),       #  Need to add 1 in python?
+                self.yllcorner + (row * self.cellsize))     #  Need to add 1 in python?
+
+        print "\txy = "
+        print xy
+        print
+
+        return xy
+    
+    #---------------------------------------------------------------------------
+
+#===============================================================================
+
+    #  THIS CLASS IS NO LONGER USED?
+    #  BTL - 2013.11.19
+    
+class SpatialDataMatrix (object):
+    """Matrix of numbers having a spatial location and cell size.  Meant to 
+        hold information for a pixel image or map, often to be read from or 
+        written to a file for exchange with other programs, e.g., a .asc file 
+        as generated by ESRI GIS software.
+    """
+
+    #---------------------------------------------------------------------------
+
+    def __init__ (self, 
+                    xyBasis = None, 
+                    dataMatrix = None
+                    ):
+
+        print ("\n__init__ routine for SpatialDataMatrix class.\n")
+
+        self.xyBasis = xyBasis
+        self.dataMatrix = dataMatrix
+        
+    #---------------------------------------------------------------------------
+
+    def xyOf (self, col, row):
+
+        print ("\nxyOf routine for SpatialDataMatrix class.\n")
+
+        return self.xyBasis.xyOf (col, row)
+    
+    #---------------------------------------------------------------------------
+
+#===============================================================================
+
+class AscFormattedSpatialDataFile (object):
+    """Support for reading and writing .asc files as written and read by
+    ESRI code, etc.
+    """
+
+    #---------------------------------------------------------------------------
+
+    def __init__ (self, baseAscFilenameToRead, inputDir = ""):
+
+        print ("\n__init__ routine for AscFormattedFile class.\n")
+
+        self.fileNameStem = baseAscFilenameToRead
+        self.fileName = baseAscFilenameToRead + ".asc"      #  extension should be made optional
+        self.filePathWithSlash = inputDir                   #  need to test and add slash if necessary - might need a utility function for that since it happens so often
+        self.fileNameIncludingPath = inputDir + self.fileName
+
+        print "\n====>  IN AscFormattedFile INIT:\n" + \
+            "\tbaseAscFilenameToRead = '" + baseAscFilenameToRead + "'\n" + \
+            "\tinput.dir = '" + inputDir + "'\n\n" + \
+            "\tself.fileNameStem = '" + self.fileNameStem + "'\n" + \
+            "\tself.fileName = '" + self.fileName + "'\n" + \
+            "\tself.filePathWithSlash = '" + self.filePathWithSlash + "'\n" + \
+            "\tself.fileNameIncludingPath = '" + self.fileNameIncludingPath + "'\n"
+
+        self.xyBasis = None
+##        self.spatialDataMatrix = None
+        
+#        self.numHeaderLines = 6
+        self.numCols = None
+        self.numRows = None
+##        self.xllcorner = 0        #  Should this be 1?
+##        self.yllcorner = 0        #  Should this be 1?
+##        self.cellsize = -1        #  Should this be 1?
+        self.noDataValue = None
+
+        print "\n====>  default header values:\n"
+        print "\tself.numCols = "
+        print self.numCols
+        print "\tself.numRows = "
+        print self.numRows
+##        print "\tself.xllcorner = "
+##        print self.xllcorner 
+##        print "\tself.yllcorner = "
+##        print self.yllcorner 
+##        print "\tself.cellsize = "
+##        print self.cellsize 
+        print "\tself.noDataValue = "
+        print self.noDataValue 
+        print
+
+    #---------------------------------------------------------------------------
+
+    def readFileToMatrix (self):
+
+    #  ascFileAsMatrix = \
+    #      as.matrix (read.table (paste (input.dir, self.fileName, sep=''),
+    #	                       skip=6))
+
+                #  Skip header lines.
+    #        for k in range (self.numHeaderLines):
+    #            next (reader)
+
+            #  Based on:
+            #      http://pymotw.com/2/csv/#module-csv
+        f = open (self.fileNameIncludingPath, 'rt')
+        try:
+            reader = csv.reader(f, delimiter=' ')
+
+            numColsLine = next (reader)
+            print "\nnumColsLine = "
+            print numColsLine
+            self.numCols = int (numColsLine [len (numColsLine) - 1])
+            print self.numCols
+            print
+
+            numRowsLine = next (reader)
+            print "\nnumRowsLine = "
+            print numRowsLine
+            self.numRows = int (numRowsLine [len (numRowsLine) - 1])
+            print self.numRows
+            numRows = int (numRowsLine [len (numRowsLine) - 1])
+            print numRows
+            print
+
+            xllcornerLine = next (reader)
+            print "\nxllcornerLine = "
+            print xllcornerLine
+##            self.xllcorner = float (xllcornerLine [len (xllcornerLine) - 1])
+##            print self.xllcorner
+            xllcorner = float (xllcornerLine [len (xllcornerLine) - 1])
+            print xllcorner
+            print
+
+            yllcornerLine = next (reader)
+            print "\nyllcornerLine = "
+            print yllcornerLine
+##            self.yllcorner = float (yllcornerLine [len (yllcornerLine) - 1])
+##            print self.yllcorner
+            yllcorner = float (yllcornerLine [len (yllcornerLine) - 1])
+            print yllcorner
+            print
+
+            cellsizeLine = next (reader)
+            print "\ncellsizeLine = "
+            print cellsizeLine
+##            self.cellsize = float (cellsizeLine [len (cellsizeLine) - 1])
+##            print self.cellsize
+            cellsize = float (cellsizeLine [len (cellsizeLine) - 1])
+            print cellsize
+            print
+
+            nodataValueLine = next (reader)
+            print "\nnodataValueLine = "
+            print nodataValueLine
+            self.nodataValue = nodataValueLine [len (nodataValueLine) - 1]
+            print self.nodataValue
+            print
+            
+##            self.xyBasis = SpatialDataXYbasis (self.numCols, self.numRows, self.xllcorner, self.yllcorner, self.cellsize)
+###            self.xyBasis = SpatialDataXYbasis (numCols, numRows, xllcorner, yllcorner, cellsize)
+####            self.xyBasis = SpatialDataXYbasis (self.numCols, self.numRows, xllcorner, yllcorner, cellsize)
+            self.xyBasis = SpatialDataXYbasis (xllcorner, yllcorner, cellsize)
+    
+            self.ascFileAsMatrix = numpy.zeros ((self.numRows, self.numCols))
+##            self.ascFileAsMatrix = numpy.zeros ((numRows, numCols))
+
+                #  Read lines after header and convert them from strings to
+                #  numbers since the csv reader only returns them as strings.
+            nonHeaderLineNum = 0
+            for row in reader:
+                self.ascFileAsMatrix [nonHeaderLineNum,:] = row [0:self.numCols]
+##                self.ascFileAsMatrix [nonHeaderLineNum,:] = row [0:numCols]
+                nonHeaderLineNum += 1
+
+        finally:
+            f.close()
+
+        print "\n\nAt end of read, self.ascFileAsMatrix.shape = "
+        print self.ascFileAsMatrix.shape
+        print
+        
+        return self.ascFileAsMatrix
+
+#===============================================================================
+
+def test_readAscFileToMatrix ():
+
+        # Dummy setup code to emulate what would have been done by the calling code.
+
+        #  Move to the guppy working directory.
+        #  NOTE:  This may be an issue in the long run when running under tzar.
+        #         I need to move there now so that netpbmfile will be found when imported.
+        #         However, when running under tzar, we will have cd-ed to the tzar directory.
+        #         Or will we?  Not sure if that move will show up inside this python code...
+    os.chdir ("/Users/Bill/D/rdv-framework/projects/guppy/")
+
+#    numRows = numCols = 512     #  This should be read from the file instead...
+
+    x = AscFormattedSpatialDataFile ('aniso_heat', '/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/')
+    matrixFromFile = x.readFileToMatrix ()
+    
+    print "\n\nmatrixFromFile.shape = "
+    print matrixFromFile.shape
+    
+#    print "\nx.shape = " + str (x.shape)
+
+    return x
+
+#===============================================================================
+
+y = test_readAscFileToMatrix ()
+
+z = SpatialDataXYbasis (cellsize = 10)
+ab = z.xyOf (2, 5)
+print "ab = "
+print ab
+
+print "y.xyBasis.xyOf (2, 5) = "
+print y.xyBasis.xyOf (2, 5)
+
+#===============================================================================
+
+
+# <codecell>
+
+a = [3,5]
+print type (a)
+b = a[0]
+c = a[1]
+print b
+print c
+print type (b)
+print type (c)
+
+# <codecell>
+
+if False:
+    print "true..."
+else:
+    print "false..."
+    
+
+# <codecell>
+
+for k in range(6):
+        print k
+        
+
+# <codecell>
+
+def xyRelToLowerLeft (n, numRows, numCols):
+    """  Compute the x,y coordinates of a given
+    index into the image array where the index starts with 0 in the
+    UPPER left and goes row by row.  The x,y coordinates that are
+    output (to give to maxent) have their origin in the LOWER left
+    and go row by row upward like a typical x,y plot.
+    Also, numbering of the rows and columns in the output considers
+    the origin to be just outside the array, so that the lower left
+    corner of the array is called location [1,1] instead of [0,0].
+    """
+
+        #  (n // numCols) gives the number of rows from the top of the arrray.
+
+#    return [ (n % numCols) + 1   ,   numRows - (n // numCols) ]
+    return [ (n % numCols) + 1   ,   numRows - (n // numCols) - 1 ]
+
+#=========================================================================================
+
+def spatialXYrelToLowerLeft (n, numRows = 512, numCols = 512,
+                            llcorner = [2618380.65282, 2529528.47684],
+                            cellsize = 75.0):
+    """  Compute the x,y coordinates of a given
+    index into the image array where the index starts with 0 in the
+    UPPER left and goes row by row.  The x,y coordinates that are
+    output (to give to maxent) have their origin in the LOWER left
+    and go row by row upward like a typical x,y plot.
+    Also, numbering of the rows and columns in the output considers
+    the origin to be just outside the array, so that the lower left
+    corner of the array is called location [1,1] instead of [0,0].
+    """
+
+    xy = xyRelToLowerLeft (n, numRows, numCols)
+
+    spatialXY = [llcorner[0] + (cellsize * xy [0]), llcorner[1] + (cellsize * xy [1])]
+
+    if True:
+        print "*****  In spatialXYrelToLowerLeft()"
+        print "       n = "
+        print n
+        print "       numRows = "
+        print numRows
+        print "       numCols = "
+        print numCols
+        print "       xy = "
+        print xy
+        print "       llcorner[0] = "
+        print llcorner[0]
+        print "       llcorner[1] = "
+        print llcorner[1]
+        print "       spatialXY = "
+        print spatialXY
+
+    return spatialXY
+
+print spatialXYrelToLowerLeft(0)
+print spatialXYrelToLowerLeft(1)
+print spatialXYrelToLowerLeft(2)
+print spatialXYrelToLowerLeft(511)
+print spatialXYrelToLowerLeft(512)
+print spatialXYrelToLowerLeft(513)
+
+# <codecell>
+
+from pprint import pprint
+
+def computeSpatialYcellCenter (curRow, numRows, yllcorner = 10.0, cellsize = 3.0, baseIdx = 0):
+    
+    spatialYcellCenter = yllcorner + ((numRows - curRow - 1 + baseIdx)*cellsize) + (cellsize/2)
+    
+    if False:
+        print "spatialYcellCenter = "
+        print spatialYcellCenter
+    
+    return spatialYcellCenter
+
+def computeSpatialXcellCenter (curCol, numCols, xllcorner = 100.0, cellsize = 3.0, baseIdx = 0):
+    
+    if baseIdx == 1:
+        baseOffset = 0
+    elif baseIdx == 0:
+        baseOffset = 1
+    else:
+        baseOffset = None
+        
+
+#    spatialXcellCenter = xllcorner + ((numCols - curCol - 1 + baseIdx)*cellsize) + (cellsize/2)
+    spatialXcellCenter = xllcorner + ((curCol+baseOffset)*cellsize)-(cellsize/2)
+
+    if False:
+        print "spatialXcellCenter = "
+        print spatialXcellCenter
+    
+    return spatialXcellCenter
+
+xllcorner = 100.0
+yllcorner = 10.0
+baseIdx = 0
+cellsize = 3.0
+
+numRows = 3
+numCols = 4
+
+for curRow in range (numRows):
+    curRow = curRow + baseIdx
+    for curCol in range (numCols):
+        curCol = curCol + baseIdx
+        x = computeSpatialXcellCenter (curCol, numCols, xllcorner, cellsize, baseIdx)
+        y = computeSpatialYcellCenter (curRow, numRows, yllcorner, cellsize, baseIdx)
+        xy = [x, y]
+        
+        print "xy = "
+        rowCol = [curRow, curCol]
+        pprint (rowCol)
+        pprint (xy)
+
+
+
+#            test and training set separation in cross validation
+#            when spatially autocorrelated
+
+
+
+
+
+
+
+
+# <codecell>
+
+cellsize = 1
+print cellsize/2
+
+# <codecell>
+
+        
+
+numCols = 4
+for curCol in range (numCols):
+    print "===============\ncurCol = "
+    print curCol
+    x = computeSpatialXcellCenter (curCol, numCols)
+    print "\nx = "
+    print x
+print "===============\n\n       DONE with COLS\n\n"
+
+numRows = 3
+for curRow in range (numRows):
+    print "===============\ncurRow = "
+    print curRow
+    y = computeSpatialYcellCenter (curRow, numRows)
+    print "\ny = "
+    print y
+print "===============\n\n       DONE with ROWS\n\n"
+
+
+
+
+# <codecell>
+
+from pprint import pprint
+
+numRows = 3
+numCols = 4
+curArrayIdx = 6
+baseIdx = 0
+
+#row = 
+    #  (curArrayIdx // numCols) gives the number of rows from the top of the arrray.
+
+for curArrayIdx in range(numRows*numCols):
+    rowCol = [ (curArrayIdx // numCols), 
+                 (curArrayIdx % numCols) #- 1
+              ]
+    print curArrayIdx
+    pprint (rowCol)
+
+
+# <codecell>
+
+xrange(3)
+
+# <codecell>
+
+range(1,3)
+
+# <codecell>
+
 

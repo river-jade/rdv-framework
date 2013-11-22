@@ -15,12 +15,10 @@ base_params:
         PAR.useRemoteEnvDir: FALSE
 
     #  Bigger example
-        PAR.numEnvLayers: 8
-        PAR.num.spp.to.create: 8    ##  100
+        PAR.num.spp.to.create: 4    ##  100
         PAR.num.spp.in.reserve.selection: 10    ##  100    #  No reserve selection yet.
 
     #  Smaller example
-#        PAR.numEnvLayers: 5
 #        PAR.num.spp.to.create: 5
 #        PAR.num.spp.in.reserve.selection: 3    #  No reserve selection yet.
 
@@ -54,10 +52,28 @@ base_params:
             #  They're only meant to be used when testing locally on my mac
             #  in either the mac or vmware windows environment.
 
-        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
+#        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
+        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
+
         PAR.localEnvDirWin: "Z:/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVarsSubset/"
 
+
+            #  Adding some values to specify the header data for
+            #  .asc files until I get that sorted.
+            #  BTL - 2031.11.20
+        PAR.ascFileNcols: 512
+        PAR.ascFileNrows: 512
+        PAR.ascFileXllcorner: 2618380.652817
+        PAR.ascFileYllcorner: 2529528.47684
+        PAR.ascFileCellsize: 75.0
+        PAR.ascFileNodataValue: -9999
+
+
+
 #  For using Alex's fractal images...
+
+#        PAR.numEnvLayers: 5
+
 #        PAR.envLayersType: "AlexFractalEnvLayers"
 #        PAR.remoteEnvDir: "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
 #        PAR.localEnvDirMac: "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
@@ -108,6 +124,8 @@ base_params:
         PAR.path.to.maxent.input.data:  ".."    #  relative to output dir?  projects dir?
         PAR.maxent.env.layers.base.name:  "MaxentEnvLayers"
         PAR.maxent.samples.base.name:  "MaxentSamples"
+
+        PAR.verbose.maxent:  TRUE
 
         PAR.analysis.dir.name: "ResultsAnalysis"
 

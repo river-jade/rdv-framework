@@ -103,6 +103,7 @@ import yaml
 import pickle
 
 from sys import platform
+from sys import exit
 
 #from rpy2.robjects import r
 #from rpy2 import rinterface
@@ -157,13 +158,51 @@ class Guppy (object):
 
         self.envLayersType = self.variables['PAR.envLayersType']
         self.envLayersDir = None
+
         self.numEnvLayers = None
-        self.numEnvLayers = self.variables['PAR.numEnvLayers']
-        self.imgNumRows = variables['PAR.imgNumRows']
-        self.imgNumCols = variables['PAR.imgNumCols']
+        if 'PAR.numEnvLayers' in self.variables:
+            self.variables ['PAR.numEnvLayers']
+        self.imgNumRows = None
+        if 'PAR.imgNumRows' in self.variables:
+            self.imgNumRows = variables['PAR.imgNumRows']
+        self.imgNumCols = None
+        if 'PAR.imgNumCols' in self.variables:
+            self.imgNumCols = variables['PAR.imgNumCols']
         self.imgNumCells = self.imgNumRows * self.imgNumCols
 
-        self.fileSizeSuffix = variables['PAR.fileSizeSuffix']
+        self.fileSizeSuffix = None
+        if 'PAR.fileSizeSuffix' in self.variables:
+            self.fileSizeSuffix = variables['PAR.fileSizeSuffix']
+
+        #-----------------------------------------------------------------------
+            #  Adding some values to specify the header data for
+            #  .asc files until I get that sorted.
+            #  BTL - 2031.11.20
+
+        self.ascFileNcols = None
+        if 'PAR.ascFileNcols' in self.variables:
+            self.nCols = variables['PAR.ascFileNcols']
+
+        self.ascFileNrows = None
+        if 'PAR.ascFileNrows' in self.variables:
+            self.nRows = variables['PAR.ascFileNrows']
+
+        self.ascFileXllcorner = None
+        if 'PAR.ascFileXllcorner' in self.variables:
+            self.xllcorner = variables['PAR.ascFileXllcorner']
+
+        self.ascFileYllcorner = None
+        if 'PAR.ascFileYllcorner' in self.variables:
+            self.yllcorner = variables['PAR.ascFileYllcorner']
+
+        self.ascFileCellsize = None
+        if 'PAR.ascFileCellsize' in self.variables:
+            self.cellsize = variables['PAR.ascFileCellsize']
+
+        self.ascFileNodataValue = None
+        if 'PAR.ascFileNodataValue' in self.variables:
+            self.nodataValue = variables['PAR.ascFileNodataValue']
+        #-----------------------------------------------------------------------
 
         if (verbose):
             print ("\n-----------------------------\n\nPARAMS AS PASSED IN:")
@@ -195,9 +234,7 @@ class Guppy (object):
         self.probDistLayersDirWithSlash = None
         self.maxentOutputDir = None
         self.maxentOutputDirWithSlash = None
-#        self.maxentGenOutputDir = None
         self.maxentGenOutputDir = None
-#        self.sppGenOutputDirWithSlash = None
         self.maxentGenOutputDirWithSlash = None
         self.sppFullPathName = None
         self.combinedPresSamplesFileName = None
@@ -211,7 +248,7 @@ class Guppy (object):
         self.doMaxentReplicates = self.variables['PAR.do.maxent.replicates']
         self.numMaxentReplicates = self.variables['PAR.num.maxent.replicates']
         self.maxentReplicateType = self.variables['PAR.maxent.replicateType']
-        self.verboseMaxent = False
+        self.verboseMaxent = self.variables['PAR.verbose.maxent']
 
         self.trueProbDistFilePrefix = self.variables["PAR.trueProbDistFilePrefix"]
 
@@ -410,6 +447,8 @@ class Guppy (object):
         #         use.pnm.env.layers : TRUE ,
         self.usePnmEnvLayers = self.variables['PAR.use.pnm.env.layers']
 
+            #  BTL - 2013.11.21
+            #  Should these two variables have "self." in front of them?
         combinedSppTruePresencesTable = None  #  Is this the correct Null for PYTHON ???
         combinedSppSampledPresencesTable = None
 
@@ -617,6 +656,10 @@ class Guppy (object):
             print "\nsppTruePresenceCts = "
             print sppTruePresenceCts
 
+                #  BTL - 2013.11.21
+                #  Not sure why both of these variables are necessary.
+                #  Why am I not just using one name or the other?
+                #  Is this something vestigial?
             numTruePresences = sppTruePresenceCts
             print "\nnumTruePresences = "
             pprint(numTruePresences)
@@ -659,6 +702,10 @@ class Guppy (object):
         allSppTruePresenceLocsXY = []
         #            vector (mode="list", length=self.variables ["PAR.num.spp.to.create"])
 
+
+        Rcaller ("cat (file = '/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt', '\n\nStarting debugging output...\n')")
+
+
         for sppId in range(self.numSppToCreate):
             sppName = 'spp.' + str(sppId)
 
@@ -676,6 +723,12 @@ class Guppy (object):
             #                                    sep='')
             print "filename = " + filename
 
+#  BTL - 2013.11.22
+#  IS THIS USING THE OLD ASCII READER OR THE NEW ONE?
+#  LOOKS LIKE IT'S PROBABLY THE OLD ONE SINCE IT LOOKS LIKE IT'S RETURNING
+#  A MATRIX RATHER THAN AN OBJECT.
+#  THIS SEEMS TO BE HAPPENING IN BOTH Guppy.py AND IN genTruePresencesPyper.R.
+#  DO I NEED BOTH A PYTHON AND AN R VERSION OF THIS?
             normProbMatrix = gsf.readAscFileToMatrix(filename,
                                                      self.imgNumRows, self.imgNumCols)
 
@@ -688,6 +741,9 @@ class Guppy (object):
             print "numCells = " + str(numCells)
 
             #-----------------------------------------------------------------------
+
+            #sppId = [1..numSppToCreate]
+            Rcaller.assign('rSppId', sppId)
 
             #numTruePresences = [3,5,6]
             Rcaller.assign('rNumTruePresences', numTruePresences)
@@ -711,9 +767,33 @@ class Guppy (object):
             #randomSeed = 1
             Rcaller.assign('rRandomSeed', self.randomSeed)
 
+            #-------------------------------------------------------
+                #  Variables from the .asc file header section.
+            #self.nCols = variables['PAR.ascFileNcols']
+            Rcaller.assign('rNcols', self.nCols)
+
+            #self.nRows = variables['PAR.ascFileNrows']
+            Rcaller.assign('rNrows', self.nRows)
+
+            #self.xllcorner = variables['PAR.ascFileXllcorner']
+            Rcaller.assign('rXllcorner', self.xllcorner)
+
+            #self.yllcorner = variables['PAR.ascFileYllcorner']
+            Rcaller.assign('rYllcorner', self.yllcorner)
+
+            #self.cellsize = variables['PAR.ascFileCellsize']
+            Rcaller.assign('rCellsize', self.cellsize)
+
+            #self.nodataValue = variables['PAR.ascFileNodataValue']
+            Rcaller.assign('rNodataValue', self.nodataValue)
+            #-------------------------------------------------------
+
+
             print "\n\n>>>>> About to pyper source genTruePresencesPyper.R"
             Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/genTruePresencesPyper.R')")
             print "\n\n>>>>> Back from pyper source genTruePresencesPyper.R"
+
+
             print "\n\n>>>>> About to pyper call genPresences()"
             Rcaller (
                 'genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
@@ -734,6 +814,7 @@ class Guppy (object):
 
 #        useMattEnvData = True      #  Will add this to the yaml file and Guppy __init__() when finished with testing...
         self.loadEnvLayers ()
+
 #        print "\nIn Guppy:run:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
 
 #               Moved these into the loadEnvLayers() routine.
@@ -764,9 +845,13 @@ class Guppy (object):
         #  moved from up above.
         numTruePresences = self.getNumTruePresencesForEachSpp()
 
+#        print "\n\n\n---------------  EXITING NOW  ---------------\n\n\n"
+#        exit()
+
         print "\n\n+++++\tBefore genTruePresences\n"
 
         listOfTruePresencesAndXYlocs = self.genTruePresences (numTruePresences)
+
         #        combinedSppTruePresencesTable = \
         #            listOfTruePresencesAndXYlocs ["combined.spp.true.presences.table"]
         #        allSppTruePresenceLocsXY = \

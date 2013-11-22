@@ -48,6 +48,82 @@ def xyRelToLowerLeft (n, numRows, numCols):
 
     return [ (n % numCols) + 1   ,   numRows - (n // numCols) ]
 
+#=========================================================================================
+
+def spatialXYrelToLowerLeft (n, numRows, numCols,
+                            llcorner = [2618380.65282, 2529528.47684],
+                            cellsize = 75.0):
+    """  Compute the x,y coordinates of a given
+    index into the image array where the index starts with 0 in the
+    UPPER left and goes row by row.  The x,y coordinates that are
+    output (to give to maxent) have their origin in the LOWER left
+    and go row by row upward like a typical x,y plot.
+    Also, numbering of the rows and columns in the output considers
+    the origin to be just outside the array, so that the lower left
+    corner of the array is called location [1,1] instead of [0,0].
+    """
+
+    xy = xyRelToLowerLeft (n, numRows, numCols)
+
+    spatialXY = [llcorner[0] + (cellsize * xy [0]), llcorner[1] + (cellsize * xy [1])]
+
+    if False:
+        print "*****  In spatialXYrelToLowerLeft()"
+        print "       n = "
+        print n
+        print "       numRows = "
+        print numRows
+        print "       numCols = "
+        print numCols
+        print "       xy = "
+        print xy
+        print "       spatialXY = "
+        print spatialXY
+
+    return spatialXY
+
+#===============================================================================
+
+def spatialYcellCenter (curRow, numRows, yllcorner = 0.0, cellsize = 1.0, baseIdx = 0):
+
+    spatialYcellCenter = yllcorner + ((numRows - curRow - 1 + baseIdx)*cellsize) + (cellsize/2)
+    return spatialYcellCenter
+
+#-----------------------
+
+def spatialXcellCenter (curCol, numCols, xllcorner = 0.0, cellsize = 1.0, baseIdx = 0):
+
+    baseOffset = 1
+##    if baseIdx == 1:        #  Documenting the case for R in case
+##        baseOffset = 0        #  I need to clone this routine in R.
+
+    spatialXcellCenter = xllcorner + ((curCol+baseOffset)*cellsize)-(cellsize/2)
+    return spatialXcellCenter
+
+#-----------------------
+
+def rowColRelToUpperLeft (curArrayIdx, numRows, numCols, byRows = True):
+
+    if byRows:
+        rowCol = [ (curArrayIdx // numCols), (curArrayIdx % numCols) ]
+    else:
+        rowCol = None   #  Need to figure this out later...
+
+    return rowCol
+
+#-----------------------
+
+def spatialXYCellCenter (curArrayIdx, numRows, numCols, xllcorner = 0.0, yllcorner = 0.0, cellsize = 1.0, baseIdx = 0):
+
+    rowCol = rowColRelToUpperLeft (curArrayIdx, numRows, numCols)
+    curRow = rowCol [0]
+    curCol = rowCol [1]
+
+    xy = [spatialXcellCenter (curCol, numCols, xllcorner, cellsize, baseIdx),
+            spatialYcellCenter (curRow, numRows, yllcorner, cellsize, baseIdx)]
+
+    return xy
+
 #===============================================================================
 
 def strOfCommaSepNumbersToVec (numberString):
@@ -89,6 +165,37 @@ def readAscFileToMatrix (baseAscFilenameToRead, numRows, numCols, inputDir = "")
     f = open (filenameHandedIn, 'rt')
     try:
         reader = csv.reader(f, delimiter=' ')
+
+        numColsLine = next (reader)
+        print "\nnumColsLine = "
+        print numColsLine
+
+        numRowsLine = next (reader)
+        print "\nnumRowsLine = "
+        print numRowsLine
+
+        xllcornerLine = next (reader)
+        print "\nxllcornerLine = "
+        print xllcornerLine
+
+        yllcornerLine = next (reader)
+        print "\nyllcornerLine = "
+        print yllcornerLine
+
+        cellsizeLine = next (reader)
+        print "\ncellsizeLine = "
+        print cellsizeLine
+
+        nodataValueLine = next (reader)
+        print "\nnodataValueLine = "
+        print nodataValueLine
+
+
+            #  Skip header lines.
+#        for k in range (numHeaderLines):
+#            next (reader)
+
+
 
             #  Skip header lines.
         for k in range (numHeaderLines):
