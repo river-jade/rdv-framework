@@ -548,7 +548,13 @@ class Guppy (object):
 
     #-------------------------------------------------------------------------------
 
-    def loadEnvLayers(self):
+    def getTrueRelProbDistMapsForAllSpp (self):
+
+        self.trueRelProbDistGen.getTrueRelProbDistMapsForAllSpp (self)
+
+    #-------------------------------------------------------------------------------
+
+    def loadEnvLayers (self):
 
         print "\n====>  IN loadEnvLayers:  self.curFullMaxentEnvLayersDirName = '" + self.curFullMaxentEnvLayersDirName + "'"
 
@@ -697,7 +703,7 @@ class Guppy (object):
 
     #-------------------------------------------------------------------------------
 
-    def genTruePresences(self, numTruePresences):
+    def genTruePresencesForAllSpp (self, numTruePresences):
 
         allSppTruePresenceLocsXY = []
         #            vector (mode="list", length=self.variables ["PAR.num.spp.to.create"])
@@ -812,32 +818,23 @@ class Guppy (object):
             #  Generate environment layers.
             #--------------------------------
 
-#        useMattEnvData = True      #  Will add this to the yaml file and Guppy __init__() when finished with testing...
         self.loadEnvLayers ()
-
-#        print "\nIn Guppy:run:  self.envLayers.__class__.__name__ = '" + self.envLayers.__class__.__name__ + "'"
-
-#               Moved these into the loadEnvLayers() routine.
-#         envLayersShape = self.envLayers.shape
-#         print "\nenvLayersShape = " + str(envLayersShape)
-#
-#         self.numEnvLayers = envLayersShape[0]
-#         self.imgNumRows = envLayersShape[1]
-#         self.imgNumCols = envLayersShape[2]
-#         self.imgNumCells = self.imgNumRows * self.imgNumCols
-#
-#         print "\n\n>>>  After genEnvLayers(), self.numEnvLayers = " + str(self.numEnvLayers)
-#         print "\n>>>                        img is " + str(self.imgNumRows) + " rows by " + str(
-#             self.imgNumCols) + " cols for total cell ct = " + str(self.imgNumCells)
 
             #--------------------------------------------
             #  Generate true relative probability maps.
             #--------------------------------------------
 
-        self.trueRelProbDistGen.getTrueRelProbDistMapsForAllSpp(self)
+        self.getTrueRelProbDistMapsForAllSpp ()
 
             #----------------------------
             #  Generate true presences.
+            #----------------------------
+            #  Currently, this also generates the Sampled presences inside
+            #  the same call to pyper genPresences().
+            #  Need to separate that behavior out and make a new method
+            #  for Guppy to genSampledPresences() and apply a SampleBias class
+            #  to the data and the true presences to generate the
+            #  sampled presences.
             #----------------------------
 
         print "\n\n+++++\tBefore getNumTruePresencesForEachSpp()\n"
@@ -845,12 +842,15 @@ class Guppy (object):
         #  moved from up above.
         numTruePresences = self.getNumTruePresencesForEachSpp()
 
+        print "\n\n+++++\tBefore genTruePresencesForAllSpp\n"
+
+        listOfTruePresencesAndXYlocs = self.genTruePresencesForAllSpp (numTruePresences)
+
+        print "\n\n+++++\tJust after self.genTruePresencesForAllSpp (numTruePresences), listOfTruePresencesAndXYlocs = "
+        pprint (listOfTruePresencesAndXYlocs)
+
 #        print "\n\n\n---------------  EXITING NOW  ---------------\n\n\n"
 #        exit()
-
-        print "\n\n+++++\tBefore genTruePresences\n"
-
-        listOfTruePresencesAndXYlocs = self.genTruePresences (numTruePresences)
 
         #        combinedSppTruePresencesTable = \
         #            listOfTruePresencesAndXYlocs ["combined.spp.true.presences.table"]

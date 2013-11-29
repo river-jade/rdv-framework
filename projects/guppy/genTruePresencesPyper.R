@@ -179,7 +179,7 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  top of For Loop over numSppTo
     #								'.asc',
                                     sep='')
 
-
+#  BTL - 2013.11.22
 #  IS THIS USING THE OLD ASCII READER OR THE NEW ONE?
 #  LOOKS LIKE IT'S PROBABLY THE OLD ONE SINCE IT LOOKS LIKE IT'S RETURNING
 #  A MATRIX RATHER THAN AN OBJECT.
@@ -245,7 +245,7 @@ print (num.true.presences)
 
 
 
-cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
+#####cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
             #  Can probably replace this with an apply() call instead...
         for (cur.loc in 1:num.true.presences [spp.id])
             {
@@ -253,7 +253,7 @@ cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
 #            true.presence.locs.x.y [cur.loc, ] =
 #                xy.rel.to.lower.left (true.presence.indices [cur.loc], num.rows,
 #                                        num.cols)
-cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) BEFORE spatial.xy.rel.to.lower.left.by.row(), cur.loc = ", cur.loc, append = TRUE)
+#####cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) BEFORE spatial.xy.rel.to.lower.left.by.row(), cur.loc = ", cur.loc, append = TRUE)
 
             true.presence.locs.x.y [cur.loc, ] =
 #                spatial.xy.rel.to.lower.left (true.presence.indices [cur.loc],
@@ -261,10 +261,10 @@ cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) BEFORE spatial.xy.rel.
                                                 num.rows, num.cols,
                                                 llcorner, cellsize
                                                 )
-cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) AFTER spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+#####cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) AFTER spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
 
             }
-cat (file = debuggingOutputFile, "\n\nAFTER for (cur.loc...)", append = TRUE)
+#####cat (file = debuggingOutputFile, "\n\nAFTER for (cur.loc...)", append = TRUE)
 
             #-----------------------------------------------------------------------
             #  Bind the species names to the presence locations to make a data frame
@@ -304,7 +304,7 @@ cat (file = debuggingOutputFile, "\n\nAFTER for (cur.loc...)", append = TRUE)
         true.presences.filename <- paste (cur.full.maxent.samples.dir.name, "/",
                                             outfile.root, ".csv", sep='')
         cat ("\n\ntrue.presences.filename = '", true.presences.filename, "'", sep='')
-cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)", append = TRUE)
+#####cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)", append = TRUE)
 
         write.csv (true.presences.table,
         ###  	   file = sampled.presences.filename,
@@ -325,7 +325,7 @@ cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)
 
         #===========================================================================
 
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()", append = TRUE)
+#####cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()", append = TRUE)
 
         }  #  end for - all species
 
@@ -354,7 +354,7 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSp
 			   row.names = FALSE,
 			   quote=FALSE)
 
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING genTruePresences()", append = TRUE)
+#####cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING genTruePresences()", append = TRUE)
 
     return (all.spp.true.presence.locs.x.y)
     }
@@ -365,6 +365,9 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING genTruePresences()", a
 		#  Have now finished generating the true occurrences of the species.
 		#  Ready to simulate the sampling of the species to generate a
 		#  sampled occurrence layer to feed to maxent.
+		#
+		#  This routine really belongs as a method in Guppy that applies a
+		#  a SamplingBias class to generate a biased sample.
 		#---------------------------------------------------------------------
 
 createSampledPresences = function (num.true.presences,
