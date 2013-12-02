@@ -236,7 +236,7 @@ getPrincipalComponents = function (data, OPT.pca.cum.var.explained.cutoff = 0.75
     #  and look to be sure...
 scaleInputs = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT ABOVE.
 
-OPT.PCA = TRUE
+OPT.PCA = FALSE
 OPT.pca.cum.var.explained.cutoff = 0.75
 mismatchCt = 0
 
@@ -382,6 +382,11 @@ combinedEnvLayersTable [,3] = y
 
     #------------------------------------------------
     #  Load all of the data layers to be clustered.
+    #
+    #  That is, read each env layer file into a
+    #  single column of a large table with one row
+    #  for each pixel's set of all env feature
+    #  values.
     #------------------------------------------------
 
 curImgFileIdx = 0
@@ -436,12 +441,20 @@ combinedEnvLayersTable = combinedEnvLayersTable [ , -id.col]
 if (scaleInputs)
     combinedEnvLayersTable = scale (combinedEnvLayersTable)
 
+
+
+
+
+
+
+
+
     #----------------------------------------------------------------------
     #  Draw the subsample of records to be clustered from the full set of
     #  pixels.
     #----------------------------------------------------------------------
 
-idsOfRecordsToCluster = sample (1:numPixelsPerImg, numRecordsToCluster, replace=FALSE)#clusterInputTable =
+#OLD#  idsOfRecordsToCluster = sample (1:numPixelsPerImg, numRecordsToCluster, replace=FALSE)#clusterInputTable =
 #cat ("\nidsOfRecordsToCluster = ", idsOfRecordsToCluster, "\n")
 
 #####recordsToCluster = combinedEnvLayersTable [idsOfRecordsToCluster,]
@@ -449,7 +462,7 @@ idsOfRecordsToCluster = sample (1:numPixelsPerImg, numRecordsToCluster, replace=
 ##### #print (recordsToCluster)
 
 combinedEnvLayersTableInPCAcoords = NULL
-recordsToCluster = NULL
+#OLD#  recordsToCluster = NULL
 envDataSrc = NULL
 
     #----------------------------------------------------------------------
@@ -478,7 +491,7 @@ if (OPT.PCA)
     envDataSrc = combinedEnvLayersTable
     }
 
-recordsToCluster = envDataSrc [idsOfRecordsToCluster,]
+#OLD#  recordsToCluster = envDataSrc [idsOfRecordsToCluster,]
 #cat ("\n\nrecordsToCluster = \n")
 #print (recordsToCluster)
 
@@ -513,26 +526,26 @@ if (FALSE)
     #  Cluster with k-means.
     #-------------------------
 
-cat("\nStarting kmeans...\n");
-clusterSet = kmeans (recordsToCluster, numClusters)
-#clusterSet = kmeans (recordsToCluster, initialClusterCenters)
+#OLD#  cat("\nStarting kmeans...\n");
+#OLD#  clusterSet = kmeans (recordsToCluster, numClusters)
+#OLD#  #clusterSet = kmeans (recordsToCluster, initialClusterCenters)
 
-print (clusterSet)
-cat ("\n\n>>>>>>>>>>> class(clusterSet$centers) = ", class(clusterSet$centers), "\n\n")
-print (clusterSet$centers)
+#OLD#  print (clusterSet)
+#OLD#  cat ("\n\n>>>>>>>>>>> class(clusterSet$centers) = ", class(clusterSet$centers), "\n\n")
+#OLD#  print (clusterSet$centers)
 
-original.data.distances <- daisy (recordsToCluster);
-data.distances <- original.data.distances;
+#OLD#  original.data.distances <- daisy (recordsToCluster);
+#OLD#  data.distances <- original.data.distances;
 
-data.clus <- clusterSet$cluster    	#  If you don't do this, you get error msg...
-clusplot (data.distances,
-          data.clus,
-          diss = TRUE,
-          main = 'kmeans results',
-          asp = 1,
-          col.p = data.clus,
-          labels = 4);  # color points and label ellipses
-#          labels = 5);  # color points and label ellipses and identify pts
+#OLD#  data.clus <- clusterSet$cluster    	#  If you don't do this, you get error msg...
+#OLD#  clusplot (data.distances,
+#OLD#            data.clus,
+#OLD#            diss = TRUE,
+#OLD#            main = 'kmeans results',
+#OLD#            asp = 1,
+#OLD#            col.p = data.clus,
+#OLD#            labels = 4);  # color points and label ellipses
+#OLD#  #          labels = 5);  # color points and label ellipses and identify pts
 
 #=====================
 #=====================
@@ -541,6 +554,9 @@ clusplot (data.distances,
 #=====================
 #=====================
 #=====================
+
+#-------------------------------------------------------------------------------
+
 vecSquared = function (aVector)
     {
     curSumSquares = 0
@@ -553,6 +569,8 @@ vecSquared = function (aVector)
     #cat ("\nAT END OF vecSquared()")
     return (curSumSquares)
     }
+
+#-------------------------------------------------------------------------------
 
 sumSquaredDist = function (point1, point2)
     {
@@ -587,10 +605,14 @@ sumSquaredDist = function (point1, point2)
     return (retValue)
     }
 
+#-------------------------------------------------------------------------------
+
 eucDist = function (point1, point2)
     {
     return (sqrt (sumSquaredDist (point1, point2)))
     }
+
+#-------------------------------------------------------------------------------
 
 distVecs = matrix (0, nrow=numPixelsPerImg, ncol=numClusters)
 #cat ("\n>>>>>>>>>>>>>>>>>>>>>>>>>>  new distVec = ", distVec)
@@ -600,7 +622,8 @@ curClusterID = 1
 
 for (curClusterID in 1:numClusters)
     {
-    curClusterCenter = clusterSet$centers[curClusterID,]
+#OLD#      curClusterCenter = clusterSet$centers[curClusterID,]
+    curClusterCenter = clusterCenters [curClusterID,]
     cat ("\n\n------------------\ncurClusterCenter = ", curClusterCenter, "\n------------------\n\n")
 
     for (curRow in 1:numPixelsPerImg)
