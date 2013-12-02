@@ -348,8 +348,10 @@ if (dataSrc == "mattData")
 
 numPixelsPerImg = numImgRows * numImgCols
 numRecordsToCluster = min (maxNumPixelsToCluster, numPixelsPerImg)
-numNonEnvDataCols = 3    #  1 col for IDs and 2 cols for x,y
-numColsInEnvLayersTable = numEnvLayers + 3
+#OLD#  numNonEnvDataCols = 3    #  1 col for IDs and 2 cols for x,y
+numNonEnvDataCols = 1    #  1 col for IDs
+#OLD#  numColsInEnvLayersTable = numEnvLayers + 3
+numColsInEnvLayersTable = numEnvLayers + 1
 
 combinedEnvLayersTable = matrix (0, nrow=numPixelsPerImg, ncol=numColsInEnvLayersTable, byrow=TRUE)
 cat ("\n\ndim (combinedEnvLayersTable) = ", dim (combinedEnvLayersTable), "\n\n")
@@ -363,22 +365,22 @@ idColIdx = 1
     #  since it just has to get things close together.
     #--------------------------------------------------------------------------
 
-#numPixelsInImg = 12
-#numImgRows = 3
-#numImgCols = 4
-y = ((0:(numPixelsPerImg - 1)) %/% numImgRows) + 1
-x = 1:numPixelsPerImg %% numImgCols
-    #  Modulo operator leaves the last column of each row set to 0 instead of
-    #  set to the last column number, i.e., numImgCols, so replace the 0 in
-    #  each row's y value
-for (kkk in 1:numPixelsPerImg) { if (x[kkk] == 0) x[kkk] = numImgCols }
+#OLD#  #numPixelsInImg = 12
+#OLD#  #numImgRows = 3
+#OLD#  #numImgCols = 4
+#OLD#  y = ((0:(numPixelsPerImg - 1)) %/% numImgRows) + 1
+#OLD#  x = 1:numPixelsPerImg %% numImgCols
+#OLD#      #  Modulo operator leaves the last column of each row set to 0 instead of
+#OLD#      #  set to the last column number, i.e., numImgCols, so replace the 0 in
+#OLD#      #  each row's y value
+#OLD#  for (kkk in 1:numPixelsPerImg) { if (x[kkk] == 0) x[kkk] = numImgCols }
 
-cat ("\n\nlength (combinedEnvLayersTable [,2]) = ", length (combinedEnvLayersTable [,2]))
-cat ("\n    length (x) = ", length (x))
-cat ("\nlength (combinedEnvLayersTable [,3]) = ", length (combinedEnvLayersTable [,3]))
-cat ("\n    length (y) = ", length (y))
-combinedEnvLayersTable [,2] = x
-combinedEnvLayersTable [,3] = y
+#OLD#  cat ("\n\nlength (combinedEnvLayersTable [,2]) = ", length (combinedEnvLayersTable [,2]))
+#OLD#  cat ("\n    length (x) = ", length (x))
+#OLD#  cat ("\nlength (combinedEnvLayersTable [,3]) = ", length (combinedEnvLayersTable [,3]))
+#OLD#  cat ("\n    length (y) = ", length (y))
+#OLD#  combinedEnvLayersTable [,2] = x
+#OLD#  combinedEnvLayersTable [,3] = y
 
     #------------------------------------------------
     #  Load all of the data layers to be clustered.
@@ -390,7 +392,8 @@ combinedEnvLayersTable [,3] = y
     #------------------------------------------------
 
 curImgFileIdx = 0
-firstNonXYCol = 4
+#OLD#  firstNonXYCol = 4
+firstNonXYCol = 1 + numNonEnvDataCols
 for (curCol in firstNonXYCol:numColsInEnvLayersTable)
     {
     curImgFileIdx = curImgFileIdx + 1
@@ -429,6 +432,10 @@ for (curCol in firstNonXYCol:numColsInEnvLayersTable)
 #    print (combinedEnvLayersTable)
     }
 
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+    #  WHY IS THIS ID.COL VARIABLE HERE, EVEN IN THE GUPPYCLUSTERTEST VERSION?
+    #  DOESN'T SEEM LIKE IT'S EVER EVEN LOADED, MUCH LESS USED...
 id.col <- 1
 ##data <- data [order (data [ , id.col]), ]
 
@@ -437,6 +444,11 @@ id.col <- 1
 #data <- data [ , -id.col]
 
 combinedEnvLayersTable = combinedEnvLayersTable [ , -id.col]
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+
+
+
 
 if (scaleInputs)
     combinedEnvLayersTable = scale (combinedEnvLayersTable)
