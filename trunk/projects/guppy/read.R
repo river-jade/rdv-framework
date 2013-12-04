@@ -121,6 +121,19 @@ convert.pnm.files.in.dir.to.asc.files <- function (input.dir, output.dir,
 
     #  Added July 23, 2011 - BTL.
 
+
+
+    #  THIS FUNCTION IS A REAL PAIN BECAUSE IT ASSUMES A VERY SPECIFIC
+    #  WAY OF PASSING THE FILE IN AND I CAN NEVER REMEMBER IT, I.E.,
+    #  FILE STEM WITHOUT THE ".ASC" AS THE FIRST ARGUMENT, THEN
+    #  PATH TO DIRECTORY WHERE FILE IS STORED BUT MUST HAVE "/" ON THE
+    #  END OF IT.
+    #  WOULD LIKE TO BE ABLE TO PASS IT IN ANY WAY THAT I WANT AND THEN
+    #  HAVE THE FUNCTION FIGURE OUT WHETHER SLASHES AND EXTENSIONS AND
+    #  PATHS ARE NEEDED...
+    #  BTL - 2013.12.03
+
+
 read.asc.file.to.matrix <-
 #        function (base.asc.filename.to.read, input.dir = "./")
         function (base.asc.filename.to.read, input.dir = "")
