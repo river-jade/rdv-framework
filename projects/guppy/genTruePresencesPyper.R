@@ -67,6 +67,22 @@ cat (file = debuggingOutputFile, "\n\nat END of spatial.xy.rel.to.lower.left.by.
 
     #  Copied from read.R.
 
+
+    #  THIS FUNCTION IS A REAL PAIN BECAUSE IT ASSUMES A VERY SPECIFIC
+    #  WAY OF PASSING THE FILE IN AND I CAN NEVER REMEMBER IT, I.E.,
+    #  FILE STEM WITHOUT THE ".ASC" AS THE FIRST ARGUMENT, THEN
+    #  PATH TO DIRECTORY WHERE FILE IS STORED BUT MUST HAVE "/" ON THE
+    #  END OF IT.
+    #  WOULD LIKE TO BE ABLE TO PASS IT IN ANY WAY THAT I WANT AND THEN
+    #  HAVE THE FUNCTION FIGURE OUT WHETHER SLASHES AND EXTENSIONS AND
+    #  PATHS ARE NEEDED...
+    #
+    #  ALSO NEED TO HAVE IT INTERFACE WITH SOMETHING THAT RECOVERS ALL
+    #  THE HEADER INFORMATION AND RETURNS THAT TOO.  I THINK THAT I'VE
+    #  BUILT SOMETHING LIKE THAT IN PYTHON, BUT NEED TO TRACK IT DOWN.
+    #  BTL - 2013.12.03
+
+
 read.asc.file.to.matrix <-
 #        function (base.asc.filename.to.read, input.dir = "./")
         function (base.asc.filename.to.read, input.dir = "")
