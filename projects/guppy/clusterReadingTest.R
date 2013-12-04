@@ -66,9 +66,9 @@ vecSquared = function (aVector, baseIdx = 1)
 
 #-------------------------------------------------------------------------------
 
-sumSquaredDist = function (point1, point2)
+sumSquaredDist = function (vector1, vector2)
     {
-    if (length (point1) != length (point2))
+    if (length (vector1) != length (vector2))
         {
         mismatchCt <<- mismatchCt + 1
         if (mismatchCt < 10)
@@ -76,20 +76,20 @@ sumSquaredDist = function (point1, point2)
             cat ("\n\n--------------------------------------\n")
             cat ("\nIn sumSquareDist(), lengths don't match.  mismatchCt = ",
                  mismatchCt, ".")
-            cat ("\n    length (point1) = ", length (point1))
-            cat ("\n    length (point2) = ", length (point2))
-            cat ("\n    point1 = ", point1)
-            cat ("\n    point2 = ", point2)
+            cat ("\n    length (vector1) = ", length (vector1))
+            cat ("\n    length (vector2) = ", length (vector2))
+            cat ("\n    vector1 = ", vector1)
+            cat ("\n    vector2 = ", vector2)
             cat ("\n")
             }
         }
-    vs = vecSquared (point1 - point2)
+    vs = vecSquared (vector1 - vector2)
     #cat ("\nvs = ", vs)
     retValue = vs
     #    retValue = sqrt (vs)
     #cat ("\nretValue = ", retValue)
     
-    if ((length (point1) != length (point2)) & (mismatchCt < 10))
+    if ((length (vector1) != length (vector2)) & (mismatchCt < 10))
         {
         cat ("\nvs = ", vs)
         cat ("\nretValue = ", retValue)
@@ -101,24 +101,39 @@ sumSquaredDist = function (point1, point2)
 
 #-------------------------------------------------------------------------------
 
-eucDist = function (point1, point2)
+eucDist = function (vector1, vector2)
     {
-    return (sqrt (sumSquaredDist (point1, point2)))
+    return (sqrt (sumSquaredDist (vector1, vector2)))
     }
 
 #-------------------------------------------------------------------------------
 
 const_sqrt2pi = sqrt(2*pi)
-gaussian = function (x, mu = 0.0, sd = 1.0)
+gaussian = function (xVector, muVector, sdVector)
     {
-    return (exp ((-(x - mu)^2) / (2*(sd^2))) / (sd * const_sqrt2pi))
+    exponentNumerator = -(xVector - muVector) ^ 2
+    cat ("\n\ngaussian exponentNumerator = ", exponentNumerator)
+    
+    exponentDenominator = 2 * (sdVector ^ 2)
+    cat ("\n\ngaussian exponentDenominator = ", exponentDenominator)
+    
+    fullFractionDenominator = sdVector * const_sqrt2pi
+    cat ("\n\ngaussian fullFractionDenominator = ", fullFractionDenominator)
+    cat ("\n\n")
+        
+    gaussianVector = 
+        exp (exponentNumerator / exponentDenominator) / 
+        fullFractionDenominator
+    
+    return (gaussianVector)
     }
 
 #----------------------------------
 
-gaussianInverseWeightedDist = function (x, mu = 0.0, sd = 1.0)
+gaussianInverseWeightedDist = function (vector1,vector2, sdVector)
     {
-    return (eucDist (x, mu) / gaussian (x, mu, sd))
+    gaussianWeight = 
+    return (eucDist (vector1, vector2) / gaussian (vector1, vector1, sdVector))
     }
 
 #===============================================================================
@@ -342,6 +357,9 @@ for (curClusterID in clusterIDs)
     curClusterCenter = clusterCenters [curClusterTableIndex, ]
     cat ("\ncurClusterCenter = ", curClusterCenter)
     
+    curClusterDeviation = clusterDeviations [curClusterTableIndex, ]
+    cat ("\ncurClusterDeviation = ", curClusterDeviation)
+    
     for (curRow in 1:numPixelsPerImg)
         {
         #cat ("\nLOOP START: curRow = ", curRow)
@@ -358,12 +376,21 @@ for (curClusterID in clusterIDs)
         
         if (curRow < 2)
             {
-            cat ("\n\ndim (distVecs) = ", dim (distVecs))
-            cat ("\nlength (point1) = ", length (point1))
-            cat ("\nlength (point2) = ", length (point2))
-            cat ("\nsumSquaredDist (point1, point2) = ", sumSquaredDist (point1, point2))
             cat ("\ncurRow = ", curRow)
             cat ("\ncurClusterTableIndex = ", curClusterTableIndex)
+
+            cat ("\n\ndim (distVecs) = ", dim (distVecs))
+            
+            cat ("\n\npoint1 = ", point1)
+            #cat ("\n\nlength (point1) = ", length (point1))
+            
+            cat ("\n\npoint2 = ", point2)
+            #cat ("\n\nlength (point2) = ", length (point2))
+            
+            cat ("\n\nsumSquaredDist (point1, point2) = ", sumSquaredDist (point1, point2))
+            cat ("\neucDist (point1, point2) = ", eucDist (point1, point2))   
+            cat ("\ngaussianInverseWeightedDist (point1, point2, curClusterDeviation) = ", gaussianInverseWeightedDist (point1, point2, curClusterDeviation))
+            
             cat ("\n\n")
             }
         
@@ -399,7 +426,7 @@ for (curClusterID in clusterIDs)
     curDir = "./"    
     curDistImg = matrix (distVecs[,curClusterTableIndex], nrow=numImgRows, ncol=numImgCols, byrow=TRUE)
     
-            #  IS THIS NECESSARY SINCE THE MAC PREVIEW PROGRAM SEEMS TO 
+            #  IS THIS NECESSARY SINCE THE MAC FINDER PROGRAM SEEMS TO 
             #  BE ABLE TO DISPLAY .ASC FILES AND ONE OF THOSE IS WRITTEN  
             #  BELOW?
             #  BUT THAT ASSUMES THE PROGRAM IS ONLY RUNNING ON MACS, SINCE 
