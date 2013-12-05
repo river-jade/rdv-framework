@@ -164,7 +164,7 @@ envelopeDist = function (aVector, centerVector, minVector, maxVector)
     if (sum (aVector <= maxVector) < length (minVector))
         return (outOfEnvelopeValue)
     
-    return (outOfEnvelopeValue - eucDist (aVector, centerVector))
+    return (eucDist (aVector, centerVector))
     }
 
 #----------------------------------
@@ -187,12 +187,12 @@ hardClusterDist = function (aVector, centerVector, insideCluster=TRUE)
     
     if (insideCluster) 
         {
-#        return (outOfEnvelopeValue - eucDist (aVector, centerVector))
-        return (1)
+        return (eucDist (aVector, centerVector))
+#        return (1)
         } else
         {
-#        return (outOfClusterValue)
-        return (0)
+        return (outOfClusterValue)
+#        return (0)
         }
     }
 
@@ -345,6 +345,8 @@ clusterDeviations = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 clusterMins = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 clusterMaxs = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 
+clusterSizes = rep (0, numClusters)
+
 curPixelCt = 0
 curClusterTableIndex = 0
 for (curClusterID in clusterIDs)
@@ -356,6 +358,7 @@ for (curClusterID in clusterIDs)
     
     curClusterPixelLocs = which (clusterPixelValuesLayer == curClusterID)
     cat ("\nlength (curClusterPixelLocs) = ", length (curClusterPixelLocs))
+    clusterSizes [curClusterTableIndex] = length (curClusterPixelLocs)
 
 #    cat ("\n\nenvDataSrc [curClusterPixelLocs, ] = ", envDataSrc [curClusterPixelLocs, ])
     
@@ -439,7 +442,7 @@ for (curClusterID in clusterIDs)
     curClusterMax = clusterMaxs [curClusterTableIndex, ]
     cat ("\ncurClusterMax = ", curClusterMax)
     
-    useHardClusterDistance = TRUE
+    useHardClusterDistance = FALSE
     if (useHardClusterDistance)
         {
         insideCluster = (clusterPixelValuesLayer == curClusterID)
@@ -483,8 +486,9 @@ for (curClusterID in clusterIDs)
             }
         
 #        distVecs [curRow, curClusterTableIndex] = sumSquaredDist (point1, point2)
+        distVecs [curRow, curClusterTableIndex] = eucDist (point1, point2)
 #        distVecs [curRow, curClusterTableIndex] = envelopeDist (point1, point2, curClusterMin, curClusterMax)
-        distVecs [curRow, curClusterTableIndex] = hardClusterDist (point1, point2, insideCluster [curRow])
+#        distVecs [curRow, curClusterTableIndex] = hardClusterDist (point1, point2, insideCluster [curRow])
         
         
         }  #  end for - all pixels
@@ -556,9 +560,9 @@ for (curClusterID in clusterIDs)
 }  #  end - for all clusterIDs
 
 sppIDs = 0:(numClusters - 1)
-sppIDvsClusterID = cbind (sppIDs, clusterIDs)
+sppIDvsClusterID = cbind (sppIDs, clusterIDs, clusterSizes)
 write.csv (sppIDvsClusterID, 
-           paste (sppClusterDistanceMapsDir, "sppIDvsClusterID.csv", sep=''),
+           paste (sppClusterDistanceMapsDir, "sppIDvsClusterIDvsClusterSize.csv", sep=''),
            row.names=FALSE)
 
 #plot (1:numPixelsPerImg, distVecs[,1])
