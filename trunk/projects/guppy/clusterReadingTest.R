@@ -508,10 +508,10 @@ for (curClusterID in clusterIDs)
             cat ("\n\n")
             }
         
-#        distVecs [curRow, curClusterTableIndex] = sumSquaredDist (point1, point2)
+        distVecs [curRow, curClusterTableIndex] = sumSquaredDist (point1, point2)
 #        distVecs [curRow, curClusterTableIndex] = eucDist (point1, point2)
         
-        distVecs [curRow, curClusterTableIndex] = envelopeDist (point1, point2, curClusterMin, curClusterMax)
+#        distVecs [curRow, curClusterTableIndex] = envelopeDist (point1, point2, curClusterMin, curClusterMax)
 #        distVecs [curRow, curClusterTableIndex] = hardClusterDist (point1, point2, insideCluster [curRow])
 #        distVecs [curRow, curClusterTableIndex] = hardClusterDist_01only (point1, point2, insideCluster [curRow])
                 
@@ -553,27 +553,39 @@ for (curClusterID in clusterIDs)
     
 
     #----------------------------------    
-
-    #  *** Need to convert these distances to suitabilities/relativeProbabilities 
-    #      instead and write those out to the tzar output area.
+    #
+    #  NOTE: In the grey scale .asc and .pgm images that are written out, 
+    #        black shows small values and white shows large values, which 
+    #        means that colors for good and bad are reversed in distance 
+    #        maps compared to suitability maps.  
+    #        For suitability, black is bad and white is good.
+    #        For distance, black is close to feature center (i.e., suitable) 
+    #        and white is large distance from feature center (i.e., 
+    #        not suitable.)
+    
+    #----------------------------------    
+    #  *** Need to write those out to the tzar output area.
     
     curClusterDistVec = distVecs[,curClusterTableIndex]
+    
     finiteRange = range (curClusterDistVec, finite = TRUE)
     curMaxDistValue = finiteRange [2]
-
-    pixelIsInCurCluster = (clusterPixelValuesLayer == curClusterID)
-    curInClusterPixelLocs = which (pixelIsInCurCluster)
-#    curOutOfClusterPixelLocs = which (! pixelIsInCurCluster)
+    epsilonValue = 0.25 * curMaxDistValue    #  to give a little space above 0
+    curMaxPlusEpsilonValue = curMaxDistValue + epsilonValue
 
     curClusterSuitabilities [] = 0.0
     
-    epsilonValue = 0.25 * curMaxDistValue    #  to give a little space above 0
-#    epsilonValue = 9 * curMaxDistValue    #  to give a little space above 0
+    if (FALSE)    #  this should be irrelevant now
+        {
+        pixelIsInCurCluster = (clusterPixelValuesLayer == curClusterID)
+        curInClusterPixelLocs = which (pixelIsInCurCluster)
+        curClusterSuitabilities [curInClusterPixelLocs] = curMaxPlusEpsilonValue - curClusterDistVec [curInClusterPixelLocs]
+        }
     
-    curMaxPlusEpsilonValue = curMaxDistValue + epsilonValue
-    curClusterSuitabilities [curInClusterPixelLocs] = curMaxPlusEpsilonValue - curClusterDistVec [curInClusterPixelLocs]
-#    curClusterSuitabilities [curOutOfClusterPixelLocs] = 0.0
-    
+        #  Replacement code for the if FALSE that tested for pixel in cluster...
+    finiteValueLocs = which (is.finite (curClusterDistVec))
+    curClusterSuitabilities [finiteValueLocs] = curMaxPlusEpsilonValue - curClusterDistVec [finiteValueLocs]
+        
     curSuitabilityImg = matrix (curClusterSuitabilities, nrow=numImgRows, ncol=numImgCols, byrow=TRUE)
     
 
@@ -594,9 +606,20 @@ for (curClusterID in clusterIDs)
     
     #  *** Need to write these to files in the output area too.
     #  Can't remember the command right now...
-    hist (curClusterSuitabilities, breaks=seq(0,histTop,histIntervalLength),
-          main = paste ("SUITABILITY hist for spp ", (curClusterTableIndex-1), ", cluster ", curClusterID, sep=''))
-    
+    histTitle = paste ("SUITABILITY hist for spp ", 
+                       (curClusterTableIndex-1), 
+                       ", cluster ", curClusterID, sep='')
+    if ((histTop > 0)  & (histIntervalLength > 0))
+        {
+        hist (curClusterSuitabilities, 
+              breaks=seq (0, histTop, histIntervalLength),
+              main = histTitle)
+        } else
+        {
+        cat ("\n\nNot showing histogram for \n\n    '", histTitle, "'", 
+            "\nbecause histTop and bottom both equal 0 (e.g., when ", 
+            "the cluster only has one point.\n\n", sep='')
+        }
     
     
     
@@ -655,10 +678,11 @@ for (curClusterID in clusterIDs)
     
 }  #  end - for all clusterIDs
 
+clusterPctsOfImg = 100 * (clusterSizes / numPixelsPerImg)
 sppIDs = 0:(numClusters - 1)
-sppIDvsClusterID = cbind (sppIDs, clusterIDs, clusterSizes)
+sppIDvsClusterID = cbind (sppIDs, clusterIDs, clusterSizes, clusterPctsOfImg)
 write.csv (sppIDvsClusterID, 
-           paste (sppClusterDistanceMapsDir, "sppIDvsClusterIDvsClusterSize.csv", sep=''),
+           paste (sppClusterDistanceMapsDir, "sppIDvsClusterIDvsClusterSizeAndPct.csv", sep=''),
            row.names=FALSE)
 
 #plot (1:numPixelsPerImg, distVecs[,1])
