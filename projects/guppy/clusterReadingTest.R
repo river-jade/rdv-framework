@@ -137,7 +137,8 @@ gaussianInverseWeightedDist = function (aVector, centerVector, sdVector)
 
 #----------------------------------
 
-outOfEnvelopeValue = 40     #  Not sure what to put here...
+outOfEnvelopeValue = Inf     #  Not sure what to put here...
+#outOfEnvelopeValue = 40     #  Not sure what to put here...
                             #  In the current case, there are 20 features, 
                             #  each scaled to be roughly 0-1, so the maximum 
                             #  distance among them is close to 20.
@@ -169,13 +170,36 @@ envelopeDist = function (aVector, centerVector, minVector, maxVector)
 
 #----------------------------------
 
-outOfClusterValue = 40     #  Not sure what to put here...
+outOfClusterValue = Inf     #  Not sure what to put here...
+#outOfClusterValue = 40     #  Not sure what to put here...
 #  In the current case, there are 20 features, 
 #  each scaled to be roughly 0-1, so the maximum 
 #  distance among them is close to 20.
 
-    #  NOTE:  For now at least, using this distance assumes that the po
+#  NOTE:  For now at least, using this distance assumes that the po
 hardClusterDist = function (aVector, centerVector, insideCluster=TRUE)
+{
+    #  If the point is fully inside the cluster, 
+    #  then return the euclidean distance to the 
+    #  center of the cluster in feature 
+    #  space (e.g., the mean or median).
+    #  You could also just return a constant value 
+    #  instead, but this would at least make some 
+    #  differentiation among values inside the clusters.
+    
+    if (insideCluster) 
+    {
+        return (eucDist (aVector, centerVector))
+        #        return (1)
+    } else
+    {
+        return (outOfClusterValue)
+        #        return (0)
+    }
+}
+#----------------------------------
+
+hardClusterDist_01only = function (aVector, centerVector, insideCluster=TRUE)
     {
         #  If the point is fully inside the cluster, 
         #  then return the euclidean distance to the 
@@ -187,12 +211,10 @@ hardClusterDist = function (aVector, centerVector, insideCluster=TRUE)
     
     if (insideCluster) 
         {
-        return (eucDist (aVector, centerVector))
-#        return (1)
+        return (0)
         } else
         {
-        return (outOfClusterValue)
-#        return (0)
+        return (1)
         }
     }
 
@@ -346,6 +368,7 @@ clusterMins = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 clusterMaxs = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 
 clusterSizes = rep (0, numClusters)
+curClusterSuitabilities = rep (0.0, numPixelsPerImg)
 
 curPixelCt = 0
 curClusterTableIndex = 0
@@ -442,7 +465,7 @@ for (curClusterID in clusterIDs)
     curClusterMax = clusterMaxs [curClusterTableIndex, ]
     cat ("\ncurClusterMax = ", curClusterMax)
     
-    useHardClusterDistance = FALSE
+    useHardClusterDistance = TRUE    #  also need to do this for envelope dist
     if (useHardClusterDistance)
         {
         insideCluster = (clusterPixelValuesLayer == curClusterID)
@@ -486,10 +509,12 @@ for (curClusterID in clusterIDs)
             }
         
 #        distVecs [curRow, curClusterTableIndex] = sumSquaredDist (point1, point2)
-        distVecs [curRow, curClusterTableIndex] = eucDist (point1, point2)
-#        distVecs [curRow, curClusterTableIndex] = envelopeDist (point1, point2, curClusterMin, curClusterMax)
-#        distVecs [curRow, curClusterTableIndex] = hardClusterDist (point1, point2, insideCluster [curRow])
+#        distVecs [curRow, curClusterTableIndex] = eucDist (point1, point2)
         
+        distVecs [curRow, curClusterTableIndex] = envelopeDist (point1, point2, curClusterMin, curClusterMax)
+#        distVecs [curRow, curClusterTableIndex] = hardClusterDist (point1, point2, insideCluster [curRow])
+#        distVecs [curRow, curClusterTableIndex] = hardClusterDist_01only (point1, point2, insideCluster [curRow])
+                
         
         }  #  end for - all pixels
     
@@ -499,7 +524,10 @@ for (curClusterID in clusterIDs)
     #cat ("\n\ndistVecs = \n")
     #print (distVecs)
     #cat ("\n\n")
+
     
+    if (FALSE)  
+    {
     maxDist = max (distVecs [,curClusterTableIndex]) + 0.5
     
     #histIntervalLength = 0.1
@@ -514,11 +542,79 @@ for (curClusterID in clusterIDs)
     cat ("\n    histIntervalLength = ", histIntervalLength, sep='')
     cat ("\n    histTop = ", histTop, sep='')
     
-        #  Need to write these to files in the output area too.
-        #  Can't remember the command right now...
+    #  *** Need to write these to files in the output area too.
+    #  Can't remember the command right now...
     hist (distVecs[,curClusterTableIndex], breaks=seq(0,histTop,histIntervalLength),
           main = paste ("Distance hist for spp ", (curClusterTableIndex-1), ", cluster ", curClusterID, sep=''))
-        
+    }
+    
+    
+    
+    
+
+    #----------------------------------    
+
+    #  *** Need to convert these distances to suitabilities/relativeProbabilities 
+    #      instead and write those out to the tzar output area.
+    
+    curClusterDistVec = distVecs[,curClusterTableIndex]
+    finiteRange = range (curClusterDistVec, finite = TRUE)
+    curMaxDistValue = finiteRange [2]
+
+    pixelIsInCurCluster = (clusterPixelValuesLayer == curClusterID)
+    curInClusterPixelLocs = which (pixelIsInCurCluster)
+#    curOutOfClusterPixelLocs = which (! pixelIsInCurCluster)
+
+    curClusterSuitabilities [] = 0.0
+    
+    epsilonValue = 0.25 * curMaxDistValue    #  to give a little space above 0
+#    epsilonValue = 9 * curMaxDistValue    #  to give a little space above 0
+    
+    curMaxPlusEpsilonValue = curMaxDistValue + epsilonValue
+    curClusterSuitabilities [curInClusterPixelLocs] = curMaxPlusEpsilonValue - curClusterDistVec [curInClusterPixelLocs]
+#    curClusterSuitabilities [curOutOfClusterPixelLocs] = 0.0
+    
+    curSuitabilityImg = matrix (curClusterSuitabilities, nrow=numImgRows, ncol=numImgCols, byrow=TRUE)
+    
+
+    
+    maxHistSuit = 1.1* max (curClusterSuitabilities)
+    
+    #histIntervalLength = 0.1
+    histIntervalLength = maxHistSuit / numHistIntervals
+    
+    #histTop = 1.0
+    histTop = (histIntervalLength * numHistIntervals) + 0.1
+    
+    cat ("\n\nShow histogram for distances to cluster ", curClusterTableIndex, sep='')
+    cat ("\n    numHistIntervals = ", numHistIntervals, sep='')
+    cat ("\n    maxSuit = ", maxSuit, sep='')
+    cat ("\n    histIntervalLength = ", histIntervalLength, sep='')
+    cat ("\n    histTop = ", histTop, sep='')
+    
+    #  *** Need to write these to files in the output area too.
+    #  Can't remember the command right now...
+    hist (curClusterSuitabilities, breaks=seq(0,histTop,histIntervalLength),
+          main = paste ("SUITABILITY hist for spp ", (curClusterTableIndex-1), ", cluster ", curClusterID, sep=''))
+    
+    
+    
+    
+    
+    filenameRoot = paste (sppClusterDistanceMapsDir, "spp.", (curClusterTableIndex - 1), sep='')
+    write.asc.file (curSuitabilityImg,
+                    filenameRoot,
+                    numImgRows, numImgCols
+                    , xllcorner = 1    #  Looks like maxent adds the xy values to xllcorner, yllcorner
+                    , yllcorner = 1    #  so they must be (0,0) instead of (1,1), i.e., the origin
+                    #  is not actually on the map.  It's just off the lower
+                    #  left corner.
+                    , no.data.value = -9999
+                    , cellsize = 1
+    )
+    
+    #----------------------------------    
+    
     curDistImg = matrix (distVecs[,curClusterTableIndex], nrow=numImgRows, ncol=numImgCols, byrow=TRUE)
     
             #  IS THIS NECESSARY SINCE THE MAC FINDER PROGRAM SEEMS TO 
@@ -535,7 +631,7 @@ for (curClusterID in clusterIDs)
     #---------------
     #  BTL - 11/8/13 - added for compatibility with tzar runs
     
-    filenameRoot = paste (sppClusterDistanceMapsDir, "spp.", (curClusterTableIndex - 1), sep='')
+    filenameRoot = paste (sppClusterDistanceMapsDir, "distToSpp.", (curClusterTableIndex - 1), sep='')
     write.asc.file (curDistImg,
                     filenameRoot,
                     numImgRows, numImgCols
