@@ -51,17 +51,25 @@ options (warn = 2)
 #                    Distance functions and transforms
 #===============================================================================
 
-vecSquared = function (aVector, baseIdx = 1)
+#  One problem with these distance functions is that it has often been shown 
+#  that as the number of dimensions goes up, distances all converge to being 
+#  very similar.
+
+#  How might we get around that?  Would it make sense to convert to PCA 
+#  coordinates and use far less coordinates?  Matt explained why using PCA 
+#  coordinates was a bad thing for clustering, but I've forgotten his 
+#  explanation.  Was it in general or just for these kinds of ecological 
+#  clusters?  
+
+#  One possibility might also be to do the pca separately for each clustering 
+#  and just use the values inside that cluster as the fodder for the PCA 
+#  calculation.  
+
+#===============================================================================
+
+sumSquaredDist_givenDiffVec = function (aVector)
     {
-    curSumSquares = 0
-    for (curIdx in baseIdx:length(aVector))
-        {
-        #cat ("\n    curIdx = ", curIdx)
-        curSumSquares = curSumSquares + (aVector [curIdx] ^ 2)
-        #cat (", curSumSquares = ", curSumSquares)
-        }
-    #cat ("\nAT END OF vecSquared()")
-    return (curSumSquares)
+    return (sum (aVector ^ 2))
     }
 
 #-------------------------------------------------------------------------------
@@ -70,48 +78,35 @@ sumSquaredDist = function (vector1, vector2)
     {
     if (length (vector1) != length (vector2))
         {
-        mismatchCt <<- mismatchCt + 1
-        if (mismatchCt < 10)
-            {
-            cat ("\n\n--------------------------------------\n")
-            cat ("\nIn sumSquareDist(), lengths don't match.  mismatchCt = ",
-                 mismatchCt, ".")
-            cat ("\n    length (vector1) = ", length (vector1))
-            cat ("\n    length (vector2) = ", length (vector2))
-            cat ("\n    vector1 = ", vector1)
-            cat ("\n    vector2 = ", vector2)
-            cat ("\n")
-            }
-        }
-    vs = vecSquared (vector1 - vector2)
-    #cat ("\nvs = ", vs)
-    retValue = vs
-    #    retValue = sqrt (vs)
-    #cat ("\nretValue = ", retValue)
-    
-    if ((length (vector1) != length (vector2)) & (mismatchCt < 10))
-        {
-        cat ("\nvs = ", vs)
-        cat ("\nretValue = ", retValue)
-        cat ("\n--------------------------------------\n\n")
+        cat ("\nIn sumSquareDist(), lengths don't match.",
+             "\n    length (vector1) = ", length (vector1), 
+             "\n    length (vector2) = ", length (vector2),
+             "\n\n")
         }
     
-    return (retValue)
+    return (sumSquaredDist_givenDiffVec (vector1 - vector2))
+    }
+
+#-------------------------------------------------------------------------------
+
+eucDist_givenDistVec = function (aVector)
+    {
+    return (sqrt (sumSquaredDist_givenDiffVec (aVector)))
     }
 
 #-------------------------------------------------------------------------------
 
 eucDist = function (vector1, vector2)
     {
-    return (sqrt (sumSquaredDist (vector1, vector2)))
+    return (eucDist_givenDistVec (vector1 - vector2))
     }
 
 #-------------------------------------------------------------------------------
 
 const_sqrt2pi = sqrt(2*pi)
-gaussian = function (xVector, muVector, sdVector)
+gaussian = function (aVector, centerVector, sdVector)
     {
-    exponentNumerator = -(xVector - muVector) ^ 2
+    exponentNumerator = -(aVector - centerVector) ^ 2
     cat ("\n\ngaussian exponentNumerator = ", exponentNumerator)
     
     exponentDenominator = 2 * (sdVector ^ 2)
@@ -119,21 +114,86 @@ gaussian = function (xVector, muVector, sdVector)
     
     fullFractionDenominator = sdVector * const_sqrt2pi
     cat ("\n\ngaussian fullFractionDenominator = ", fullFractionDenominator)
-    cat ("\n\n")
         
-    gaussianVector = 
-        exp (exponentNumerator / exponentDenominator) / 
-        fullFractionDenominator
+    gaussianValue = (exp (exponentNumerator / exponentDenominator) / 
+                    fullFractionDenominator)
+    cat ("\n\ngaussian gaussianValue = ", gaussianValue)
     
-    return (gaussianVector)
+    cat ("\n\n")
+    
+    return (gaussianValue)
     }
 
 #----------------------------------
 
-gaussianInverseWeightedDist = function (vector1,vector2, sdVector)
+gaussianInverseWeightedDist = function (aVector, centerVector, sdVector)
     {
-    gaussianWeight = 
-    return (eucDist (vector1, vector2) / gaussian (vector1, vector1, sdVector))
+    gaussianWtVec = gaussian (aVector, centerVector, sdVector)
+    
+    gaussianWeightedDiffVec = (aVector - centerVector) / gaussianWtVec
+    
+    return (eucDist_givenDistVec (gaussianWeightedDiffVec))
+    }
+
+#----------------------------------
+
+outOfEnvelopeValue = 40     #  Not sure what to put here...
+                            #  In the current case, there are 20 features, 
+                            #  each scaled to be roughly 0-1, so the maximum 
+                            #  distance among them is close to 20.
+
+envelopeDist = function (aVector, centerVector, minVector, maxVector)
+    {
+        #  If the point is fully inside the cluster's envelope, 
+        #  i.e., all feature values between the cluster's min and max 
+        #  values for the corresponding feature, then return the 
+        #  euclidean distance to the center of the cluster in feature 
+        #  space (e.g., the mean or median).
+
+    #cat ("\n\nIN ENVELOPEDIST:")
+    #cat ("\n    minVector = ", minVector)
+    #cat ("\n    maxVector = ", maxVector)
+    
+    numInBoundMins = sum (aVector >= minVector)
+    #cat ("\n     numInBoundMins = ", numInBoundMins)
+    if (numInBoundMins < length (minVector))
+        return (outOfEnvelopeValue)
+
+    numInBoundMaxs = sum (aVector <= maxVector)
+    #cat ("\n     numInBoundMaxs = ", numInBoundMaxs)
+    if (sum (aVector <= maxVector) < length (minVector))
+        return (outOfEnvelopeValue)
+    
+    return (outOfEnvelopeValue - eucDist (aVector, centerVector))
+    }
+
+#----------------------------------
+
+outOfClusterValue = 40     #  Not sure what to put here...
+#  In the current case, there are 20 features, 
+#  each scaled to be roughly 0-1, so the maximum 
+#  distance among them is close to 20.
+
+    #  NOTE:  For now at least, using this distance assumes that the po
+hardClusterDist = function (aVector, centerVector, insideCluster=TRUE)
+    {
+        #  If the point is fully inside the cluster, 
+        #  then return the euclidean distance to the 
+        #  center of the cluster in feature 
+        #  space (e.g., the mean or median).
+        #  You could also just return a constant value 
+        #  instead, but this would at least make some 
+        #  differentiation among values inside the clusters.
+    
+    if (insideCluster) 
+        {
+#        return (outOfEnvelopeValue - eucDist (aVector, centerVector))
+        return (1)
+        } else
+        {
+#        return (outOfClusterValue)
+        return (0)
+        }
     }
 
 #===============================================================================
@@ -149,7 +209,6 @@ imgSrcDir             = NULL
 imgFileNames          = NULL
 asciiImgFileNameRoots = NULL
 numEnvLayers          = NULL
-mismatchCt            = 0
 imgFileType           = "asc"
 
 
@@ -283,7 +342,8 @@ cat ("\n\nnumClusters = ", numClusters)
 
 clusterCenters = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 clusterDeviations = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
-
+clusterMins = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
+clusterMaxs = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 
 curPixelCt = 0
 curClusterTableIndex = 0
@@ -313,12 +373,16 @@ for (curClusterID in clusterIDs)
             #  Only one pixel in this cluster.
         colCenters = envDataSrc [curClusterPixelLocs, ]
         colDeviations = rep (0, length (colCenters))
+        colMins = envDataSrc [curClusterPixelLocs, ]
+        colMaxs = envDataSrc [curClusterPixelLocs, ]
         
         } else 
         {
             #  More than one pixel in this cluster.
         colCenters = apply (envDataSrc [curClusterPixelLocs, ], 2, centerFunc) 
         colDeviations = apply (envDataSrc [curClusterPixelLocs, ], 2, deviationFunc)                    
+        colMins = apply (envDataSrc [curClusterPixelLocs, ], 2, min)
+        colMaxs = apply (envDataSrc [curClusterPixelLocs, ], 2, max)
         }
     
     cat ("\n\ncolCenters = ", colCenters)
@@ -328,6 +392,14 @@ for (curClusterID in clusterIDs)
     cat ("\n\ncolDeviations = ", colDeviations)
     cat ("\nlength (colDeviations) = ", length (colDeviations))
     clusterDeviations [curClusterTableIndex, ] = colDeviations
+    
+    cat ("\n\ncolMins = ", colMins)
+    cat ("\nlength (colMins) = ", length (colMins))
+    clusterMins [curClusterTableIndex, ] = colMins
+    
+    cat ("\n\ncolMaxs = ", colMaxs)
+    cat ("\nlength (colMaxs) = ", length (colMaxs))
+    clusterMaxs [curClusterTableIndex, ] = colMaxs
     
     curPixelCt = curPixelCt + length (curClusterPixelLocs)
     }
@@ -345,6 +417,7 @@ distVecs = matrix (0, nrow=numPixelsPerImg, ncol=numClusters)
 #cat ("\n>>>>>>>>>>>>>>>>>>>>>>>>>>  new distVec = ", distVec)
 
 numHistIntervals = 10
+sppClusterDistanceMapsDir = "./SppClusterDistanceMaps/"    
 
 curClusterTableIndex = 0
 for (curClusterID in clusterIDs)
@@ -360,6 +433,20 @@ for (curClusterID in clusterIDs)
     curClusterDeviation = clusterDeviations [curClusterTableIndex, ]
     cat ("\ncurClusterDeviation = ", curClusterDeviation)
     
+    curClusterMin = clusterMins [curClusterTableIndex, ]
+    cat ("\ncurClusterMin = ", curClusterMin)
+    
+    curClusterMax = clusterMaxs [curClusterTableIndex, ]
+    cat ("\ncurClusterMax = ", curClusterMax)
+    
+    useHardClusterDistance = TRUE
+    if (useHardClusterDistance)
+        {
+        insideCluster = (clusterPixelValuesLayer == curClusterID)
+        cat ("\ncurrent cluster size = ", sum (insideCluster))
+        }
+    
+
     for (curRow in 1:numPixelsPerImg)
         {
         #cat ("\nLOOP START: curRow = ", curRow)
@@ -390,14 +477,19 @@ for (curClusterID in clusterIDs)
             cat ("\n\nsumSquaredDist (point1, point2) = ", sumSquaredDist (point1, point2))
             cat ("\neucDist (point1, point2) = ", eucDist (point1, point2))   
             cat ("\ngaussianInverseWeightedDist (point1, point2, curClusterDeviation) = ", gaussianInverseWeightedDist (point1, point2, curClusterDeviation))
-            
+            cat ("\nenvelopeDist (point1, point2, curClusterMin, curClusterMax) = ", envelopeDist (point1, point2, curClusterMin, curClusterMax))
+                
             cat ("\n\n")
             }
         
-        distVecs [curRow, curClusterTableIndex] = sumSquaredDist (point1, point2)
+#        distVecs [curRow, curClusterTableIndex] = sumSquaredDist (point1, point2)
+#        distVecs [curRow, curClusterTableIndex] = envelopeDist (point1, point2, curClusterMin, curClusterMax)
+        distVecs [curRow, curClusterTableIndex] = hardClusterDist (point1, point2, insideCluster [curRow])
+        
         
         }  #  end for - all pixels
-
+    
+    
     cat ("\n\nDone computing distVecs for curClusterTableIndex = ", curClusterTableIndex)
     
     #cat ("\n\ndistVecs = \n")
@@ -418,12 +510,11 @@ for (curClusterID in clusterIDs)
     cat ("\n    histIntervalLength = ", histIntervalLength, sep='')
     cat ("\n    histTop = ", histTop, sep='')
     
+        #  Need to write these to files in the output area too.
+        #  Can't remember the command right now...
     hist (distVecs[,curClusterTableIndex], breaks=seq(0,histTop,histIntervalLength),
-          main = paste ("Distance hist for cluster", curClusterTableIndex))
+          main = paste ("Distance hist for spp ", (curClusterTableIndex-1), ", cluster ", curClusterID, sep=''))
         
-    if (TRUE)
-    {
-    curDir = "./"    
     curDistImg = matrix (distVecs[,curClusterTableIndex], nrow=numImgRows, ncol=numImgCols, byrow=TRUE)
     
             #  IS THIS NECESSARY SINCE THE MAC FINDER PROGRAM SEEMS TO 
@@ -433,14 +524,14 @@ for (curClusterID in clusterIDs)
             #  I DON'T THINK THE WINDOWS VIEWER CAN READ .ASC.  
             #  NOT SURE ABOUT EITHER PGM OR ASC UNDER LINUX...
     write.pgm.file (curDistImg,
-                    paste (curDir, "distToCluster.", (curClusterTableIndex - 1), sep=''),
+                    paste (sppClusterDistanceMapsDir, "distToSpp.", (curClusterTableIndex - 1), ".Cluster.", curClusterID, sep=''),
                     numImgRows, numImgCols)
     
     
     #---------------
     #  BTL - 11/8/13 - added for compatibility with tzar runs
     
-    filenameRoot = paste (curDir, "spp.", (curClusterTableIndex - 1), sep='')
+    filenameRoot = paste (sppClusterDistanceMapsDir, "spp.", (curClusterTableIndex - 1), sep='')
     write.asc.file (curDistImg,
                     filenameRoot,
                     numImgRows, numImgCols
@@ -459,13 +550,16 @@ for (curClusterID in clusterIDs)
         cat ("\n\nFor curClusterTableIndex = ", curClusterTableIndex, ", distDiff = ", distDiff, "\n", sep='')
         }
     
-    }  #  end - if FALSE
-
-if (curClusterTableIndex > 5) 
-    break
+#if (curClusterTableIndex > 5) 
+#    break
     
 }  #  end - for all clusterIDs
 
+sppIDs = 0:(numClusters - 1)
+sppIDvsClusterID = cbind (sppIDs, clusterIDs)
+write.csv (sppIDvsClusterID, 
+           paste (sppClusterDistanceMapsDir, "sppIDvsClusterID.csv", sep=''),
+           row.names=FALSE)
 
 #plot (1:numPixelsPerImg, distVecs[,1])
 #lines (distVecs [,1], lty=1)
