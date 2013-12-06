@@ -1,28 +1,7 @@
 #===============================================================================
 
 source ("read.R")
-
-#===============================================================================
-
-#----------------
-#  user options
-#----------------
-
-#  Should become guppy options in yaml file...
-centerFunc            = median    #  mean, median, ...
-deviationFunc         = mad    #  sd, mad, ...
-distMeasure           = sumSquaredDist
-
-scaleInputs           = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT in original code.
-dataSrc               = "mattData"    #  Should become a guppy option...
-
-callingFromGuppy = FALSE
-if (callingFromGuppy & exists ("rSppGenOutputDir"))
- {
-    sppGenOutputDir               = rSppGenOutputDir
-    curFullMaxentEnvLayersDirName = rCurFullMaxentEnvLayersDirName
-    numSpp                        = rNumSpp
- }
+source ("w.R")
 
 #===============================================================================
 
@@ -74,7 +53,8 @@ sumSquaredDist_givenDiffVec = function (aVector)
 
 #-------------------------------------------------------------------------------
 
-sumSquaredDist = function (vector1, vector2)
+#sumSquaredDist = function (vector1, vector2)
+sumSquaredDist = function (vector1, vector2, minVector=NA, maxVector=NA, insideCluster=NA)
     {
     if (length (vector1) != length (vector2))
         {
@@ -96,7 +76,8 @@ eucDist_givenDistVec = function (aVector)
 
 #-------------------------------------------------------------------------------
 
-eucDist = function (vector1, vector2)
+#eucDist = function (vector1, vector2)
+eucDist = function (vector1, vector2, minVector=NA, maxVector=NA, insideCluster=NA)
     {
     return (eucDist_givenDistVec (vector1 - vector2))
     }
@@ -107,32 +88,21 @@ const_sqrt2pi = sqrt(2*pi)
 gaussian = function (aVector, centerVector, sdVector)
     {
     exponentNumerator = -(aVector - centerVector) ^ 2
-    cat ("\n\ngaussian exponentNumerator = ", exponentNumerator)
+    #    cat ("\n\ngaussian exponentNumerator = ", exponentNumerator)
     
     exponentDenominator = 2 * (sdVector ^ 2)
-    cat ("\n\ngaussian exponentDenominator = ", exponentDenominator)
+    #    cat ("\n\ngaussian exponentDenominator = ", exponentDenominator)
     
     fullFractionDenominator = sdVector * const_sqrt2pi
-    cat ("\n\ngaussian fullFractionDenominator = ", fullFractionDenominator)
+    #    cat ("\n\ngaussian fullFractionDenominator = ", fullFractionDenominator)
         
     gaussianValue = (exp (exponentNumerator / exponentDenominator) / 
                     fullFractionDenominator)
-    cat ("\n\ngaussian gaussianValue = ", gaussianValue)
+    #    cat ("\n\ngaussian gaussianValue = ", gaussianValue)
     
-    cat ("\n\n")
+    #    cat ("\n\n")
     
     return (gaussianValue)
-    }
-
-#----------------------------------
-
-gaussianInverseWeightedDist = function (aVector, centerVector, sdVector)
-    {
-    gaussianWtVec = gaussian (aVector, centerVector, sdVector)
-    
-    gaussianWeightedDiffVec = (aVector - centerVector) / gaussianWtVec
-    
-    return (eucDist_givenDistVec (gaussianWeightedDiffVec))
     }
 
 #----------------------------------
@@ -143,7 +113,8 @@ outOfEnvelopeValue = Inf     #  Not sure what to put here...
                             #  each scaled to be roughly 0-1, so the maximum 
                             #  distance among them is close to 20.
 
-envelopeDist = function (aVector, centerVector, minVector, maxVector)
+#envelopeDist = function (aVector, centerVector, minVector, maxVector)
+envelopeDist = function (aVector, centerVector, minVector, maxVector, insideCluster=NA)
     {
         #  If the point is fully inside the cluster's envelope, 
         #  i.e., all feature values between the cluster's min and max 
@@ -177,8 +148,9 @@ outOfClusterValue = Inf     #  Not sure what to put here...
 #  distance among them is close to 20.
 
 #  NOTE:  For now at least, using this distance assumes that the po
-hardClusterDist = function (aVector, centerVector, insideCluster=TRUE)
-{
+#hardClusterDist = function (aVector, centerVector, insideCluster=TRUE)
+hardClusterDist = function (aVector, centerVector, minVector=NA, maxVector=NA, insideCluster=NA)
+    {
     #  If the point is fully inside the cluster, 
     #  then return the euclidean distance to the 
     #  center of the cluster in feature 
@@ -199,7 +171,8 @@ hardClusterDist = function (aVector, centerVector, insideCluster=TRUE)
 }
 #----------------------------------
 
-hardClusterDist_01only = function (aVector, centerVector, insideCluster=TRUE)
+#hardClusterDist_01only = function (aVector, centerVector, insideCluster=TRUE)
+hardClusterDist_01only = function (aVector, centerVector, minVector=NA, maxVector=NA, insideCluster=NA)
     {
         #  If the point is fully inside the cluster, 
         #  then return the euclidean distance to the 
@@ -217,6 +190,38 @@ hardClusterDist_01only = function (aVector, centerVector, insideCluster=TRUE)
         return (1)
         }
     }
+
+#===============================================================================
+
+#----------------
+#  user options
+#
+#  NOTE: This section has to come after the function definitions above 
+#        since some functions may be referenced here.
+#----------------
+
+#  Should become guppy options in yaml file...
+centerFunc            = mean    #  mean, median, ...
+deviationFunc         = sd    #  sd, mad, ...
+distMeasure           = sumSquaredDist
+#hardClusterDist
+#sumSquaredDist
+#eucDist
+
+smoothSuitabilitiesWithGaussian  = TRUE
+gaussianSuitabilitySmoothingMean = 0
+gaussianSuitabilitySmoothingSD   = 1
+
+scaleInputs           = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT in original code.
+dataSrc               = "mattData"    #  Should become a guppy option...
+
+callingFromGuppy = FALSE
+if (callingFromGuppy & exists ("rSppGenOutputDir"))
+{
+    sppGenOutputDir               = rSppGenOutputDir
+    curFullMaxentEnvLayersDirName = rCurFullMaxentEnvLayersDirName
+    numSpp                        = rNumSpp
+}
 
 #===============================================================================
 
@@ -340,13 +345,13 @@ envDataSrc = combinedEnvLayersTable
 #    - save the centers (and sd's?) in a table indexed by cluster ID
 #-------------------------
 
-envClustersFileNameWithPath= "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/env_clusters.asc"
+#envClustersFileNameWithPath= "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/env_clusters.asc"
 
 clusterFileNameStem = "env_clusters"
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
 clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
 
-clusterFileNameWithPath = envClustersFileNameWithPath
+#clusterFileNameWithPath = envClustersFileNameWithPath
 
 #    - read the cluster IDs image from an asc file (ignoring missing values, i.e., -9999)
 clusterPixelValuesLayer = read.asc.file.to.matrix (clusterFileNameStem, clusterFilePath)
@@ -368,6 +373,7 @@ clusterMins = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 clusterMaxs = matrix (0, nrow=numClusters, ncol=numColsInEnvLayersTable)
 
 clusterSizes = rep (0, numClusters)
+clusterPctsOfImg = rep (0, numClusters)
 curClusterSuitabilities = rep (0.0, numPixelsPerImg)
 
 curPixelCt = 0
@@ -382,7 +388,9 @@ for (curClusterID in clusterIDs)
     curClusterPixelLocs = which (clusterPixelValuesLayer == curClusterID)
     cat ("\nlength (curClusterPixelLocs) = ", length (curClusterPixelLocs))
     clusterSizes [curClusterTableIndex] = length (curClusterPixelLocs)
-
+    clusterPctsOfImg  [curClusterTableIndex] = 
+        100 * (clusterSizes [curClusterTableIndex] / numPixelsPerImg)
+    
 #    cat ("\n\nenvDataSrc [curClusterPixelLocs, ] = ", envDataSrc [curClusterPixelLocs, ])
     
     #  BTL - 2013.08.13
@@ -465,23 +473,19 @@ for (curClusterID in clusterIDs)
     curClusterMax = clusterMaxs [curClusterTableIndex, ]
     cat ("\ncurClusterMax = ", curClusterMax)
     
-    useHardClusterDistance = TRUE    #  also need to do this for envelope dist
-    if (useHardClusterDistance)
-        {
-        insideCluster = (clusterPixelValuesLayer == curClusterID)
-        cat ("\ncurrent cluster size = ", sum (insideCluster))
-        }
-    
+    insideCurCluster = (clusterPixelValuesLayer == curClusterID)
+    cat ("\ncurrent cluster size = ", sum (insideCurCluster))
 
+    
+    point2 = curClusterCenter
+    #cat ("\npoint2 = ", point2)
+    
     for (curRow in 1:numPixelsPerImg)
         {
         #cat ("\nLOOP START: curRow = ", curRow)
         
         point1 = envDataSrc [curRow,]        
         #cat ("\npoint1 = ", point1)
-        
-        point2 = curClusterCenter
-        #cat ("\npoint2 = ", point2)
         
         #ed = eucDist (point1, point2)
         #cat ("\ned = ", ed)
@@ -502,18 +506,21 @@ for (curClusterID in clusterIDs)
             
             cat ("\n\nsumSquaredDist (point1, point2) = ", sumSquaredDist (point1, point2))
             cat ("\neucDist (point1, point2) = ", eucDist (point1, point2))   
-            cat ("\ngaussianInverseWeightedDist (point1, point2, curClusterDeviation) = ", gaussianInverseWeightedDist (point1, point2, curClusterDeviation))
+#            cat ("\ngaussianInverseWeightedDist (point1, point2, curClusterDeviation) = ", gaussianInverseWeightedDist (point1, point2, curClusterDeviation))
             cat ("\nenvelopeDist (point1, point2, curClusterMin, curClusterMax) = ", envelopeDist (point1, point2, curClusterMin, curClusterMax))
                 
             cat ("\n\n")
             }
+
+        distVecs [curRow, curClusterTableIndex] = distMeasure (point1, point2, curClusterMin, curClusterMax, insideCurCluster [curRow])
         
-        distVecs [curRow, curClusterTableIndex] = sumSquaredDist (point1, point2)
+#        distVecs [curRow, curClusterTableIndex] = sumSquaredDist (point1, point2)
 #        distVecs [curRow, curClusterTableIndex] = eucDist (point1, point2)
         
+            
 #        distVecs [curRow, curClusterTableIndex] = envelopeDist (point1, point2, curClusterMin, curClusterMax)
-#        distVecs [curRow, curClusterTableIndex] = hardClusterDist (point1, point2, insideCluster [curRow])
-#        distVecs [curRow, curClusterTableIndex] = hardClusterDist_01only (point1, point2, insideCluster [curRow])
+#        distVecs [curRow, curClusterTableIndex] = hardClusterDist (point1, point2, insideCurCluster [curRow])
+#        distVecs [curRow, curClusterTableIndex] = hardClusterDist_01only (point1, point2, insideCurCluster [curRow])
                 
         
         }  #  end for - all pixels
@@ -585,10 +592,13 @@ for (curClusterID in clusterIDs)
         #  Replacement code for the if FALSE that tested for pixel in cluster...
     finiteValueLocs = which (is.finite (curClusterDistVec))
     curClusterSuitabilities [finiteValueLocs] = curMaxPlusEpsilonValue - curClusterDistVec [finiteValueLocs]
-        
-    curSuitabilityImg = matrix (curClusterSuitabilities, nrow=numImgRows, ncol=numImgCols, byrow=TRUE)
-    
 
+curClusterSuitabilities = curClusterSuitabilities / max (curClusterSuitabilities)
+
+    if (smoothSuitabilitiesWithGaussian)
+        curClusterSuitabilities = gaussian (curClusterSuitabilities, gaussianSuitabilitySmoothingMean, gaussianSuitabilitySmoothingSD)
+    
+    curSuitabilityImg = matrix (curClusterSuitabilities, nrow=numImgRows, ncol=numImgCols, byrow=TRUE)
     
     maxHistSuit = 1.1* max (curClusterSuitabilities)
     
@@ -600,15 +610,20 @@ for (curClusterID in clusterIDs)
     
     cat ("\n\nShow histogram for distances to cluster ", curClusterTableIndex, sep='')
     cat ("\n    numHistIntervals = ", numHistIntervals, sep='')
-    cat ("\n    maxSuit = ", maxSuit, sep='')
+    cat ("\n    maxHistSuit = ", maxHistSuit, sep='')
     cat ("\n    histIntervalLength = ", histIntervalLength, sep='')
     cat ("\n    histTop = ", histTop, sep='')
+    
+#browser()    
     
     #  *** Need to write these to files in the output area too.
     #  Can't remember the command right now...
     histTitle = paste ("SUITABILITY hist for spp ", 
                        (curClusterTableIndex-1), 
-                       ", cluster ", curClusterID, sep='')
+                       ", cluster ", curClusterID, 
+                       "\nsize ", clusterSizes [curClusterTableIndex], 
+                       ", ", clusterPctsOfImg [curClusterTableIndex], 
+                       "% of img", sep='')
     if ((histTop > 0)  & (histIntervalLength > 0))
         {
         hist (curClusterSuitabilities, 
@@ -678,7 +693,6 @@ for (curClusterID in clusterIDs)
     
 }  #  end - for all clusterIDs
 
-clusterPctsOfImg = 100 * (clusterSizes / numPixelsPerImg)
 sppIDs = 0:(numClusters - 1)
 sppIDvsClusterID = cbind (sppIDs, clusterIDs, clusterSizes, clusterPctsOfImg)
 write.csv (sppIDvsClusterID, 
