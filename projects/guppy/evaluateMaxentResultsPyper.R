@@ -260,7 +260,13 @@ evaluateMaxentResults = function (numSppToCreate,
                                     showHeatmap,
 
                                     maxentOutputDirWithSlash,
-                                    probDistLayersDirWithSlash,
+
+
+            #  I think this now needs to point to SppGenOutputs instead.
+            #  BTL - 2013 12 10
+#                                    probDistLayersDirWithSlash,
+                                    sppGenOutputDirWithSlash,
+
                                     analysisDirWithSlash,
                                     useOldMaxentOutputForInput,
                                     writeToFile,
@@ -280,7 +286,10 @@ cat ("\n\n>>>>>>>>>>>>>  STARTING evaluateMaxentResults.R\n\n")
 	cat ("\n    showTruncatedPercentErrImg = '", showTruncatedPercentErrImg, "'", sep='')
 	cat ("\n    showHeatmap = '", showHeatmap, "'", sep='')
 	cat ("\n    maxentOutputDirWithSlash = '", maxentOutputDirWithSlash, "'", sep='')
-	cat ("\n    probDistLayersDirWithSlash = '", probDistLayersDirWithSlash, "'", sep='')
+
+#	cat ("\n    probDistLayersDirWithSlash = '", probDistLayersDirWithSlash, "'", sep='')
+	cat ("\n    sppGenOutputDirWithSlash = '", sppGenOutputDirWithSlash, "'", sep='')
+
 	cat ("\n    analysisDirWithSlash = '", analysisDirWithSlash, "'", sep='')
 	cat ("\n    useOldMaxentOutputForInput = '", useOldMaxentOutputForInput, "'", sep='')
 	cat ("\n    writeToFile = '", writeToFile, "'", sep='')
@@ -361,7 +370,8 @@ for (spp.id in 0:(numSppToCreate - 1))      #  now created by python so 0 base..
 #####  DON'T SEEM TO BE NORMALIZED.
 
 	norm.prob.matrix =
-			read.asc.file.to.matrix (paste (probDistLayersDirWithSlash,
+#			read.asc.file.to.matrix (paste (probDistLayersDirWithSlash,
+			read.asc.file.to.matrix (paste (sppGenOutputDirWithSlash,
 									trueProbDistFilePrefix,
 									".", spp.name,
 ##									'.asc',

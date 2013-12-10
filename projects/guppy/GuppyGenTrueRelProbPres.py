@@ -417,13 +417,13 @@ class GuppyGenTrueRelProbPresCLUSTER (GuppyGenTrueRelProbPres):
 
         print "\n\nGenerate true rel prob map using CLUSTERING.\n\n"
 
-        Rcaller.assign ('rSppGenOutputDir', guppy.sppGenOutputDir)
-        Rcaller.assign ('rCurFullMaxentEnvLayersDirName', guppy.curFullMaxentEnvLayersDirName)
-        Rcaller.assign ('rNumSpp', self.variables ["PAR.num.spp.to.create"])
-        Rcaller.assign ('rRandomSeed', guppy.randomSeed)
+        guppy.Rcaller.assign ('rSppGenOutputDir', guppy.sppGenOutputDir)
+        guppy.Rcaller.assign ('rCurFullMaxentEnvLayersDirName', guppy.curFullMaxentEnvLayersDirName)
+        guppy.Rcaller.assign ('rNumSpp', self.variables ["PAR.num.spp.to.create"])
+        guppy.Rcaller.assign ('rRandomSeed', guppy.randomSeed)
 
         print "\n\n>>>>> About to pyper source guppyClusterTest.R"
-        Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/guppyClusterTest.R')")
+        guppy.Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/guppyClusterTest.R')")
 
 
     #	return (trueRelProbDistsForSpp)
@@ -498,13 +498,21 @@ class GuppyGenTrueRelProbPres_ExistingClusters (GuppyGenTrueRelProbPres):
 
         print "\n\nGenerate true rel prob map using Existing Clustering.\n\n"
 
-        Rcaller.assign ('rSppGenOutputDir', guppy.sppGenOutputDir)
-        Rcaller.assign ('rCurFullMaxentEnvLayersDirName', guppy.curFullMaxentEnvLayersDirName)
-        Rcaller.assign ('rNumSpp', self.variables ["PAR.num.spp.to.create"])
-        Rcaller.assign ('rRandomSeed', guppy.randomSeed)
+        guppy.Rcaller.assign ('rSppGenOutputDir', guppy.sppGenOutputDir)
+        guppy.Rcaller.assign ('rCurFullMaxentEnvLayersDirName', guppy.curFullMaxentEnvLayersDirName)
+        guppy.Rcaller.assign ('rNumSpp', self.variables ["PAR.num.spp.to.create"])
+        guppy.Rcaller.assign ('rRandomSeed', guppy.randomSeed)
 
-        print "\n\n>>>>> About to pyper source guppyClusterTest.R"
-        Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/guppyClusterTest.R')")
+#        print "\n\n>>>>> About to pyper source guppyClusterTest.R"
+#        guppy.Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/guppyClusterTest.R')")
+
+        print "\n\n>>>>> About to pyper source clusterReadingTest.R"
+        guppy.Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/clusterReadingTest.R')")
+
+##I THINK THAT THIS IS GOING TO SCREW UP THE COUNT OF THE NUMBER OF SPECIES.
+##I'M NOT SURE WHETHER THAT NUMBER HAS ALREADY BEEN USED BEFORE GETTING TO THIS
+##POINT IN THE CODE.
+##ALSO NOT SURE HOW TO PASS THE VALUE BACK FROM PYPER...
 
 
     #	return (trueRelProbDistsForSpp)

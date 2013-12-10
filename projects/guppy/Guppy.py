@@ -110,7 +110,7 @@ from sys import exit
 
 import pandas as pd
 import pyper as pr
-Rcaller = pr.R (use_pandas = True)
+#Rcaller = pr.R (use_pandas = True)    #  Made this a Guppy instance variable.
 
 #----------------------------------------
 
@@ -155,6 +155,12 @@ class Guppy (object):
 
         self.curDir = os.getcwd()
         self.curOS = platform
+
+        #----------------------------------------
+
+        self.Rcaller = pr.R (use_pandas = True)
+
+        #----------------------------------------
 
         self.envLayersType = self.variables['PAR.envLayersType']
         self.envLayersDir = None
@@ -367,12 +373,14 @@ class Guppy (object):
         PARcurrentRunDirectory = self.qualifiedParams['PAR.current.run.directory']
         print "\nPARcurrentRunDirectory = '" + PARcurrentRunDirectory + "'"
 
+#  BTL - 2013 12 09
+#  What is the difference between probDistLayersDir and sppGenOutputDir below?
 
-        self.probDistLayersDir = self.qualifiedParams['PAR.prob.dist.layers.dir.name']
-        self.probDistLayersDirWithSlash = self.probDistLayersDir + "/"
+#        self.probDistLayersDir = self.qualifiedParams['PAR.prob.dist.layers.dir.name']
+#        self.probDistLayersDirWithSlash = self.probDistLayersDir + "/"
 
-        print "\nself.probDistLayersDir = '" + self.probDistLayersDir + "'"
-        createDirIfDoesntExist(self.probDistLayersDir)
+#        print "\nself.probDistLayersDir = '" + self.probDistLayersDir + "'"
+#        createDirIfDoesntExist(self.probDistLayersDir)
 
 
         self.maxentOutputDir = self.qualifiedParams['PAR.maxent.output.dir.name']
@@ -384,7 +392,7 @@ class Guppy (object):
 
 #        self.maxentGenOutputDir = self.qualifiedParams['PAR.maxent.gen.output.dir.name']
         self.sppGenOutputDir = self.qualifiedParams['PAR.spp.gen.output.dir.name']
-#        self.sppGenOutputDirWithSlash = self.sppGenOutputDir + "/"
+        self.sppGenOutputDirWithSlash = self.sppGenOutputDir + "/"
 
 #        print "\nself.maxentGenOutputDir = '" + self.maxentGenOutputDir + "'"
         print "\nself.sppGenOutputDir = '" + self.sppGenOutputDir + "'"
@@ -523,13 +531,13 @@ class Guppy (object):
         self.trueRelProbDistGen = None
 
         if self.variables["PAR.genTruePresWithArithmeticCombinations"]:
-            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresARITH(self.variables)
+            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresARITH (self.variables)
 
-        elif self.variables["PAR.genTruePresWithClustering"]:
-            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresCLUSTERpyper(self.variables)
+        elif self.variables["PAR.genTruePresWithExistingClusters"]:
+            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPres_ExistingClusters (self.variables)
 
         elif self.variables["PAR.genTruePresWithMaxent"]:
-            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresMAXENT(self.variables)
+            self.trueRelProbDistGen = TrueRelProbGen.GuppyGenTrueRelProbPresMAXENT (self.variables)
 
         #-------------------------------------------------------------------------------
 
@@ -709,7 +717,7 @@ class Guppy (object):
         #            vector (mode="list", length=self.variables ["PAR.num.spp.to.create"])
 
 
-        Rcaller ("cat (file = '/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt', '\n\nStarting debugging output...\n')")
+        self.Rcaller ("cat (file = '/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt', '\n\nStarting debugging output...\n')")
 
 
         for sppId in range(self.numSppToCreate):
@@ -721,7 +729,8 @@ class Guppy (object):
             #----------------------------------------------------------------
 
             #	normProbMatrix = true.rel.prob.dists.for.spp [[sppId]]
-            filename = self.probDistLayersDirWithSlash + \
+#            filename = self.probDistLayersDirWithSlash + \
+            filename = self.sppGenOutputDirWithSlash + \
                        self.trueProbDistFilePrefix + \
                        "." + sppName
             #                            self.variables ["PAR.trueProbDistFilePrefix"] + \
@@ -749,60 +758,62 @@ class Guppy (object):
             #-----------------------------------------------------------------------
 
             #sppId = [1..numSppToCreate]
-            Rcaller.assign('rSppId', sppId)
+            self.Rcaller.assign('rSppId', sppId)
 
             #numTruePresences = [3,5,6]
-            Rcaller.assign('rNumTruePresences', numTruePresences)
+            self.Rcaller.assign('rNumTruePresences', numTruePresences)
 
             #probDistLayersDirWithSlash = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentProbDistLayers/'
-            Rcaller.assign('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
+#            self.Rcaller.assign('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
+            self.Rcaller.assign('rSppGenOutputDirWithSlash', self.sppGenOutputDirWithSlash)
 
             #trueProbDistFilePrefix = 'true.prob.dist'
-            Rcaller.assign('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
-            #            Rcaller.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
+            self.Rcaller.assign('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
+            #            self.Rcaller.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
 
             #curFullMaxentSamplesDirName = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentSamples'
-            Rcaller.assign('rCurFullMaxentSamplesDirName', self.curFullMaxentSamplesDirName)
+            self.Rcaller.assign('rCurFullMaxentSamplesDirName', self.curFullMaxentSamplesDirName)
 
             #PARuseAllSamples = False
-            Rcaller.assign('rPARuseAllSamples', self.PARuseAllSamples)
+            self.Rcaller.assign('rPARuseAllSamples', self.PARuseAllSamples)
 
             #combinedPresSamplesFileName = curFullMaxentSamplesDirName + "/" + "spp.sampledPres.combined" + ".csv"
-            Rcaller.assign('rCombinedPresSamplesFileName', self.combinedPresSamplesFileName)
+            self.Rcaller.assign('rCombinedPresSamplesFileName', self.combinedPresSamplesFileName)
 
             #randomSeed = 1
-            Rcaller.assign('rRandomSeed', self.randomSeed)
+            self.Rcaller.assign('rRandomSeed', self.randomSeed)
 
             #-------------------------------------------------------
                 #  Variables from the .asc file header section.
             #self.nCols = variables['PAR.ascFileNcols']
-            Rcaller.assign('rNcols', self.nCols)
+            self.Rcaller.assign('rNcols', self.nCols)
 
             #self.nRows = variables['PAR.ascFileNrows']
-            Rcaller.assign('rNrows', self.nRows)
+            self.Rcaller.assign('rNrows', self.nRows)
 
             #self.xllcorner = variables['PAR.ascFileXllcorner']
-            Rcaller.assign('rXllcorner', self.xllcorner)
+            self.Rcaller.assign('rXllcorner', self.xllcorner)
 
             #self.yllcorner = variables['PAR.ascFileYllcorner']
-            Rcaller.assign('rYllcorner', self.yllcorner)
+            self.Rcaller.assign('rYllcorner', self.yllcorner)
 
             #self.cellsize = variables['PAR.ascFileCellsize']
-            Rcaller.assign('rCellsize', self.cellsize)
+            self.Rcaller.assign('rCellsize', self.cellsize)
 
             #self.nodataValue = variables['PAR.ascFileNodataValue']
-            Rcaller.assign('rNodataValue', self.nodataValue)
+            self.Rcaller.assign('rNodataValue', self.nodataValue)
             #-------------------------------------------------------
 
 
             print "\n\n>>>>> About to pyper source genTruePresencesPyper.R"
-            Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/genTruePresencesPyper.R')")
+            self.Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/genTruePresencesPyper.R')")
             print "\n\n>>>>> Back from pyper source genTruePresencesPyper.R"
 
 
             print "\n\n>>>>> About to pyper call genPresences()"
-            Rcaller (
-                'genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
+            self.Rcaller (
+#                'genPresences (rNumTruePresences, rProbDistLayersDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
+                'genPresences (rNumTruePresences, rSppGenOutputDirWithSlash, rTrueProbDistFilePrefix, rCurFullMaxentSamplesDirName, rPARuseAllSamples, rCombinedPresSamplesFileName, rRandomSeed)')
             print "\n\n>>>>> Back from pyper call genPresences()"
             print ">>>>> Bottom of loop..."
 
@@ -884,29 +895,34 @@ class Guppy (object):
 
         ###        evaluateMaxentResults ()
         ###rinterface.set_flushconsole()
-        Rcaller.assign('rNumSppToCreate', self.numSppToCreate)
-        Rcaller.assign('rDoMaxentReplicates', self.doMaxentReplicates)
-        Rcaller.assign('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
-        Rcaller.assign('rShowRawErrorInDist', self.showRawErrorInDist)
-        Rcaller.assign('rShowAbsErrorInDist', self.showAbsErrorInDist)
-        Rcaller.assign('rShowPercentErrorInDist', self.showPercentErrorInDist)
-        Rcaller.assign('rShowAbsPercentErrorInDist', self.showAbsPercentErrorInDist)
-        Rcaller.assign('rShowTruncatedPercentErrImg', self.showTruncatedPercentErrImg)
-        Rcaller.assign('rShowHeatmap', self.showHeatmap)
-        Rcaller.assign('rMaxentOutputDirWithSlash', self.maxentOutputDirWithSlash)
-        Rcaller.assign('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
-        Rcaller.assign('rAnalysisDirWithSlash', self.analysisDirWithSlash)
-        Rcaller.assign('rUseOldMaxentOutputForInput', self.PARuseOldMaxentOutputForInput)
-        Rcaller.assign('rWriteToFile', self.writeToFile)
-        Rcaller.assign('rUseDrawImage', self.useDrawImage)
+        self.Rcaller.assign('rNumSppToCreate', self.numSppToCreate)
+        self.Rcaller.assign('rDoMaxentReplicates', self.doMaxentReplicates)
+        self.Rcaller.assign('rTrueProbDistFilePrefix', self.trueProbDistFilePrefix)
+        self.Rcaller.assign('rShowRawErrorInDist', self.showRawErrorInDist)
+        self.Rcaller.assign('rShowAbsErrorInDist', self.showAbsErrorInDist)
+        self.Rcaller.assign('rShowPercentErrorInDist', self.showPercentErrorInDist)
+        self.Rcaller.assign('rShowAbsPercentErrorInDist', self.showAbsPercentErrorInDist)
+        self.Rcaller.assign('rShowTruncatedPercentErrImg', self.showTruncatedPercentErrImg)
+        self.Rcaller.assign('rShowHeatmap', self.showHeatmap)
+        self.Rcaller.assign('rMaxentOutputDirWithSlash', self.maxentOutputDirWithSlash)
 
-        Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/evaluateMaxentResultsPyper.R')")
-        Rcaller ('evaluateMaxentResults (rNumSppToCreate, rDoMaxentReplicates, \
+#        self.Rcaller.assign('rProbDistLayersDirWithSlash', self.probDistLayersDirWithSlash)
+        self.Rcaller.assign('rSppGenOutputDirWithSlash', self.sppGenOutputDirWithSlash)
+
+        self.Rcaller.assign('rAnalysisDirWithSlash', self.analysisDirWithSlash)
+        self.Rcaller.assign('rUseOldMaxentOutputForInput', self.PARuseOldMaxentOutputForInput)
+        self.Rcaller.assign('rWriteToFile', self.writeToFile)
+        self.Rcaller.assign('rUseDrawImage', self.useDrawImage)
+
+        self.Rcaller ("source ('/Users/Bill/D/rdv-framework/projects/guppy/evaluateMaxentResultsPyper.R')")
+        self.Rcaller ('evaluateMaxentResults (rNumSppToCreate, rDoMaxentReplicates, \
                 rTrueProbDistFilePrefix, rShowRawErrorInDist, rShowAbsErrorInDist, \
                 rShowPercentErrorInDist, rShowAbsPercentErrorInDist, \
                 rShowTruncatedPercentErrImg, rShowHeatmap, rMaxentOutputDirWithSlash, \
-                rProbDistLayersDirWithSlash, rAnalysisDirWithSlash, \
+                rSppGenOutputDirWithSlash, rAnalysisDirWithSlash, \
                 rUseOldMaxentOutputForInput, rWriteToFile, rUseDrawImage)')
+#####                rProbDistLayersDirWithSlash, rAnalysisDirWithSlash, \
+
         ###rinterface.get_flushconsole()
 
 #===============================================================================
