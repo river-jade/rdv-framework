@@ -162,7 +162,10 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING build.presence.sample(
     #  stand-alone rather than embedded in the R version of guppy.
 
 genTruePresences = function (num.true.presences,    #  a vector, not a scalar
-                        prob.dist.layers.dir.with.slash,
+
+#                        prob.dist.layers.dir.with.slash,
+                        sppGenOutputDirWithSlash,
+
                         trueProbDistFilePrefix,
                         cur.full.maxent.samples.dir.name
                         )
@@ -189,7 +192,8 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  top of For Loop over numSppTo
             #----------------------------------------------------------------
 
     #	norm.prob.matrix = true.rel.prob.dists.for.spp [[spp.id]]
-        filename = paste (prob.dist.layers.dir.with.slash,
+#        filename = paste (prob.dist.layers.dir.with.slash,
+        filename = paste (sppGenOutputDirWithSlash,
                                     trueProbDistFilePrefix,
                                     ".", spp.name,
     #								'.asc',
@@ -553,7 +557,10 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING createSampledPresences
 #===============================================================================
 
 genPresences = function (num.true.presences,    #  a vector, not a scalar
-                        prob.dist.layers.dir.with.slash,
+
+#                        prob.dist.layers.dir.with.slash,
+                        sppGenOutputDirWithSlash,
+
                         trueProbDistFilePrefix,
                         cur.full.maxent.samples.dir.name,
                         PAR.use.all.samples,
@@ -570,7 +577,7 @@ cat (file = debuggingOutputFile, '\n             rSppId = ', rSppId, append = TR
 cat (file = debuggingOutputFile, '\n             rNumTruePresences = ', rNumTruePresences, append = TRUE)
 
             #probDistLayersDirWithSlash = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentProbDistLayers/'
-cat (file = debuggingOutputFile, '\n             rProbDistLayersDirWithSlash = ', rProbDistLayersDirWithSlash, append = TRUE)
+#cat (file = debuggingOutputFile, '\n             rProbDistLayersDirWithSlash = ', rProbDistLayersDirWithSlash, append = TRUE)
 
             #trueProbDistFilePrefix = 'true.prob.dist'
 cat (file = debuggingOutputFile, '\n             rTrueProbDistFilePrefix = ', rTrueProbDistFilePrefix, append = TRUE)
@@ -604,7 +611,10 @@ cat (file = debuggingOutputFile, '\nAbout to genTruePresences()', append = TRUE)
 
     all.spp.true.presence.locs.x.y =
         genTruePresences (num.true.presences,
-                            prob.dist.layers.dir.with.slash,
+
+#                            prob.dist.layers.dir.with.slash,
+                            sppGenOutputDirWithSlash,
+
                             trueProbDistFilePrefix,
                             cur.full.maxent.samples.dir.name
                             )

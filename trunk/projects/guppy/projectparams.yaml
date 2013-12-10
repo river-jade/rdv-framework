@@ -15,7 +15,7 @@ base_params:
         PAR.useRemoteEnvDir: FALSE
 
     #  Bigger example
-        PAR.num.spp.to.create: 4    ##  100
+        PAR.num.spp.to.create: 28  ##4    ##  100
         PAR.num.spp.in.reserve.selection: 10    ##  100    #  No reserve selection yet.
 
     #  Smaller example
@@ -199,8 +199,8 @@ base_params:
         PAR.use.all.samples: FALSE
 
         PAR.genTruePresWithArithmeticCombinations: FALSE
-        PAR.genTruePresWithMaxent: TRUE
-        PAR.genTruePresWithClustering: FALSE
+        PAR.genTruePresWithMaxent: FALSE
+        PAR.genTruePresWithExistingClusters: TRUE
         PAR.minNumPres: 3
         PAR.maxNumPres: 9
 
@@ -211,7 +211,7 @@ base_params:
     output_files:
         PAR.current.run.directory: ""
         PAR.testing.output.filename: test_output_file.txt
-        PAR.prob.dist.layers.dir.name: "MaxentProbDistLayers"
+#        PAR.prob.dist.layers.dir.name: "MaxentProbDistLayers"
         PAR.maxent.output.dir.name: "MaxentOutputs"
 #        PAR.maxent.gen.output.dir.name: "MaxentGenOutputs"
         PAR.spp.gen.output.dir.name: "SppGenOutputs"
