@@ -21,17 +21,28 @@ for( r in 1:variables$reps ) {
 
 }
 
-# calculate the mean pop trajectories
-mean.traj.log <- apply( pop.traj.log, 2, mean)
-mean.traj <- apply( pop.traj, 2, mean)
-
-#cat('\n***mean traj = \n' )
-#print( mean.traj.log )
 
 
        #------------------------
        #  Calculate statistics
        #-------------------------
+
+# calculate the mean pop trajectories
+mean.traj.log <- apply( pop.traj.log, 2, mean)
+mean.traj <- apply( pop.traj, 2, mean)
+
+median.traj.log <- apply( pop.traj.log, 2, median)
+median.traj <- apply( pop.traj, 2, median)
+
+min.traj.log <- apply( pop.traj.log, 2, min)
+min.traj <- apply( pop.traj, 2, min )
+
+
+var.traj.log <- apply( pop.traj.log, 2, var)
+var.traj <- apply( pop.traj, 2, var)
+
+#cat('\n***mean traj = \n' )
+#print( mean.traj.log )
 
 
 
@@ -73,6 +84,33 @@ dev.off()
 
 # Dumpt all the matrix with all the poptrajectories. 
 dump( "pop.traj", outputFiles$output.dump )
+
+
+
+glob.output.file <- paste( variables$global.output.dir, '/', variables$global.output.filename, sep='')
+
+
+column.names <- c('runId', 'initPopSize', 'mu', 'sd', 'reps', 'median', 'medianLog', 'var', 'varLog',
+                  'min', 'minLog')
+
+line.to.paste <- c(
+    variables$run.id,
+    variables$init.pop.size,
+    variables$mu,
+    variables$sd,
+    variables$reps,
+    round(median.traj[variables$timeToEvalPopStats],2),
+    round(median.traj.log[variables$timeToEvalPopStats],2),
+    round(var.traj[variables$timeToEvalPopStats],2),
+    round(var.traj.log[variables$timeToEvalPopStats],2),
+    round(min.traj[variables$timeToEvalPopStats],2),
+    round(min.traj.log[variables$timeToEvalPopStats],2)
+    )
+
+if(  !file.exists(glob.output.file ) ) {
+    cat( column.names, '\n', file=glob.output.file, append=TRUE)
+}
+cat( line.to.paste, '\n', file=glob.output.file, append=TRUE)
 
 
 
