@@ -1,6 +1,7 @@
 project_name: Example Project
 runner_class: RRunner
 
+
 libraries:
     -  name: GBIF-data
        repo_type: http_file
