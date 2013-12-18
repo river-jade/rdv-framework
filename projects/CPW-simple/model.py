@@ -47,10 +47,15 @@ class Model(basemodel.BaseModel):
         """Executes the model and writes the output to the CSV file specified in the project params.
         """
         # get parameters qualified by input and output file paths
-        qualifiedparams = runparams.getQualifiedParams(self.inputpath, self.outputpath)
 
-        variables = self.get_decimal_params(runparams)
+        # these lines are now obsolete due to changes in the yaml file structure
+        #qualifiedparams = runparams.getQualifiedParams(self.inputpath, self.outputpath)
+        #variables = self.get_decimal_params(runparams)
 
+        # this is the new way to do this - everything is in the variables dictionary
+        variables = runparams['parameters']
+        #qualifiedparams = runparams['parameters']
+        
         constants = self.createconstants(variables)
         modelstates = []
         currentstate = self.createmodelstate0(variables, constants)
@@ -63,7 +68,7 @@ class Model(basemodel.BaseModel):
             currentstate = currentstate.evolve()
             modelstates.append(currentstate)
             # self.logger.fine(currentstate) # for debugging
-        writecsv(modelstates, qualifiedparams['csv_output'], self.logger)
+        writecsv(modelstates, variables['csv_output'], self.logger)
     
     def createconstants(self, variables):
         """Extracts the constants from the variables and place them in a new dictionary

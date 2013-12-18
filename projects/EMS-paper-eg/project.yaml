@@ -1,0 +1,59 @@
+project_name: Example Project
+runner_class: RRunner
+
+libraries:
+    -  name: GBIF-data
+       repo_type: http_file
+       url: http://data.gbif.org/ws/rest/occurrence/list?&taxonconceptkey=2427884&originisocountrycode=AU&format=kml
+
+    -  name: species-ranges-shp
+       repo_type: http_zip
+       url: http://uncertgeo.aston.ac.uk/TzarData/ANURA_NOV2013.zip
+
+    -  name: crown-land-kml
+       repo_type: http_file
+       url: http://goo.gl/IKg0aZ
+       # original URL http://uncertgeo.aston.ac.uk:8080/geoserver/Tzar/wms/kml?layers=Tzar:PLM25&FILTER=%3CFilter%20xmlns=%22http://www.opengis.net/ogc%22%3E%3CPropertyIsGreaterThan%3E%3CPropertyName%3EAREA_HA%3C/PropertyName%3E%3CLiteral%3E50%3C/Literal%3E%3C/PropertyIsGreaterThan%3E%3C/Filter%3E
+
+base_params:
+    test.variable.1: 123
+    test.variable.2: 456
+    test.variable.3: xyz
+    test.variable.4: abc
+
+    path.to.GBIF.data: $$library_path(GBIF-data)$$
+    path.to.spp.ranges.shp: $$library_path(species-ranges-shp)$$
+    path.to.spp.ranges.shp: $$library_path(crown-land-kml)$$
+
+    test.output.filename: $$output_path$$test_output_file.txt
+    test.output.filename2: $$output_path$$test_output_file2.txt
+    
+
+scenarios:
+    - name: Example scenario
+      parameters:
+    # - name: Example scenario 2
+    #   parameters:
+    #       test.variable.1: 789
+
+# Note that this file does all repetitions on scen 1, then on scen 2 etc...
+# Note that also the original value of the variable is not used.
+
+# repetitions:
+#     static_repetitions:
+#       - test.variable.2: 777
+
+#       - test.variable.2: 888
+
+#     generators:
+#       - key: test.variable.3
+#         generator_type: linear_step
+#         start: 0
+#         step_size: 1
+#         count: 2
+
+#       - key: test.variable.4
+#         generator_type: normal_distribution
+#         mean: 5
+#         std_dev: 1
+#         count: 2
