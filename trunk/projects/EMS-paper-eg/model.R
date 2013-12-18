@@ -1,8 +1,5 @@
 # R file for testing the output during dry runs
 
-# an example of sourcing another R doc
-#source( "w.R" )
-
 
 
 cat( "\n*** The path to the downloaded GBIF data is:",  parameters$path.to.GBIF.data, '\n' )

@@ -12,8 +12,10 @@ libraries:
 
     -  name: crown-land-kml
        repo_type: http_file
-       url: http://goo.gl/IKg0aZ
-       # original URL http://uncertgeo.aston.ac.uk:8080/geoserver/Tzar/wms/kml?layers=Tzar:PLM25&FILTER=%3CFilter%20xmlns=%22http://www.opengis.net/ogc%22%3E%3CPropertyIsGreaterThan%3E%3CPropertyName%3EAREA_HA%3C/PropertyName%3E%3CLiteral%3E50%3C/Literal%3E%3C/PropertyIsGreaterThan%3E%3C/Filter%3E
+       url: http://goo.gl/kF1OQP
+       # orig URL is http://uncertgeo.aston.ac.uk:8080/geoserver/Tzar/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Tzar:PLM25&FILTER=%3CFilter%20xmlns=%22http://www.opengis.net/ogc%22%3E%3CPropertyIsGreaterThan%3E%3CPropertyName%3EAREA_HA%3C/PropertyName%3E%3CLiteral%3E50%3C/Literal%3E%3C/PropertyIsGreaterThan%3E%3C/Filter%3E
+
+
 
 base_params:
     test.variable.1: 123
