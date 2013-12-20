@@ -25,7 +25,7 @@ base_params:
     test.variable.4: abc
 
     path.to.GBIF.data: $$library_path(GBIF-data)$$
-    path.to.spp.ranges.shp: $$library_path(species-ranges-shp)$$
+    path.to.spp.ranges.shp: $$library_path(species-ranges-shp)$$ANURA.shp
     path.to.crown.land.kml: $$library_path(crown-land-kml)$$
 
     test.output.filename: $$output_path$$test_output_file.txt
