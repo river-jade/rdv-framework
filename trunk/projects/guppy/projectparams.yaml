@@ -107,10 +107,12 @@ base_params:
 #            - 50
 #            - 100
 #            - 75
-            #  Based on currently using a 256x256 image, 0.0002 to 0.002
-            #  should give anywhere from around 13 to 131 presences.
-        PAR.min.true.presence.fraction.of.landscape: 0.0002
-        PAR.max.true.presence.fraction.of.landscape: 0.002
+##            #  Based on currently using a 256x256 image, 0.0002 to 0.002
+##            #  should give anywhere from around 13 to 131 presences.
+##        PAR.min.true.presence.fraction.of.landscape: 0.0002
+##        PAR.max.true.presence.fraction.of.landscape: 0.002
+        PAR.min.true.presence.fraction.of.landscape: 0.02
+        PAR.max.true.presence.fraction.of.landscape: 0.2
 
         #PAR.spp.hab.map.filename.root: ../spp
         PAR.spp.hab.map.filename.root: MaxentOutputs/spp
