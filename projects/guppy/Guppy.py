@@ -717,8 +717,10 @@ class Guppy (object):
         #            vector (mode="list", length=self.variables ["PAR.num.spp.to.create"])
 
 
-        self.Rcaller ("cat (file = '/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt', '\n\nStarting debugging output...\n')")
+        self.Rcaller ("cat (file = '/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt', '\n\nStarting debugging output in python genTruePresencesForAllSpp...\n')")
 
+        print ("\n\nStarting debugging output in python genTruePresencesForAllSpp...\n")
+        print ("\n\nnumSppToCreate = " + str(self.numSppToCreate))
 
         for sppId in range(self.numSppToCreate):
             sppName = 'spp.' + str(sppId)
@@ -759,6 +761,7 @@ class Guppy (object):
 
             #sppId = [1..numSppToCreate]
             self.Rcaller.assign('rSppId', sppId)
+            print ("\n\nSetting rSppId to sppId = " + str(sppId))
 
             #numTruePresences = [3,5,6]
             self.Rcaller.assign('rNumTruePresences', numTruePresences)
