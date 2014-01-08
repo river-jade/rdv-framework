@@ -17,7 +17,7 @@
 
 #===============================================================================
 
-debuggingOutputFile = "/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt"
+debuggingOutputFileName = "/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt"
 
 #===============================================================================
 
@@ -50,18 +50,18 @@ xy.rel.to.lower.left.by.col <- function (n, nrow, ncol)
 
 spatial.xy.rel.to.lower.left.by.row <- function (n, nrow, ncol, llcorner,  cellsize)    #**** the key function ****#
     {
-#####cat (file = debuggingOutputFile, "\n\nat START of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+#####cat ("\n\nat START of spatial.xy.rel.to.lower.left.by.row()")
     xy = xy.rel.to.lower.left.by.row (n, nrow, ncol)
 
 ###    return ( c (xllcorner + (cellsize * x), yllcorner + (cellsize * y) ) )
 ##    return (llcorner + (cellsize * xy))
 #    return (llcorner + ((cellsize * xy) -(cellsize * 0.5)))
 
-#    cat (file = debuggingOutputFile, ">>>> (xy - 0.5) = ", (xy - 0.5), ", cellsize = ", cellsize, ", llcorner = ", llcorner)
-cat (file = debuggingOutputFile, "\n\nat END of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
-cat (file = debuggingOutputFile, "\nretVal = ", append=TRUE)
+#    cat (">>>> (xy - 0.5) = ", (xy - 0.5), ", cellsize = ", cellsize, ", llcorner = ", llcorner)
+#####cat ("\n\nat END of spatial.xy.rel.to.lower.left.by.row()")
+#####cat ("\nretVal = ")
     retVal = (llcorner + (cellsize * (xy - 0.5)))
-write (file = debuggingOutputFile, retVal, append=TRUE)
+#####print (retVal)
 
 
     return (retval)
@@ -101,12 +101,12 @@ read.asc.file.to.matrix <-
 
 #filename.handed.in = paste (input.dir, base.asc.filename.to.read, sep='')
 filename.handed.in = paste (input.dir, name.of.file.to.read, sep='')
-cat (file = debuggingOutputFile, "\n\n====>>  In read.asc.file.to.matrix(), \n",
+cat ("\n\n====>>  In read.asc.file.to.matrix(), \n",
 		"\tname.of.file.to.read = '", name.of.file.to.read, "\n",
 		"\tbase.asc.filename.to.read = '", base.asc.filename.to.read, "\n",
 		"\tinput.dir = '", input.dir, "\n",
 		"\tfilename.handed.in = '", filename.handed.in, "\n",
-		"\n", sep='', append=TRUE)
+		"\n", sep='')
 
   asc.file.as.matrix <-
 #  as.matrix (read.table (paste (input.dir, base.asc.filename.to.read, sep=''),
@@ -134,12 +134,14 @@ build.presence.sample =
 	    #  subsample of the original population with no errors.
 		#-------------------------------------------------------------------
 
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING build.presence.sample()", append = TRUE)
+cat ("\n\n+++PYPER+++  STARTING build.presence.sample()")
 
-cat (file = debuggingOutputFile, "\n\n+++  sample.presence.indices.into.true.presence.indices = '", sample.presence.indices.into.true.presence.indices, "'", append = TRUE)
-cat (file = debuggingOutputFile, "\n\n+++  true.presence.locs.x.y = \n", append = TRUE)
-print (true.presence.locs.x.y)
-cat (file = debuggingOutputFile, "\n", append = TRUE)
+cat ("\n\n+++  sample.presence.indices.into.true.presence.indices = '", sample.presence.indices.into.true.presence.indices, "'")
+#cat ("\n\n+++  true.presence.locs.x.y = \n")
+cat ("\n\n+++  head (true.presence.locs.x.y) = \n")
+#print (true.presence.locs.x.y)
+head (true.presence.locs.x.y)
+cat ("\n")
 
 	sample.locs.x.y =
 	    true.presence.locs.x.y [sample.presence.indices.into.true.presence.indices,]
@@ -155,7 +157,7 @@ cat (file = debuggingOutputFile, "\n", append = TRUE)
     if (is.vector (sample.locs.x.y))
         sample.locs.x.y = matrix (sample.locs.x.y, nrow=1)
 
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING build.presence.sample()", append = TRUE)
+cat ("\n\n+++PYPER+++  ENDING build.presence.sample()")
 
 	return (sample.locs.x.y)
 	}
@@ -174,7 +176,7 @@ genTruePresences = function (num.true.presences,    #  a vector, not a scalar
                         cur.full.maxent.samples.dir.name
                         )
     {
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING genTruePresences()", append = TRUE)
+cat ("\n\n+++PYPER+++  STARTING genTruePresences()")
 
     numSppToCreate = length (num.true.presences)
     combined.spp.true.presences.table = NULL
@@ -182,11 +184,11 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING genTruePresences()",
     all.spp.true.presence.locs.x.y =
             vector (mode="list", length=numSppToCreate)
 
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  just before For Loop over numSppToCreate = ", numSppToCreate, " in genTruePresences()", append = TRUE)
+cat ("\n\n+++PYPER+++  just before For Loop over numSppToCreate = ", numSppToCreate, " in genTruePresences()")
 
     for (spp.id in 1:numSppToCreate)
         {
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  top of For Loop over numSppToCreate with spp.id = ", spp.id, " in genTruePresences()", append = TRUE)
+cat ("\n\n+++PYPER+++  top of For Loop over numSppToCreate with spp.id = ", spp.id, " in genTruePresences()")
     #	spp.name <- paste ('spp.', spp.id, sep='')
         spp.name <- paste ('spp.', (spp.id - 1), sep='')    #  to match python...
 
@@ -218,9 +220,9 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  top of For Loop over numSppTo
         num.cols <- (dim (norm.prob.matrix)) [2]
         num.cells <- num.rows * num.cols
 
-        cat (file = debuggingOutputFile, "\n\nnum.rows = ", num.rows)
-        cat (file = debuggingOutputFile, "\nnum.cols = ", num.cols)
-        cat (file = debuggingOutputFile, "\nnum.cells = ", num.cells)
+        cat ("\n\nnum.rows = ", num.rows)
+        cat ("\nnum.cols = ", num.cols)
+        cat ("\nnum.cells = ", num.cells)
 
         #===========================================================================
 
@@ -230,17 +232,19 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  top of For Loop over numSppTo
             #  get the TRUE PRESENCES.
             #-------------------------------------------------------------
 
-cat (file = debuggingOutputFile, "\n\nspp.id = ", spp.id, append = TRUE)
-cat (file = debuggingOutputFile, "\nnum.true.presences = \n", append=TRUE)
-write (file = debuggingOutputFile, num.true.presences, append=TRUE)
+cat ("\n\nspp.id = ", spp.id)
+cat ("\nnum.true.presences = \n")
+print (num.true.presences)
 
 
         true.presence.indices <- sample (1:(num.rows * num.cols),
                                         num.true.presences [spp.id],
                                         replace = FALSE,
                                         prob = norm.prob.matrix)
-        cat (file = debuggingOutputFile, "\ntrue.presence.indices = \n", append=TRUE)
-        print (true.presence.indices)
+#        cat ("\ntrue.presence.indices = \n")
+        cat ("\nhead (true.presence.indices) = \n")
+#        print (true.presence.indices)
+        head (true.presence.indices)
 
             #----------------------------------------------------------------
             #  Convert the sample from single index values to x,y locations
@@ -252,7 +256,7 @@ write (file = debuggingOutputFile, num.true.presences, append=TRUE)
                     nrow = num.true.presences [spp.id], ncol = 2, byrow = TRUE)
 
 
-# cat (file = debuggingOutputFile, "\n\n******  HARD CODING llcorner AND cellsize in genTruePresencesPyper.R.  *****\n\n", append=TRUE)
+# cat ("\n\n******  HARD CODING llcorner AND cellsize in genTruePresencesPyper.R.  *****\n\n")
 # ##2618380.652817
 # ##2529528.47684
 # llcorner = c (2618380.65282, 2529528.47684)
@@ -269,15 +273,22 @@ write (file = debuggingOutputFile, num.true.presences, append=TRUE)
 
 
 
-cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
-            #  Can probably replace this with an apply() call instead...
-        for (cur.loc in 1:num.true.presences [spp.id])
-            {
+cat ("\n\nBEFORE for (cur.loc...)")
+flush.console()
 
+debugCtr = 0
+curNumPresToGen = num.true.presences [spp.id]
+
+            #  Can probably replace this with an apply() call instead...
+#        for (cur.loc in 1:num.true.presences [spp.id])
+        for (cur.loc in 1:curNumPresToGen)
+            {
+cat ("\n\nIN for (cur.loc...) BEFORE spatial.xy.rel.to.lower.left.by.row(), cur.loc = ", cur.loc)
+debugCtr = debugCtr + 1
+cat ("\ndebugCtr = ", debugCtr, " / ", curNumPresToGen)
 #            true.presence.locs.x.y [cur.loc, ] =
 #                xy.rel.to.lower.left (true.presence.indices [cur.loc], num.rows,
 #                                        num.cols)
-#####cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) BEFORE spatial.xy.rel.to.lower.left.by.row(), cur.loc = ", cur.loc, append = TRUE)
 
             true.presence.locs.x.y [cur.loc, ] =
 #                spatial.xy.rel.to.lower.left (true.presence.indices [cur.loc],
@@ -285,12 +296,12 @@ cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
                                                 num.rows, num.cols,
                                                 llcorner, cellsize
                                                 )
-#####cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) AFTER spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+cat ("\n\nIN for (cur.loc...) AFTER spatial.xy.rel.to.lower.left.by.row()")
 
             }
-cat (file = debuggingOutputFile, "\n\nAFTER for (cur.loc...)", append = TRUE)
-cat (file = debuggingOutputFile, "\n\ntrue.presence.locs.x.y = ", append = TRUE)
-write (file = debuggingOutputFile, true.presence.locs.x.y, append = TRUE)
+cat ("\n\nAFTER for (cur.loc...)")
+cat ("\n\ntrue.presence.locs.x.y = ")
+print (true.presence.locs.x.y)
 
             #-----------------------------------------------------------------------
             #  Bind the species names to the presence locations to make a data frame
@@ -329,8 +340,8 @@ write (file = debuggingOutputFile, true.presence.locs.x.y, append = TRUE)
     ##	true.presences.filename <- paste (samples.dir, outfile.root, ".csv", sep='')
         true.presences.filename <- paste (cur.full.maxent.samples.dir.name, "/",
                                             outfile.root, ".csv", sep='')
-        cat (file = debuggingOutputFile, "\n\ntrue.presences.filename = '", true.presences.filename, "'", sep='', append=TRUE)
-cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)", append = TRUE)
+        cat ("\n\ntrue.presences.filename = '", true.presences.filename, "'", sep='')
+cat ("\n\nbefore write.csv (true.presences.table...)")
 
         write.csv (true.presences.table,
         ###  	   file = sampled.presences.filename,
@@ -351,19 +362,19 @@ cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)
 
         #===========================================================================
 
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()", append = TRUE)
+cat ("\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()")
 
         }  #  end for - all species
 
     #-------------------------------------------
 
-    cat (file = debuggingOutputFile, "\n\ncombined.spp.true.presences.table = \n", append = TRUE)
+    cat ("\n\ncombined.spp.true.presences.table = \n")
     print (combined.spp.true.presences.table)
 
-    cat (file = debuggingOutputFile, "\n\nall.spp.true.presence.locs.x.y = \n", append = TRUE)
+    cat ("\n\nall.spp.true.presence.locs.x.y = \n")
     print (all.spp.true.presence.locs.x.y)
 
-    cat (file = debuggingOutputFile, "\n\n", append = TRUE)
+    cat ("\n\n")
 
         #  This last bit is copied from saveCombinedPresencesForMaxent.R.
         #  That looks like the only place where the
@@ -380,7 +391,7 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSp
 			   row.names = FALSE,
 			   quote=FALSE)
 
-#####cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING genTruePresences()", append = TRUE)
+#####cat ("\n\n+++PYPER+++  ENDING genTruePresences()")
 
     return (all.spp.true.presence.locs.x.y)
     }
@@ -403,7 +414,7 @@ createSampledPresences = function (num.true.presences,
                                     combinedPresSamplesFileName
                                     )
     {
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING createSampledPresences()", append = TRUE)
+cat ("\n\n+++PYPER+++  STARTING createSampledPresences()")
 
     numSppToCreate = length (num.true.presences)
     combined.spp.sampled.presences.table = NULL
@@ -526,9 +537,9 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING createSampledPresenc
 
     #-------------------------------------------
 
-    cat (file = debuggingOutputFile, "\n\ncombined.spp.sampled.presences.table = \n", append=TRUE)
-    write (file = debuggingOutputFile, combined.spp.sampled.presences.table, append=TRUE)
-    cat (file = debuggingOutputFile, "\n\n", append=TRUE)
+    cat ("\n\ncombined.spp.sampled.presences.table = \n")
+    print (combined.spp.sampled.presences.table)
+    cat ("\n\n")
 
         #  This last bit is copied from saveCombinedPresencesForMaxent.R.
         #  That looks like the only place where the
@@ -554,7 +565,7 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING createSampledPresenc
     #-------------------------------------------
     #-------------------------------------------
 
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING createSampledPresences()", append = TRUE)
+cat ("\n\n+++PYPER+++  ENDING createSampledPresences()")
 
 #    return (combined.spp.sampled.presences.table)
     }
@@ -573,46 +584,52 @@ genPresences = function (num.true.presences,    #  a vector, not a scalar
                         randomSeed
                         )
     {
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING genPresences()", append = TRUE)
+debuggingOutputFile = file (debuggingOutputFileName, open="wt")
+
+#sink (debuggingOutputFileName, type=c("output","message"), append=TRUE)
+#sink (debuggingOutputFile, type=c("output","message"), append=TRUE)
+sink (debuggingOutputFile, type=c("output","message"))
+
+cat ("\n\n+++PYPER+++  STARTING genPresences()")
 
             #sppId = [1..numSppToCreate]
-cat (file = debuggingOutputFile, '\n             rSppId = ', rSppId, append = TRUE)
+cat ('\n             rSppId = ', rSppId)
 
             #numTruePresences = [3,5,6]
-cat (file = debuggingOutputFile, '\n             rNumTruePresences = ', rNumTruePresences, append = TRUE)
+cat ('\n             rNumTruePresences = ', rNumTruePresences)
 
             #probDistLayersDirWithSlash = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentProbDistLayers/'
-#cat (file = debuggingOutputFile, '\n             rProbDistLayersDirWithSlash = ', rProbDistLayersDirWithSlash, append = TRUE)
+#cat ('\n             rProbDistLayersDirWithSlash = ', rProbDistLayersDirWithSlash)
 
             #trueProbDistFilePrefix = 'true.prob.dist'
-cat (file = debuggingOutputFile, '\n             rTrueProbDistFilePrefix = ', rTrueProbDistFilePrefix, append = TRUE)
+cat ('\n             rTrueProbDistFilePrefix = ', rTrueProbDistFilePrefix)
             #            Rcaller.assign ('rTrueProbDistFilePrefix', self.variables ["PAR.trueProbDistFilePrefix"])
 
             #curFullMaxentSamplesDirName = '/Users/Bill/tzar/outputdata/Guppy/default_runset/156_Scen_1/MaxentSamples'
-cat (file = debuggingOutputFile, '\n             rCurFullMaxentSamplesDirName = ', rCurFullMaxentSamplesDirName, append = TRUE)
+cat ('\n             rCurFullMaxentSamplesDirName = ', rCurFullMaxentSamplesDirName)
 
             #PARuseAllSamples = False
-cat (file = debuggingOutputFile, '\n             rPARuseAllSamples = ', rPARuseAllSamples, append = TRUE)
+cat ('\n             rPARuseAllSamples = ', rPARuseAllSamples)
 
             #combinedPresSamplesFileName = curFullMaxentSamplesDirName + "/" + "spp.sampledPres.combined" + ".csv"
-cat (file = debuggingOutputFile, '\n             rCombinedPresSamplesFileName = ', rCombinedPresSamplesFileName, append = TRUE)
+cat ('\n             rCombinedPresSamplesFileName = ', rCombinedPresSamplesFileName)
 
             #randomSeed = 1
-cat (file = debuggingOutputFile, '\n             rRandomSeed = ', rRandomSeed, append = TRUE)
+cat ('\n             rRandomSeed = ', rRandomSeed)
 
-cat (file = debuggingOutputFile, '\n\nAbout to set.seed()', append = TRUE)
+cat ('\n\nAbout to set.seed()')
 
 #####    set.seed (randomSeed)
     set.seed (rRandomSeed)
 
-cat (file = debuggingOutputFile, '\nAbout to unlist()', append = TRUE)
+cat ('\nAbout to unlist()')
 
         #  When I create a vector in python as x = [1,2,5], it gets passed
         #  in here as a list of lists, so I need to flatten the list into
         #  a vector since that's what the functions in here are expecting.
     num.true.presences = unlist (num.true.presences)
 
-cat (file = debuggingOutputFile, '\nAbout to genTruePresences()', append = TRUE)
+cat ('\nAbout to genTruePresences()')
 
     all.spp.true.presence.locs.x.y =
         genTruePresences (num.true.presences,
@@ -624,7 +641,7 @@ cat (file = debuggingOutputFile, '\nAbout to genTruePresences()', append = TRUE)
                             cur.full.maxent.samples.dir.name
                             )
 
-cat (file = debuggingOutputFile, '\nAbout to createSampledPresences()', append = TRUE)
+cat ('\nAbout to createSampledPresences()')
 
     createSampledPresences (num.true.presences,
                             all.spp.true.presence.locs.x.y,
@@ -632,7 +649,12 @@ cat (file = debuggingOutputFile, '\nAbout to createSampledPresences()', append =
                             cur.full.maxent.samples.dir.name,
                             combinedPresSamplesFileName
                             )
-cat (file = debuggingOutputFile, "\n\n+++PYPER+++  ENDING genPresences()", append = TRUE)
+
+
+sink ()
+close (debuggingOutputFile)
+
+cat ("\n\n+++PYPER+++  ENDING genPresences()")
     }
 
 #===============================================================================
@@ -648,7 +670,7 @@ if (testing)
     combinedPresSamplesFileName = paste (cur.full.maxent.samples.dir.name, "/",
         							   "spp.sampledPres.combined", ".csv", sep='')
 
-cat (file = debuggingOutputFile, "\nIn main, combinedPresSamplesFileName = '", combinedPresSamplesFileName, "'\n", append=TRUE)
+cat ("\nIn main, combinedPresSamplesFileName = '", combinedPresSamplesFileName, "'\n")
 
     randomSeed = 1
 
