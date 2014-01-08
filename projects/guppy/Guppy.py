@@ -717,7 +717,7 @@ class Guppy (object):
         #            vector (mode="list", length=self.variables ["PAR.num.spp.to.create"])
 
 
-        self.Rcaller ("cat (file = '/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt', '\n\nStarting debugging output in python genTruePresencesForAllSpp...\n')")
+###        self.Rcaller ("cat (file = '/Users/Bill/D/rdv-framework/projects/guppy/debugOutput.txt', '\n\nStarting debugging output in python genTruePresencesForAllSpp...\n')")
 
         print ("\n\nStarting debugging output in python genTruePresencesForAllSpp...\n")
         print ("\n\nnumSppToCreate = " + str(self.numSppToCreate))
@@ -852,16 +852,19 @@ class Guppy (object):
             #----------------------------
 
         print "\n\n+++++\tBefore getNumTruePresencesForEachSpp()\n"
+        sys.stdout.flush()
 
         #  moved from up above.
         numTruePresences = self.getNumTruePresencesForEachSpp()
 
         print "\n\n+++++\tBefore genTruePresencesForAllSpp\n"
+        sys.stdout.flush()
 
         listOfTruePresencesAndXYlocs = self.genTruePresencesForAllSpp (numTruePresences)
 
         print "\n\n+++++\tJust after self.genTruePresencesForAllSpp (numTruePresences), listOfTruePresencesAndXYlocs = "
         pprint (listOfTruePresencesAndXYlocs)
+        sys.stdout.flush()
 
 #        print "\n\n\n---------------  EXITING NOW  ---------------\n\n\n"
 #        exit()
@@ -878,6 +881,7 @@ class Guppy (object):
         maxentSamplesFileName = self.combinedPresSamplesFileName
 
         print "\n\n+++++\tBefore", "runMaxentCmd", "\n"
+        sys.stdout.flush()
 
         runMaxentCmd(maxentSamplesFileName, \
                      self.maxentOutputDir, \
