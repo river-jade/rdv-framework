@@ -50,17 +50,21 @@ xy.rel.to.lower.left.by.col <- function (n, nrow, ncol)
 
 spatial.xy.rel.to.lower.left.by.row <- function (n, nrow, ncol, llcorner,  cellsize)    #**** the key function ****#
     {
-cat (file = debuggingOutputFile, "\n\nat START of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+#####cat (file = debuggingOutputFile, "\n\nat START of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
     xy = xy.rel.to.lower.left.by.row (n, nrow, ncol)
 
 ###    return ( c (xllcorner + (cellsize * x), yllcorner + (cellsize * y) ) )
 ##    return (llcorner + (cellsize * xy))
 #    return (llcorner + ((cellsize * xy) -(cellsize * 0.5)))
 
-#    cat (">>>> (xy - 0.5) = ", (xy - 0.5), ", cellsize = ", cellsize, ", llcorner = ", llcorner)
+#    cat (file = debuggingOutputFile, ">>>> (xy - 0.5) = ", (xy - 0.5), ", cellsize = ", cellsize, ", llcorner = ", llcorner)
 cat (file = debuggingOutputFile, "\n\nat END of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+cat (file = debuggingOutputFile, "\nretVal = ", append=TRUE)
+    retVal = (llcorner + (cellsize * (xy - 0.5)))
+write (file = debuggingOutputFile, retVal, append=TRUE)
 
-    return (llcorner + (cellsize * (xy - 0.5)))
+
+    return (retval)
     }
 
 #===============================================================================
@@ -97,12 +101,12 @@ read.asc.file.to.matrix <-
 
 #filename.handed.in = paste (input.dir, base.asc.filename.to.read, sep='')
 filename.handed.in = paste (input.dir, name.of.file.to.read, sep='')
-cat ("\n\n====>>  In read.asc.file.to.matrix(), \n",
+cat (file = debuggingOutputFile, "\n\n====>>  In read.asc.file.to.matrix(), \n",
 		"\tname.of.file.to.read = '", name.of.file.to.read, "\n",
 		"\tbase.asc.filename.to.read = '", base.asc.filename.to.read, "\n",
 		"\tinput.dir = '", input.dir, "\n",
 		"\tfilename.handed.in = '", filename.handed.in, "\n",
-		"\n", sep='')
+		"\n", sep='', append=TRUE)
 
   asc.file.as.matrix <-
 #  as.matrix (read.table (paste (input.dir, base.asc.filename.to.read, sep=''),
@@ -214,9 +218,9 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  top of For Loop over numSppTo
         num.cols <- (dim (norm.prob.matrix)) [2]
         num.cells <- num.rows * num.cols
 
-        cat ("\n\nnum.rows = ", num.rows)
-        cat ("\nnum.cols = ", num.cols)
-        cat ("\nnum.cells = ", num.cells)
+        cat (file = debuggingOutputFile, "\n\nnum.rows = ", num.rows)
+        cat (file = debuggingOutputFile, "\nnum.cols = ", num.cols)
+        cat (file = debuggingOutputFile, "\nnum.cells = ", num.cells)
 
         #===========================================================================
 
@@ -227,15 +231,15 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  top of For Loop over numSppTo
             #-------------------------------------------------------------
 
 cat (file = debuggingOutputFile, "\n\nspp.id = ", spp.id, append = TRUE)
-cat ("\nnum.true.presences = \n")
-print (num.true.presences)
+cat (file = debuggingOutputFile, "\nnum.true.presences = \n", append=TRUE)
+write (file = debuggingOutputFile, num.true.presences, append=TRUE)
 
 
         true.presence.indices <- sample (1:(num.rows * num.cols),
                                         num.true.presences [spp.id],
                                         replace = FALSE,
                                         prob = norm.prob.matrix)
-        cat ("\ntrue.presence.indices = \n")
+        cat (file = debuggingOutputFile, "\ntrue.presence.indices = \n", append=TRUE)
         print (true.presence.indices)
 
             #----------------------------------------------------------------
@@ -248,7 +252,7 @@ print (num.true.presences)
                     nrow = num.true.presences [spp.id], ncol = 2, byrow = TRUE)
 
 
-# cat ("\n\n******  HARD CODING llcorner AND cellsize in genTruePresencesPyper.R.  *****\n\n")
+# cat (file = debuggingOutputFile, "\n\n******  HARD CODING llcorner AND cellsize in genTruePresencesPyper.R.  *****\n\n", append=TRUE)
 # ##2618380.652817
 # ##2529528.47684
 # llcorner = c (2618380.65282, 2529528.47684)
@@ -265,7 +269,7 @@ print (num.true.presences)
 
 
 
-#####cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
+cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
             #  Can probably replace this with an apply() call instead...
         for (cur.loc in 1:num.true.presences [spp.id])
             {
@@ -284,7 +288,9 @@ print (num.true.presences)
 #####cat (file = debuggingOutputFile, "\n\nIN for (cur.loc...) AFTER spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
 
             }
-#####cat (file = debuggingOutputFile, "\n\nAFTER for (cur.loc...)", append = TRUE)
+cat (file = debuggingOutputFile, "\n\nAFTER for (cur.loc...)", append = TRUE)
+cat (file = debuggingOutputFile, "\n\ntrue.presence.locs.x.y = ", append = TRUE)
+write (file = debuggingOutputFile, true.presence.locs.x.y, append = TRUE)
 
             #-----------------------------------------------------------------------
             #  Bind the species names to the presence locations to make a data frame
@@ -323,8 +329,8 @@ print (num.true.presences)
     ##	true.presences.filename <- paste (samples.dir, outfile.root, ".csv", sep='')
         true.presences.filename <- paste (cur.full.maxent.samples.dir.name, "/",
                                             outfile.root, ".csv", sep='')
-        cat ("\n\ntrue.presences.filename = '", true.presences.filename, "'", sep='')
-#####cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)", append = TRUE)
+        cat (file = debuggingOutputFile, "\n\ntrue.presences.filename = '", true.presences.filename, "'", sep='', append=TRUE)
+cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)", append = TRUE)
 
         write.csv (true.presences.table,
         ###  	   file = sampled.presences.filename,
@@ -345,7 +351,7 @@ print (num.true.presences)
 
         #===========================================================================
 
-#####cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()", append = TRUE)
+cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()", append = TRUE)
 
         }  #  end for - all species
 
@@ -520,10 +526,9 @@ cat (file = debuggingOutputFile, "\n\n+++PYPER+++  STARTING createSampledPresenc
 
     #-------------------------------------------
 
-    cat ("\n\ncombined.spp.sampled.presences.table = \n")
-    print (combined.spp.sampled.presences.table)
-
-    cat ("\n\n")
+    cat (file = debuggingOutputFile, "\n\ncombined.spp.sampled.presences.table = \n", append=TRUE)
+    write (file = debuggingOutputFile, combined.spp.sampled.presences.table, append=TRUE)
+    cat (file = debuggingOutputFile, "\n\n", append=TRUE)
 
         #  This last bit is copied from saveCombinedPresencesForMaxent.R.
         #  That looks like the only place where the
@@ -643,7 +648,7 @@ if (testing)
     combinedPresSamplesFileName = paste (cur.full.maxent.samples.dir.name, "/",
         							   "spp.sampledPres.combined", ".csv", sep='')
 
-cat ("\nIn main, combinedPresSamplesFileName = '", combinedPresSamplesFileName, "'\n")
+cat (file = debuggingOutputFile, "\nIn main, combinedPresSamplesFileName = '", combinedPresSamplesFileName, "'\n", append=TRUE)
 
     randomSeed = 1
 
