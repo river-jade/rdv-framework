@@ -132,7 +132,6 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R
 
 source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeG2options.R'))
 
-
 #===============================================================================
 #===============================================================================
 
