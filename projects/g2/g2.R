@@ -47,6 +47,19 @@
 
 #===============================================================================
 
+                        #  Conventions
+
+#  get...() functions
+#       A common pattern in here is that some piece of data could 
+#       come from multiple possible sources, e.g., copying from the 
+#       current hard disk or from a url or being generated from a 
+#       sampling or simulation process.  At the highest level, 
+#       I will call those functions get...() rather than load...() 
+#       or generate...(), etc.  Wherever get...() occurs, my 
+#       intent is to have it eventually be a generic routine.
+
+#===============================================================================
+
 #  options (warn = 2)  =>  warnings are treated as errors, i.e., they're fatal.
 #  Here's what the options() help page in R says:
 #
@@ -59,15 +72,15 @@
 #    function warnings. If warn is one, warnings are printed as they occur.
 #    If warn is two or larger all warnings are turned into errors.
 
-options (warn = 2)
+options (warn = 2)    #  This will eventually come from yaml file
 #options (warn = variables$PAR.RwarningLevel)
 
 #===============================================================================
 
-# First get the OS
+# First get the OS so you can deal with OS-specific issues.
 #   for linux this returns linux-gnu
 #   for mac this returns darwin9.8.0
-#   for windos this returns mingw32
+#   for windows this returns mingw32
 
 current.os <- sessionInfo()$R.version$os
 cat ("\n\nos = '", current.os, "'\n", sep='')
@@ -95,84 +108,39 @@ cat ("\n\n")
 
 #===============================================================================
 
-#source (paste (g2ProjectRsrcDirWithSlash, 'w.R', sep=''))
+source ("read.R")
+source ("w.R")
+
+    #--------------------------------------
+    #  Define functions to be used below.
+    #--------------------------------------
+
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvFiles.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'distanceFunctionsAndTransforms.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvDataSrc.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getClusterData.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getClusterDistVecs.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getClusterSuitabilities.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'writeClusterSuitabilityFile.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
+
+    #-----------------------------------------------------------------
+    #  This needs to come after the function definitions above since 
+    #  some of the options may reference the defined funtions, e.g., 
+    #  the distance function names.
+    #-----------------------------------------------------------------
+
+source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeG2options.R'))
+
 
 #===============================================================================
-
-    #  This method of copying a list of files is based on:
-    #  http://stackoverflow.com/questions/2384517/using-r-to-copy-files
-
-getEnvLayers = function (srcDir, targetDir, 
-                         filespec = "*.asc", 
-                         verbose=TRUE, 
-                         dirSlash = dir.slash)
-    {
-        #-----------------------------------------------------------------------
-        #  Get the list of files to copy from, then copy them to the target dir.
-        #-----------------------------------------------------------------------
-    
-    srcFullNameList = list.files (srcDir, filespec, full.names = TRUE)
-    if (verbose) print (srcFullNameList)
-    
-    file.copy (srcFullNameList, targetDir)
-    
-        #--------------------------------------------
-        #  Check to make sure that the copy worked.
-        #--------------------------------------------
-    
-    srcBaseNameList = list.files (srcDir, filespec, full.names = FALSE)
-    if (verbose) 
-        {
-        cat ("\n\nsrcBaseNameList = \n")
-        print (srcBaseNameList)
-        }
-    
-    targetBaseNameList = list.files (targetDir, filespec, full.names = FALSE)
-    if (verbose) 
-        {
-        cat ("\n\ntargetBaseNameList = \n")
-        print (targetBaseNameList)
-        }
-    
-    cat ("\n\n============  About to test match  ===============")
-    fileListMatchTests = (srcBaseNameList == targetBaseNameList)
-#    fileListMatchTests [4] = FALSE  #  To force test of mismatch...
-    cat ("\n\n  ----------  fileListMatchTests = ", fileListMatchTests, "\n\n")
-    if (length (fileListMatchTests) != sum (fileListMatchTests))
-        {
-        cat ("\n\n***** QUITTING:  Source and target file lists don't match in getEnvLayers(). *****")
-        cat ("\n", fileListMatchTests, "\n\n")
-        quit()        
-        } 
-    
-    if (verbose) cat ("\n\nsrcBaseNameList DOES EQUAL targetBaseNameList.")
-    
-        #---------------------------------------------------------------------
-        #  Make the list of new files available downstream.
-        #  Not sure if this will be necessary, but I have it in hand right 
-        #  now so I'll return it.  Can always remove it later if not needed.
-        #---------------------------------------------------------------------
-    
-    targetFullNameList = list.files (targetDir, filespec, full.names = TRUE)
-    if (verbose) 
-        {
-        cat ("\n\ntargetFullNameList = \n")        
-        print (targetFullNameList)
-        }
-    
-    return (targetFullNameList)
-    }
-
 #===============================================================================
 
 	#--------------------------------
 	#  Get environment layers.
 	#--------------------------------
 
-envLayersDir                  = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
-curFullMaxentEnvLayersDirName = "/Users/Bill/tzar/outputdata/g2/default_runset/400_Scen_1/InputEnvLayers"
-
-getEnvLayers (envLayersDir, curFullMaxentEnvLayersDirName)
+getEnvFiles (envLayersDir, curFullMaxentEnvLayersDirName)
 
 	#--------------------------------------------
 	#  Get true species distributions.
@@ -183,8 +151,9 @@ getEnvLayers (envLayersDir, curFullMaxentEnvLayersDirName)
 	#  running an individual-based model, etc.
 	#--------------------------------------------
 
+getTrueSppDistFromExistingClusters ()
 
-	#----------------------------
+    #----------------------------
 	#  Generate true presences.
 	#----------------------------
 
