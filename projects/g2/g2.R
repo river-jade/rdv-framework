@@ -109,6 +109,8 @@ dir.slash = "/"
 if (current.os == "mingw32")  dir.slash = "\\"
 cat ("\n\ndir.slash = '", dir.slash, "'\n", sep='')
 
+arrayIdxBase = 1    #  1 is index base in R, need 0 if python
+
 #===============================================================================
 
 rdvRootDir = "/Users/Bill/D/rdv-framework"
@@ -190,7 +192,8 @@ getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrc
                                     sppGenOutputDir, 
                                     asciiImgFileNameRoots, scaleInputs, 
                                     imgFileType, numNonEnvDataCols, 
-                                    clusterFilePath, clusterFileNameStem
+                                    clusterFilePath, clusterFileNameStem, 
+                                    arrayIdxBase
                                     )
 
     #----------------------------

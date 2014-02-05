@@ -37,16 +37,23 @@ getTrueSppDistFromExistingClusters =
               sppGenOutputDir, 
               asciiImgFileNameRoots, scaleInputs, 
               imgFileType, numNonEnvDataCols, 
-              clusterFilePath, clusterFileNameStem
+              clusterFilePath, clusterFileNameStem, 
+              arrayIdxBase = 1
             )
     {        
     numPixelsPerImg = numImgRows * numImgCols    
+    numEnvLayers = length (asciiImgFileNameRoots)    
+    numColsInEnvLayersTable = numEnvLayers + numNonEnvDataCols
     
-    envDataSrc = getEnvDataSrc (envLayersWorkingDirWithSlash, numPixelsPerImg, 
-                                asciiImgFileNameRoots, scaleInputs, 
-                                imgFileType, numNonEnvDataCols)
-    
-stop ("\nR will say this is an error, but it's just the end of a test invoked by a stop() command.\n\n")
+    envDataSrc = getEnvDataSrc (envLayersWorkingDirWithSlash, 
+                                numPixelsPerImg, 
+                                asciiImgFileNameRoots, 
+                                numEnvLayers, 
+                                numColsInEnvLayersTable, 
+                                scaleInputs, 
+                                numNonEnvDataCols, 
+                                imgFileType, 
+                                arrayIdxBase)
     
     #-------------------------
     #  Need to:
@@ -91,9 +98,7 @@ stop ("\nR will say this is an error, but it's just the end of a test invoked by
     cat ("\n\nclusterIDs = ", clusterIDs)
     
     numClusters = length (clusterIDs)
-    cat ("\n\nnumClusters = ", numClusters)
-    
-browser()
+    cat ("\n\nnumClusters = ", numClusters)    
     
     #-------------------------------------------------------------------------
     #  Initialize summary matrices with one row for each cluster and
@@ -120,7 +125,7 @@ browser()
     curPixelCt = 0
     curClusterTableIndex = 0
     for (curClusterID in clusterIDs)
-    {
+        {
         cat ("\n\n>>>>>  curClusterID = ", curClusterID)
         
         curClusterTableIndex = curClusterTableIndex + 1
@@ -147,21 +152,21 @@ browser()
         #------------------------------------------------------------------
         
         if (is.vector (envDataSrc [curClusterPixelLocs, ]))
-        {
+            {
             #  Only one pixel in this cluster.
             colCenters = envDataSrc [curClusterPixelLocs, ]
             colDeviations = rep (0, length (colCenters))
             colMins = envDataSrc [curClusterPixelLocs, ]
             colMaxs = envDataSrc [curClusterPixelLocs, ]
             
-        } else
-        {
+            } else
+            {
             #  More than one pixel in this cluster.
             colCenters = apply (envDataSrc [curClusterPixelLocs, ], 2, centerFunc)
             colDeviations = apply (envDataSrc [curClusterPixelLocs, ], 2, deviationFunc)
             colMins = apply (envDataSrc [curClusterPixelLocs, ], 2, min)
             colMaxs = apply (envDataSrc [curClusterPixelLocs, ], 2, max)
-        }
+            }
         
         cat ("\n\ncolCenters = ", colCenters)
         cat ("\nlength (colCenters) = ", length (colCenters))
@@ -180,7 +185,7 @@ browser()
         clusterMaxs [curClusterTableIndex, ] = colMaxs
         
         curPixelCt = curPixelCt + length (curClusterPixelLocs)
-    }
+        }
     
     cat ("\n\ncurPixelCt at end = ", curPixelCt)
     cat ("\narray size = ", 512*512)
@@ -194,6 +199,9 @@ browser()
     
     numHistIntervals = 10
     sppClusterDistanceMapsDir = paste (sppGenOutputDir, "/", sep='')
+    
+browser()
+stop ("\nR will say this is an error, but it's just the end of a test invoked by a stop() command.\n\n")
     
     #-------------------------------------------------------------------------
     #  Build a suitability map for each cluster and write it to a .asc file.
