@@ -200,9 +200,6 @@ getTrueSppDistFromExistingClusters =
     numHistIntervals = 10
     sppClusterDistanceMapsDir = paste (sppGenOutputDir, "/", sep='')
     
-browser()
-stop ("\nR will say this is an error, but it's just the end of a test invoked by a stop() command.\n\n")
-    
     #-------------------------------------------------------------------------
     #  Build a suitability map for each cluster and write it to a .asc file.
     #-------------------------------------------------------------------------
@@ -231,11 +228,26 @@ stop ("\nR will say this is an error, but it's just the end of a test invoked by
         cat ("\ncurrent cluster size = ", sum (insideCurCluster))
         
         
-        point2 = curClusterCenter
+        ###  point2 = curClusterCenter  ###  BTL - 2014 02 05 - changed call to use curClusterCenter directly rather than renaming to point2
         #cat ("\npoint2 = ", point2)
         
-        curSuitabilityImg = getClusterSuitabilities ()
-
+        curSuitabilityImg = getClusterSuitabilities (numPixelsPerImg, 
+                                                     envDataSrc, 
+                                                     curClusterTableIndex, 
+                                                     distVecs, 
+                                                     curClusterCenter, 
+                                                     curClusterMin, 
+                                                     curClusterMax, 
+                                                     insideCurCluster, 
+                                                     numHistIntervals, 
+                                                     histIntervalLength, 
+                                                     curClusterSuitabilities, 
+                                                     curClusterID, 
+                                                     clusterSizes, 
+                                                     clusterPctsOfImg)
+browser()
+stop ("\nR will say this is an error, but it's just the end of a test invoked by a stop() command.\n\n")
+        
         writeClusterSuitabilityFile (curSuitabilityImg, 
                                      sppClusterDistanceMapsDir, 
                                      curClusterTableIndex, 

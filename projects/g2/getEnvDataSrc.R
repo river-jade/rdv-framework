@@ -39,7 +39,6 @@ getEnvDataSrc = function (envLayersWorkingDirWithSlash,
     #  values.
     #------------------------------------------------
     
-    arrayIdxBase    = 1    #  1 is index base in R, need 0 if python
     curImgFileIdx   = arrayIdxBase - 1
     firstFeatureCol = arrayIdxBase + numNonEnvDataCols
     

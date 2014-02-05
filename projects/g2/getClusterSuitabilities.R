@@ -16,31 +16,42 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'getClusterDistVecs.R'))
 
 #===============================================================================
 
-getClusterSuitabilities = function ()
-{
-    #----------------------------------
-    #
-    #  NOTE: In the grey scale .asc and .pgm images that are written out,
-    #        black shows small values and white shows large values, which
-    #        means that colors for good and bad are reversed in distance
-    #        maps compared to suitability maps.
-    #        For suitability, black is bad and white is good.
-    #        For distance, black is close to feature center (i.e., suitable)
-    #        and white is large distance from feature center (i.e.,
-    #        not suitable.)
-    
-    #----------------------------------
-    #  *** Need to write those out to the tzar output area.
+getClusterSuitabilities = function (numPixelsPerImg, 
+                                    envDataSrc, 
+                                    curClusterTableIndex, 
+                                    distVecs, 
+                                    curClusterCenter, 
+                                    curClusterMin, 
+                                    curClusterMax, 
+                                    insideCurCluster, 
+                                    numHistIntervals, 
+                                    histIntervalLength, 
+                                    curClusterSuitabilities, 
+                                    curClusterID, 
+                                    clusterSizes, 
+                                    clusterPctsOfImg)
+    {
+        #----------------------------------
+        #  NOTE: In the grey scale .asc and .pgm images that are written out,
+        #        black shows small values and white shows large values, which
+        #        means that colors for good and bad are reversed in distance
+        #        maps compared to suitability maps.
+        #        For suitability, black is bad and white is good.
+        #        For distance, black is close to feature center (i.e., suitable)
+        #        and white is large distance from feature center (i.e.,
+        #        not suitable.)
+        #----------------------------------
+        #  *** Need to write those out to the tzar output area.
     
     distVecs = getClusterDistVecs (numPixelsPerImg, 
                                    envDataSrc, 
                                    curClusterTableIndex, 
                                    distVecs, 
-                                   point2, 
+                                   curClusterCenter, 
                                    curClusterMin, curClusterMax, insideCurCluster, 
                                    numHistIntervals, histIntervalLength)
         
-    curClusterDistVec = distVecs[,curClusterTableIndex]
+    curClusterDistVec = distVecs [,curClusterTableIndex]
     
     finiteRange = range (curClusterDistVec, finite = TRUE)
     curMaxDistValue = finiteRange [2]
@@ -50,11 +61,11 @@ getClusterSuitabilities = function ()
     curClusterSuitabilities [] = 0.0
     
     if (FALSE)    #  this should be irrelevant now
-    {
+        {
         pixelIsInCurCluster = (clusterPixelValuesLayer == curClusterID)
         curInClusterPixelLocs = which (pixelIsInCurCluster)
         curClusterSuitabilities [curInClusterPixelLocs] = curMaxPlusEpsilonValue - curClusterDistVec [curInClusterPixelLocs]
-    }
+        }
     
     #  Replacement code for the if FALSE that tested for pixel in cluster...
     finiteValueLocs = which (is.finite (curClusterDistVec))
@@ -83,8 +94,8 @@ getClusterSuitabilities = function ()
     
     #browser()
     
-    #  *** Need to write these to files in the output area too.
-    #  Can't remember the command right now...
+        #  *** Need to write these to files in the output area too.
+        #  Can't remember the command right now...
     histTitle = paste ("SUITABILITY hist for spp ",
                        (curClusterTableIndex-1),
                        ", cluster ", curClusterID,
@@ -92,16 +103,16 @@ getClusterSuitabilities = function ()
                        ", ", clusterPctsOfImg [curClusterTableIndex],
                        "% of img", sep='')
     if ((histTop > 0)  & (histIntervalLength > 0))
-    {
+        {
         hist (curClusterSuitabilities,
               breaks=seq (0, histTop, histIntervalLength),
               main = histTitle)
-    } else
-    {
+        } else
+        {
         cat ("\n\nNot showing histogram for \n\n    '", histTitle, "'",
              "\nbecause histTop and bottom both equal 0 (e.g., when ",
              "the cluster only has one point.\n\n", sep='')
-    }
+        }
     
     return (curSuitabilityImg)
-}
+    }
