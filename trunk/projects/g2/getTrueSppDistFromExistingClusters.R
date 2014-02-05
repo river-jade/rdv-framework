@@ -34,7 +34,7 @@ distMeasure           = sumSquaredDist
 
 getTrueSppDistFromExistingClusters = 
     function (envLayersWorkingDirWithSlash, numImgRows, numImgCols, 
-              sppGenOutputDir, 
+              sppGenOutputDirWithSlash, 
               asciiImgFileNameRoots, scaleInputs, 
               imgFileType, numNonEnvDataCols, 
               clusterFilePath, clusterFileNameStem, 
@@ -198,11 +198,36 @@ getTrueSppDistFromExistingClusters =
     #cat ("\n>>>>>>>>>>>>>>>>>>>>>>>>>>  new distVec = ", distVec)
     
     numHistIntervals = 10
-    sppClusterDistanceMapsDir = paste (sppGenOutputDir, "/", sep='')
+    sppClusterDistanceMapsDir = sppGenOutputDirWithSlash
+
+        #-------------------------------------------------------------------------
+        #  Build a suitability map for each cluster and write it to a .asc file.
+        #-------------------------------------------------------------------------
+       
+    if (file.exists (sppGenOutputDirWithSlash))
+        {
+        errMsg = paste0 ("\n\n*** In getTrueSppDistFrom ExistingClusters(): ", 
+                         "\n*** sppGenOutputDirWithSlash = \n***     ", 
+                         sppGenOutputDirWithSlash, 
+                         "\n*** already exists.  ", 
+                         "\n*** Need to change sppGenOutputDirWithSlash in ", 
+                         "initializeG2options.R\n\n")
+        stop (errMsg)
+        
+        } else
+        {
+        cat ("\n\nsppGenOutputDirWithSlash DOES NOT exist.  ", 
+             "Creating it.\n\n", sep='')  
+        dir.create (sppGenOutputDirWithSlash, 
+                    showWarnings = TRUE, 
+                    recursive = TRUE, #  Not sure about this, but it's convenient.
+                    mode = "0777")    #  Not sure if this is what we want for mode.        
+        }
     
-    #-------------------------------------------------------------------------
-    #  Build a suitability map for each cluster and write it to a .asc file.
-    #-------------------------------------------------------------------------
+        #------------------------------------------------
+        #  Build a suitability map for each cluster and 
+        #  write it to a .asc file.
+        #------------------------------------------------
     
     curClusterTableIndex = 0
     for (curClusterID in clusterIDs)
@@ -244,9 +269,8 @@ getTrueSppDistFromExistingClusters =
                                                      curClusterSuitabilities, 
                                                      curClusterID, 
                                                      clusterSizes, 
-                                                     clusterPctsOfImg)
-browser()
-stop ("\nR will say this is an error, but it's just the end of a test invoked by a stop() command.\n\n")
+                                                     clusterPctsOfImg, 
+                                                     sppGenOutputDirWithSlash)
         
         writeClusterSuitabilityFile (curSuitabilityImg, 
                                      sppClusterDistanceMapsDir, 

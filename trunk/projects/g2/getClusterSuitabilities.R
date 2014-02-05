@@ -29,7 +29,8 @@ getClusterSuitabilities = function (numPixelsPerImg,
                                     curClusterSuitabilities, 
                                     curClusterID, 
                                     clusterSizes, 
-                                    clusterPctsOfImg)
+                                    clusterPctsOfImg, 
+                                    sppGenOutputDirWithSlash)
     {
         #----------------------------------
         #  NOTE: In the grey scale .asc and .pgm images that are written out,
@@ -92,21 +93,29 @@ getClusterSuitabilities = function (numPixelsPerImg,
     cat ("\n    histIntervalLength = ", histIntervalLength, sep='')
     cat ("\n    histTop = ", histTop, sep='')
     
-    #browser()
-    
-        #  *** Need to write these to files in the output area too.
-        #  Can't remember the command right now...
-    histTitle = paste ("SUITABILITY hist for spp ",
-                       (curClusterTableIndex-1),
+    curSppNum = curClusterTableIndex - 1
+    histTitle = paste ("SUITABILITY hist for spp ", curSppNum, 
                        ", cluster ", curClusterID,
                        "\nsize ", clusterSizes [curClusterTableIndex],
                        ", ", clusterPctsOfImg [curClusterTableIndex],
                        "% of img", sep='')
     if ((histTop > 0)  & (histIntervalLength > 0))
         {
-        hist (curClusterSuitabilities,
-              breaks=seq (0, histTop, histIntervalLength),
+        histogramFileName = paste0 (sppGenOutputDirWithSlash, 
+                                    "suitabilityHistogram.spp.", curSppNum, 
+                                    ".cluster.", curClusterID, ".pdf")
+            #  Plot histogram on screen first.
+        hist (curClusterSuitabilities, 
+              breaks=seq (0, histTop, histIntervalLength), 
               main = histTitle)
+        
+            #  Save same histogram to file.
+        pdf (histogramFileName)
+        hist (curClusterSuitabilities, 
+              breaks=seq (0, histTop, histIntervalLength), 
+              main = histTitle)
+        dev.off()
+        
         } else
         {
         cat ("\n\nNot showing histogram for \n\n    '", histTitle, "'",
