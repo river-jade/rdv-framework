@@ -13,17 +13,21 @@
 #===============================================================================
 
 
-getEnvDataSrc = function (envLayersWorkingDir, numPixelsPerImg, 
-                          asciiImgFileNameRoots, scaleInputs, 
-                          imgFileType = "asc", numNonEnvDataCols = 0
+getEnvDataSrc = function (envLayersWorkingDirWithSlash, 
+                          numPixelsPerImg, 
+                          asciiImgFileNameRoots, 
+                          numEnvLayers, 
+                          numColsInEnvLayersTable, 
+                          scaleInputs, 
+                          numNonEnvDataCols = 0, 
+                          imgFileType = "asc", 
+                          arrayIdxBase = 1  
                         )
     {
         #-------------------
         #  initializations
         #-------------------
     
-    numEnvLayers = length (asciiImgFileNameRoots)    
-    numColsInEnvLayersTable = numEnvLayers + numNonEnvDataCols
     combinedEnvLayersTable  = matrix (0, nrow=numPixelsPerImg, ncol=numColsInEnvLayersTable, byrow=TRUE)
     
     #------------------------------------------------
@@ -48,7 +52,7 @@ getEnvDataSrc = function (envLayersWorkingDir, numPixelsPerImg,
             #  ASC input images
             curEnvLayer = 
                 read.asc.file.to.matrix (asciiImgFileNameRoots [curImgFileIdx], 
-                                         envLayersWorkingDir)
+                                         envLayersWorkingDirWithSlash)
             
             } else
             {
