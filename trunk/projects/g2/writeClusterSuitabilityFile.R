@@ -12,17 +12,29 @@
 
 #===============================================================================
 
-writeClusterSuitabilityFile = function ()
+writeClusterSuitabilityFile = function (curSuitabilityImg, 
+                                        sppClusterDistanceMapsDir, 
+                                        curClusterTableIndex, 
+                                        numImgRows, numImgCols,
+                                        xllcorner = 2618380.652817,
+                                        yllcorner = 2529528.47684,
+                                        no.data.value = -9999,
+                                        cellsize = 75, 
+                                        trueProbDistSppFilenameBase = "true.prob.dist.spp.")
     {
-    #    filenameRoot = paste (sppClusterDistanceMapsDir, "spp.", (curClusterTableIndex - 1), sep='')
-    filenameRoot = paste (sppClusterDistanceMapsDir, "true.prob.dist.spp.", (curClusterTableIndex - 1), sep='')
+#     filenameRoot = paste (sppClusterDistanceMapsDir, 
+#                           "spp.", 
+#                           (curClusterTableIndex - 1), sep='')
+    filenameRoot = paste (sppClusterDistanceMapsDir, 
+                          trueProbDistSppFilenameBase, 
+                          (curClusterTableIndex - 1), sep='')
     write.asc.file (curSuitabilityImg,
                     filenameRoot,
                     numImgRows, numImgCols,
-                    xllcorner = 2618380.652817,
-                    yllcorner = 2529528.47684,
-                    no.data.value = -9999,
-                    cellsize = 75
+                    xllcorner,
+                    yllcorner,
+                    no.data.value,
+                    cellsize
                     ##                    , xllcorner = 1    #  Looks like maxent adds the xy values to xllcorner, yllcorner
                     ##                    , yllcorner = 1    #  so they must be (0,0) instead of (1,1), i.e., the origin
                     ##                    #  is not actually on the map.  It's just off the lower

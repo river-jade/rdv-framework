@@ -58,6 +58,21 @@
 #       or generate...(), etc.  Wherever get...() occurs, my 
 #       intent is to have it eventually be a generic routine.
 
+#  SrcDir vs. WorkingDir
+#       Trying to make names differentiate between the source of information 
+#       before the experiment is run and the working copy of information that 
+#       is copied into the tzar output area as part of the experiment.  
+#       For example, the environmental input layers generally exist in some 
+#       independent data storage location (possibly not even on the same disk) 
+#       and are often selected and then copied into a working area that is part 
+#       the experiment's output area under tzar.  So, envLayersSrcDir 
+#       may get copied into envLayersWorkingDir.
+
+
+#===============================================================================
+
+rm (list = ls())    #  Make sure there are no old variables lying around.
+
 #===============================================================================
 
 #  options (warn = 2)  =>  warnings are treated as errors, i.e., they're fatal.
@@ -85,16 +100,18 @@ options (warn = 2)    #  This will eventually come from yaml file
 current.os <- sessionInfo()$R.version$os
 cat ("\n\nos = '", current.os, "'\n", sep='')
 
+    #  ISN'T THERE AN R FUNCTION RELATED TO THIS?
+    #  In fact, does it even matter in R?
+    #  Does R already manage this in strings for file functions?
 dir.slash = "/"
+
 #if (current.os == 'mingw32')  dir.slash = "\\"
 if (current.os == "mingw32")  dir.slash = "\\"
 cat ("\n\ndir.slash = '", dir.slash, "'\n", sep='')
 
 #===============================================================================
 
-setwd ("/Users/Bill/D/rdv-framework")
-
-rdvRootDir = getwd()
+rdvRootDir = "/Users/Bill/D/rdv-framework"
 rdvSharedRsrcDir = paste (rdvRootDir, "/R", sep='')
 g2ProjectRsrcDir = paste (rdvRootDir, "/projects/g2", sep='')
 g2ProjectRsrcDirWithSlash = paste (g2ProjectRsrcDir, "/", sep='')
@@ -104,42 +121,54 @@ cat ("\nrdvSharedRsrcDir = ", rdvSharedRsrcDir, sep='')
 cat ("\ng2ProjectRsrcDirWithSlash = ", g2ProjectRsrcDirWithSlash, sep='')
 cat ("\n\n")
 
-#stop()
+setwd (rdvRootDir)    #  Is this still necessary (and correct to do)?
 
 #===============================================================================
 
-source ("read.R")
-source ("w.R")
-
-    #--------------------------------------
-    #  Define functions to be used below.
-    #--------------------------------------
-
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvFiles.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'distanceFunctionsAndTransforms.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvDataSrc.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getClusterData.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getClusterDistVecs.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getClusterSuitabilities.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'writeClusterSuitabilityFile.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
-
-    #-----------------------------------------------------------------
-    #  This needs to come after the function definitions above since 
-    #  some of the options may reference the defined funtions, e.g., 
-    #  the distance function names.
-    #-----------------------------------------------------------------
+    #-------------------------------------------------------------
+    #  Need to set option values first, since many functions are 
+    #  likely to make use of them.  
+    #  This will later be taken care of by the yaml file and 
+    #  tzar's RRunner loading them into the list called 
+    #  "variables".  Until then, I need to set them by hand.
+    #-------------------------------------------------------------
 
 source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeG2options.R'))
 
+    #-------------------------------------------------------------
+    #  Utility functions for reading and writing that are shared 
+    #  among projects but want to have available locally in case 
+    #  I need to modify them.
+    #-------------------------------------------------------------
+
+source (paste0 (g2ProjectRsrcDirWithSlash, 'read.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'w.R'))
+
+    #---------------------
+    #  Define functions.
+    #---------------------
+
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvFiles.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
+
+    #-------------------------------------------------------------------------
+    #  Do initializations that are more than just retrieving option settings 
+    #  that are or should be in the yaml file.
+    #  This needs to be done after all of the other sourcing above because 
+    #  some of these actions may assume the existance of some of the 
+    #  functions referenced above.
+    #-------------------------------------------------------------------------
+
+source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeBeyondSettingOptions.R'))
+
 #===============================================================================
 #===============================================================================
 
-	#--------------------------------
+    #--------------------------------
 	#  Get environment layers.
 	#--------------------------------
 
-getEnvFiles (envLayersDir, curFullMaxentEnvLayersDirName)
+getEnvFiles (envLayersSrcDir, envLayersWorkingDirWithSlash)
 
 	#--------------------------------------------
 	#  Get true species distributions.
@@ -150,7 +179,19 @@ getEnvFiles (envLayersDir, curFullMaxentEnvLayersDirName)
 	#  running an individual-based model, etc.
 	#--------------------------------------------
 
-getTrueSppDistFromExistingClusters ()
+        #  BTL - 2014 02 05
+        #  CHANGED ARGUMENT envLayersSrcDir TO BE envLayersWorkingDirWithSlash 
+        #  INSTEAD SINCE THAT SEEMS SAFER WHEN SRC DIR FILES HAVE BEEN SELECTED 
+        #  AS A SUBSET, PLUS IT KEEPS ALL USED DATA IN ONE PLACE FOR LATER 
+        #  AUDITING IF THERE IS A PROBLEM.
+
+getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrcDir, 
+                                    numImgRows, numImgCols, 
+                                    sppGenOutputDir, 
+                                    asciiImgFileNameRoots, scaleInputs, 
+                                    imgFileType, numNonEnvDataCols, 
+                                    clusterFilePath, clusterFileNameStem
+                                    )
 
     #----------------------------
 	#  Generate true presences.
