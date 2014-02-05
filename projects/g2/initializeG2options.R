@@ -86,7 +86,8 @@ gaussianSuitabilitySmoothingSD   = 1
 scaleInputs           = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT in original code.
 dataSrc               = "mattData"    #  Should become a guppy option...
 
-sppGenOutputDir               = ""
+sppGenOutputDirWithSlash      = paste0 (curFullTzarExpOutputDirRootWithSlash, 
+                                        "SppGenOutputs", dir.slash)
 #envLayersWorkingDirWithSlash = [has already been set above]
 numSpp                        = NA
 randomSeed                    = 17

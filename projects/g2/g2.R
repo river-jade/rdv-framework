@@ -189,7 +189,7 @@ getEnvFiles (envLayersSrcDir, envLayersWorkingDirWithSlash)
 
 getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrcDir, 
                                     numImgRows, numImgCols, 
-                                    sppGenOutputDir, 
+                                    sppGenOutputDirWithSlash, 
                                     asciiImgFileNameRoots, scaleInputs, 
                                     imgFileType, numNonEnvDataCols, 
                                     clusterFilePath, clusterFileNameStem, 
