@@ -12,6 +12,10 @@
 
 #===============================================================================
 
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getClusterDistVecs.R'))
+
+#===============================================================================
+
 getClusterSuitabilities = function ()
 {
     #----------------------------------
@@ -28,7 +32,14 @@ getClusterSuitabilities = function ()
     #----------------------------------
     #  *** Need to write those out to the tzar output area.
     
-    distVecs = getClusterDistVecs ()
+    distVecs = getClusterDistVecs (numPixelsPerImg, 
+                                   envDataSrc, 
+                                   curClusterTableIndex, 
+                                   distVecs, 
+                                   point2, 
+                                   curClusterMin, curClusterMax, insideCurCluster, 
+                                   numHistIntervals, histIntervalLength)
+        
     curClusterDistVec = distVecs[,curClusterTableIndex]
     
     finiteRange = range (curClusterDistVec, finite = TRUE)

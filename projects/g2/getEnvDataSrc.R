@@ -12,59 +12,17 @@
 
 #===============================================================================
 
-getEnvDataSrc = function (envLayersDir, numImgRows, numImgCols)
+
+getEnvDataSrc = function (envLayersWorkingDir, numPixelsPerImg, 
+                          asciiImgFileNameRoots, scaleInputs, 
+                          imgFileType = "asc", numNonEnvDataCols = 0
+                        )
     {
-    #-------------------
-    #  initializations
-    #-------------------
+        #-------------------
+        #  initializations
+        #-------------------
     
-    imgFileType           = NULL
-#    numImgRows            = NULL
-#    numImgCols            = NULL
-    imgSrcDir             = NULL
-    imgFileNames          = NULL
-    asciiImgFileNameRoots = NULL
-    numEnvLayers          = NULL
-    imgFileType           = "asc"
-    
-    
-    if (dataSrc == "mattData")
-        {
-        imgFileType = "asc"
-#        numImgRows  = 512
-#        numImgCols  = 512
-        imgSrcDir   = envLayersDir
-            #"/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
-        
-        #  Matt's suggested weights are recorded at end of following lines...
-        #  Not using those weights yet.
-        asciiImgFileNameRoots = c("aniso_heat",      #  0-1
-                                  "evap_jan",  #  0.5
-                                  "evap_jul",  #  0.5
-                                  "insolation",      #  0-1
-                                  "max_temp",  #  0.5
-                                  "min_temp",  #  0.5
-                                  "modis_evi",  #  0.5
-                                  "modis_mir",  #  0.5
-                                  "ndmi",  #  0.5
-                                  "pottassium",      #  0-1
-                                  "raindays_jan",  #  0.5
-                                  "raindays_jul",  #  0.5
-                                  "rainfall_jan",  #  0.5
-                                  "rainfall_jul",  #  0.5
-                                  "thorium",      #  0-1
-                                  "twi_topocrop",      #  0-1
-                                  "vert_major",      #  0-1
-                                  "vert_minor",      #  0-1
-                                  "vert_saline",      #  0-1
-                                  "vis_sky"      #  0-1
-        )
-        
-        numEnvLayers = length (asciiImgFileNameRoots)
-        }
-    
-    numPixelsPerImg         = numImgRows * numImgCols
-    numNonEnvDataCols       = 0
+    numEnvLayers = length (asciiImgFileNameRoots)    
     numColsInEnvLayersTable = numEnvLayers + numNonEnvDataCols
     combinedEnvLayersTable  = matrix (0, nrow=numPixelsPerImg, ncol=numColsInEnvLayersTable, byrow=TRUE)
     
@@ -88,13 +46,17 @@ getEnvDataSrc = function (envLayersDir, numImgRows, numImgCols)
         if (imgFileType == "asc")
             {
             #  ASC input images
-            curEnvLayer = read.asc.file.to.matrix (asciiImgFileNameRoots [curImgFileIdx], imgSrcDir)
+            curEnvLayer = 
+                read.asc.file.to.matrix (asciiImgFileNameRoots [curImgFileIdx], 
+                                         envLayersWorkingDir)
             
             } else
             {
             #  Unknown input images
-            cat ("\n\nFATAL ERROR:  Unknown input image file type = '", imgFileType, "'.\n\n")
-            quit()
+            errMsg = 
+                paste0 ("\n\nFATAL ERROR:  Unknown input image file type = '", 
+                        imgFileType, "'.\n\n")
+            stop (errMsg)
             }
         
         combinedEnvLayersTable [,curCol] = as.vector (t(curEnvLayer))        
