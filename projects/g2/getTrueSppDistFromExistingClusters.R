@@ -98,7 +98,9 @@ getTrueSppDistFromExistingClusters =
     cat ("\n\nclusterIDs = ", clusterIDs)
     
     numClusters = length (clusterIDs)
-    cat ("\n\nnumClusters = ", numClusters)    
+    cat ("\n\nnumClusters = ", numClusters)
+    
+    numSpp = numClusters
     
     #-------------------------------------------------------------------------
     #  Initialize summary matrices with one row for each cluster and
@@ -252,10 +254,10 @@ getTrueSppDistFromExistingClusters =
                                                      clusterPctsOfImg, 
                                                      sppGenOutputDirWithSlash)
 
-THIS IS WRONG.  NEED TO FIX IT SO THAT IT HAS THE CORRECT CORNER VALUES 
-INSTEAD OF THESE HARD-CODED VALUES.  NEED TO GET THE CORRECT VALUES WHEN 
-THE ENV LAYERS ARE READ IN OR WHEN THE CLUSTERS ARE READ IN.  ALL SHOULD 
-BE THE SAME.
+#THIS IS WRONG.  NEED TO FIX IT SO THAT IT HAS THE CORRECT CORNER VALUES 
+#INSTEAD OF THESE HARD-CODED VALUES.  NEED TO GET THE CORRECT VALUES WHEN 
+#THE ENV LAYERS ARE READ IN OR WHEN THE CLUSTERS ARE READ IN.  ALL SHOULD 
+#BE THE SAME.
         
         writeClusterSuitabilityFile (curSuitabilityImg, 
                                      sppClusterDistanceMapsDir, 
@@ -294,7 +296,11 @@ BE THE SAME.
     ##plot (distVecs [,2], lty=1)
     ##lines (distVecs [,1], lty=2)
     ##lines (distVecs [,2], lty=1)
-}
+
+    #---------------
+
+    return (numSpp)
+    }
 
 
 #===============================================================================

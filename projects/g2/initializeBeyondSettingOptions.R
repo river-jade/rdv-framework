@@ -25,48 +25,5 @@
 
 #===============================================================================
 
-#---------------------------------------------------------------
-#  Determine the number of true presences for each species.
-#  At the moment, you can specify the number of true presences
-#  drawn for each species either by specifying a count for each
-#  species to be created or by specifying the bounds of a
-#  random fraction for each species.  The number of true
-#  presences will then be that fraction multiplied times the
-#  total number of pixels in the map.
-#---------------------------------------------------------------
-
-if (useRandomNumTruePresForEachSpp)
-    {
-    numTruePresForEachSpp = 
-        getNumTruePresForEachSpp_usingRandom (numSppToCreate,
-                                              minTruePresFracOfLandscape,
-                                              maxTruePresFracOfLandscape,
-                                              numImgCells)
-    
-    } else
-    {
-    numTruePresForEachSpp = 
-        getNumTruePresForEachSpp_usingSpecifiedCts (numTruePresForEachSpp_string, 
-                                                    numSppToCreate)
-    }
-
-#-------------------------------------------------------------------------------
-
-    #  Values for setting values in .asc headers.
-    #  These were passed in from Pyper before.
-    #  Hard coding for now.  
-    #  Need to read them from one of the env files or something.
-    #  yaml file shows:
-        # PAR.ascFileNcols: 512
-        # PAR.ascFileNrows: 512
-        # PAR.ascFileXllcorner: 2618380.652817
-        # PAR.ascFileYllcorner: 2529528.47684
-        # PAR.ascFileCellsize: 75.0
-        # PAR.ascFileNodataValue: -9999
-
-llcorner = c (2618380.65282, 2529528.47684)
-cellsize = 75.0
-nodataValue = -9999
-
 #===============================================================================
 
