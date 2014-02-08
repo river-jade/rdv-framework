@@ -204,26 +204,6 @@ getTrueSppDistFromExistingClusters =
         #  Build a suitability map for each cluster and write it to a .asc file.
         #-------------------------------------------------------------------------
        
-    if (file.exists (sppGenOutputDirWithSlash))
-        {
-        errMsg = paste0 ("\n\n*** In getTrueSppDistFrom ExistingClusters(): ", 
-                         "\n*** sppGenOutputDirWithSlash = \n***     ", 
-                         sppGenOutputDirWithSlash, 
-                         "\n*** already exists.  ", 
-                         "\n*** Need to change sppGenOutputDirWithSlash in ", 
-                         "initializeG2options.R\n\n")
-        stop (errMsg)
-        
-        } else
-        {
-        cat ("\n\nsppGenOutputDirWithSlash DOES NOT exist.  ", 
-             "Creating it.\n\n", sep='')  
-        dir.create (sppGenOutputDirWithSlash, 
-                    showWarnings = TRUE, 
-                    recursive = TRUE, #  Not sure about this, but it's convenient.
-                    mode = "0777")    #  Not sure if this is what we want for mode.        
-        }
-    
         #------------------------------------------------
         #  Build a suitability map for each cluster and 
         #  write it to a .asc file.
@@ -271,6 +251,11 @@ getTrueSppDistFromExistingClusters =
                                                      clusterSizes, 
                                                      clusterPctsOfImg, 
                                                      sppGenOutputDirWithSlash)
+
+THIS IS WRONG.  NEED TO FIX IT SO THAT IT HAS THE CORRECT CORNER VALUES 
+INSTEAD OF THESE HARD-CODED VALUES.  NEED TO GET THE CORRECT VALUES WHEN 
+THE ENV LAYERS ARE READ IN OR WHEN THE CLUSTERS ARE READ IN.  ALL SHOULD 
+BE THE SAME.
         
         writeClusterSuitabilityFile (curSuitabilityImg, 
                                      sppClusterDistanceMapsDir, 
