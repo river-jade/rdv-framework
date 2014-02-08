@@ -204,14 +204,34 @@ trueProbDistFilePrefix = "true.prob.dist"
 
 useRandomNumTruePresForEachSpp = TRUE    #  variables$PAR.use.random.num.true.presences
 
-numSppToCreate = 28    #  variables$PAR.num.spp.to.create
+numSpp = 28    #  variables$PAR.num.spp.to.create
 
 minTruePresFracOfLandscape = 0.0002    #  0.002    #  variables$PAR.min.true.presence.fraction.of.landscape
 maxTruePresFracOfLandscape = 0.002     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
 
 numTruePresForEachSpp_string = "50,100,75"    #  variables$PAR.num.true.presences
 
+#-------------------------------------------------------------------------------
+
+#  Values for setting values in .asc headers.
+#  These were passed in from Pyper before.
+#  Hard coding for now.  
+#  Need to read them from one of the env files or something.
+#  yaml file shows:
+# PAR.ascFileNcols: 512
+# PAR.ascFileNrows: 512
+# PAR.ascFileXllcorner: 2618380.652817
+# PAR.ascFileYllcorner: 2529528.47684
+# PAR.ascFileCellsize: 75.0
+# PAR.ascFileNodataValue: -9999
+
+llcorner = c (2618380.65282, 2529528.47684)
+cellsize = 75.0
+nodataValue = -9999
+
 #===============================================================================
+
+PARuseAllSamples = FALSE
 
 #===============================================================================
 

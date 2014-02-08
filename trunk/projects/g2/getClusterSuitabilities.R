@@ -93,7 +93,7 @@ getClusterSuitabilities = function (numPixelsPerImg,
     cat ("\n    histIntervalLength = ", histIntervalLength, sep='')
     cat ("\n    histTop = ", histTop, sep='')
     
-    curSppNum = curClusterTableIndex - 1
+    curSppNum = curClusterTableIndex    #  curClusterTableIndex - 1    #  python numbering, not R?
     histTitle = paste ("SUITABILITY hist for spp ", curSppNum, 
                        ", cluster ", curClusterID,
                        "\nsize ", clusterSizes [curClusterTableIndex],

@@ -27,7 +27,8 @@ writeClusterSuitabilityFile = function (curSuitabilityImg,
 #                           (curClusterTableIndex - 1), sep='')
     filenameRoot = paste (sppClusterDistanceMapsDir, 
                           trueProbDistSppFilenameBase, 
-                          (curClusterTableIndex - 1), sep='')
+                          curClusterTableIndex,     #  (curClusterTableIndex - 1), #  python numbering, not R?
+                          sep='')
     write.asc.file (curSuitabilityImg,
                     filenameRoot,
                     numImgRows, numImgCols,

@@ -7,10 +7,10 @@
 #  History
 
 #  2014 02 07 - BTL - Created.
-#  Extracted from old computeSppDistributions.R from guppy project and
-#  from
-#  turned into
-#  a function.
+#  Extracted from old createTruePresences.R from guppy project and
+#  from guppy/genTruePresencesPyper.R.  
+#  Also, code for computing the number of true presences is derived 
+#  from code in guppy/computeSppDistributions.R.
 
 #===============================================================================
 #===============================================================================
@@ -228,6 +228,48 @@ getNumTruePresForEachSpp_usingSpecifiedCts = function (numTruePresForEachSpp_str
 
 #===============================================================================
 
+getTruePresIndicesForOneSpp = function (numTruePresForCurSpp, 
+                                        numRows, 
+                                        numCols, 
+                                        sppGenOutputDirWithSlash,
+                                        trueProbDistFilePrefix,    #  Or, variables$PAR.trueProbDistFilePrefix
+                                        sppName
+                                        )
+    {
+        #    norm.prob.matrix = true.rel.prob.dists.for.spp [[sppID]]
+        #        filename = paste (prob.dist.layers.dir.with.slash,
+    normProbFilename = paste0 (sppGenOutputDirWithSlash,
+                               trueProbDistFilePrefix,    #  Or, variables$PAR.trueProbDistFilePrefix
+                               ".", sppName
+                               #					        '.asc',
+                               )
+    
+        #  BTL - 2013.11.22
+        #  IS THIS USING THE OLD ASCII READER OR THE NEW ONE?
+        #  LOOKS LIKE IT'S PROBABLY THE OLD ONE SINCE IT LOOKS LIKE IT'S RETURNING
+        #  A MATRIX RATHER THAN AN OBJECT.
+        #  THIS SEEMS TO BE HAPPENING IN BOTH Guppy.py AND IN genTruePresencesPyper.R.
+        #  DO I NEED BOTH A PYTHON AND AN R VERSION OF THIS?
+    
+    normProbMatrix = read.asc.file.to.matrix (normProbFilename)
+    
+        #-------------------------------------------------------------
+        #  Sample presences from the mapped probability distribution
+        #  according to the true relative presence probabilities to
+        #  get the TRUE PRESENCES.
+        #-------------------------------------------------------------
+
+    
+    truePresIndices = sample (1:(numRows * numCols),
+                              numTruePresForCurSpp,    #  numTruePresForEachSpp [sppID],
+                              replace = FALSE,
+                              prob = normProbMatrix)
+
+    return (truePresIndices)
+    }
+
+#===============================================================================
+
     #  Copied from createTruePresences.R, then modified to run more
     #  stand-alone rather than embedded in the R version of guppy.
 
@@ -235,6 +277,9 @@ getTruePresForEachSpp =
     function (numTruePresForEachSpp,    #  a vector, not a scalar
               trueProbDistFilePrefix,
               fullSppSamplesDirWithSlash,    #  cur.full.maxent.samples.dir.name
+              
+              numRows, 
+              numCols, 
               
                   #  Values for writing .asc file headers
               llcorner, 
@@ -251,89 +296,30 @@ getTruePresForEachSpp =
         sppName = paste ('spp.', sppID, sep='')
         #sppName = paste ('spp.', (sppID - 1), sep='')    #  to match python...
 
-            #----------------------------------------------------------------
-            #  Get dimensions from relative probability matrix to use later
-            #  and to make sure everything went ok.
-            #----------------------------------------------------------------
-
-        #	norm.prob.matrix = true.rel.prob.dists.for.spp [[sppID]]
-        #        filename = paste (prob.dist.layers.dir.with.slash,
-        filename = paste (sppGenOutputDirWithSlash,
-                          trueProbDistFilePrefix,    #  Or, variables$PAR.trueProbDistFilePrefix
-                          ".", sppName,
-                          #								'.asc',
-                          sep='')
-
-            #  BTL - 2013.11.22
-            #  IS THIS USING THE OLD ASCII READER OR THE NEW ONE?
-            #  LOOKS LIKE IT'S PROBABLY THE OLD ONE SINCE IT LOOKS LIKE IT'S RETURNING
-            #  A MATRIX RATHER THAN AN OBJECT.
-            #  THIS SEEMS TO BE HAPPENING IN BOTH Guppy.py AND IN genTruePresencesPyper.R.
-            #  DO I NEED BOTH A PYTHON AND AN R VERSION OF THIS?
-
-        normProbMatrix = read.asc.file.to.matrix (filename)
-
-            #  These could also be passed in, but maybe this is better
-            #  since it makes sure to match the array you're going to
-            #  sample from and had to read in anyway.
-        numRows = (dim (normProbMatrix)) [1]
-        numCols = (dim (normProbMatrix)) [2]
-        numCells = numRows * numCols
-
-    #===========================================================================
-
-            #-------------------------------------------------------------
-            #  Sample presences from the mapped probability distribution
-            #  according to the true relative presence probabilities to
-            #  get the TRUE PRESENCES.
-            #-------------------------------------------------------------
-
-        truePresIndices = sample (1:(num.rows * num.cols),
-                                         numTruePresForEachSpp [sppID],
-                                         replace = FALSE,
-                                         prob = normProbMatrix)
-
+        numTruePresForCurSpp = numTruePresForEachSpp [sppID]
+        
+        truePresIndices = getTruePresIndicesForOneSpp (numTruePresForCurSpp, 
+                                                       numRows, 
+                                                       numCols, 
+                                                       sppGenOutputDirWithSlash,
+                                                       trueProbDistFilePrefix,    #  Or, variables$PAR.trueProbDistFilePrefix
+                                                       sppName)
+        
             #----------------------------------------------------------------
             #  Convert the sample from single index values to x,y locations
             #  relative to the lower left corner of the map.
             #----------------------------------------------------------------
     
         truePresenceLocsXY =
-            matrix (rep (0, (numTruePresForEachSpp [sppID] * 2)),
-                    nrow = numTruePresForEachSpp [sppID], ncol = 2, byrow = TRUE)
+            matrix (rep (0, (numTruePresForCurSpp * 2)),
+                    nrow = numTruePresForCurSpp, ncol = 2, byrow = TRUE)
 
-
-            # cat ("\n\n******  HARD CODING llcorner AND cellsize in genTruePresencesPyper.R.  *****\n\n")
-            # ##2618380.652817
-            # ##2529528.47684
-            # llcorner = c (2618380.65282, 2529528.47684)
-            # cellsize = 75.0
-
-            #  Variables related to .asc file header defining spatial
-            #  origin, image dimensions, and resolution.
-            #  These are currently passed in by Rassign call via pyper.
-#        num.cols = rNcols
-#        num.rows = rNrows
-#        llcorner = c (rXllcorner, rYllcorner)
-#        cellsize = rCellsize
-#        nodataValue = rNodataValue      #  probably not needed here...
-
-        curNumPresToGen = numTruePresForEachSpp [sppID]
-
-            #  Can probably replace this with an apply() call instead...
-            #        for (cur.loc in 1:numTruePresForEachSpp [sppID])
-        for (curLoc in 1:curNumPresToGen)
+        for (curLoc in 1:numTruePresForCurSpp)    #  Use apply instead?
             {
-                #            true.presence.locs.x.y [cur.loc, ] =
-                #                xy.rel.to.lower.left (true.presence.indices [cur.loc], num.rows,
-                #                                        num.cols)
-
             truePresenceLocsXY [curLoc, ] =
-                #                spatial.xy.rel.to.lower.left (true.presence.indices [cur.loc],
                 spatial.xy.rel.to.lower.left.by.row (truePresIndices [curLoc],
                                                      numRows, numCols,
-                                                     llcorner, cellsize
-                                                     )
+                                                     llcorner, cellsize)
             }
 
             #-----------------------------------------------------------------------
@@ -347,9 +333,8 @@ getTruePresForEachSpp =
             #  space in it.  Not sure what maxent thinks of that form.
             #-----------------------------------------------------------------------
 
-        species = rep (sppName, numTruePresForEachSpp [sppID])
-        truePresTable =
-            data.frame (cbind (species, truePresenceLocsXY))
+        species = rep (sppName, numTruePresForCurSpp)
+        truePresTable = data.frame (cbind (species, truePresenceLocsXY))
         names (truePresTable) = c('species', 'longitude', 'latitude')
 
             #--------------------------------------------------------------------
@@ -378,7 +363,6 @@ getTruePresForEachSpp =
                    file = truePresFilename,    #  file = sampled.presences.filename,
                    row.names = FALSE,
                    quote=FALSE)
-
 
         allSppTruePresLocsXY [[sppID]] = truePresenceLocsXY
 

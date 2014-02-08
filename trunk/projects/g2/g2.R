@@ -152,7 +152,8 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'w.R'))
 
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvFiles.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getTruePresForEachSpp.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getSampledPresForEachSpp.R'))
 
     #-------------------------------------------------------------------------
     #  Do initializations that are more than just retrieving option settings 
@@ -188,23 +189,50 @@ getEnvFiles (envLayersSrcDir, envLayersWorkingDirWithSlash)
         #  AS A SUBSET, PLUS IT KEEPS ALL USED DATA IN ONE PLACE FOR LATER 
         #  AUDITING IF THERE IS A PROBLEM.
 
-getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrcDir, 
-                                    numImgRows, numImgCols, 
-                                    sppGenOutputDirWithSlash, 
-                                    asciiImgFileNameRoots, scaleInputs, 
-                                    imgFileType, numNonEnvDataCols, 
-                                    clusterFilePath, clusterFileNameStem, 
-                                    arrayIdxBase
-                                    )
+numSpp = getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrcDir, 
+                                             numImgRows, numImgCols, 
+                                             sppGenOutputDirWithSlash, 
+                                             asciiImgFileNameRoots, scaleInputs, 
+                                             imgFileType, numNonEnvDataCols, 
+                                             clusterFilePath, clusterFileNameStem, 
+                                             arrayIdxBase
+                                             )
 
     #----------------------------
 	#  Get true presences.
     #  Taken from guppy/genTruePresencesPyper.R.
 	#----------------------------
 
+        #---------------------------------------------------------------
+        #  Determine the number of true presences for each species.
+        #  At the moment, you can specify the number of true presences
+        #  drawn for each species either by specifying a count for each
+        #  species to be created or by specifying the bounds of a
+        #  random fraction for each species.  The number of true
+        #  presences will then be that fraction multiplied times the
+        #  total number of pixels in the map.
+        #---------------------------------------------------------------
+
+if (useRandomNumTruePresForEachSpp)
+    {
+    numTruePresForEachSpp = 
+        getNumTruePresForEachSpp_usingRandom (numSpp,
+                                              minTruePresFracOfLandscape,
+                                              maxTruePresFracOfLandscape,
+                                              numImgCells)
+    
+    } else
+    {
+    numTruePresForEachSpp = 
+        getNumTruePresForEachSpp_usingSpecifiedCts (numTruePresForEachSpp_string, 
+                                                    numSpp)
+    }
+
 allSppTruePresLocsXY = getTruePresForEachSpp (numTruePresForEachSpp,
                                               trueProbDistFilePrefix,
                                               fullSppSamplesDirWithSlash,
+                                              numImgRows,
+                                              numImgCols, 
                                               llcorner, 
                                               cellsize, 
                                               nodataValue
@@ -215,12 +243,11 @@ allSppTruePresLocsXY = getTruePresForEachSpp (numTruePresForEachSpp,
     #  Taken from guppy/genTruePresencesPyper.R.
     #--------------------------
 
-# createSampledPresences (numTruePresForEachSpp,
-#                         allSppTruePresLocsXY,
-#                         PAR.use.all.samples,
-#                         fullSppSamplesDirWithSlash    #cur.full.maxent.samples.dir.name,
-#                         combinedPresSamplesFileName
-#                         )
+getSampledPresForEachSpp (numTruePresForEachSpp,
+                          allSppTruePresLocsXY,
+                          PARuseAllSamples,
+                          fullSppSamplesDirWithSlash    #  cur.full.maxent.samples.dir.name,
+                          )
 
 	#-----------------------------
 	#  Get all of the presences.    
