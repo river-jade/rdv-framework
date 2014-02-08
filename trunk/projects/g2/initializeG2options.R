@@ -86,15 +86,14 @@ gaussianSuitabilitySmoothingSD   = 1
 scaleInputs           = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT in original code.
 dataSrc               = "mattData"    #  Should become a guppy option...
 
-sppGenOutputDirWithSlash      = paste0 (curFullTzarExpOutputDirRootWithSlash, 
-                                        "SppGenOutputs", dir.slash)
 #envLayersWorkingDirWithSlash = [has already been set above]
 numSpp                        = NA
 randomSeed                    = 17
 
     #  ***  Need to derive this from the images rather than set it.  ***
-numImgRows = 512
-numImgCols = 512
+numImgRows  = 512
+numImgCols  = 512
+numImgCells = numImgRows * numImgCols
 
 #  Matt's suggested weights are recorded at end of following lines...
 #  Not using those weights yet.
@@ -139,7 +138,78 @@ trueProbDistSppFilenameBase = "true.prob.dist.spp."
 
 #===============================================================================
 
+sppGenOutputDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash, 
+                                   "SppGenOutputs", dir.slash)
+
+if (file.exists (sppGenOutputDirWithSlash))
+    {
+    errMsg = paste0 ("\n\n*** In initializeG2options.R: ", 
+                     "\n*** sppGenOutputDirWithSlash = \n***     ", 
+                     sppGenOutputDirWithSlash, 
+                     "\n*** already exists.  ", 
+                     "\n*** Need to change sppGenOutputDirWithSlash in ", 
+                     "initializeG2options.R\n\n")
+    stop (errMsg)
+    
+    } else
+    {
+    cat ("\n\nsppGenOutputDirWithSlash DOES NOT exist.  ", 
+         "Creating it.\n\n", sep='')  
+    dir.create (sppGenOutputDirWithSlash, 
+                showWarnings = TRUE, 
+                recursive = TRUE, #  Not sure about this, but it's convenient.
+                mode = "0777")    #  Not sure if this is what we want for mode.        
+    }
+
 #===============================================================================
+
+#  This used to be called curFullMaxentSamplesDirName.
+#  I'm trying to get rid of references to maxent in cases where things 
+#  are not specific just to maxent.  
+#
+#  From Guppy.py initializations and yaml
+# self.curFullMaxentSamplesDirName = \
+# PARcurrentRunDirectory + self.variables['PAR.maxent.samples.base.name']
+# PAR.maxent.samples.base.name:  "MaxentSamples"
+
+fullSppSamplesDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash, 
+                                     "MaxentSamples", dir.slash)
+
+if (file.exists (fullSppSamplesDirWithSlash))
+    {
+    errMsg = paste0 ("\n\n*** fullSppSamplesDirWithSlash = \n***     ", 
+                     fullSppSamplesDirWithSlash, 
+                     "\n*** already exists.  ", 
+                     "\n*** Need to change fullSppSamplesDirWithSlash in ", 
+                     "initializeG2options.R\n\n")
+    stop (errMsg)
+    
+    } else
+    {
+    cat ("\n\nfullSppSamplesDirWithSlash DOES NOT exist.  ", 
+         "Creating it.\n\n", sep='')  
+    dir.create (fullSppSamplesDirWithSlash, 
+                showWarnings = TRUE, 
+                recursive = TRUE, #  Not sure about this, but it's convenient.
+                mode = "0777")    #  Not sure if this is what we want for mode.        
+    }
+
+
+#self.trueProbDistFilePrefix = self.variables["PAR.trueProbDistFilePrefix"]
+#PAR.trueProbDistFilePrefix: "true.prob.dist"
+trueProbDistFilePrefix = "true.prob.dist"
+
+
+#===============================================================================
+
+useRandomNumTruePresForEachSpp = TRUE    #  variables$PAR.use.random.num.true.presences
+
+numSppToCreate = 28    #  variables$PAR.num.spp.to.create
+
+minTruePresFracOfLandscape = 0.0002    #  0.002    #  variables$PAR.min.true.presence.fraction.of.landscape
+maxTruePresFracOfLandscape = 0.002     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
+
+numTruePresForEachSpp_string = "50,100,75"    #  variables$PAR.num.true.presences
 
 #===============================================================================
 

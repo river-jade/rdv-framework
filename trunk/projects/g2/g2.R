@@ -152,6 +152,7 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'w.R'))
 
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvFiles.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
 
     #-------------------------------------------------------------------------
     #  Do initializations that are more than just retrieving option settings 
@@ -197,18 +198,39 @@ getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrc
                                     )
 
     #----------------------------
-	#  Generate true presences.
+	#  Get true presences.
+    #  Taken from guppy/genTruePresencesPyper.R.
 	#----------------------------
 
+allSppTruePresLocsXY = getTruePresForEachSpp (numTruePresForEachSpp,
+                                              trueProbDistFilePrefix,
+                                              fullSppSamplesDirWithSlash,
+                                              llcorner, 
+                                              cellsize, 
+                                              nodataValue
+                                              )
 
-	#-------------------------------
+	#--------------------------
 	#  Get sampled presences.
-	#-------------------------------
+    #  Taken from guppy/genTruePresencesPyper.R.
+    #--------------------------
 
+# createSampledPresences (numTruePresForEachSpp,
+#                         allSppTruePresLocsXY,
+#                         PAR.use.all.samples,
+#                         fullSppSamplesDirWithSlash    #cur.full.maxent.samples.dir.name,
+#                         combinedPresSamplesFileName
+#                         )
 
-	#----------------------------------
-	#  Get all of the presences.
-	#----------------------------------
+	#-----------------------------
+	#  Get all of the presences.    
+    #
+    #  IS THIS NECESSARY?  
+    #  ALREADY DONE BY NOW?
+    #  OR, IS THIS A MAXENT-SPECIFIC THING OF FORMATTING INTO A FILE THAT 
+    #  MAXENT EXPECTS BUT OTHER ALGORITHMS MAY NOT?
+    #  IF SO, THEN IT SHOULD PROBABLY BE WRAPPED INTO THE run maxent CODE.
+	#-----------------------------
 
 
 	#----------------------------------------------------------------
@@ -241,6 +263,68 @@ getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrc
 	#----------------------------------------------------------------
 	#  Set up input files and paths to run zonation.
 	#----------------------------------------------------------------
+
+
+    #----------------------------------------------------------------
+    #  Act on Zonation results 
+    #
+    #  (e.g., offset or randomly subset (or add to) the zonation 
+    #  choices to imitate drawing an inclusion or exclusion around 
+    #  the premier's brother's property regardless of its zonation 
+    #  rank - this is essentially a CorruptionError model that might 
+    #  have a lot of significance in 3rd world countries and be 
+    #  denied in 1st world but still exist).
+    #----------------------------------------------------------------
+
+
+    #----------------------------------------------------------------
+    #  Evaluate final action result.
+    #
+    #  Assign credit to each element of the chain in terms of 
+    #  their contribution to Ultimate Measurement Error.
+    #----------------------------------------------------------------
+
+
+    #----------------------------------------------------------------
+    #
+    #  Job spawning
+    #
+    #  Things like on-line active learning could examine results and 
+    #  generate new job requests when trying to learn to predict 
+    #  something.
+    #
+    #  Ensemble algorithms might also spawn jobs to build their 
+    #  ensemble predictor.
+    #
+    #  Are there any other kinds of activities that might do spawning?
+    #
+    #----------------------------------------------------------------
+
+    #----------------------------------------------------------------
+    #
+    #  Halting (monitors)
+    #
+    #  Another function that might be necessary would be something 
+    #  that tells when to stop spawning things or stop looking for 
+    #  things.  Not sure if this would be part of the spawning code 
+    #  or something separate.  Maybe both could exist.  For example, 
+    #  a non-spawning job could be running solely to monitor and make 
+    #  sure that some $ or time or disk quota is not exceeded or that 
+    #  some point of diminishing returns has not been passed or 
+    #  it could be looking for convergence or the point in training 
+    #  curve that tells you to stop training.
+    #
+    #----------------------------------------------------------------
+
+    #----------------------------------------------------------------
+    #
+    #  Anytime algorithms (similar to or superclass of halting monitors?)
+    #
+    #  - Online learning
+    #   
+    #  - Online harvesting and incremental aggregation of results 
+    #
+    #----------------------------------------------------------------
 
 
 #===============================================================================
