@@ -58,7 +58,8 @@ buildPresSample =
 getSampledPresForEachSpp = function (numTruePresForEachSpp,
                                      allSppTruePresLocsXY,
                                      PARuseAllSamples,
-                                     fullSppSamplesDirWithSlash    #  cur.full.maxent.samples.dir.name,
+                                     fullSppSamplesDirWithSlash,    #  cur.full.maxent.samples.dir.name,
+                                     combinedSampledPresFilename
                                      )
     {
     numSppToCreate = length (numTruePresForEachSpp)
@@ -195,8 +196,9 @@ getSampledPresForEachSpp = function (numTruePresForEachSpp,
     #  of it here so that it can't get set two different ways
     #  by accident.
     #  BTL - 2013.08.13
-    combinedSampledPresFilename = paste0 (fullSppSamplesDirWithSlash,    #  cur.full.maxent.samples.dir.name, "/",
-                                          "spp.sampledPres.combined", ".csv")
+#     combinedSampledPresFilename = paste0 (fullSppSamplesDirWithSlash,    #  cur.full.maxent.samples.dir.name, "/",
+#                                           "spp.sampledPres.combined", ".csv")
+    
     write.csv (combinedSppSampledPresTable,
                file = combinedSampledPresFilename,
                row.names = FALSE,
