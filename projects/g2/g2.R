@@ -145,6 +145,7 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeG2options.R'))
 
 source (paste0 (g2ProjectRsrcDirWithSlash, 'read.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'w.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'g2Utilities.R'))
 
     #---------------------
     #  Define functions.
@@ -152,8 +153,10 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'w.R'))
 
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvFiles.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'getNumTruePresForEachSpp.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getTruePresForEachSpp.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getSampledPresForEachSpp.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'runMaxentCmd.R'))
 
     #-------------------------------------------------------------------------
     #  Do initializations that are more than just retrieving option settings 
@@ -228,9 +231,15 @@ if (useRandomNumTruePresForEachSpp)
                                                     numSpp)
     }
 
+    #---------------------------------------------
+    #  Get the true presences for each species.
+    #  Taken from guppy/genTruePresencesPyper.R.
+    #---------------------------------------------
+
 allSppTruePresLocsXY = getTruePresForEachSpp (numTruePresForEachSpp,
                                               trueProbDistFilePrefix,
                                               fullSppSamplesDirWithSlash,
+                                              combinedTruePresFilename, 
                                               numImgRows,
                                               numImgCols, 
                                               llcorner, 
@@ -238,38 +247,59 @@ allSppTruePresLocsXY = getTruePresForEachSpp (numTruePresForEachSpp,
                                               nodataValue
                                               )
 
-	#--------------------------
-	#  Get sampled presences.
+    #-----------------------------------------------
+    #  Get the sampled presences for each species.
     #  Taken from guppy/genTruePresencesPyper.R.
-    #--------------------------
+    #-----------------------------------------------
 
 getSampledPresForEachSpp (numTruePresForEachSpp,
                           allSppTruePresLocsXY,
                           PARuseAllSamples,
-                          fullSppSamplesDirWithSlash    #  cur.full.maxent.samples.dir.name,
+                          fullSppSamplesDirWithSlash,    #  cur.full.maxent.samples.dir.name,
+                          combinedSampledPresFilename
                           )
 
-	#-----------------------------
-	#  Get all of the presences.    
-    #
-    #  IS THIS NECESSARY?  
-    #  ALREADY DONE BY NOW?
-    #  OR, IS THIS A MAXENT-SPECIFIC THING OF FORMATTING INTO A FILE THAT 
-    #  MAXENT EXPECTS BUT OTHER ALGORITHMS MAY NOT?
-    #  IF SO, THEN IT SHOULD PROBABLY BE WRAPPED INTO THE run maxent CODE.
-	#-----------------------------
+    #----------------------------------------------------------------
+    #  Run maxent to generate a predicted relative probability map.
+    #----------------------------------------------------------------
 
+cat ("\n\n+++++\tJust before", "runMaxentCmd", "\n\n")
 
-	#----------------------------------------------------------------
-	#  Run maxent to generate a predicted relative probability map.
-	#----------------------------------------------------------------
+runMaxentCmd (maxentSamplesFileName,
+              fullMaxentOutputDirWithSlash,    #  maxentOutputDir,
+              doMaxentReplicates,
+              maxentReplicateType,
+              numMaxentReplicates,
+              maxentFullPathName, 
+              curFullMaxentEnvLayersDirName, 
+              numProcessors,
+              verboseMaxent
+              )
 
+cat ("\n\n+++++\tJust after", "runMaxentCmd", "\n\n")
 
-	#----------------------------------------------------------------
-	#  Evaluate the results of maxent by comparing its output maps
-	#  to the true relative probability maps.
-	#----------------------------------------------------------------
+    #----------------------------------------------------------------
+    #  Evaluate the results of maxent by comparing its output maps
+    #  to the true relative probability maps.
+    #----------------------------------------------------------------
 
+cat ("\n\n+++++\tBefore", "evaluateMaxentResults", "\n")
+
+evaluateMaxentResults (numSpp, 
+                       doMaxentReplicates,
+                       trueProbDistFilePrefix, 
+                       showRawErrorInDist, 
+                       showAbsErrorInDist, 
+                       showPercentErrorInDist, 
+                       showAbsPercentErrorInDist, 
+                       showTruncatedPercentErrImg, 
+                       showHeatmap, 
+                       fullMaxentOutputDirWithSlash, 
+                       sppGenOutputDirWithSlash, 
+                       fullAnalysisDirWithSlash, 
+                       useOldMaxentOutputForInput, 
+                       writeToFile, 
+                       useDrawImage)
 
 	#----------------------------------------------------------------
 	#  Set up input files and paths to run zonation.
