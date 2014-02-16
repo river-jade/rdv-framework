@@ -4,6 +4,9 @@
 
 # source( 'g2.R' )
 
+#  To run under tzar:
+#      java -jar tzar.jar execlocalruns ./projects/g2/
+
 #===============================================================================
 
 #  History:
@@ -26,18 +29,8 @@
 
 #      cd /Users/bill/D/rdv-framework
 
-#          All of this goes on one line; I've written it two ways, all on one
-#          and then again, broken broken into separate lines for clarity.
-#          One thing that I don't understand though, why is --rscript=run.maxent.R
-#          inside the commandlineflags argument instead of on its own like all the
-#          other -- flags.
-#  java -jar tzar.jar execlocalruns --runnerclass=au.edu.rmit.tzar.runners.RRunner --projectspec=projects/g2/projectparams.yaml --localcodepath=. --commandlineflags="-p g2 --rscript=runMaxent.R"
-#  java -jar tzar.jar execlocalruns
-#      --runnerclass=au.edu.rmit.tzar.runners.RRunner
-#      --projectspec=projects/g2/projectparams.yaml
-#      --localcodepath=.
-#      --commandlineflags="-p g2 --rscript=g2.R"
-
+#      java -jar tzar.jar execlocalruns ./projects/g2/
+    
 #    The only yaml file variables that seem to be referenced in the code here.
 # PAR.current.run.directory = outputFiles$'PAR.current.run.directory'
 # PAR.path.to.maxent = variables$'PAR.path.to.maxent'
@@ -50,28 +43,30 @@
                         #  Conventions
 
 #  get...() functions
-#       A common pattern in here is that some piece of data could 
-#       come from multiple possible sources, e.g., copying from the 
-#       current hard disk or from a url or being generated from a 
-#       sampling or simulation process.  At the highest level, 
-#       I will call those functions get...() rather than load...() 
-#       or generate...(), etc.  Wherever get...() occurs, my 
+#       A common pattern in here is that some piece of data could
+#       come from multiple possible sources, e.g., copying from the
+#       current hard disk or from a url or being generated from a
+#       sampling or simulation process.  At the highest level,
+#       I will call those functions get...() rather than load...()
+#       or generate...(), etc.  Wherever get...() occurs, my
 #       intent is to have it eventually be a generic routine.
 
 #  SrcDir vs. WorkingDir
-#       Trying to make names differentiate between the source of information 
-#       before the experiment is run and the working copy of information that 
-#       is copied into the tzar output area as part of the experiment.  
-#       For example, the environmental input layers generally exist in some 
-#       independent data storage location (possibly not even on the same disk) 
-#       and are often selected and then copied into a working area that is part 
-#       the experiment's output area under tzar.  So, envLayersSrcDir 
+#       Trying to make names differentiate between the source of information
+#       before the experiment is run and the working copy of information that
+#       is copied into the tzar output area as part of the experiment.
+#       For example, the environmental input layers generally exist in some
+#       independent data storage location (possibly not even on the same disk)
+#       and are often selected and then copied into a working area that is part
+#       the experiment's output area under tzar.  So, envLayersSrcDir
 #       may get copied into envLayersWorkingDir.
 
 
 #===============================================================================
 
-rm (list = ls())    #  Make sure there are no old variables lying around.
+#  Can't do this under tzar because it erases the parameters list passed in 
+#  from yaml!!
+#rm (list = ls())    #  Make sure there are no old variables lying around.
 
 #===============================================================================
 
@@ -87,7 +82,8 @@ rm (list = ls())    #  Make sure there are no old variables lying around.
 #    function warnings. If warn is one, warnings are printed as they occur.
 #    If warn is two or larger all warnings are turned into errors.
 
-options (warn = 2)    #  This will eventually come from yaml file
+#options (warn = 2)    #  This will eventually come from yaml file
+options (warn = parameters$warningLevel)    #  This will eventually come from yaml file
 #options (warn = variables$PAR.RwarningLevel)
 
 #===============================================================================
@@ -123,27 +119,34 @@ cat ("\nrdvSharedRsrcDir = ", rdvSharedRsrcDir, sep='')
 cat ("\ng2ProjectRsrcDirWithSlash = ", g2ProjectRsrcDirWithSlash, sep='')
 cat ("\n\n")
 
+#  I think that this may already be done by tzar, but I'm not sure 
+#  exactly where it does cd to at the start.  Need to put that in 
+#  the documentation.
+#  Just did a quick check.  Looks like it sets the working directory to 
+#  projects/g2 in this case, which is the directory given on the command 
+#  line for the execlocalruns command.  Not sure what it does when 
+#  running from a repository instead of a local directory.
 setwd (rdvRootDir)    #  Is this still necessary (and correct to do)?
 
 #===============================================================================
 
     #-------------------------------------------------------------
-    #  Need to set option values first, since many functions are 
-    #  likely to make use of them.  
-    #  This will later be taken care of by the yaml file and 
-    #  tzar's RRunner loading them into the list called 
+    #  Need to set option values first, since many functions are
+    #  likely to make use of them.
+    #  This will later be taken care of by the yaml file and
+    #  tzar's RRunner loading them into the list called
     #  "variables".  Until then, I need to set them by hand.
     #-------------------------------------------------------------
 
+source (paste0 (g2ProjectRsrcDirWithSlash, 'read.R'))    #  Required for init...
 source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeG2options.R'))
 
     #-------------------------------------------------------------
-    #  Utility functions for reading and writing that are shared 
-    #  among projects but want to have available locally in case 
+    #  Utility functions for reading and writing that are shared
+    #  among projects but want to have available locally in case
     #  I need to modify them.
     #-------------------------------------------------------------
 
-source (paste0 (g2ProjectRsrcDirWithSlash, 'read.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'w.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'g2Utilities.R'))
 
@@ -157,12 +160,13 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'getNumTruePresForEachSpp.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getTruePresForEachSpp.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getSampledPresForEachSpp.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'runMaxentCmd.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'evaluateMaxentResults.R'))
 
     #-------------------------------------------------------------------------
-    #  Do initializations that are more than just retrieving option settings 
+    #  Do initializations that are more than just retrieving option settings
     #  that are or should be in the yaml file.
-    #  This needs to be done after all of the other sourcing above because 
-    #  some of these actions may assume the existance of some of the 
+    #  This needs to be done after all of the other sourcing above because
+    #  some of these actions may assume the existance of some of the
     #  functions referenced above.
     #-------------------------------------------------------------------------
 
@@ -170,6 +174,17 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeBeyondSettingOptions.R'))
 
 #===============================================================================
 #===============================================================================
+
+#  *******************************  DESIGN NOTE  *******************************
+#  Need to make multiple sub-g2's so that I can run various sub-jobs alone so
+#  that you were constantly regenerating exactly the same maps or other outputs,
+#  e.g.:
+#    - generate species distribution maps for the species library
+#    - run SDM over species drawn from the species library
+#    - run learning algorithm over SDM results to learn to predict
+#      performance
+#    - run evaluation code over SDM results and store in results library
+#  *******************************               *******************************
 
     #--------------------------------
 	#  Get environment layers.
@@ -187,17 +202,25 @@ getEnvFiles (envLayersSrcDir, envLayersWorkingDirWithSlash)
 	#--------------------------------------------
 
         #  BTL - 2014 02 05
-        #  CHANGED ARGUMENT envLayersSrcDir TO BE envLayersWorkingDirWithSlash 
-        #  INSTEAD SINCE THAT SEEMS SAFER WHEN SRC DIR FILES HAVE BEEN SELECTED 
-        #  AS A SUBSET, PLUS IT KEEPS ALL USED DATA IN ONE PLACE FOR LATER 
+        #  CHANGED ARGUMENT envLayersSrcDir TO BE envLayersWorkingDirWithSlash
+        #  INSTEAD SINCE THAT SEEMS SAFER WHEN SRC DIR FILES HAVE BEEN SELECTED
+        #  AS A SUBSET, PLUS IT KEEPS ALL USED DATA IN ONE PLACE FOR LATER
         #  AUDITING IF THERE IS A PROBLEM.
 
-numSpp = getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrcDir, 
-                                             numImgRows, numImgCols, 
-                                             sppGenOutputDirWithSlash, 
-                                             asciiImgFileNameRoots, scaleInputs, 
-                                             imgFileType, numNonEnvDataCols, 
-                                             clusterFilePath, clusterFileNameStem, 
+        #  BTL - 2014 02 16
+        #  ADDED ARGUMENTS FOR ASCII FILE HEADER (corner, noData, cellSize) 
+        #  SINCE I AM NOW DERIVING THE CORRECT VALUES FROM THE ENV LAYERS 
+        #  RATHER THAN USING HARD-CODED VALUES.
+
+numSpp = getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrcDir,
+                                             numImgRows, numImgCols,
+                                             
+                                             ascFileHeaderAsStrVals, 
+                                             
+                                             sppGenOutputDirWithSlash,
+                                             asciiImgFileNameRoots, scaleInputs,
+                                             imgFileType, numNonEnvDataCols,
+                                             clusterFilePath, clusterFileNameStem,
                                              arrayIdxBase
                                              )
 
@@ -216,18 +239,60 @@ numSpp = getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # env
         #  total number of pixels in the map.
         #---------------------------------------------------------------
 
+#  *******************************  DESIGN NOTE  *******************************
+#  Need to replace these kinds of boolean switches with a single
+#  variable indicating the action that can be used in a switch statement.
+#  Otherwise, the yaml file gets cluttered with lots of possibly
+#  conflicting and out of date booleans.
+#  This idea needs to be listed in the design criteria too.
+#  *******************************               *******************************
+
+#  *******************************  DESIGN NOTE  *******************************
+#  QUESTION FOR RIVER:
+#  Is there a way to have options in the yaml file that don't require massive
+#  switch statements in the code yet are not vulnerable to injection attacks?
+#
+#  Nearly everything that I want to do involves subclassing generic functions
+#  to allow reusability of many variations of a small number of basic actions.
+#  If I'm coding things up directly (i.e., without using yaml inputs to
+#  select options), then it's easy to reuse these objects/generics.
+#  However, as soon as I add yaml to the mix, I'm not sure it's possible.
+#  Then again, there are other issues with that too, because each variant of
+#  the generic function will probably have a different set of arguments that
+#  would be hard to encode in yaml too.
+#  Maybe I have to be restricting myself to having a set of basic sub-g2
+#  programs and having specific yaml files that correspond to each of those
+#  sub-g2 files and know exactly which options need to be set.
+#  This might require or work well with some kind of a convention where every
+#  sub-g2 was expected to have a corresponding yaml template with default
+#  values for each option.
+#  The user would then just fill in any values on that template where they
+#  didn't want the defaults.
+#  Could this yaml file also be used as the input for a generic program that
+#  dynamically built a gui for each sub-g2 and then wrote the user's entries
+#  on the gui back to a yaml file for that run?
+#  *******************************               *******************************
+
+#  *******************************  DESIGN NOTE  *******************************
+#  QUESTION FOR RIVER and/or LUCY:
+#  How to build a species distribution map library that had attributes that
+#  could evolve over time (or even just be different for each run or project)
+#  and be efficient for lookup, transmission, and storage both locally and
+#  over the web?
+#  *******************************               *******************************
+
 if (useRandomNumTruePresForEachSpp)
     {
-    numTruePresForEachSpp = 
+    numTruePresForEachSpp =
         getNumTruePresForEachSpp_usingRandom (numSpp,
                                               minTruePresFracOfLandscape,
                                               maxTruePresFracOfLandscape,
                                               numImgCells)
-    
+
     } else
     {
-    numTruePresForEachSpp = 
-        getNumTruePresForEachSpp_usingSpecifiedCts (numTruePresForEachSpp_string, 
+    numTruePresForEachSpp =
+        getNumTruePresForEachSpp_usingSpecifiedCts (numTruePresForEachSpp_string,
                                                     numSpp)
     }
 
@@ -239,11 +304,11 @@ if (useRandomNumTruePresForEachSpp)
 allSppTruePresLocsXY = getTruePresForEachSpp (numTruePresForEachSpp,
                                               trueProbDistFilePrefix,
                                               fullSppSamplesDirWithSlash,
-                                              combinedTruePresFilename, 
+                                              combinedTruePresFilename,
                                               numImgRows,
-                                              numImgCols, 
-                                              llcorner, 
-                                              cellsize, 
+                                              numImgCols,
+                                              llcorner,
+                                              cellsize,
                                               nodataValue
                                               )
 
@@ -270,8 +335,8 @@ runMaxentCmd (maxentSamplesFileName,
               doMaxentReplicates,
               maxentReplicateType,
               numMaxentReplicates,
-              maxentFullPathName, 
-              curFullMaxentEnvLayersDirName, 
+              maxentFullPathName,
+              curFullMaxentEnvLayersDirName,
               numProcessors,
               verboseMaxent
               )
@@ -285,20 +350,20 @@ cat ("\n\n+++++\tJust after", "runMaxentCmd", "\n\n")
 
 cat ("\n\n+++++\tBefore", "evaluateMaxentResults", "\n")
 
-evaluateMaxentResults (numSpp, 
+evaluateMaxentResults (numSpp,
                        doMaxentReplicates,
-                       trueProbDistFilePrefix, 
-                       showRawErrorInDist, 
-                       showAbsErrorInDist, 
-                       showPercentErrorInDist, 
-                       showAbsPercentErrorInDist, 
-                       showTruncatedPercentErrImg, 
-                       showHeatmap, 
-                       fullMaxentOutputDirWithSlash, 
-                       sppGenOutputDirWithSlash, 
-                       fullAnalysisDirWithSlash, 
-                       useOldMaxentOutputForInput, 
-                       writeToFile, 
+                       trueProbDistFilePrefix,
+                       showRawErrorInDist,
+                       showAbsErrorInDist,
+                       showPercentErrorInDist,
+                       showAbsPercentErrorInDist,
+                       showTruncatedPercentErrImg,
+                       showHeatmap,
+                       fullMaxentOutputDirWithSlash,
+                       sppGenOutputDirWithSlash,
+                       fullAnalysisDirWithSlash,
+                       useOldMaxentOutputForInput,
+                       writeToFile,
                        useDrawImage)
 
 	#----------------------------------------------------------------
@@ -323,13 +388,13 @@ evaluateMaxentResults (numSpp,
 
 
     #----------------------------------------------------------------
-    #  Act on Zonation results 
+    #  Act on Zonation results
     #
-    #  (e.g., offset or randomly subset (or add to) the zonation 
-    #  choices to imitate drawing an inclusion or exclusion around 
-    #  the premier's brother's property regardless of its zonation 
-    #  rank - this is essentially a CorruptionError model that might 
-    #  have a lot of significance in 3rd world countries and be 
+    #  (e.g., offset or randomly subset (or add to) the zonation
+    #  choices to imitate drawing an inclusion or exclusion around
+    #  the premier's brother's property regardless of its zonation
+    #  rank - this is essentially a CorruptionError model that might
+    #  have a lot of significance in 3rd world countries and be
     #  denied in 1st world but still exist).
     #----------------------------------------------------------------
 
@@ -337,7 +402,7 @@ evaluateMaxentResults (numSpp,
     #----------------------------------------------------------------
     #  Evaluate final action result.
     #
-    #  Assign credit to each element of the chain in terms of 
+    #  Assign credit to each element of the chain in terms of
     #  their contribution to Ultimate Measurement Error.
     #----------------------------------------------------------------
 
@@ -346,11 +411,11 @@ evaluateMaxentResults (numSpp,
     #
     #  Job spawning
     #
-    #  Things like on-line active learning could examine results and 
-    #  generate new job requests when trying to learn to predict 
+    #  Things like on-line active learning could examine results and
+    #  generate new job requests when trying to learn to predict
     #  something.
     #
-    #  Ensemble algorithms might also spawn jobs to build their 
+    #  Ensemble algorithms might also spawn jobs to build their
     #  ensemble predictor.
     #
     #  Are there any other kinds of activities that might do spawning?
@@ -361,14 +426,14 @@ evaluateMaxentResults (numSpp,
     #
     #  Halting (monitors)
     #
-    #  Another function that might be necessary would be something 
-    #  that tells when to stop spawning things or stop looking for 
-    #  things.  Not sure if this would be part of the spawning code 
-    #  or something separate.  Maybe both could exist.  For example, 
-    #  a non-spawning job could be running solely to monitor and make 
-    #  sure that some $ or time or disk quota is not exceeded or that 
-    #  some point of diminishing returns has not been passed or 
-    #  it could be looking for convergence or the point in training 
+    #  Another function that might be necessary would be something
+    #  that tells when to stop spawning things or stop looking for
+    #  things.  Not sure if this would be part of the spawning code
+    #  or something separate.  Maybe both could exist.  For example,
+    #  a non-spawning job could be running solely to monitor and make
+    #  sure that some $ or time or disk quota is not exceeded or that
+    #  some point of diminishing returns has not been passed or
+    #  it could be looking for convergence or the point in training
     #  curve that tells you to stop training.
     #
     #----------------------------------------------------------------
@@ -378,8 +443,8 @@ evaluateMaxentResults (numSpp,
     #  Anytime algorithms (similar to or superclass of halting monitors?)
     #
     #  - Online learning
-    #   
-    #  - Online harvesting and incremental aggregation of results 
+    #
+    #  - Online harvesting and incremental aggregation of results
     #
     #----------------------------------------------------------------
 

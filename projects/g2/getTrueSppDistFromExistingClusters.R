@@ -33,7 +33,11 @@ distMeasure           = sumSquaredDist
 #-------------------------------------------------------------------------------
 
 getTrueSppDistFromExistingClusters = 
-    function (envLayersWorkingDirWithSlash, numImgRows, numImgCols, 
+    function (envLayersWorkingDirWithSlash, 
+              numImgRows, numImgCols, 
+              
+              ascFileHeaderAsStrVals, 
+              
               sppGenOutputDirWithSlash, 
               asciiImgFileNameRoots, scaleInputs, 
               imgFileType, numNonEnvDataCols, 
@@ -258,15 +262,22 @@ getTrueSppDistFromExistingClusters =
 #INSTEAD OF THESE HARD-CODED VALUES.  NEED TO GET THE CORRECT VALUES WHEN 
 #THE ENV LAYERS ARE READ IN OR WHEN THE CLUSTERS ARE READ IN.  ALL SHOULD 
 #BE THE SAME.
-        
+
         writeClusterSuitabilityFile (curSuitabilityImg, 
                                      sppClusterDistanceMapsDir, 
                                      curClusterTableIndex, 
                                      numImgRows, numImgCols,
-                                     xllcorner = 2618380.652817,
-                                     yllcorner = 2529528.47684,
-                                     no.data.value = -9999,
-                                     cellsize = 75, 
+                                     
+                                     ascFileHeaderAsStrVals, 
+                                     
+#                                      xllcorner = 2618380.652817,
+#                                      yllcorner = 2529528.47684,
+#                                      no.data.value = -9999,
+#                                      cellsize = 75, 
+#                                      xllcorner,
+#                                      yllcorner,
+#                                      no.data.value,
+#                                      cellsize, 
                                      trueProbDistSppFilenameBase)
         
         if (FALSE)

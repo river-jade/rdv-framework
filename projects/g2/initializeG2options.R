@@ -8,53 +8,61 @@
 
 #  2014 02 01 - BTL - Created.
 
+#  2014 02 16 - BTL - Converting to use yaml file variables from tzar.
+
 #===============================================================================
 
 #  Most (if not all) of these will come from the yaml file eventually...
 
 #===============================================================================
 
-tzarOutputdataRootWithSlash = "/Users/Bill/tzar/outputdata/g2/default_runset/"
-dir.slash = "/"
-curExpOutputDirName = "401_Scen_1"
-
-
-createFullTzarExpOutputDirRoot = function (curExpOutputDirName, 
-                                           tzarOutputdataRootWithSlash, 
-                                           dir.slash = "/")
-    {
-    curFullTzarExpOutputDirRootWithSlash = 
-        paste0 (tzarOutputdataRootWithSlash, 
-                curExpOutputDirName, dir.slash)
-    
-    cat ("\n\ncurFullTzarExpOutputDirRootWithSlash = ", 
-         curFullTzarExpOutputDirRootWithSlash, "\n\n", sep='')
-    
-    if (file.exists (curFullTzarExpOutputDirRootWithSlash))
-        {
-        errMsg = paste0 ("\n\n*** curFullTzarExpOutputDirRootWithSlash = \n***     ", 
-                         curFullTzarExpOutputDirRootWithSlash, 
-                         "\n*** already exists.  ", 
-                         "\n*** Need to change curExpOutputDirName in ", 
-                         "initializeG2options.R\n\n")
-        stop (errMsg)
-        
-        } else
-        {
-        cat ("\n\ncurFullTzarExpOutputDirRootWithSlash DOES NOT exist.  ", 
-             "Creating it.\n\n", sep='')  
-        dir.create (curFullTzarExpOutputDirRootWithSlash, 
-                    showWarnings = TRUE, 
-                    recursive = TRUE, #  Not sure about this, but it's convenient.
-                    mode = "0777")    #  Not sure if this is what we want for mode.        
-        }
-    return (curFullTzarExpOutputDirRootWithSlash)
-    }
+# tzarOutputdataRootWithSlash = "/Users/Bill/tzar/outputdata/g2/default_runset/"
+# ##dir.slash = "/"    #  This is already dealt with at start of g2 
+#                      #  in an OS-specific way.
+# #curExpOutputDirName = "401_Scen_1"
+# 
+# createFullTzarExpOutputDirRoot = function (curExpOutputDirName, 
+#                                            tzarOutputdataRootWithSlash, 
+#                                            dir.slash = "/")
+#     {
+#     curFullTzarExpOutputDirRootWithSlash = 
+#         paste0 (tzarOutputdataRootWithSlash, 
+#                 curExpOutputDirName, dir.slash)
+#     
+#     cat ("\n\ncurFullTzarExpOutputDirRootWithSlash = ", 
+#          curFullTzarExpOutputDirRootWithSlash, "\n\n", sep='')
+#     
+#     if (file.exists (curFullTzarExpOutputDirRootWithSlash))
+#         {
+#         errMsg = paste0 ("\n\n*** curFullTzarExpOutputDirRootWithSlash = \n***     ", 
+#                          curFullTzarExpOutputDirRootWithSlash, 
+#                          "\n*** already exists.  ", 
+#                          "\n*** Need to change curExpOutputDirName in ", 
+#                          "initializeG2options.R\n\n")
+#         stop (errMsg)
+#         
+#         } else
+#         {
+#         cat ("\n\ncurFullTzarExpOutputDirRootWithSlash DOES NOT exist.  ", 
+#              "Creating it.\n\n", sep='')  
+#         dir.create (curFullTzarExpOutputDirRootWithSlash, 
+#                     showWarnings = TRUE, 
+#                     recursive = TRUE, #  Not sure about this, but it's convenient.
+#                     mode = "0777")    #  Not sure if this is what we want for mode.        
+#         }
+#     return (curFullTzarExpOutputDirRootWithSlash)
+#     }
+# 
+# curFullTzarExpOutputDirRootWithSlash = 
+#     createFullTzarExpOutputDirRoot (curExpOutputDirName, 
+#                                     tzarOutputdataRootWithSlash, dir.slash)
 
 curFullTzarExpOutputDirRootWithSlash = 
-    createFullTzarExpOutputDirRoot (curExpOutputDirName, 
-                                    tzarOutputdataRootWithSlash, dir.slash)
-
+    parameters$fullTzarExpOutputDirRootWithSlash
+            
+cat ("\n\ncurFullTzarExpOutputDirRootWithSlash = ", 
+     curFullTzarExpOutputDirRootWithSlash, "\n\n", sep='')
+    
 #===============================================================================
 
 #  For getEnvLayers()
@@ -63,15 +71,25 @@ curFullTzarExpOutputDirRootWithSlash =
     #  Trying to make names differentiate between the source of information 
     #  before the experiment is run and the working copy of information that 
     #  is copied into the tzar output area as part of the experiment.
-envLayersSrcDir          = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
+#envLayersSrcDir          = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
+envLayersSrcDir = parameters$envLayersSrcDir
+
     #  This used to be called curFullMaxentEnvLayersDirName.
     #  I'm trying to get rid of references to maxent in cases where things 
     #  are not specific just to maxent.  
     #
-#envLayersWorkingDir = "/Users/Bill/tzar/outputdata/g2/default_runset/400_Scen_1/InputEnvLayers"
-envLayersWorkingDirName = "InputEnvLayers"
+##envLayersWorkingDir = "/Users/Bill/tzar/outputdata/g2/default_runset/400_Scen_1/InputEnvLayers"
+#envLayersWorkingDirName = "InputEnvLayers"
+envLayersWorkingDirName = parameters$envLayersWorkingDirName
+
+cat ("\n\nenvLayersWorkingDirName = '", 
+     envLayersWorkingDirName, "'\n\n", sep='')
+
 envLayersWorkingDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash, 
                                        envLayersWorkingDirName, dir.slash)
+
+cat ("\n\nenvLayersWorkingDirWithSlash = '", 
+     envLayersWorkingDirWithSlash, "'\n\n", sep='')
 
 #===============================================================================
 
@@ -93,34 +111,114 @@ numSpp                        = NA
 #  self.randomSeed = self.variables['PAR.random.seed']
 randomSeed                    = 17
 
-    #  ***  Need to derive this from the images rather than set it.  ***
-numImgRows  = 512
-numImgCols  = 512
-numImgCells = numImgRows * numImgCols
-
 #  Matt's suggested weights are recorded at end of following lines...
 #  Not using those weights yet.
-asciiImgFileNameRoots = c("aniso_heat",      #  0-1
-                          "evap_jan",  #  0.5
-                          "evap_jul",  #  0.5
-                          "insolation",      #  0-1
-                          "max_temp",  #  0.5
-                          "min_temp",  #  0.5
-                          "modis_evi",  #  0.5
-                          "modis_mir",  #  0.5
-                          "ndmi",  #  0.5
-                          "pottassium",      #  0-1
-                          "raindays_jan",  #  0.5
-                          "raindays_jul",  #  0.5
-                          "rainfall_jan",  #  0.5
-                          "rainfall_jul",  #  0.5
-                          "thorium",      #  0-1
-                          "twi_topocrop",      #  0-1
-                          "vert_major",      #  0-1
-                          "vert_minor",      #  0-1
-                          "vert_saline",      #  0-1
-                          "vis_sky"      #  0-1
-                        )
+asciiImgFileNameRoots = parameters$asciiImgFileNameRoots
+# asciiImgFileNameRoots = c("aniso_heat",      #  0-1
+#                           "evap_jan",  #  0.5
+#                           "evap_jul",  #  0.5
+#                           "insolation",      #  0-1
+#                           "max_temp",  #  0.5
+#                           "min_temp",  #  0.5
+#                           "modis_evi",  #  0.5
+#                           "modis_mir",  #  0.5
+#                           "ndmi",  #  0.5
+#                           "pottassium",      #  0-1
+#                           "raindays_jan",  #  0.5
+#                           "raindays_jul",  #  0.5
+#                           "rainfall_jan",  #  0.5
+#                           "rainfall_jul",  #  0.5
+#                           "thorium",      #  0-1
+#                           "twi_topocrop",      #  0-1
+#                           "vert_major",      #  0-1
+#                           "vert_minor",      #  0-1
+#                           "vert_saline",      #  0-1
+#                           "vis_sky"      #  0-1
+#                         )
+
+cat ("\n\nasciiImgFileNameRoots = ")
+print (asciiImgFileNameRoots)
+cat ("\n\n")
+
+envLayerWeights = parameters$envLayerWeights
+cat ("\n\nenvLayerWeights = \n")
+print (envLayerWeights)
+cat ("\n\nenvLayerWeights[[2]] = \n")
+print (envLayerWeights[[2]])
+cat ("\n\n")
+
+    #--------------------------------------------------------------------
+    #  Get layer header information.
+    #
+    #  SAVE BOTH STRING AND NUMERIC VERSIONS OF ASCII FILE HEADER 
+    #  SO THAT YOU CAN WRITE OUT THE LLCORNER VALUES WITH ALL THE 
+    #  DECIMAL PLACES THAT WERE ORIGINALLY THERE BUT GET LOST WHEN 
+    #  TRYING TO WRITE THE FORMATTED NUMBER OUT.  THE STRING IS EASIER.
+    #--------------------------------------------------------------------
+
+ascFileHeaderAsNumAndStr = 
+    getAscFileHeaderAsNamedList (paste0 (envLayersSrcDir, 
+                                         asciiImgFileNameRoots [arrayIdxBase], 
+                                         ".asc"))
+
+cat ("\n\nascFileHeaderAsNumAndStr = \n")
+print (ascFileHeaderAsNumAndStr)
+
+ascFileHeaderAsNumVals = ascFileHeaderAsNumAndStr$numValues
+ascFileHeaderAsStrVals = ascFileHeaderAsNumAndStr$strValues
+
+    #  Command for formatting the display of a decimal number taken from:
+    #  http://stackoverflow.com/questions/3443687/formatting-decimal-places-in-r
+cat ("\n\nDisplaying corner values with decimal places:", 
+    "\n    xllCorner as num = ", format (round (ascFileHeaderAsNumVals$xllCorner, 5), nsmall = 5), 
+    "\n    yllCorner as num = ", format (round (ascFileHeaderAsNumVals$yllCorner, 5), nsmall = 5), 
+    "\n    xllCorner as str = ", ascFileHeaderAsStrVals$xllCorner, 
+    "\n    yllCorner as str = ", ascFileHeaderAsStrVals$yllCorner, 
+    "\n\n"
+    )
+
+#  ***  Need to derive this from the images rather than set it.  ***
+numImgRows  = ascFileHeaderAsNumVals$numRows     #  512
+numImgCols  = ascFileHeaderAsNumVals$numCols    #  512
+numImgCells = numImgRows * numImgCols
+
+cat ("\n\nnumImgRows = ", numImgRows)
+cat ("\nnumImgCols = ", numImgCols)
+cat ("\nnumImgCells = ", numImgCells)
+
+#-------------------------------------------------------------------------------
+
+#  Values for setting values in .asc headers.
+#  These were passed in from Pyper before.
+#  Hard coding for now.  
+#  Need to read them from one of the env files or something.
+#  yaml file shows:
+# PAR.ascFileNcols: 512
+# PAR.ascFileNrows: 512
+# PAR.ascFileXllcorner: 2618380.652817
+# PAR.ascFileYllcorner: 2529528.47684
+# PAR.ascFileCellsize: 75.0
+# PAR.ascFileNodataValue: -9999
+
+#llcorner = c (2618380.65282, 2529528.47684)
+llcorner = c (ascFileHeaderAsNumVals$xllCorner, 
+              ascFileHeaderAsNumVals$yllCorner)
+cat ("\n\nllcorner = ", llcorner)
+
+#cellsize = 75.0
+cellsize = ascFileHeaderAsNumVals$cellSize
+cat ("\ncellsize = ", cellsize)
+
+#nodataValue = -9999
+nodataValue = ascFileHeaderAsNumVals$noDataValue
+cat ("\nnodataValue = ", nodataValue)
+
+#-------------------------------------------------------------------------------
+
+cat ("\n\n")
+#stop("\n***  PURPOSELY ENDING TEST PREMATURELY HERE WITH A STOP() CALL.  ***\n\n")
+
+
 imgFileType = "asc"
 numNonEnvDataCols = 0
 
@@ -131,7 +229,10 @@ clusterFileNameStem = "env_clusters"
 
 ##clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
-clusterFilePath = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
+
+#clusterFilePath = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
+clusterFilePath = parameters$clusterFilePath
+
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft/"
 #clusterFileNameWithPath = envClustersFileNameWithPath
 
@@ -219,24 +320,6 @@ minTruePresFracOfLandscape = 0.0002    #  0.002    #  variables$PAR.min.true.pre
 maxTruePresFracOfLandscape = 0.002     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
 
 numTruePresForEachSpp_string = "50,100,75"    #  variables$PAR.num.true.presences
-
-#-------------------------------------------------------------------------------
-
-#  Values for setting values in .asc headers.
-#  These were passed in from Pyper before.
-#  Hard coding for now.  
-#  Need to read them from one of the env files or something.
-#  yaml file shows:
-# PAR.ascFileNcols: 512
-# PAR.ascFileNrows: 512
-# PAR.ascFileXllcorner: 2618380.652817
-# PAR.ascFileYllcorner: 2529528.47684
-# PAR.ascFileCellsize: 75.0
-# PAR.ascFileNodataValue: -9999
-
-llcorner = c (2618380.65282, 2529528.47684)
-cellsize = 75.0
-nodataValue = -9999
 
 #===============================================================================
 
