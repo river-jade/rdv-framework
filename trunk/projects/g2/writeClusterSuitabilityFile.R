@@ -16,10 +16,14 @@ writeClusterSuitabilityFile = function (curSuitabilityImg,
                                         sppClusterDistanceMapsDir, 
                                         curClusterTableIndex, 
                                         numImgRows, numImgCols,
-                                        xllcorner = 2618380.652817,
-                                        yllcorner = 2529528.47684,
-                                        no.data.value = -9999,
-                                        cellsize = 75, 
+                                        
+                                        ascFileHeaderAsStrVals, 
+                                        
+#                                         xllcorner = 2618380.652817,
+#                                         yllcorner = 2529528.47684,
+#                                         no.data.value = -9999,
+#                                         cellsize = 75, 
+
                                         trueProbDistSppFilenameBase = "true.prob.dist.spp.")
     {
 #     filenameRoot = paste (sppClusterDistanceMapsDir, 
@@ -29,13 +33,17 @@ writeClusterSuitabilityFile = function (curSuitabilityImg,
                           trueProbDistSppFilenameBase, 
                           curClusterTableIndex,     #  (curClusterTableIndex - 1), #  python numbering, not R?
                           sep='')
-    write.asc.file (curSuitabilityImg,
-                    filenameRoot,
-                    numImgRows, numImgCols,
-                    xllcorner,
-                    yllcorner,
-                    no.data.value,
-                    cellsize
+#    write.asc.file (curSuitabilityImg,
+                    write.asc.file.usingStrHeaderVals (curSuitabilityImg,
+                                                       filenameRoot,
+                    
+                    ascFileHeaderAsStrVals    #  Replaced individual values - BTL - 2014 02 17                    
+#                     numImgRows, numImgCols,
+#                     xllcorner,
+#                     yllcorner,
+#                     no.data.value,
+#                     cellsize
+
                     ##                    , xllcorner = 1    #  Looks like maxent adds the xy values to xllcorner, yllcorner
                     ##                    , yllcorner = 1    #  so they must be (0,0) instead of (1,1), i.e., the origin
                     ##                    #  is not actually on the map.  It's just off the lower

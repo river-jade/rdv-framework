@@ -229,6 +229,52 @@ write.asc.file <- function (table.to.write, filename.root,
 
 #===============================================================================
 
+#  Changed to allow calling function to specify arguments.
+#  February(?) 2011, BTL
+write.asc.file.usingStrHeaderVals <- function (table.to.write, filename.root,
+                            ascFileHeaderAsStrVals
+                            )
+{
+    
+    ######################
+    #write the arc asci file
+    #example of an asc file header:
+    #ncols	512
+    #nrows	512
+    #xllcorner	0.0000
+    #yllcorner	0.0000
+    #cellsize	40.00000000
+    #NODATA_value	-1
+    
+    
+    ascFileName = paste(filename.root, ".asc", sep = "" )
+    
+    #make the header lines
+    line1 = paste( "ncols         ", ascFileHeaderAsStrVals$numCols, "\n", sep = "" )
+    line2 = paste( "nrows         ", ascFileHeaderAsStrVals$numRows, "\n", sep = "" )
+    
+    otherLines = paste ("xllcorner     ", ascFileHeaderAsStrVals$xllCorner, "\n",
+                        "yllcorner     ", ascFileHeaderAsStrVals$yllCorner, "\n",
+                        "cellsize      ", ascFileHeaderAsStrVals$cellSize, "\n",
+                        "NODATA_value  ", ascFileHeaderAsStrVals$noDataValue, "\n",
+                        sep = "" )
+    
+    
+    cat( line1 , file = ascFileName );
+    cat( line2, file = ascFileName, append = TRUE );
+    cat( otherLines, file = ascFileName, append = TRUE );
+    
+    write.table( table.to.write, file= ascFileName,  append = TRUE,
+                 row.names = FALSE, col.names = FALSE );
+    
+    cat( '\nwrote', ascFileName );
+    
+    #cat ("\n---->  At end of write.asc.file()\n")
+    #browser()
+}
+
+#===============================================================================
+
 write.pgm.txt.files <- function (table.to.write, filename.root,
                             num.table.rows, num.table.cols)
   {

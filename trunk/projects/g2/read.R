@@ -119,8 +119,45 @@ convert.pnm.files.in.dir.to.asc.files <- function (input.dir, output.dir,
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 
-    #  Added July 23, 2011 - BTL.
+    #  Added 2014.02.16 - BTL.
 
+getAscFileHeaderAsNamedList = function (ascFileName)
+    {
+    con  <- file (ascFileName, open = "r")
+    header <- readLines (con, n = 6, warn = FALSE)
+    close (con)
+    
+    pairsList = strsplit (header, " ")
+    print (pairsList)
+    
+    headerNumValues = list()
+    headerStrValues = list()
+    
+#    headerNames = rep ("", 6)
+    for (curLine in 1:6)
+        {
+        headerStrValues [[curLine]] = pairsList [[curLine]][length(pairsList [[curLine]])]
+        headerNumValues [[curLine]] = as.numeric (headerStrValues [[curLine]])
+        
+#        headerNames [curLine] = pairsList [[curLine]][1]
+        }
+
+#    names (headerNumValues) = headerNames
+    headerFieldNames = c ("numCols", "numRows", "xllCorner", "yllCorner", "cellSize", "noDataValue")
+    names (headerNumValues) = headerFieldNames
+    names (headerStrValues) = headerFieldNames
+
+    headerList = list ()
+    headerList$numValues = headerNumValues
+    headerList$strValues = headerStrValues
+
+    return (headerList)
+    }
+
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+    #  Added July 23, 2011 - BTL.
 
 
     #  THIS FUNCTION IS A REAL PAIN BECAUSE IT ASSUMES A VERY SPECIFIC
