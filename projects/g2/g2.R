@@ -88,6 +88,13 @@ options (warn = parameters$warningLevel)    #  This will eventually come from ya
 
 #===============================================================================
 
+#  self.randomSeed = self.variables['PAR.random.seed']
+#randomSeed                    = 17
+randomSeed                    = parameters$randomSeed
+set.seed (randomSeed)
+
+#===============================================================================
+
 # First get the OS so you can deal with OS-specific issues.
 #   for linux this returns linux-gnu
 #   for mac this returns darwin9.8.0
