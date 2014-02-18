@@ -97,19 +97,25 @@ cat ("\n\nenvLayersWorkingDirWithSlash = '",
 #  user options
 #----------------
 
-smoothSuitabilitiesWithGaussian  = TRUE
-gaussianSuitabilitySmoothingMean = 0
-gaussianSuitabilitySmoothingSD   = 1
+#smoothSuitabilitiesWithGaussian  = TRUE
+smoothSuitabilitiesWithGaussian  = parameters$smoothSuitabilitiesWithGaussian
 
-scaleInputs           = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT in original code.
-dataSrc               = "mattData"    #  Should become a guppy option...
+#gaussianSuitabilitySmoothingMean = 0
+gaussianSuitabilitySmoothingMean = parameters$gaussianSuitabilitySmoothingMean
+
+#gaussianSuitabilitySmoothingSD   = 1
+gaussianSuitabilitySmoothingSD   = parameters$gaussianSuitabilitySmoothingSD
+
+#scaleInputs           = TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT in original code.
+scaleInputs           = parameters$scaleInputs  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT in original code.
+
+#dataSrc               = "mattData"    #  Should become a guppy option...
+dataSrc               = parameters$dataSrc    #  Should become a guppy option...
 
 #envLayersWorkingDirWithSlash = [has already been set above]
 
-numSpp                        = NA
-
-#  self.randomSeed = self.variables['PAR.random.seed']
-randomSeed                    = 17
+#numSpp                        = NA
+numSpp                        = parameters$numSpp
 
 #  Matt's suggested weights are recorded at end of following lines...
 #  Not using those weights yet.
@@ -219,13 +225,17 @@ cat ("\n\n")
 #stop("\n***  PURPOSELY ENDING TEST PREMATURELY HERE WITH A STOP() CALL.  ***\n\n")
 
 
-imgFileType = "asc"
-numNonEnvDataCols = 0
+#imgFileType = "asc"
+imgFileType = parameters$imgFileType
+
+#numNonEnvDataCols = 0
+numNonEnvDataCols = parameters$numNonEnvDataCols
 
 #----------
 
 #envClustersFileNameWithPath= "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/env_clusters.asc"
-clusterFileNameStem = "env_clusters"
+#clusterFileNameStem = "env_clusters"
+clusterFileNameStem = parameters$clusterFileNameStem
 
 ##clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
@@ -238,7 +248,8 @@ clusterFilePath = parameters$clusterFilePath
 
 #----------
 
-trueProbDistSppFilenameBase = "true.prob.dist.spp."
+#trueProbDistSppFilenameBase = "true.prob.dist.spp."
+trueProbDistSppFilenameBase = parameters$trueProbDistSppFilenameBase
 
 #===============================================================================
 
@@ -301,7 +312,7 @@ if (file.exists (fullSppSamplesDirWithSlash))
 
 #self.trueProbDistFilePrefix = self.variables["PAR.trueProbDistFilePrefix"]
 #PAR.trueProbDistFilePrefix: "true.prob.dist"
-trueProbDistFilePrefix = "true.prob.dist"
+trueProbDistFilePrefix = parameters$trueProbDistFilePrefix
 
 combinedTruePresFilename = paste0 (fullSppSamplesDirWithSlash,    #  cur.full.maxent.samples.dir.name, "/",
                                    "spp.truePres.combined.csv")
@@ -311,20 +322,27 @@ combinedSampledPresFilename = paste0 (fullSppSamplesDirWithSlash,
 
 #===============================================================================
 
-useRandomNumTruePresForEachSpp = TRUE    #  variables$PAR.use.random.num.true.presences
+#useRandomNumTruePresForEachSpp = TRUE    #  variables$PAR.use.random.num.true.presences
+useRandomNumTruePresForEachSpp = parameters$useRandomNumTruePresForEachSpp    #  variables$PAR.use.random.num.true.presences
 
 #  self.numSppToCreate = self.variables['PAR.num.spp.to.create']
+#numSpp = 28    #  variables$PAR.num.spp.to.create
 numSpp = 28    #  variables$PAR.num.spp.to.create
 
-minTruePresFracOfLandscape = 0.0002    #  0.002    #  variables$PAR.min.true.presence.fraction.of.landscape
-maxTruePresFracOfLandscape = 0.002     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
+#minTruePresFracOfLandscape = 0.0002    #  0.002    #  variables$PAR.min.true.presence.fraction.of.landscape
+minTruePresFracOfLandscape = parameters$minTruePresFracOfLandscape    #  0.002    #  variables$PAR.min.true.presence.fraction.of.landscape
 
-numTruePresForEachSpp_string = "50,100,75"    #  variables$PAR.num.true.presences
+#maxTruePresFracOfLandscape = 0.002     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
+maxTruePresFracOfLandscape = parameters$maxTruePresFracOfLandscape     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
+
+#numTruePresForEachSpp_string = "50,100,75"    #  variables$PAR.num.true.presences
+numTruePresForEachSpp_string = parameters$numTruePresForEachSpp_string    #  variables$PAR.num.true.presences
 
 #===============================================================================
 
 #  self.PARuseAllSamples = self.variables['PAR.use.all.samples']
-PARuseAllSamples = FALSE
+#PARuseAllSamples = FALSE
+PARuseAllSamples = parameters$PARuseAllSamples
 
 #===============================================================================
 
@@ -379,11 +397,16 @@ if (file.exists ( fullMaxentOutputDirWithSlash ))
 # #        PAR.maxent.replicateType: bootstrap
 # PAR.maxent.replicateType: crossvalidate
 
-doMaxentReplicates = FALSE
-maxentReplicateType = "crossvalidate"
-numMaxentReplicates = 5
+#doMaxentReplicates = FALSE
+doMaxentReplicates = parameters$doMaxentReplicates
 
-    #===============================================================================
+#maxentReplicateType = "crossvalidate"
+maxentReplicateType = parameters$maxentReplicateType
+
+#numMaxentReplicates = 5
+numMaxentReplicates = parameters$numMaxentReplicates
+
+#===============================================================================
 
 #---------------------------------------------------
 #  default value for number of processors in the
@@ -395,12 +418,14 @@ numMaxentReplicates = 5
 #---------------------------------------------------
 
 #  self.numProcessors = self.variables['PAR.num.processors']
-numProcessors = 1
+#numProcessors = 1
+numProcessors = parameters$numProcessors
 
 #--------------------
 
 #  self.verboseMaxent = self.variables['PAR.verbose.maxent']
-verboseMaxent = TRUE
+#verboseMaxent = TRUE
+verboseMaxent = parameters$verboseMaxent
 
 #===============================================================================
 
@@ -414,8 +439,9 @@ verboseMaxent = TRUE
 # #            Assuming you're sitting in rdv-framework/projects/guppy/
 # PAR.path.to.maxent:  "lib/maxent"
 
-maxentFullPathName = "/Users/Bill/D/rdv-framework/lib/maxent/maxent.jar"
-    
+#maxentFullPathName = "/Users/Bill/D/rdv-framework/lib/maxent/maxent.jar"
+maxentFullPathName = parameters$maxentFullPathName
+
     #--------------------
 
 # ###        curFullMaxentEnvLayersDirName = PARcurrentRunDirectory + self.variables ['PAR.maxent.env.layers.base.name']
@@ -473,12 +499,23 @@ curFullMaxentEnvLayersDirName = envLayersWorkingDirWithSlash
 # PAR.show.raw.error.in.dist: TRUE
 # PAR.use.all.samples: FALSE
 
-showRawErrorInDist = TRUE
-showAbsErrorInDist =  TRUE
-showPercentErrorInDist =  TRUE
-showAbsPercentErrorInDist =  TRUE
-showTruncatedPercentErrImg =  TRUE
-showHeatmap =  FALSE
+#showRawErrorInDist = TRUE
+showRawErrorInDist = parameters$showRawErrorInDist
+
+#showAbsErrorInDist =  TRUE
+showAbsErrorInDist =  parameters$showAbsErrorInDist
+
+#showPercentErrorInDist =  TRUE
+showPercentErrorInDist =  parameters$showPercentErrorInDist
+
+#showAbsPercentErrorInDist =  TRUE
+showAbsPercentErrorInDist =  parameters$showAbsPercentErrorInDist
+
+#showTruncatedPercentErrImg =  TRUE
+showTruncatedPercentErrImg =  parameters$showTruncatedPercentErrImg
+
+#showHeatmap = FALSE
+showHeatmap = parameters$showHeatmap
 
 #--------------------
 
@@ -519,13 +556,17 @@ if (file.exists ( fullAnalysisDirWithSlash ))
 #  In yaml file:
 #     PAR.use.old.maxent.output.for.input: FALSE
 # ##        PAR.old.maxent.output.dir: "/Users/bill/tzar/outputdata/Guppy_Scen_1_4/MaxentOutputs/"
-useOldMaxentOutputForInput = FALSE
- 
+#useOldMaxentOutputForInput = FALSE
+useOldMaxentOutputForInput = parameters$useOldMaxentOutputForInput
+
 #  In yaml file:
 # PAR.write.to.file: FALSE
 # PAR.use.draw.image: FALSE
-writeToFile = FALSE
-useDrawImage = FALSE
+#writeToFile = FALSE
+writeToFile = parameters$writeToFile
+
+#useDrawImage = FALSE
+useDrawImage = parameters$useDrawImage
 
 #===============================================================================
 

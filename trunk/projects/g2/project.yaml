@@ -11,6 +11,53 @@ base_params:
 
     clusterFilePath: "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft/"
 
+    smoothSuitabilitiesWithGaussian: TRUE
+    gaussianSuitabilitySmoothingMean: 0
+    gaussianSuitabilitySmoothingSD: 1
+
+    scaleInputs: TRUE  #  DO NOT CHANGE THIS VALUE FOR NOW.  SEE COMMENT in original code.
+    dataSrc: "mattData"    #  Should become a guppy option...
+
+    numSpp: NA
+
+    randomSeed: 17
+
+    imgFileType: "asc"
+    numNonEnvDataCols: 0
+
+    clusterFileNameStem: "env_clusters"
+
+    trueProbDistSppFilenameBase: "true.prob.dist.spp."
+
+    trueProbDistFilePrefix: "true.prob.dist"
+
+    useRandomNumTruePresForEachSpp: TRUE    #  variables$PAR.use.random.num.true.presences
+    minTruePresFracOfLandscape: 0.0002    #  0.002    #  variables$PAR.min.true.presence.fraction.of.landscape
+    maxTruePresFracOfLandscape: 0.002     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
+    numTruePresForEachSpp_string: "50,100,75"    #  variables$PAR.num.true.presences
+
+    PARuseAllSamples: FALSE
+
+    doMaxentReplicates: FALSE
+    maxentReplicateType: "crossvalidate"
+    numMaxentReplicates: 5
+
+    numProcessors: 1
+    verboseMaxent: TRUE
+
+    maxentFullPathName: "/Users/Bill/D/rdv-framework/lib/maxent/maxent.jar"
+
+    showRawErrorInDist: TRUE
+    showAbsErrorInDist:  TRUE
+    showPercentErrorInDist:  TRUE
+    showAbsPercentErrorInDist:  TRUE
+    showTruncatedPercentErrImg:  TRUE
+    showHeatmap: FALSE
+
+    useOldMaxentOutputForInput: FALSE
+    writeToFile: FALSE
+    useDrawImage: FALSE
+
 
     asciiImgFileNameRoots:
         - "aniso_heat"
