@@ -4,6 +4,8 @@ runner_class: RRunner
 base_params:
     warningLevel: 2         #  tells R whether to show warnings or quit, etc.
 
+    runZonation: TRUE
+
     fullTzarExpOutputDirRootWithSlash: $$output_path$$
 
     envLayersSrcDir: "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
@@ -103,5 +105,7 @@ base_params:
         "vert_minor": "randomIn0-1"
         "vert_saline": "randomIn0-1"
         "vis_sky": "randomIn0-1"
+
+
 
 

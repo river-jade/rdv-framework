@@ -570,3 +570,78 @@ useDrawImage = parameters$useDrawImage
 
 #===============================================================================
 
+    #  Zonation options.
+
+runZonation = parameters$runZonation
+
+if (runZonation)
+    {
+    if (regexpr ("darwin*", current.os) != -1)
+        {
+        stop (paste0 ("\n\n=====>  Can't run zonation on Mac yet since wine doesn't work properly yet.",
+                      "\n=====>  Quitting now.\n\n"))    
+        } 
+
+    PAR.zonation.exe.filename = parameters$PAR.zonation.exe.filename
+    PAR.path.to.zonation = parameters$PAR.path.to.zonation
+    full.path.to.zonation.exe = 
+        file.path (startingDir, PAR.path.to.zonation, PAR.zonation.exe.filename)
+    
+    zonation.files.dir = outputFiles$PAR.zonation.files.dir.name
+    zonation.files.dir.with.slash = paste (zonation.files.dir, "/", sep='')
+    
+        #  Kluge to deal with lots of Windows problems running zonation
+        #  using file names with embedded spaces.
+        #  So far, they're all due to the "Documents and Settings" directory,
+        #  so I'll deal with that.  In the Windows terminal window you can
+        #  ask Windows for a no-spaces version of the name of a directory
+        #  by using the -x option on dir, e.g., sitting above the
+        #  "Documents and Settings" in C: and giving the command "dir /x", will
+        #  list the shortened names of all the files and directories there,
+        #  including "DOCUME~1 for "Documents and Settings".
+        #  I think that these problems may primarily be coming from the use of
+        #  the Windows environment variable called HOMEPATH to determine
+        #  where to hang the temporary output directories.  I suspect that
+        #  is what tzar is doing.  If we could get tzar to fix it up right
+        #  when it's created, then none of this would be necessary here.
+        #  Note, I found HOMEPATH by running the SET command with no arguments
+        #  to see all declared variables in the environment, because a web site
+        #  had mentioned that the similarly troublesome directory called
+        #  "Program Files" has a name stored in the environment that you can
+        #  use to avoid these space-based problems.
+    
+    zonation.files.dir.with.slash = gsub ("Documents and Settings", "DOCUME~1", zonation.files.dir.with.slash)
+    
+    cat ("\nzonation.files.dir = '", zonation.files.dir, "'", sep='')
+    if ( !file.exists (zonation.files.dir))  dir.create (zonation.files.dir)
+    
+    zonation.parameter.filename = parameters$PAR.zonation.parameter.filename
+    #full.path.to.zonation.parameter.file <- paste (startingDir, '/',
+    #									PAR.path.to.zonation,  '/',
+    #                                   zonation.parameter.filename, sep = '')
+    full.path.to.zonation.parameter.file <- parameters$PAR.zonation.parameter.filename
+    cat ("\n\nfull.path.to.zonation.parameter.file = '",
+         full.path.to.zonation.parameter.file, "'\n\n", sep='')
+    #stop()
+    
+    PAR.num.spp.in.reserve.selection = parameters$PAR.num.spp.in.reserve.selection
+    spp.used.in.reserve.selection.vector <- 1:PAR.num.spp.in.reserve.selection
+    
+        #  APPARENT
+    zonation.APP.spp.list.filename = parameters$PAR.zonation.app.spp.list.filename
+    zonation.APP.output.filename = parameters$PAR.zonation.app.output.filename
+    zonation.APP.input.maps.dir = maxent.output.dir
+    #  root not used anymore?
+    ##zonation.APP.spp.hab.map.filename.root = paste (zonation.APP.input.maps.dir, '/', "spp", sep='')
+    #zonation.APP.spp.hab.map.filename.root = paste (zonation.APP.input.maps.dir, dir.slash, "spp", sep='')
+    
+        #  CORRECT
+    zonation.COR.input.maps.dir = prob.dist.layers.dir
+    zonation.COR.spp.list.filename = parameters$PAR.zonation.cor.spp.list.filename
+    zonation.COR.output.filename = parameters$PAR.zonation.cor.output.filename
+    #  root not used anymore?
+    ##zonation.COR.spp.hab.map.filename.root = paste (zonation.COR.input.maps.dir, '/', "spp", sep='')
+    }
+
+#===============================================================================
+

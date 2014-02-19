@@ -135,6 +135,12 @@ cat ("\n\n")
 #  line for the execlocalruns command.  Not sure what it does when 
 #  running from a repository instead of a local directory.
 setwd (rdvRootDir)    #  Is this still necessary (and correct to do)?
+                      #  It was done in runZonation.R as well, so maybe 
+                      #  this is related to running external code?
+                      #  Probably shouldn't be doing this at all and 
+                      #  should just be running things with full paths 
+                      #  so that this g2 code works no matter where it's 
+                      #  running from.
 
 #===============================================================================
 
@@ -169,6 +175,8 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'getTruePresForEachSpp.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'getSampledPresForEachSpp.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'runMaxentCmd.R'))
 source (paste0 (g2ProjectRsrcDirWithSlash, 'evaluateMaxentResults.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'setUpAndRunZonation.R'))
+source (paste0 (g2ProjectRsrcDirWithSlash, 'evaluateZonationResults'))
 
     #-------------------------------------------------------------------------
     #  Do initializations that are more than just retrieving option settings
@@ -382,27 +390,71 @@ evaluateMaxentResults (numSpp,
 
 #===============================================================================
 
-    #----------------------------------------------------------------
-    #  Set up input files and paths to run zonation, then run it.
-    #----------------------------------------------------------------
+    #-------------------------------------------------------------------
+    #  Run zonation on apparent species maps and then on correct maps.
+    #-------------------------------------------------------------------
     
 cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
 
-        #  At the moment, I can't get wine to run properly anywhere,
-        #  so I can only run zonation if we're on a Windows system.
-if (current.os == "mingw32")
-	{
-    cat ("\n\nOn Windows system, so go ahead with running Zonation.\n\n")
-    #############source (paste (guppyProjectRsrcDirWithSlash, 'runZonation.R', sep=''))
-    
-	} else
-	{
-	cat ("\n\n=====>  Can't run zonation on non-Windows system yet ",
-         "\n=====>  since wine doesn't work properly yet.\n\n",
-         sep='')
-	}
+        #  These two commands were at the start of runZonation.R.
+        #  Not sure if they're necessary or not.
+    #library (pixmap)
+    #setwd (rdvRootDir)
 
-cat ("\n\nAt end of runMaxent.R.  \n\n             -----  ALL DONE WITH G2 RUN NOW  -----\n\n")
+
+    #  APPARENT
+setUpAndRunZonation (zonation.APP.spp.list.filename,
+                     zonation.files.dir,
+                     zonation.APP.input.maps.dir,
+                     spp.used.in.reserve.selection.vector,
+                     zonation.APP.output.filename,
+                     full.path.to.zonation.parameter.file,
+                     full.path.to.zonation.exe,
+                     runZonation,
+                     "spp",
+                     parameters$PAR.closeZonationWindowOnCompletion
+                    )
+
+    #  CORRECT
+setUpAndRunZonation (zonation.COR.spp.list.filename,
+                     zonation.files.dir,
+                     zonation.COR.input.maps.dir,
+                     spp.used.in.reserve.selection.vector,
+                     zonation.COR.output.filename,
+                     full.path.to.zonation.parameter.file,
+                     full.path.to.zonation.exe,
+                     runZonation,
+                     "true.prob.dist.spp",
+                     parameters$PAR.closeZonationWindowOnCompletion
+                    )
+
+    #----------------------------------------------------------------
+    #  Evaluate the results of Zonation by comparing its output for
+    #  apparent species maps with its output for correct species 
+    #  maps.
+    #  This doesn't give you its "correctness" since we don't know 
+    #  the optimal result, but it gives you a measure of regret. 
+    #
+    #  *** Note that conceivably, the apparent maps could lead to a 
+    #  better result than the correct maps lead to.  This suggests 
+    #  that I need to better define what is a good result here so 
+    #  that it's possible to recognize that.  It would probably 
+    #  have to be phrased in terms of the total representation for 
+    #  each species at any rank cutoff and the better result would 
+    #  be the one that dominated the other one at every level.  
+    #  However, full domination wouldn't be required to happen, 
+    #  so some other notion of "better than" is necessary.  
+    #----------------------------------------------------------------
+
+cat ("\n\n+++++\tBefore", "evaluateZonationResults", "\n")
+
+evaluateZonationResults ()    
+
+cat ("\n\nAt end of running and evaluation Zonation results.\n\n")
+
+#===============================================================================
+
+cat ("\n\n             -----  ALL DONE WITH G2 RUN NOW  -----\n\n")
 
 #===============================================================================
 
