@@ -6,10 +6,10 @@ base_params:
 
     fullTzarExpOutputDirRootWithSlash: $$output_path$$
 
-    envLayersSrcDir: "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft/"
+    envLayersSrcDir: "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
     envLayersWorkingDirName: "InputEnvLayers"
 
-    clusterFilePath: "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft/"
+    clusterFilePath: "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft_r256c256/UpperRight_r128c128/"
 
     smoothSuitabilitiesWithGaussian: TRUE
     gaussianSuitabilitySmoothingMean: 0
