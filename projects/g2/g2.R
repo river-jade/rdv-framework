@@ -5,6 +5,7 @@
 # source( 'g2.R' )
 
 #  To run under tzar:
+#      cd /Users/Bill/D/rdv-framework
 #      java -jar tzar.jar execlocalruns ./projects/g2/
 
 #===============================================================================
@@ -199,6 +200,8 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeBeyondSettingOptions.R'))
 
 getEnvFiles (envLayersSrcDir, envLayersWorkingDirWithSlash)
 
+#===============================================================================
+
 	#--------------------------------------------
 	#  Get true species distributions.
 	#
@@ -230,6 +233,8 @@ numSpp = getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # env
                                              clusterFilePath, clusterFileNameStem,
                                              arrayIdxBase
                                              )
+
+#===============================================================================
 
     #----------------------------
 	#  Get true presences.
@@ -331,6 +336,8 @@ getSampledPresForEachSpp (numTruePresForEachSpp,
                           combinedSampledPresFilename
                           )
 
+#===============================================================================
+
     #----------------------------------------------------------------
     #  Run maxent to generate a predicted relative probability map.
     #----------------------------------------------------------------
@@ -373,25 +380,35 @@ evaluateMaxentResults (numSpp,
                        writeToFile,
                        useDrawImage)
 
-	#----------------------------------------------------------------
-	#  Set up input files and paths to run zonation.
-	#----------------------------------------------------------------
+#===============================================================================
 
+    #----------------------------------------------------------------
+    #  Set up input files and paths to run zonation, then run it.
+    #----------------------------------------------------------------
+    
+cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
 
-	#----------------------------------------------------------------
-	#  Run zonation.
-	#----------------------------------------------------------------
+        #  At the moment, I can't get wine to run properly anywhere,
+        #  so I can only run zonation if we're on a Windows system.
+if (current.os == "mingw32")
+	{
+    cat ("\n\nOn Windows system, so go ahead with running Zonation.\n\n")
+    #############source (paste (guppyProjectRsrcDirWithSlash, 'runZonation.R', sep=''))
+    
+	} else
+	{
+	cat ("\n\n=====>  Can't run zonation on non-Windows system yet ",
+         "\n=====>  since wine doesn't work properly yet.\n\n",
+         sep='')
+	}
 
+cat ("\n\nAt end of runMaxent.R.  \n\n             -----  ALL DONE WITH G2 RUN NOW  -----\n\n")
 
-	#----------------------------------------------------------------
-	#  Evaluate the results of zonation by comparing output for
-	#  running zonation on correct maps and on apparent maps.
-	#----------------------------------------------------------------
+#===============================================================================
 
-
-	#----------------------------------------------------------------
-	#  Set up input files and paths to run zonation.
-	#----------------------------------------------------------------
+    #-----------------------------------------------------------------
+	#  Set up input files and paths to run actions based on results.
+	#-----------------------------------------------------------------
 
 
     #----------------------------------------------------------------
@@ -413,6 +430,8 @@ evaluateMaxentResults (numSpp,
     #  their contribution to Ultimate Measurement Error.
     #----------------------------------------------------------------
 
+#===============================================================================
+#===============================================================================
 
     #----------------------------------------------------------------
     #
