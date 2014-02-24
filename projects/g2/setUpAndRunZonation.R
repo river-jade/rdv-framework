@@ -145,12 +145,28 @@ setUpAndRunZonation = function (spp.list.filename,
                                 full.path.to.zonation.exe,
                                 runZonation,
                                 sppFilePrefix,
-                                closeZonationWindowOnCompletion
+                                closeZonationWindowOnCompletion, 
+                                dir.slash
                                 )
     {
-    zonation.spp.list.full.filename <-
-#        paste (zonation.files.dir, '/', spp.list.filename, sep ='' )
-        file.path (zonation.files.dir, spp.list.filename)
+    cat ("\n\n*******************  At start of setUpAndRunZonation  *******************")    
+    cat ("\n    spp.list.filename = '", spp.list.filename, "'", sep='')
+    cat ("\n    zonation.files.dir = '", zonation.files.dir, "'", sep='')
+    cat ("\n    zonation.input.maps.dir = '", zonation.input.maps.dir, "'", sep='')
+    cat ("\n    spp.used.in.reserve.selection.vector = '", spp.used.in.reserve.selection.vector, "'", sep='')
+    cat ("\n    zonation.output.filename = '", zonation.output.filename, "'", sep='')
+    cat ("\n    full.path.to.zonation.parameter.file = '", full.path.to.zonation.parameter.file, "'", sep='')
+    cat ("\n    full.path.to.zonation.exe = '", full.path.to.zonation.exe, "'", sep='')
+    cat ("\n    runZonation = '", runZonation, "'", sep='')
+    cat ("\n    sppFilePrefix = '", sppFilePrefix, "'", sep='')
+    cat ("\n    closeZonationWindowOnCompletion = '", closeZonationWindowOnCompletion, "'", sep='') 
+    cat ("\n    dir.slash = '", dir.slash, "'", sep='')
+    
+    
+    zonation.spp.list.full.filename = 
+        paste0 (zonation.files.dir, dir.slash, spp.list.filename)
+
+    cat ("\n\nzonation.spp.list.full.filename = '", zonation.spp.list.full.filename, "'", sep='')
     
     if (file.exists (zonation.spp.list.full.filename))
         file.remove (zonation.spp.list.full.filename)
@@ -162,6 +178,8 @@ setUpAndRunZonation = function (spp.list.filename,
         #      1.0 1.0 2 10 1.0 /Users/ascelin/analysis/zonation/wine_test2_data/spp3.asc
     
     zonation.input.maps.dir = gsub ("Documents and Settings", "DOCUME~1", zonation.input.maps.dir)
+    cat ("\n\nzonation.input.maps.dir = '", zonation.input.maps.dir, "'", sep='')
+
     for (cur.spp.id in spp.used.in.reserve.selection.vector)
         {
             #		filename <- paste (zonation.input.maps.dir, '/', 'spp.', cur.spp.id, '.asc', sep = '' );
@@ -170,8 +188,10 @@ setUpAndRunZonation = function (spp.list.filename,
             #  sppFilePrefix is different for correct and apparent species.
             #  For apparent, it will just be "spp", but for correct,
             #  it will probably be something like "true.prob.dist.spp".
-        filename <- paste (zonation.input.maps.dir, dir.slash, sppFilePrefix, '.',
-                           cur.spp.id, '.asc', sep = '' );
+#        filename <- paste (zonation.input.maps.dir, dir.slash, sppFilePrefix, '.',
+#        filename <- paste (zonation.input.maps.dir, sppFilePrefix, '.',
+        filename <- paste0 (zonation.input.maps.dir, dir.slash, sppFilePrefix, '.',                           
+                           cur.spp.id, '.asc');
         line.of.text <- paste ("1.0 1.0 1 1 1 ", filename, "\n", sep = "");
         cat (line.of.text, file = zonation.spp.list.full.filename, append = TRUE);
         }
@@ -182,8 +202,8 @@ setUpAndRunZonation = function (spp.list.filename,
         #  The last number in the list autoclose (if set to 0 then zonation will stay open after it finishes running)
     
     zonation.full.output.filename =
-        #paste (zonation.files.dir, '/', zonation.output.filename, sep='')
-        file.path (zonation.files.dir, zonation.output.filename)
+        paste0 (zonation.files.dir, dir.slash, zonation.output.filename)
+    cat ("\n\nzonation.full.output.filename = '", zonation.full.output.filename, "'", sep='')
 
     #  Maxent's command line parsing chokes on Windows file names that
     #  contain spaces, so you need to put quotes around all the path
@@ -195,19 +215,35 @@ setUpAndRunZonation = function (spp.list.filename,
     zonation.spp.list.full.filename = gsub ("Documents and Settings", "DOCUME~1", zonation.spp.list.full.filename)
     zonation.full.output.filename = gsub ("Documents and Settings", "DOCUME~1", zonation.full.output.filename)
 
+    cat ("\n\nfull.path.to.zonation.exe = '", full.path.to.zonation.exe, "'", sep='')
+    cat ("\n    full.path.to.zonation.parameter.file = '", full.path.to.zonation.parameter.file, "'", sep='')
+    cat ("\n    zonation.spp.list.full.filename = '", zonation.spp.list.full.filename, "'", sep='')
+    cat ("\n    zonation.full.output.filename = '", zonation.full.output.filename, "'", sep='')
 
     system.command.run.zonation <- 
-        paste (######    '/sw/bin/wine',
-               full.path.to.zonation.exe,
-               '-r',
-               full.path.to.zonation.parameter.file,
-               zonation.spp.list.full.filename,
-               zonation.full.output.filename,
-               "0.0 0 1.0",
+        paste0 (######    '/sw/bin/wine',
+                filenameQuote, full.path.to.zonation.exe, filenameQuote, " ", 
+               '-r', " ", 
+               filenameQuote, full.path.to.zonation.parameter.file, filenameQuote, " ", 
+               filenameQuote, zonation.spp.list.full.filename, filenameQuote, " ", 
+               filenameQuote, zonation.full.output.filename, filenameQuote, " ", 
+               "0.0 0 1.0",  " ", 
                as.integer (closeZonationWindowOnCompletion)
                )
-    
-    cat( '\n The system command to run zonation will be:', system.command.run.zonation, "'\n\n")
+
+#     system.command.run.zonation <- 
+#         paste (######    '/sw/bin/wine',
+#             full.path.to.zonation.exe,
+#             '-r',
+#             full.path.to.zonation.parameter.file,
+#             zonation.spp.list.full.filename,
+#             zonation.full.output.filename,
+#             "0.0 0 1.0",
+#             as.integer (closeZonationWindowOnCompletion)
+#         )
+
+
+    cat( '\n\n>>>>>  The system command to run zonation will be:\n', system.command.run.zonation, "'\n>>>>>\n\n")
     
     #---------------------
     
@@ -238,6 +274,8 @@ setUpAndRunZonation = function (spp.list.filename,
         
         cat ("\n\nzonation retval = '", retval, "'.\n\n", sep='')        
         }
+
+    cat ("\n\n*******************  At END of setUpAndRunZonation  *******************")
     }
 
 #===============================================================================

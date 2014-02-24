@@ -17,78 +17,78 @@
 #===============================================================================
 
 # tzarOutputdataRootWithSlash = "/Users/Bill/tzar/outputdata/g2/default_runset/"
-# ##dir.slash = "/"    #  This is already dealt with at start of g2 
+# ##dir.slash = "/"    #  This is already dealt with at start of g2
 #                      #  in an OS-specific way.
 # #curExpOutputDirName = "401_Scen_1"
-# 
-# createFullTzarExpOutputDirRoot = function (curExpOutputDirName, 
-#                                            tzarOutputdataRootWithSlash, 
+#
+# createFullTzarExpOutputDirRoot = function (curExpOutputDirName,
+#                                            tzarOutputdataRootWithSlash,
 #                                            dir.slash = "/")
 #     {
-#     curFullTzarExpOutputDirRootWithSlash = 
-#         paste0 (tzarOutputdataRootWithSlash, 
+#     curFullTzarExpOutputDirRootWithSlash =
+#         paste0 (tzarOutputdataRootWithSlash,
 #                 curExpOutputDirName, dir.slash)
-#     
-#     cat ("\n\ncurFullTzarExpOutputDirRootWithSlash = ", 
+#
+#     cat ("\n\ncurFullTzarExpOutputDirRootWithSlash = ",
 #          curFullTzarExpOutputDirRootWithSlash, "\n\n", sep='')
-#     
+#
 #     if (file.exists (curFullTzarExpOutputDirRootWithSlash))
 #         {
-#         errMsg = paste0 ("\n\n*** curFullTzarExpOutputDirRootWithSlash = \n***     ", 
-#                          curFullTzarExpOutputDirRootWithSlash, 
-#                          "\n*** already exists.  ", 
-#                          "\n*** Need to change curExpOutputDirName in ", 
+#         errMsg = paste0 ("\n\n*** curFullTzarExpOutputDirRootWithSlash = \n***     ",
+#                          curFullTzarExpOutputDirRootWithSlash,
+#                          "\n*** already exists.  ",
+#                          "\n*** Need to change curExpOutputDirName in ",
 #                          "initializeG2options.R\n\n")
 #         stop (errMsg)
-#         
+#
 #         } else
 #         {
-#         cat ("\n\ncurFullTzarExpOutputDirRootWithSlash DOES NOT exist.  ", 
-#              "Creating it.\n\n", sep='')  
-#         dir.create (curFullTzarExpOutputDirRootWithSlash, 
-#                     showWarnings = TRUE, 
+#         cat ("\n\ncurFullTzarExpOutputDirRootWithSlash DOES NOT exist.  ",
+#              "Creating it.\n\n", sep='')
+#         dir.create (curFullTzarExpOutputDirRootWithSlash,
+#                     showWarnings = TRUE,
 #                     recursive = TRUE, #  Not sure about this, but it's convenient.
-#                     mode = "0777")    #  Not sure if this is what we want for mode.        
+#                     mode = "0777")    #  Not sure if this is what we want for mode.
 #         }
 #     return (curFullTzarExpOutputDirRootWithSlash)
 #     }
-# 
-# curFullTzarExpOutputDirRootWithSlash = 
-#     createFullTzarExpOutputDirRoot (curExpOutputDirName, 
+#
+# curFullTzarExpOutputDirRootWithSlash =
+#     createFullTzarExpOutputDirRoot (curExpOutputDirName,
 #                                     tzarOutputdataRootWithSlash, dir.slash)
 
-curFullTzarExpOutputDirRootWithSlash = 
+curFullTzarExpOutputDirRootWithSlash =
     parameters$fullTzarExpOutputDirRootWithSlash
-            
-cat ("\n\ncurFullTzarExpOutputDirRootWithSlash = ", 
+
+cat ("\n\ncurFullTzarExpOutputDirRootWithSlash = ",
      curFullTzarExpOutputDirRootWithSlash, "\n\n", sep='')
-    
+
 #===============================================================================
 
 #  For getEnvLayers()
 
     #  This used to be called envLayersDir.
-    #  Trying to make names differentiate between the source of information 
-    #  before the experiment is run and the working copy of information that 
+    #  Trying to make names differentiate between the source of information
+    #  before the experiment is run and the working copy of information that
     #  is copied into the tzar output area as part of the experiment.
 #envLayersSrcDir          = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
-envLayersSrcDir = parameters$envLayersSrcDir
+envLayersSrcDir = file.path (userPath, parameters$envLayersSrcDir)
 
     #  This used to be called curFullMaxentEnvLayersDirName.
-    #  I'm trying to get rid of references to maxent in cases where things 
-    #  are not specific just to maxent.  
+    #  I'm trying to get rid of references to maxent in cases where things
+    #  are not specific just to maxent.
     #
 ##envLayersWorkingDir = "/Users/Bill/tzar/outputdata/g2/default_runset/400_Scen_1/InputEnvLayers"
 #envLayersWorkingDirName = "InputEnvLayers"
 envLayersWorkingDirName = parameters$envLayersWorkingDirName
 
-cat ("\n\nenvLayersWorkingDirName = '", 
+cat ("\n\nenvLayersWorkingDirName = '",
      envLayersWorkingDirName, "'\n\n", sep='')
 
-envLayersWorkingDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash, 
+envLayersWorkingDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash,
                                        envLayersWorkingDirName, dir.slash)
 
-cat ("\n\nenvLayersWorkingDirWithSlash = '", 
+cat ("\n\nenvLayersWorkingDirWithSlash = '",
      envLayersWorkingDirWithSlash, "'\n\n", sep='')
 
 #===============================================================================
@@ -156,15 +156,15 @@ cat ("\n\n")
     #--------------------------------------------------------------------
     #  Get layer header information.
     #
-    #  SAVE BOTH STRING AND NUMERIC VERSIONS OF ASCII FILE HEADER 
-    #  SO THAT YOU CAN WRITE OUT THE LLCORNER VALUES WITH ALL THE 
-    #  DECIMAL PLACES THAT WERE ORIGINALLY THERE BUT GET LOST WHEN 
+    #  SAVE BOTH STRING AND NUMERIC VERSIONS OF ASCII FILE HEADER
+    #  SO THAT YOU CAN WRITE OUT THE LLCORNER VALUES WITH ALL THE
+    #  DECIMAL PLACES THAT WERE ORIGINALLY THERE BUT GET LOST WHEN
     #  TRYING TO WRITE THE FORMATTED NUMBER OUT.  THE STRING IS EASIER.
     #--------------------------------------------------------------------
 
-ascFileHeaderAsNumAndStr = 
-    getAscFileHeaderAsNamedList (paste0 (envLayersSrcDir, 
-                                         asciiImgFileNameRoots [arrayIdxBase], 
+ascFileHeaderAsNumAndStr =
+    getAscFileHeaderAsNamedList (paste0 (envLayersSrcDir,
+                                         asciiImgFileNameRoots [arrayIdxBase],
                                          ".asc"))
 
 cat ("\n\nascFileHeaderAsNumAndStr = \n")
@@ -175,11 +175,11 @@ ascFileHeaderAsStrVals = ascFileHeaderAsNumAndStr$strValues
 
     #  Command for formatting the display of a decimal number taken from:
     #  http://stackoverflow.com/questions/3443687/formatting-decimal-places-in-r
-cat ("\n\nDisplaying corner values with decimal places:", 
-    "\n    xllCorner as num = ", format (round (ascFileHeaderAsNumVals$xllCorner, 5), nsmall = 5), 
-    "\n    yllCorner as num = ", format (round (ascFileHeaderAsNumVals$yllCorner, 5), nsmall = 5), 
-    "\n    xllCorner as str = ", ascFileHeaderAsStrVals$xllCorner, 
-    "\n    yllCorner as str = ", ascFileHeaderAsStrVals$yllCorner, 
+cat ("\n\nDisplaying corner values with decimal places:",
+    "\n    xllCorner as num = ", format (round (ascFileHeaderAsNumVals$xllCorner, 5), nsmall = 5),
+    "\n    yllCorner as num = ", format (round (ascFileHeaderAsNumVals$yllCorner, 5), nsmall = 5),
+    "\n    xllCorner as str = ", ascFileHeaderAsStrVals$xllCorner,
+    "\n    yllCorner as str = ", ascFileHeaderAsStrVals$yllCorner,
     "\n\n"
     )
 
@@ -196,7 +196,7 @@ cat ("\nnumImgCells = ", numImgCells)
 
 #  Values for setting values in .asc headers.
 #  These were passed in from Pyper before.
-#  Hard coding for now.  
+#  Hard coding for now.
 #  Need to read them from one of the env files or something.
 #  yaml file shows:
 # PAR.ascFileNcols: 512
@@ -207,7 +207,7 @@ cat ("\nnumImgCells = ", numImgCells)
 # PAR.ascFileNodataValue: -9999
 
 #llcorner = c (2618380.65282, 2529528.47684)
-llcorner = c (ascFileHeaderAsNumVals$xllCorner, 
+llcorner = c (ascFileHeaderAsNumVals$xllCorner,
               ascFileHeaderAsNumVals$yllCorner)
 cat ("\n\nllcorner = ", llcorner)
 
@@ -241,7 +241,7 @@ clusterFileNameStem = parameters$clusterFileNameStem
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
 
 #clusterFilePath = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
-clusterFilePath = parameters$clusterFilePath
+clusterFilePath = file.path (userPath, parameters$clusterFilePath)
 
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft/"
 #clusterFileNameWithPath = envClustersFileNameWithPath
@@ -253,60 +253,60 @@ trueProbDistSppFilenameBase = parameters$trueProbDistSppFilenameBase
 
 #===============================================================================
 
-sppGenOutputDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash, 
+sppGenOutputDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash,
                                    "SppGenOutputs", dir.slash)
 
 if (file.exists (sppGenOutputDirWithSlash))
     {
-    errMsg = paste0 ("\n\n*** In initializeG2options.R: ", 
-                     "\n*** sppGenOutputDirWithSlash = \n***     ", 
-                     sppGenOutputDirWithSlash, 
-                     "\n*** already exists.  ", 
-                     "\n*** Need to change sppGenOutputDirWithSlash in ", 
+    errMsg = paste0 ("\n\n*** In initializeG2options.R: ",
+                     "\n*** sppGenOutputDirWithSlash = \n***     ",
+                     sppGenOutputDirWithSlash,
+                     "\n*** already exists.  ",
+                     "\n*** Need to change sppGenOutputDirWithSlash in ",
                      "initializeG2options.R\n\n")
     stop (errMsg)
-    
+
     } else
     {
-    cat ("\n\nsppGenOutputDirWithSlash DOES NOT exist.  ", 
-         "Creating it.\n\n", sep='')  
-    dir.create (sppGenOutputDirWithSlash, 
-                showWarnings = TRUE, 
+    cat ("\n\nsppGenOutputDirWithSlash DOES NOT exist.  ",
+         "Creating it.\n\n", sep='')
+    dir.create (sppGenOutputDirWithSlash,
+                showWarnings = TRUE,
                 recursive = TRUE, #  Not sure about this, but it's convenient.
-                mode = "0777")    #  Not sure if this is what we want for mode.        
+                mode = "0777")    #  Not sure if this is what we want for mode.
     }
 
 #===============================================================================
 
 #  This used to be called curFullMaxentSamplesDirName.
-#  I'm trying to get rid of references to maxent in cases where things 
-#  are not specific just to maxent.  
+#  I'm trying to get rid of references to maxent in cases where things
+#  are not specific just to maxent.
 #
 #  From Guppy.py initializations and yaml
 # self.curFullMaxentSamplesDirName = \
 # PARcurrentRunDirectory + self.variables['PAR.maxent.samples.base.name']
 # PAR.maxent.samples.base.name:  "MaxentSamples"
 
-fullSppSamplesDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash, 
+fullSppSamplesDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash,
                                      "MaxentSamples", dir.slash)
 
 if (file.exists (fullSppSamplesDirWithSlash))
     {
-    errMsg = paste0 ("\n\n*** fullSppSamplesDirWithSlash = \n***     ", 
-                     fullSppSamplesDirWithSlash, 
-                     "\n*** already exists.  ", 
-                     "\n*** Need to change fullSppSamplesDirWithSlash in ", 
+    errMsg = paste0 ("\n\n*** fullSppSamplesDirWithSlash = \n***     ",
+                     fullSppSamplesDirWithSlash,
+                     "\n*** already exists.  ",
+                     "\n*** Need to change fullSppSamplesDirWithSlash in ",
                      "initializeG2options.R\n\n")
     stop (errMsg)
-    
+
     } else
     {
-    cat ("\n\nfullSppSamplesDirWithSlash DOES NOT exist.  ", 
-         "Creating it.\n\n", sep='')  
-    dir.create (fullSppSamplesDirWithSlash, 
-                showWarnings = TRUE, 
+    cat ("\n\nfullSppSamplesDirWithSlash DOES NOT exist.  ",
+         "Creating it.\n\n", sep='')
+    dir.create (fullSppSamplesDirWithSlash,
+                showWarnings = TRUE,
                 recursive = TRUE, #  Not sure about this, but it's convenient.
-                mode = "0777")    #  Not sure if this is what we want for mode.        
+                mode = "0777")    #  Not sure if this is what we want for mode.
     }
 
 
@@ -317,7 +317,7 @@ trueProbDistFilePrefix = parameters$trueProbDistFilePrefix
 combinedTruePresFilename = paste0 (fullSppSamplesDirWithSlash,    #  cur.full.maxent.samples.dir.name, "/",
                                    "spp.truePres.combined.csv")
 
-combinedSampledPresFilename = paste0 (fullSppSamplesDirWithSlash, 
+combinedSampledPresFilename = paste0 (fullSppSamplesDirWithSlash,
                                       'spp.sampledPres.combined.csv')
 
 #===============================================================================
@@ -352,33 +352,33 @@ maxentSamplesFileName = combinedSampledPresFilename
 # In guppy.py:
 # self.maxentOutputDir = self.qualifiedParams['PAR.maxent.output.dir.name']
 # self.maxentOutputDirWithSlash = self.maxentOutputDir + CONST.dirSlash
-# 
+#
 # print "\nself.maxentOutputDir = '" + self.maxentOutputDir + "'"
 # createDirIfDoesntExist(self.maxentOutputDir)
 # In yaml file:
 #         PAR.maxent.output.dir.name: "MaxentOutputs"
 
 #maxentOutputDir = "MaxentOutputs"
-fullMaxentOutputDirWithSlash  = paste0 (curFullTzarExpOutputDirRootWithSlash, 
+fullMaxentOutputDirWithSlash  = paste0 (curFullTzarExpOutputDirRootWithSlash,
                                      "MaxentOutputs", dir.slash)
 
 if (file.exists ( fullMaxentOutputDirWithSlash ))
 {
-    errMsg = paste0 ("\n\n***  fullMaxentOutputDirWithSlash  = \n***     ", 
-                      fullMaxentOutputDirWithSlash , 
-                     "\n*** already exists.  ", 
-                     "\n*** Need to change  fullMaxentOutputDirWithSlash  in ", 
+    errMsg = paste0 ("\n\n***  fullMaxentOutputDirWithSlash  = \n***     ",
+                      fullMaxentOutputDirWithSlash ,
+                     "\n*** already exists.  ",
+                     "\n*** Need to change  fullMaxentOutputDirWithSlash  in ",
                      "initializeG2options.R\n\n")
     stop (errMsg)
-    
+
 } else
 {
-    cat ("\n\n fullMaxentOutputDirWithSlash  DOES NOT exist.  ", 
-         "Creating it.\n\n", sep='')  
-    dir.create ( fullMaxentOutputDirWithSlash , 
-                showWarnings = TRUE, 
+    cat ("\n\n fullMaxentOutputDirWithSlash  DOES NOT exist.  ",
+         "Creating it.\n\n", sep='')
+    dir.create ( fullMaxentOutputDirWithSlash ,
+                showWarnings = TRUE,
                 recursive = TRUE, #  Not sure about this, but it's convenient.
-                mode = "0777")    #  Not sure if this is what we want for mode.        
+                mode = "0777")    #  Not sure if this is what we want for mode.
 }
 
     #--------------------
@@ -432,7 +432,7 @@ verboseMaxent = parameters$verboseMaxent
 #  In guppy.py:
 #  PARpathToMaxent = self.variables['PAR.path.to.maxent']
 #        self.maxentFullPathName = self.PARrdvDirectory + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'
-#  self.maxentFullPathName = self.startingDir + "/../.." + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'    
+#  self.maxentFullPathName = self.startingDir + "/../.." + CONST.dirSlash + PARpathToMaxent + CONST.dirSlash + 'maxent.jar'
 
 #  In yaml file:
 # ###        PAR.path.to.maxent:  "/Users/Bill/D/rdv-framework/lib/maxent"
@@ -440,25 +440,25 @@ verboseMaxent = parameters$verboseMaxent
 # PAR.path.to.maxent:  "lib/maxent"
 
 #maxentFullPathName = "/Users/Bill/D/rdv-framework/lib/maxent/maxent.jar"
-maxentFullPathName = parameters$maxentFullPathName
+maxentFullPathName = file.path (userPath, parameters$maxentFullPathName)
 
     #--------------------
 
 # ###        curFullMaxentEnvLayersDirName = PARcurrentRunDirectory + self.variables ['PAR.maxent.env.layers.base.name']
 # ###        print "\ncurFullMaxentEnvLayersDirName = '" + curFullMaxentEnvLayersDirName + "'"
 # ###        createDirIfDoesntExist (curFullMaxentEnvLayersDirName)
-# 
+#
 # #-----------------------------------
-# 
+#
 # #  NOTE the difference between the mac path in R and in python.
 # #       In R, you need the backslash in front of the spaces, but in python,
 # print "\nvariables ['PAR.useRemoteEnvDir'] = " + str(self.variables['PAR.useRemoteEnvDir'])
 # print "variables ['PAR.remoteEnvDir'] = " + self.variables['PAR.remoteEnvDir']
 # print "variables ['PAR.localEnvDirMac'] = " + self.variables['PAR.localEnvDirMac']
 # print "variables ['PAR.localEnvDirWin'] = " + self.variables['PAR.localEnvDirWin']
-# 
+#
 # #-----------------------------------
-# 
+#
 # ###        if (self.variables ['PAR.useRemoteEnvDir']):
 # print "***  self.useRemoteEnvDir = " + str(self.useRemoteEnvDir)
 # print "***  self.curOS = " + self.curOS
@@ -472,9 +472,9 @@ maxentFullPathName = parameters$maxentFullPathName
 #     self.envLayersDir = self.variables['PAR.localEnvDirMac']
 # print "in branch 3"
 # print "\nenvLayersDir = '" + self.envLayersDir + "'"
-# 
+#
 # #-----------------------------------
-# 
+#
 curFullMaxentEnvLayersDirName = envLayersWorkingDirWithSlash
 
 #===============================================================================
@@ -526,26 +526,26 @@ showHeatmap = parameters$showHeatmap
 #  In yaml file:
 # PAR.analysis.dir.name: "ResultsAnalysis"
 
-fullAnalysisDirWithSlash  = paste0 (curFullTzarExpOutputDirRootWithSlash, 
+fullAnalysisDirWithSlash  = paste0 (curFullTzarExpOutputDirRootWithSlash,
                                         "ResultsAnalysis", dir.slash)
 
 if (file.exists ( fullAnalysisDirWithSlash ))
     {
-    errMsg = paste0 ("\n\n***  fullAnalysisDirWithSlash  = \n***     ", 
-                     fullAnalysisDirWithSlash , 
-                     "\n*** already exists.  ", 
-                     "\n*** Need to change  fullAnalysisDirWithSlash  in ", 
+    errMsg = paste0 ("\n\n***  fullAnalysisDirWithSlash  = \n***     ",
+                     fullAnalysisDirWithSlash ,
+                     "\n*** already exists.  ",
+                     "\n*** Need to change  fullAnalysisDirWithSlash  in ",
                      "initializeG2options.R\n\n")
     stop (errMsg)
-    
+
     } else
     {
-    cat ("\n\n fullAnalysisDirWithSlash  DOES NOT exist.  ", 
-         "Creating it.\n\n", sep='')  
-    dir.create ( fullAnalysisDirWithSlash , 
-                 showWarnings = TRUE, 
+    cat ("\n\n fullAnalysisDirWithSlash  DOES NOT exist.  ",
+         "Creating it.\n\n", sep='')
+    dir.create ( fullAnalysisDirWithSlash ,
+                 showWarnings = TRUE,
                  recursive = TRUE, #  Not sure about this, but it's convenient.
-                 mode = "0777")    #  Not sure if this is what we want for mode.        
+                 mode = "0777")    #  Not sure if this is what we want for mode.
     }
 
 #--------------------
@@ -576,20 +576,15 @@ runZonation = parameters$runZonation
 
 if (runZonation)
     {
-    if (regexpr ("darwin*", current.os) != -1)
-        {
-        stop (paste0 ("\n\n=====>  Can't run zonation on Mac yet since wine doesn't work properly yet.",
-                      "\n=====>  Quitting now.\n\n"))    
-        } 
+#     if (regexpr ("darwin*", current.os) != -1)
+#         {
+#         stop (paste0 ("\n\n=====>  Can't run zonation on Mac yet since wine doesn't work properly yet.",
+#                       "\n=====>  Quitting now.\n\n"))
+#         }
 
-    PAR.zonation.exe.filename = parameters$PAR.zonation.exe.filename
-    PAR.path.to.zonation = parameters$PAR.path.to.zonation
-    full.path.to.zonation.exe = 
-        file.path (startingDir, PAR.path.to.zonation, PAR.zonation.exe.filename)
-    
-    zonation.files.dir = outputFiles$PAR.zonation.files.dir.name
-    zonation.files.dir.with.slash = paste (zonation.files.dir, "/", sep='')
-    
+    zonationFilesDir = parameters$zonationFilesDirName
+#    zonationFilesDirWithSlash = paste0 (zonationFilesDir, "/")
+
         #  Kluge to deal with lots of Windows problems running zonation
         #  using file names with embedded spaces.
         #  So far, they're all due to the "Documents and Settings" directory,
@@ -609,39 +604,43 @@ if (runZonation)
         #  had mentioned that the similarly troublesome directory called
         #  "Program Files" has a name stored in the environment that you can
         #  use to avoid these space-based problems.
-    
-    zonation.files.dir.with.slash = gsub ("Documents and Settings", "DOCUME~1", zonation.files.dir.with.slash)
-    
-    cat ("\nzonation.files.dir = '", zonation.files.dir, "'", sep='')
-    if ( !file.exists (zonation.files.dir))  dir.create (zonation.files.dir)
-    
-    zonation.parameter.filename = parameters$PAR.zonation.parameter.filename
-    #full.path.to.zonation.parameter.file <- paste (startingDir, '/',
-    #									PAR.path.to.zonation,  '/',
-    #                                   zonation.parameter.filename, sep = '')
-    full.path.to.zonation.parameter.file <- parameters$PAR.zonation.parameter.filename
-    cat ("\n\nfull.path.to.zonation.parameter.file = '",
-         full.path.to.zonation.parameter.file, "'\n\n", sep='')
-    #stop()
-    
-    PAR.num.spp.in.reserve.selection = parameters$PAR.num.spp.in.reserve.selection
-    spp.used.in.reserve.selection.vector <- 1:PAR.num.spp.in.reserve.selection
-    
-        #  APPARENT
-    zonation.APP.spp.list.filename = parameters$PAR.zonation.app.spp.list.filename
-    zonation.APP.output.filename = parameters$PAR.zonation.app.output.filename
-    zonation.APP.input.maps.dir = maxent.output.dir
-    #  root not used anymore?
-    ##zonation.APP.spp.hab.map.filename.root = paste (zonation.APP.input.maps.dir, '/', "spp", sep='')
-    #zonation.APP.spp.hab.map.filename.root = paste (zonation.APP.input.maps.dir, dir.slash, "spp", sep='')
-    
-        #  CORRECT
-    zonation.COR.input.maps.dir = prob.dist.layers.dir
-    zonation.COR.spp.list.filename = parameters$PAR.zonation.cor.spp.list.filename
-    zonation.COR.output.filename = parameters$PAR.zonation.cor.output.filename
-    #  root not used anymore?
-    ##zonation.COR.spp.hab.map.filename.root = paste (zonation.COR.input.maps.dir, '/', "spp", sep='')
+
+    zonationFilesDir = gsub ("Documents and Settings", "DOCUME~1", zonationFilesDir)
+
+    cat ("\nzonationFilesDir = '", zonationFilesDir, "'", sep='')
+    if ( !file.exists (zonationFilesDir))  dir.create (zonationFilesDir)
+
+        #  2014 02 19 - NOT SURE IF THIS SHOULD BE SET TO fullMaxentOutputDirWithSlash
+        #               OR SOMETHING ELSE.  NEED TO SEE WHERE IT'S USED AND SEE IF
+        #               SOMETHING IS BUILDING OFF SOMETHING LESS THAN THE FULL PATH.
+        #       This may be a problem if you want to use something other than the
+        #       maxent output as the zonation input !!!
+    zonationAppInputMapsDir = fullMaxentOutputDirWithSlash
+    zonationCorInputMapsDir = sppGenOutputDirWithSlash
+
+        #  2014 02 19 - THIS NEEDS TO LINK UP WITH THE RESULTS OF COMPUTING THE
+        #               NUMBER OF SPECIES BASED ON THE NUMBER OF CLUSTERS.
+        #               PROBABLY MEANS THAT IT HAS TO BE SET JUST BEFORE ZONATION
+        #               RUNNING SECTION IN G2, i.e., num.spp.in.reserve = numSpp...
+        #               Should have the leading path?
+    numSppInReserveSelection = parameters$numSppInReserveSelection
+    sppUsedInReserveSelectionVector = 1:numSppInReserveSelection
+
+    zonationAppSppListFilename = parameters$zonationAppSppListFilename
+    zonationAppOutputFilename = parameters$zonationAppOutputFilename
+
+    zonationCorSppListFilename = parameters$zonationCorSppListFilename
+    zonationCorOutputFilename = parameters$zonationCorOutputFilename
+
+    fullPathToZonationParameterFile = file.path (userPath, parameters$fullPathToZonationParameterFile)
+    fullPathToZonationExe = file.path (userPath, parameters$fullPathToZonationExe)
+
+    closeZonationWindowOnCompletion = parameters$closeZonationWindowOnCompletion
+
+    sppFilePrefix = parameters$sppFilePrefix
     }
+
+stop ("\n***  END TEST SETUP  ***\n\n")
 
 #===============================================================================
 

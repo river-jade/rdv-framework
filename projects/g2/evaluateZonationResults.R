@@ -19,7 +19,10 @@
 
 #===============================================================================
 
-evaluateZonationResults = function ()
+evaluateZonationResults = function (zonation.files.dir.with.slash, 
+                                    analysis.dir.with.slash, 
+                                    write.to.file
+                                    )
     {    
     zonation.app.rank =
         read.asc.file.to.matrix ("zonation_app_output.rank",
@@ -149,13 +152,13 @@ evaluateZonationResults = function ()
     truncated.err.img <- abs.percent.err.magnitudes
     truncated.err.img [percent.err.magnitudes >= 50] <- 50
     write.pgm.file (truncated.err.img,
-                    paste (analysis.dir.with.slash,
-                           "truncated.zonation.rank.percent.err.img", sep=''),
+                    paste0 (analysis.dir.with.slash,
+                            "truncated.zonation.rank.percent.err.img"),
                     num.img.rows, num.img.cols)
     
     
     if (write.to.file)  
-        tiff (paste0 (analysis.dir, "percent.error.zonation.rank.map.tiff"))
+        tiff (paste0 (analysis.dir.with.slash, "percent.error.zonation.rank.map.tiff"))
     #    plot.main.title <- "Percent error in Zonation rank"
     #    plot.key.title <- "Error\n(percent)"
     #    draw.filled.contour.img (truncated.err.img, plot.main.title, plot.key.title)
@@ -184,7 +187,7 @@ evaluateZonationResults = function ()
                              terrain.colors, "red",
                              draw.contours,
                              contour.levels.to.draw
-    )
+                            )
     if (write.to.file)  dev.off()
     
     #  Not sure what's going on here.  Trying to put a contour around the top
@@ -214,77 +217,7 @@ evaluateZonationResults = function ()
     #                              )
     #     if (write.to.file)  dev.off()
     
-#===============================================================================
+    }  #  end - function
     
-    # From: nearest-neighbor.pdf slides
-    #
-    # Distance-Weighting
-    # Rather than treating each neighbor equally, give more weight to closer 
-    # neighbors. Predict with:
-    # - Classification: the class with the highest sum of weights.
-    # - Regression: the weighted average, e.g.,
-    #     y = [sum from i=1 to k (yi / d(x,xi))] /
-    #         [sum from i=1 to k (1 / d(x,xi))]
-    # To avoid division by 0, add a small value to d.
-    # BTL: (e.g., maybe use min value of d (divided by 10 or 100 or ?)?)
-    #
-    # Issues of kNN
-    #
-    # Scaling
-    # Attributes can have widely different ranges, e.g., Aluminum and Refractive 
-    # Index. Consider:
-    # • Normalization. Rescale attribute so that its minimum is 0 (or −1) and its 
-    #   maximum is 1.
-    # • Standardization. Rescale attribute so that its mean is 0 and its standard 
-    #   deviation is 1.
-    #
-    # Attributes can be redundant, e.g., Petal Length and Petal Width.
-    # Consider Mahalanobis distance (Duda/Hart/Stork).
-    #
-    # Other Distance Issues
-    # Attributes can be irrelevant. The textbook hints at sophisticated ways to 
-    # address this issue, but consider multiplying an attribute times its 
-    # correlation with the outcome (after scaling).
-    # Nominal attributes are either equal or different. Consider being different 
-    # as a difference of 1, or convert to binary attributes.
-    # Attribute values can be missing. Consider using some fixed value for the 
-    # difference.
-    #
-    # For basic kNN, no training is needed, but might
-    # be desired for scaling or selecting training exs.
-    # An open problem is more efficient algorithms to find NN.
-    # Roughly, case-based and analogical learning are based on closeness of 
-    # symbolic descriptions.
-    # What is the inductive bias of kNN? Does kNN have an overfitting problem? 
-    # Will increasing k always improve performance?
-    
-#===============================================================================
-    
-    #  Don't want to do anything with this at the moment, so cutting it out.
-    #  BTL - 2013.05.06.
-    if (FALSE)
-        {
-        library (knnflex)
-        num.rows = 256
-        num.cols = 256
-        num.entries = num.rows * num.cols
-        
-        idx.to.xy.table = matrix (0, nrow=num.entries, ncol=2)
-        
-        curIdx = 0
-        for (curRow in 1:num.rows)
-        {
-            for (curCol in 1:num.cols)
-            {
-                curIdx = curIdx + 1
-                idx.to.xy.table [curIdx,1:2] = c(curRow,curCol)
-            }
-        }
-        
-        dist.between.all.xy.locs = knn.dist (idx.to.xy.table)
-        }
-    
-    }
-
 #===============================================================================
 
