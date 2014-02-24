@@ -107,9 +107,12 @@ cat ("\n\nos = '", current.os, "'\n", sep='')
     #  ISN'T THERE AN R FUNCTION RELATED TO THIS?
     #  In fact, does it even matter in R?
     #  Does R already manage this in strings for file functions?
+        #  Unfortunately, you do have to pay attention to this because 
+        #  when file names are written out (e.g., to hand to Zonation), 
+        #  all the slashes in a file name have to be going in the right 
+        #  direction.
 dir.slash = "/"
 
-#if (current.os == 'mingw32')  dir.slash = "\\"
 if (current.os == "mingw32")  dir.slash = "\\"
 cat ("\n\ndir.slash = '", dir.slash, "'\n", sep='')
 
@@ -117,14 +120,40 @@ arrayIdxBase = 1    #  1 is index base in R, need 0 if python
 
 #===============================================================================
 
-rdvRootDir = "/Users/Bill/D/rdv-framework"
-rdvSharedRsrcDir = paste (rdvRootDir, "/R", sep='')
-g2ProjectRsrcDir = paste (rdvRootDir, "/projects/g2", sep='')
-g2ProjectRsrcDirWithSlash = paste (g2ProjectRsrcDir, "/", sep='')
+#  Windows and mac and linux have different path conventions.
+#  While R can deal with most of these, it can't handle things like
+#  VMware Windows on the mac having a special way of specifying where a
+#  shared file is even though it's on the same mac.
+#  So, I have to make a special variable for the lead-in on lots of path
+#  names to have this work across OS variations.
+
+if (current.os == "mingw32")
+    {
+    userPath = parameters$userPath.windows.vmware
+    
+    } else
+    {
+    if (regexpr ("darwin*", current.os) != -1)
+        {
+        userPath = parameters$userPath.mac
+        
+        } else
+        {
+        userPath = parameters$userPath.linux
+        }
+    }
+
+#===============================================================================
+
+rdvRootDir = file.path (userPath, parameters$rdvRootDir)
+
+rdvSharedRsrcDir = file.path (rdvRootDir, "R")
+g2ProjectRsrcDir = file.path (rdvRootDir, "projects/g2")
+#g2ProjectRsrcDirWithSlash = paste (g2ProjectRsrcDir, "/", sep='')
 
 cat ("\n\nrdvRootDir = ", rdvRootDir, sep='')
 cat ("\nrdvSharedRsrcDir = ", rdvSharedRsrcDir, sep='')
-cat ("\ng2ProjectRsrcDirWithSlash = ", g2ProjectRsrcDirWithSlash, sep='')
+#cat ("\ng2ProjectRsrcDirWithSlash = ", g2ProjectRsrcDirWithSlash, sep='')
 cat ("\n\n")
 
 #  I think that this may already be done by tzar, but I'm not sure 
@@ -152,8 +181,8 @@ setwd (rdvRootDir)    #  Is this still necessary (and correct to do)?
     #  "variables".  Until then, I need to set them by hand.
     #-------------------------------------------------------------
 
-source (paste0 (g2ProjectRsrcDirWithSlash, 'read.R'))    #  Required for init...
-source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeG2options.R'))
+source (file.path (g2ProjectRsrcDir, 'read.R'))    #  Required for init...
+source (file.path (g2ProjectRsrcDir, 'initializeG2options.R'))
 
     #-------------------------------------------------------------
     #  Utility functions for reading and writing that are shared
@@ -161,22 +190,22 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeG2options.R'))
     #  I need to modify them.
     #-------------------------------------------------------------
 
-source (paste0 (g2ProjectRsrcDirWithSlash, 'w.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'g2Utilities.R'))
+source (file.path (g2ProjectRsrcDir, 'w.R'))
+source (file.path (g2ProjectRsrcDir, 'g2Utilities.R'))
 
     #---------------------
     #  Define functions.
     #---------------------
 
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getEnvFiles.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getTrueSppDistFromExistingClusters.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getNumTruePresForEachSpp.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getTruePresForEachSpp.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'getSampledPresForEachSpp.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'runMaxentCmd.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'evaluateMaxentResults.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'setUpAndRunZonation.R'))
-source (paste0 (g2ProjectRsrcDirWithSlash, 'evaluateZonationResults'))
+source (file.path (g2ProjectRsrcDir, 'getEnvFiles.R'))
+source (file.path (g2ProjectRsrcDir, 'getTrueSppDistFromExistingClusters.R'))
+source (file.path (g2ProjectRsrcDir, 'getNumTruePresForEachSpp.R'))
+source (file.path (g2ProjectRsrcDir, 'getTruePresForEachSpp.R'))
+source (file.path (g2ProjectRsrcDir, 'getSampledPresForEachSpp.R'))
+source (file.path (g2ProjectRsrcDir, 'runMaxentCmd.R'))
+source (file.path (g2ProjectRsrcDir, 'evaluateMaxentResults.R'))
+source (file.path (g2ProjectRsrcDir, 'setUpAndRunZonation.R'))
+source (file.path (g2ProjectRsrcDir, 'evaluateZonationResults'))
 
     #-------------------------------------------------------------------------
     #  Do initializations that are more than just retrieving option settings
@@ -186,7 +215,7 @@ source (paste0 (g2ProjectRsrcDirWithSlash, 'evaluateZonationResults'))
     #  functions referenced above.
     #-------------------------------------------------------------------------
 
-source (paste0 (g2ProjectRsrcDirWithSlash, 'initializeBeyondSettingOptions.R'))
+source (file.path (g2ProjectRsrcDir, 'initializeBeyondSettingOptions.R'))
 
 #===============================================================================
 #===============================================================================
@@ -403,29 +432,31 @@ cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
 
 
     #  APPARENT
-setUpAndRunZonation (zonation.APP.spp.list.filename,
-                     zonation.files.dir,
-                     zonation.APP.input.maps.dir,
-                     spp.used.in.reserve.selection.vector,
-                     zonation.APP.output.filename,
-                     full.path.to.zonation.parameter.file,
-                     full.path.to.zonation.exe,
+setUpAndRunZonation (zonationAppSppListFilename,
+                     zonationFilesDir,
+                     zonationAppInputMapsDir,
+                     sppUsedInReserveSelectionVector,
+                     zonationAppOutputFilename,
+                     fullPathToZonationParameterFile,
+                     fullPathToZonationExe,
                      runZonation,
-                     "spp",
-                     parameters$PAR.closeZonationWindowOnCompletion
+                     sppFilePrefix,
+                     closeZonationWindowOnCompletion, 
+                     dir.slash
                     )
 
     #  CORRECT
-setUpAndRunZonation (zonation.COR.spp.list.filename,
-                     zonation.files.dir,
-                     zonation.COR.input.maps.dir,
-                     spp.used.in.reserve.selection.vector,
-                     zonation.COR.output.filename,
-                     full.path.to.zonation.parameter.file,
-                     full.path.to.zonation.exe,
+setUpAndRunZonation (zonationCorSppListFilename,
+                     zonationFilesDir,
+                     zonationCorInputMapsDir,
+                     sppUsedInReserveSelectionVector,
+                     zonationCorOutputFilename,
+                     fullPathToZonationParameterFile,
+                     fullPathToZonationExe,
                      runZonation,
                      "true.prob.dist.spp",
-                     parameters$PAR.closeZonationWindowOnCompletion
+                     closeZonationWindowOnCompletion, 
+                     dir.slash
                     )
 
     #----------------------------------------------------------------
@@ -448,7 +479,9 @@ setUpAndRunZonation (zonation.COR.spp.list.filename,
 
 cat ("\n\n+++++\tBefore", "evaluateZonationResults", "\n")
 
-evaluateZonationResults ()    
+evaluateZonationResults (zonation.files.dir.with.slash, 
+                         analysis.dir.with.slash, 
+                         write.to.file)    
 
 cat ("\n\nAt end of running and evaluation Zonation results.\n\n")
 
