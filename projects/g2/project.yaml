@@ -4,22 +4,68 @@ runner_class: RRunner
 base_params:
     warningLevel: 2         #  tells R whether to show warnings or quit, etc.
 
-    userPath.mac: "/Users/Bill"
-    userPath.windows.vmware: "\\\\vmware-host\\Shared Folders\\Bill"
-    userPath.linux: "unknown userPath right now..."
-
-    rdvRootDir: "D/rdv-framework"
-
     fullTzarExpOutputDirRootWithSlash: $$output_path$$
 
-###    envLayersSrcDir: "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
-    envLayersSrcDir: "D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
+#-------------------------------------------------------------------------------
+
+        #----------------------------------------------------------------
+        #  File and path names that have to be specified separately for
+        #  each OS because of directory separator issues.
+        #----------------------------------------------------------------
+
+#---------------------------------------
+
+    userPath.mac: "/Users/Bill"
+    userPath.windows.vmware: "Z:\\Bill"    #  \\\\vmware-host\\Shared Folders\\Bill"
+    userPath.linux: "/Users/Bill"
+
+#---------------------------------------
+
+    rdvRootDir.mac: "D/rdv-framework"
+    rdvRootDir.windows.vmware: "D\\rdv-framework"
+    rdvRootDir.linux: "D/rdv-framework"
+
+#---------------------------------------
+
+    envLayersSrcDir.mac: "D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
+    envLayersSrcDir.windows.vmware: "D\\Data\\MattsVicTestLandscape\\MtBuffaloEnvVars_Originals\\LowerLeft_r256c256\\UpperRight_r128c128\\"
+    envLayersSrcDir.linux: "D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
+
+#---------------------------------------
+
+    clusterFilePath.mac: "D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft_r256c256/UpperRight_r128c128/"
+    clusterFilePath.windows.vmware: "D\\Data\\MattsVicTestLandscape\\MtBuffaloSupervisedClusterLayers\\LowerLeft_r256c256\\UpperRight_r128c128\\"
+    clusterFilePath.linux: "D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft_r256c256/UpperRight_r128c128/"
+
+#---------------------------------------
+
+    maxentFullPathName.mac: "D/rdv-framework/lib/maxent/maxent.jar"
+    maxentFullPathName.windows.vmware: "D\\rdv-framework\\lib\\maxent\\maxent.jar"
+    maxentFullPathName.linux: "D/rdv-framework/lib/maxent/maxent.jar"
+
+#---------------------------------------
+
+    fullPathToZonationExe.mac: "D/rdv-framework/lib/zonation/zig3.exe"
+    fullPathToZonationExe.windows.vmware: "D\\rdv-framework\\lib\\zonation\\zig3.exe"
+    fullPathToZonationExe.linux: "D/rdv-framework/lib/zonation/zig3.exe"
+
+#---------------------------------------
+
+    fullPathToZonationParameterFile.mac: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
+    fullPathToZonationParameterFile.windows.vmware: "D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
+    fullPathToZonationParameterFile.linux: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
+
+#---------------------------------------
+
+    fullPathToZonationFilesDir.mac: $$output_path$$Zonation
+    fullPathToZonationFilesDir.windows.vmware: $$output_path$$Zonation
+    fullPathToZonationFilesDir.linux: $$output_path$$Zonation
+
+#-------------------------------------------------------------------------------
+
     envLayersWorkingDirName: "InputEnvLayers"
 
     sppFilePrefix: "spp"
-
-###    clusterFilePath: "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft_r256c256/UpperRight_r128c128/"
-    clusterFilePath: "D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft_r256c256/UpperRight_r128c128/"
 
     smoothSuitabilitiesWithGaussian: TRUE
     gaussianSuitabilitySmoothingMean: 0
@@ -55,8 +101,6 @@ base_params:
     numProcessors: 1
     verboseMaxent: TRUE
 
-###    maxentFullPathName: "/Users/Bill/D/rdv-framework/lib/maxent/maxent.jar"
-    maxentFullPathName: "D/rdv-framework/lib/maxent/maxent.jar"
 
     showRawErrorInDist: TRUE
     showAbsErrorInDist:  TRUE
@@ -120,16 +164,7 @@ base_params:
 
     runZonation: TRUE
 
-###    fullPathToZonationExe: "/Users/Bill/D/rdv-framework/lib/zonation/zig3.exe"
-    fullPathToZonationExe: "D/rdv-framework/lib/zonation/zig3.exe"
-###    fullPathToZonationParameterFile: "/Users/Bill/D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
-    fullPathToZonationParameterFile: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
-    #PAR.zonation.parameter.filename: "Z:\\Bill\\D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
-
     closeZonationWindowOnCompletion: TRUE
-
-#    PAR.zonation.spp.list.filename: zonation_spp_list.dat
-#    PAR.zonation.output.filename: zonation_output
 
     zonationAppSppListFilename: "zonation_app_spp_list.dat"
     zonationAppOutputFilename: "zonation_app_output"
@@ -137,7 +172,6 @@ base_params:
     zonationCorSppListFilename: "zonation_cor_spp_list.dat"
     zonationCorOutputFilename: "zonation_cor_output"
 
-    zonationFilesDirName: $$output_path$$/Zonation
 
     numSppInReserveSelection: 11  #  28    ##  100    #  No reserve selection yet.
 

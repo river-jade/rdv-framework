@@ -105,7 +105,7 @@ runMaxentCmd  = function (maxentSamplesFileName,
 		#  Maxent's command line parsing chokes on Windows file names that
 		#  contain spaces, so you need to put quotes around all the path
 		#  or file names that you hand to it.
-filenameQuote = '"'
+filenameQuote = ''    #  "'
 
 maxentCmd = paste (
     '-mx1024m -jar ',    #  '-mx512m -jar ',  BTL - changing this 2014.02.09 to see if it helps

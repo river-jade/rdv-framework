@@ -58,44 +58,98 @@
 #                                     tzarOutputdataRootWithSlash, dir.slash)
 
 curFullTzarExpOutputDirRootWithSlash =
-    parameters$fullTzarExpOutputDirRootWithSlash
+#    parameters$fullTzarExpOutputDirRootWithSlash
+    gsub ("Documents and Settings", "DOCUME~1", 
+          parameters$fullTzarExpOutputDirRootWithSlash)
 
 cat ("\n\ncurFullTzarExpOutputDirRootWithSlash = ",
      curFullTzarExpOutputDirRootWithSlash, "\n\n", sep='')
 
 #===============================================================================
 
+                                #----------------
+                                #  user options
+                                #----------------
+
+#===============================================================================
+
+#------------------------------------------------------------------------
+#  Some options that relate to path names need to be dealt with in
+#  different ways that depend on the OS you're currently running under,
+#  so handle all of those here in one place.
+#------------------------------------------------------------------------
+
+if (current.os == "mingw32")
+    {
+                    #  -- WINDOWS --
+
+    envLayersSrcDir = parameters$envLayersSrcDir.windows.vmware
+    clusterFilePath = parameters$clusterFilePath.windows.vmware
+    maxentFullPathName = parameters$maxentFullPathName.windows.vmware
+    fullPathToZonationExe = parameters$fullPathToZonationExe.windows.vmware
+    fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.windows.vmware
+    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.windows.vmware
+
+    } else if (regexpr ("darwin*", current.os) != -1)
+    {
+                    #  -- MAC --
+
+    envLayersSrcDir = parameters$envLayersSrcDir.mac
+    clusterFilePath = parameters$clusterFilePath.mac
+    maxentFullPathName = parameters$maxentFullPathName.mac
+    fullPathToZonationExe = parameters$fullPathToZonationExe.mac
+    fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.mac
+    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.mac
+
+    } else    #  Assume linux...
+    {
+                    #  -- LINUX --
+
+    envLayersSrcDir = parameters$envLayersSrcDir.linux
+    clusterFilePath = parameters$clusterFilePath.linux
+    maxentFullPathName = parameters$maxentFullPathName.linux
+    fullPathToZonationExe = parameters$fullPathToZonationExe.linux
+    fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.linux
+    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.linu
+    }
+
+cat ("\nfullPathToZonationFilesDir = '", fullPathToZonationFilesDir, "'", sep='')
+
+
+#===============================================================================
+
 #  For getEnvLayers()
 
-    #  This used to be called envLayersDir.
-    #  Trying to make names differentiate between the source of information
-    #  before the experiment is run and the working copy of information that
-    #  is copied into the tzar output area as part of the experiment.
+#  This used to be called envLayersDir.
+#  Trying to make names differentiate between the source of information
+#  before the experiment is run and the working copy of information that
+#  is copied into the tzar output area as part of the experiment.
 #envLayersSrcDir          = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
-envLayersSrcDir = file.path (userPath, parameters$envLayersSrcDir)
+#envLayersSrcDir = file.path (userPath, parameters$envLayersSrcDir)
 
-    #  This used to be called curFullMaxentEnvLayersDirName.
-    #  I'm trying to get rid of references to maxent in cases where things
-    #  are not specific just to maxent.
-    #
+envLayersSrcDir = paste0 (userPath, dir.slash, envLayersSrcDir)
+
+#  This used to be called curFullMaxentEnvLayersDirName.
+#  I'm trying to get rid of references to maxent in cases where things
+#  are not specific just to maxent.
+#
 ##envLayersWorkingDir = "/Users/Bill/tzar/outputdata/g2/default_runset/400_Scen_1/InputEnvLayers"
 #envLayersWorkingDirName = "InputEnvLayers"
+
 envLayersWorkingDirName = parameters$envLayersWorkingDirName
 
 cat ("\n\nenvLayersWorkingDirName = '",
      envLayersWorkingDirName, "'\n\n", sep='')
 
-envLayersWorkingDirWithSlash = paste0 (curFullTzarExpOutputDirRootWithSlash,
-                                       envLayersWorkingDirName, dir.slash)
+envLayersWorkingDir = paste0 (curFullTzarExpOutputDirRootWithSlash,
+                              envLayersWorkingDirName)
+
+envLayersWorkingDirWithSlash = paste0 (envLayersWorkingDir, dir.slash)
 
 cat ("\n\nenvLayersWorkingDirWithSlash = '",
      envLayersWorkingDirWithSlash, "'\n\n", sep='')
 
 #===============================================================================
-
-#----------------
-#  user options
-#----------------
 
 #smoothSuitabilitiesWithGaussian  = TRUE
 smoothSuitabilitiesWithGaussian  = parameters$smoothSuitabilitiesWithGaussian
@@ -111,8 +165,6 @@ scaleInputs           = parameters$scaleInputs  #  DO NOT CHANGE THIS VALUE FOR 
 
 #dataSrc               = "mattData"    #  Should become a guppy option...
 dataSrc               = parameters$dataSrc    #  Should become a guppy option...
-
-#envLayersWorkingDirWithSlash = [has already been set above]
 
 #numSpp                        = NA
 numSpp                        = parameters$numSpp
@@ -163,7 +215,8 @@ cat ("\n\n")
     #--------------------------------------------------------------------
 
 ascFileHeaderAsNumAndStr =
-    getAscFileHeaderAsNamedList (paste0 (envLayersSrcDir,
+#    getAscFileHeaderAsNamedList (paste0 (envLayersSrcDir,
+    getAscFileHeaderAsNamedList (paste0 (envLayersSrcDir, dir.slash,
                                          asciiImgFileNameRoots [arrayIdxBase],
                                          ".asc"))
 
@@ -241,7 +294,8 @@ clusterFileNameStem = parameters$clusterFileNameStem
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
 
 #clusterFilePath = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
-clusterFilePath = file.path (userPath, parameters$clusterFilePath)
+#clusterFilePath = file.path (userPath, parameters$clusterFilePath)
+clusterFilePath = paste0 (userPath, dir.slash, clusterFilePath)
 
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft/"
 #clusterFileNameWithPath = envClustersFileNameWithPath
@@ -440,7 +494,8 @@ verboseMaxent = parameters$verboseMaxent
 # PAR.path.to.maxent:  "lib/maxent"
 
 #maxentFullPathName = "/Users/Bill/D/rdv-framework/lib/maxent/maxent.jar"
-maxentFullPathName = file.path (userPath, parameters$maxentFullPathName)
+#maxentFullPathName = file.path (userPath, parameters$maxentFullPathName)
+maxentFullPathName = paste0 (userPath, dir.slash, maxentFullPathName)
 
     #--------------------
 
@@ -582,7 +637,7 @@ if (runZonation)
 #                       "\n=====>  Quitting now.\n\n"))
 #         }
 
-    zonationFilesDir = parameters$zonationFilesDirName
+###    zonationFilesDir = parameters$zonationFilesDirName
 #    zonationFilesDirWithSlash = paste0 (zonationFilesDir, "/")
 
         #  Kluge to deal with lots of Windows problems running zonation
@@ -605,10 +660,11 @@ if (runZonation)
         #  "Program Files" has a name stored in the environment that you can
         #  use to avoid these space-based problems.
 
-    zonationFilesDir = gsub ("Documents and Settings", "DOCUME~1", zonationFilesDir)
+    fullPathToZonationFilesDir = gsub ("Documents and Settings", "DOCUME~1", fullPathToZonationFilesDir)
 
-    cat ("\nzonationFilesDir = '", zonationFilesDir, "'", sep='')
-    if ( !file.exists (zonationFilesDir))  dir.create (zonationFilesDir)
+    cat ("\nfullPathToZonationFilesDir = '", fullPathToZonationFilesDir, "'", sep='')    
+    
+    if ( !file.exists (fullPathToZonationFilesDir))  dir.create (fullPathToZonationFilesDir)
 
         #  2014 02 19 - NOT SURE IF THIS SHOULD BE SET TO fullMaxentOutputDirWithSlash
         #               OR SOMETHING ELSE.  NEED TO SEE WHERE IT'S USED AND SEE IF
@@ -632,15 +688,19 @@ if (runZonation)
     zonationCorSppListFilename = parameters$zonationCorSppListFilename
     zonationCorOutputFilename = parameters$zonationCorOutputFilename
 
-    fullPathToZonationParameterFile = file.path (userPath, parameters$fullPathToZonationParameterFile)
-    fullPathToZonationExe = file.path (userPath, parameters$fullPathToZonationExe)
+#    fullPathToZonationParameterFile = file.path (userPath, parameters$fullPathToZonationParameterFile)
+    fullPathToZonationParameterFile = paste0 (userPath, dir.slash, fullPathToZonationParameterFile)
+
+
+#    fullPathToZonationExe = file.path (userPath, parameters$fullPathToZonationExe)
+    fullPathToZonationExe = paste0 (userPath, dir.slash, fullPathToZonationExe)
 
     closeZonationWindowOnCompletion = parameters$closeZonationWindowOnCompletion
 
     sppFilePrefix = parameters$sppFilePrefix
     }
 
-stop ("\n***  END TEST SETUP  ***\n\n")
+#stop ("\n***  END TEST SETUP  ***\n\n")
 
 #===============================================================================
 

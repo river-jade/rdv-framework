@@ -145,11 +145,35 @@ if (current.os == "mingw32")
 
 #===============================================================================
 
-rdvRootDir = file.path (userPath, parameters$rdvRootDir)
+if (current.os == "mingw32")
+    {
+        #  -- Windows --
+    #    output_path = output_path.windows.vmware
+    userPath = parameters$userPath.windows.vmware      
+    rdvRootDir = parameters$rdvRootDir.windows.vmware
+    
+    } else if (regexpr ("darwin*", current.os) != -1)
+    {
+        #  -- Mac --
+    #    output_path = output_path.mac
+    userPath = parameters$userPath.mac     
+    rdvRootDir = parameters$rdvRootDir.mac
+    
+    } else    #  Assume linux...
+    {
+    #    output_path = output_path.linux
+    userPath = parameters$userPath.linux     
+    rdvRootDir = parameters$rdvRootDir.linux
+    }
 
-rdvSharedRsrcDir = file.path (rdvRootDir, "R")
-g2ProjectRsrcDir = file.path (rdvRootDir, "projects/g2")
-#g2ProjectRsrcDirWithSlash = paste (g2ProjectRsrcDir, "/", sep='')
+#===============================================================================
+
+#rdvRootDir = file.path (userPath, parameters$rdvRootDir)
+rdvRootDir = paste0 (userPath, dir.slash, rdvRootDir)
+
+rdvSharedRsrcDir = paste0 (rdvRootDir, dir.slash, "R")
+g2ProjectRsrcDir = paste0 (rdvRootDir, dir.slash, "projects/g2")
+g2ProjectRsrcDirWithSlash = paste0 (g2ProjectRsrcDir, dir.slash)
 
 cat ("\n\nrdvRootDir = ", rdvRootDir, sep='')
 cat ("\nrdvSharedRsrcDir = ", rdvSharedRsrcDir, sep='')
@@ -163,13 +187,13 @@ cat ("\n\n")
 #  projects/g2 in this case, which is the directory given on the command 
 #  line for the execlocalruns command.  Not sure what it does when 
 #  running from a repository instead of a local directory.
-setwd (rdvRootDir)    #  Is this still necessary (and correct to do)?
-                      #  It was done in runZonation.R as well, so maybe 
-                      #  this is related to running external code?
-                      #  Probably shouldn't be doing this at all and 
-                      #  should just be running things with full paths 
-                      #  so that this g2 code works no matter where it's 
-                      #  running from.
+#####setwd (rdvRootDir)    #  Is this still necessary (and correct to do)?
+#  It was done in runZonation.R as well, so maybe 
+#  this is related to running external code?
+#  Probably shouldn't be doing this at all and 
+#  should just be running things with full paths 
+#  so that this g2 code works no matter where it's 
+#  running from.
 
 #===============================================================================
 
@@ -205,7 +229,7 @@ source (file.path (g2ProjectRsrcDir, 'getSampledPresForEachSpp.R'))
 source (file.path (g2ProjectRsrcDir, 'runMaxentCmd.R'))
 source (file.path (g2ProjectRsrcDir, 'evaluateMaxentResults.R'))
 source (file.path (g2ProjectRsrcDir, 'setUpAndRunZonation.R'))
-source (file.path (g2ProjectRsrcDir, 'evaluateZonationResults'))
+source (file.path (g2ProjectRsrcDir, 'evaluateZonationResults.R'))
 
     #-------------------------------------------------------------------------
     #  Do initializations that are more than just retrieving option settings
@@ -387,7 +411,10 @@ runMaxentCmd (maxentSamplesFileName,
               maxentReplicateType,
               numMaxentReplicates,
               maxentFullPathName,
-              curFullMaxentEnvLayersDirName,
+              
+              #####curFullMaxentEnvLayersDirName,
+              envLayersWorkingDir, 
+              
               numProcessors,
               verboseMaxent
               )
@@ -433,7 +460,7 @@ cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
 
     #  APPARENT
 setUpAndRunZonation (zonationAppSppListFilename,
-                     zonationFilesDir,
+                     fullPathToZonationFilesDir,
                      zonationAppInputMapsDir,
                      sppUsedInReserveSelectionVector,
                      zonationAppOutputFilename,
@@ -447,7 +474,7 @@ setUpAndRunZonation (zonationAppSppListFilename,
 
     #  CORRECT
 setUpAndRunZonation (zonationCorSppListFilename,
-                     zonationFilesDir,
+                     fullPathToZonationFilesDir,
                      zonationCorInputMapsDir,
                      sppUsedInReserveSelectionVector,
                      zonationCorOutputFilename,
@@ -479,9 +506,13 @@ setUpAndRunZonation (zonationCorSppListFilename,
 
 cat ("\n\n+++++\tBefore", "evaluateZonationResults", "\n")
 
-evaluateZonationResults (zonation.files.dir.with.slash, 
-                         analysis.dir.with.slash, 
-                         write.to.file)    
+evaluateZonationResults (#zonation.files.dir.with.slash, 
+                         paste0 (fullPathToZonationFilesDir, dir.slash), 
+                         #analysis.dir.with.slash, 
+                         fullAnalysisDirWithSlash, 
+                         #write.to.file, 
+                         writeToFile
+                         )    
 
 cat ("\n\nAt end of running and evaluation Zonation results.\n\n")
 
