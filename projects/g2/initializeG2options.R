@@ -495,7 +495,11 @@ verboseMaxent = parameters$verboseMaxent
 
 #maxentFullPathName = "/Users/Bill/D/rdv-framework/lib/maxent/maxent.jar"
 #maxentFullPathName = file.path (userPath, parameters$maxentFullPathName)
-maxentFullPathName = paste0 (userPath, dir.slash, maxentFullPathName)
+    #  Changing to get rid of userPath lead-in now that I'm using the 
+    #  libraries command in the project.yaml file and it creates a copy 
+    #  of maxent.jar in a separate place.
+    #  BTL - 2014 03 05.
+#####maxentFullPathName = paste0 (userPath, dir.slash, maxentFullPathName)
 
     #--------------------
 
@@ -689,11 +693,19 @@ if (runZonation)
     zonationCorOutputFilename = parameters$zonationCorOutputFilename
 
 #    fullPathToZonationParameterFile = file.path (userPath, parameters$fullPathToZonationParameterFile)
-    fullPathToZonationParameterFile = paste0 (userPath, dir.slash, fullPathToZonationParameterFile)
+    #  Changing to get rid of userPath lead-in now that I'm using the 
+    #  libraries command in the project.yaml file and it creates a copy 
+    #  of zonation parameters file in a separate place.
+    #  BTL - 2014 03 05.
+    #####fullPathToZonationParameterFile = paste0 (userPath, dir.slash, fullPathToZonationParameterFile)
 
 
 #    fullPathToZonationExe = file.path (userPath, parameters$fullPathToZonationExe)
-    fullPathToZonationExe = paste0 (userPath, dir.slash, fullPathToZonationExe)
+    #  Changing to get rid of userPath lead-in now that I'm using the 
+    #  libraries command in the project.yaml file and it creates a copy 
+    #  of zonation parameters file in a separate place.
+    #  BTL - 2014 03 05.
+    #####fullPathToZonationExe = paste0 (userPath, dir.slash, fullPathToZonationExe)
 
     closeZonationWindowOnCompletion = parameters$closeZonationWindowOnCompletion
 

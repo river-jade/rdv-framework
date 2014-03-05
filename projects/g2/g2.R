@@ -4,9 +4,23 @@
 
 # source( 'g2.R' )
 
-#  To run under tzar:
+#  To run under tzar on mac:
 #      cd /Users/Bill/D/rdv-framework
 #      java -jar tzar.jar execlocalruns ./projects/g2/
+
+#  To run under tzar on vmware windows emulator:
+#          #  Have to use "pushd" instead of "cd" to access shared files.
+#      pushd \\vmware-host\Shared Folders\Bill\D\rdv-framework
+#          #  Have to use tzar file name rather than symbolic link since 
+#          #  windows doesn't recognize the link.
+#      java -jar tzar-0.5.0.from.ant.build.on.mac.jar execlocalruns projects/g2    
+
+#===============================================================================
+
+#  Currently requires the following R packages:
+
+#      pixmap    (used in read.R)
+#      grDevices    (used in g2Utilities.R)
 
 #===============================================================================
 
