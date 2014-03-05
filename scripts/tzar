@@ -1,0 +1,36 @@
+#!/bin/bash
+export TZAR_DIR="$HOME/tzar"
+
+echo -n "Starting tzar node client:"
+. $HOME/env.sh
+
+# if tzar directory doesn't exist, create it
+if [ ! -d $TZAR_DIR ]; then
+  mkdir $TZAR_DIR
+fi
+
+TZAR_FLAGS=$EXTRA_TZAR_FLAGS
+
+TZAR_FLAGS="$TZAR_FLAGS --repository-prefixes=$REPOSITORY_PREFIXES"
+
+# if clustername is set, add it to flags list
+if [ -n $CLUSTER_NAME ]; then
+  TZAR_FLAGS="$TZAR_FLAGS --clustername=$CLUSTER_NAME"
+fi
+
+if [ -n $SCP_OUTPUT_HOST ]; then
+  TZAR_FLAGS="$TZAR_FLAGS --scpoutputhost=$SCP_OUTPUT_HOST --scpoutputpath=$SCP_OUTPUT_PATH"
+fi
+
+if [ -n PEMFILE ]; then
+  TZAR_FLAGS="$TZAR_FLAGS --pemfile=$PEMFILE"
+fi
+
+if [ -n $TZAR_VERSION ]; then
+  JARFILE="tzar-${TZAR_VERSION}.jar"
+else
+  JARFILE="tzar.jar"
+fi
+
+# run tzar
+java -jar /usr/local/lib/tzar/$JARFILE pollandrun $TZAR_FLAGS
