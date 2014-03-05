@@ -5,14 +5,19 @@ then
   echo "The TZAR_DB environment variable must be set for tzar to function correctly"
 fi
 
-TZAR_VERSION=${TZAR_VERSION-0.4.2}
+TZAR_VERSION=${TZAR_VERSION:-0.5.1}
 
 cd /home/ubuntu
 
 mkdir bin
 cd bin
 
-wget http://tzar-framework.googlecode.com/files/tzar-${TZAR_VERSION}.jar
+if [[ "${TZAR_VERSION}" < "0.5.0" ]]; then
+  wget http://tzar-framework.googlecode.com/files/tzar-${TZAR_VERSION}.jar
+else
+  wget https://tzar-framework.atlassian.net/wiki/download/attachments/4980739/tzar-${TZAR_VERSION}.jar
+fi
+
 ln -s tzar-${TZAR_VERSION}.jar tzar.jar
 
 wget http://rdv-framework.googlecode.com/svn/trunk/R/install.packages.R
