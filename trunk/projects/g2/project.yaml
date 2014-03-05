@@ -1,6 +1,19 @@
 project_name: g2
 runner_class: RRunner
 
+#-------------------------------------------------------------------------------
+
+libraries:
+    -  name: maxentLibrary
+       repo_type: http_zip
+       url: http://glass.eres.rmit.edu.au/tzar_input/g2/maxent.zip
+
+    -  name: zonationLibrary
+       repo_type: http_zip
+       url: http://glass.eres.rmit.edu.au/tzar_input/g2/zonation.zip
+ 
+#-------------------------------------------------------------------------------
+
 base_params:
     warningLevel: 2         #  tells R whether to show warnings or quit, etc.
 
@@ -39,19 +52,25 @@ base_params:
 
 #---------------------------------------
 
-    maxentFullPathName.mac: "D/rdv-framework/lib/maxent/maxent.jar"
+#    maxentFullPathName.mac: "D/rdv-framework/lib/maxent/maxent.jar"
+    maxentFullPathName.mac: "$$library_path(maxentLibrary)$$/maxent.jar"
+
     maxentFullPathName.windows.vmware: "D\\rdv-framework\\lib\\maxent\\maxent.jar"
     maxentFullPathName.linux: "D/rdv-framework/lib/maxent/maxent.jar"
 
 #---------------------------------------
 
-    fullPathToZonationExe.mac: "D/rdv-framework/lib/zonation/zig3.exe"
+#    fullPathToZonationExe.mac: "D/rdv-framework/lib/zonation/zig3.exe"
+    fullPathToZonationExe.mac: "$$library_path(zonationLibrary)$$/zig3.exe"
+
     fullPathToZonationExe.windows.vmware: "D\\rdv-framework\\lib\\zonation\\zig3.exe"
     fullPathToZonationExe.linux: "D/rdv-framework/lib/zonation/zig3.exe"
 
 #---------------------------------------
 
-    fullPathToZonationParameterFile.mac: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
+#    fullPathToZonationParameterFile.mac: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
+    fullPathToZonationParameterFile.mac: "$$library_path(zonationLibrary)$$/Z_parameter_settings.dat"
+
     fullPathToZonationParameterFile.windows.vmware: "D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
     fullPathToZonationParameterFile.linux: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
 
