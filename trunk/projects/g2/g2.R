@@ -13,7 +13,9 @@
 #      pushd \\vmware-host\Shared Folders\Bill\D\rdv-framework
 #          #  Have to use tzar file name rather than symbolic link since 
 #          #  windows doesn't recognize the link.
-#      java -jar tzar-0.5.0.from.ant.build.on.mac.jar execlocalruns projects/g2    
+#      java -jar tzar-0.5.1.jar execlocalruns projects/g2
+#      or
+#      java -jar tzar.jar execlocalruns projects/g2    
 
 #===============================================================================
 
