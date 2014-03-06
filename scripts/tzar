@@ -19,7 +19,7 @@ if [ -n $CLUSTER_NAME ]; then
 fi
 
 if [ -n $SCP_OUTPUT_HOST ]; then
-  TZAR_FLAGS="$TZAR_FLAGS --scpoutputhost=$SCP_OUTPUT_HOST --scpoutputpath=$SCP_OUTPUT_PATH"
+  TZAR_FLAGS="$TZAR_FLAGS --scpoutputhost=$SCP_OUTPUT_HOST --finaloutputpath=$SCP_OUTPUT_PATH"
 fi
 
 if [ -n PEMFILE ]; then
