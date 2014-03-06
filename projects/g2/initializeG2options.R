@@ -110,7 +110,7 @@ if (current.os == "mingw32")
     maxentFullPathName = parameters$maxentFullPathName.linux
     fullPathToZonationExe = parameters$fullPathToZonationExe.linux
     fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.linux
-    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.linu
+    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.linux
     }
 
 cat ("\nfullPathToZonationFilesDir = '", fullPathToZonationFilesDir, "'", sep='')
@@ -500,6 +500,7 @@ verboseMaxent = parameters$verboseMaxent
     #  of maxent.jar in a separate place.
     #  BTL - 2014 03 05.
 #####maxentFullPathName = paste0 (userPath, dir.slash, maxentFullPathName)
+maxentFullPathName = gsub ("Documents and Settings", "DOCUME~1", maxentFullPathName)
 
     #--------------------
 
@@ -698,6 +699,7 @@ if (runZonation)
     #  of zonation parameters file in a separate place.
     #  BTL - 2014 03 05.
     #####fullPathToZonationParameterFile = paste0 (userPath, dir.slash, fullPathToZonationParameterFile)
+    fullPathToZonationParameterFile = gsub ("Documents and Settings", "DOCUME~1", fullPathToZonationParameterFile)
 
 
 #    fullPathToZonationExe = file.path (userPath, parameters$fullPathToZonationExe)
@@ -706,6 +708,7 @@ if (runZonation)
     #  of zonation parameters file in a separate place.
     #  BTL - 2014 03 05.
     #####fullPathToZonationExe = paste0 (userPath, dir.slash, fullPathToZonationExe)
+    fullPathToZonationExe = gsub ("Documents and Settings", "DOCUME~1", fullPathToZonationExe)
 
     closeZonationWindowOnCompletion = parameters$closeZonationWindowOnCompletion
 

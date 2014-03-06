@@ -55,7 +55,8 @@ base_params:
 #    maxentFullPathName.mac: "D/rdv-framework/lib/maxent/maxent.jar"
     maxentFullPathName.mac: "$$library_path(maxentLibrary)$$/maxent.jar"
 
-    maxentFullPathName.windows.vmware: "D\\rdv-framework\\lib\\maxent\\maxent.jar"
+#    maxentFullPathName.windows.vmware: "D\\rdv-framework\\lib\\maxent\\maxent.jar"
+    maxentFullPathName.windows.vmware: "$$library_path(maxentLibrary)$$\\maxent.jar"
     maxentFullPathName.linux: "D/rdv-framework/lib/maxent/maxent.jar"
 
 #---------------------------------------
@@ -63,7 +64,9 @@ base_params:
 #    fullPathToZonationExe.mac: "D/rdv-framework/lib/zonation/zig3.exe"
     fullPathToZonationExe.mac: "$$library_path(zonationLibrary)$$/zig3.exe"
 
-    fullPathToZonationExe.windows.vmware: "D\\rdv-framework\\lib\\zonation\\zig3.exe"
+#    fullPathToZonationExe.windows.vmware: "D\\rdv-framework\\lib\\zonation\\zig3.exe"
+    fullPathToZonationExe.windows.vmware: "$$library_path(zonationLibrary)$$\\zig3.exe"
+
     fullPathToZonationExe.linux: "D/rdv-framework/lib/zonation/zig3.exe"
 
 #---------------------------------------
@@ -71,7 +74,8 @@ base_params:
 #    fullPathToZonationParameterFile.mac: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
     fullPathToZonationParameterFile.mac: "$$library_path(zonationLibrary)$$/Z_parameter_settings.dat"
 
-    fullPathToZonationParameterFile.windows.vmware: "D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
+#    fullPathToZonationParameterFile.windows.vmware: "D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
+    fullPathToZonationParameterFile.windows.vmware: "$$library_path(zonationLibrary)$$\\Z_parameter_settings.dat"
     fullPathToZonationParameterFile.linux: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
 
 #---------------------------------------

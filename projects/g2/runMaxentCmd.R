@@ -220,6 +220,7 @@ cat( '\n\nThe command to run maxent is:', maxentCmd, '\n' )
 cat( '\n----------------------------------' );
 cat( '\n Running Maxent' );
 cat( '\n----------------------------------' );
+cat ("\n\n")
 
 		if( current.os == 'mingw32' )
 			{
