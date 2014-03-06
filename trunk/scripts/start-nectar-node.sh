@@ -7,10 +7,8 @@ fi
 
 TZAR_VERSION=${TZAR_VERSION:-0.5.1}
 
-cd /home/ubuntu
-
-mkdir bin
-cd bin
+mkdir /usr/local/lib/tzar
+cd /usr/local/lib/tzar
 
 if [[ "${TZAR_VERSION}" < "0.5.0" ]]; then
   wget http://tzar-framework.googlecode.com/files/tzar-${TZAR_VERSION}.jar
@@ -20,18 +18,14 @@ fi
 
 ln -s tzar-${TZAR_VERSION}.jar tzar.jar
 
-wget http://rdv-framework.googlecode.com/svn/trunk/R/install.packages.R
-wget http://rdv-framework.googlecode.com/svn/trunk/scripts/start-tzar.sh
-wget http://rdv-framework.googlecode.com/svn/trunk/scripts/stop-tzar.sh
-wget http://rdv-framework.googlecode.com/svn/trunk/scripts/tzar.sh
+wget http://rdv-framework.googlecode.com/svn/trunk/scripts/tzar -O /usr/local/bin/tzar
+chmod +x /usr/local/bin/tzar
 
 cd /home/ubuntu
 
 # echo "HostKeyAlgorithms ssh-rsa" >> /etc/ssh/ssh_config
 echo "|1|vsNQtnEsu8UD1ivBbbVmz9n/PI0=|AIFdBpKKfm+tYWPsecBdeqE/GL4= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA3v38O1h9ZA7Fjbgi7yYJOOWxZWjkalm6fnDhtsUiApeAL7jbbBn0Am4JeDfC//Nfy2CthuBBYSGltsLDFfMRQ6sgGGRr4bHBngL6aIyAvKaBPSNpaIOQfG3IwinBtD1vP024kV6E38q62t2kdqpl6i7s0cHWCpexylrFkEtDUAnQ2OEeStMXtAdz13Czto2cu0mPm4e19OlRhofv5tEHR1n4wo+0lVnGi4lJCNqeT7VyzzPGhQygpUqJ3yv5VjQq5rOQfBzuxONyPssU4RcA8PDvcUmS4EHnBf0rl76UmbYtXDonMVcsAeTmQ9NJilzHjcF0kLUTuf1+AyTXsWgcdQ==
 |1|tpDNZ3lpnc5BzhUUyM9+s3KWQs8=|V2nNY3hqboKoT7TqK/C73BnU65g= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA3v38O1h9ZA7Fjbgi7yYJOOWxZWjkalm6fnDhtsUiApeAL7jbbBn0Am4JeDfC//Nfy2CthuBBYSGltsLDFfMRQ6sgGGRr4bHBngL6aIyAvKaBPSNpaIOQfG3IwinBtD1vP024kV6E38q62t2kdqpl6i7s0cHWCpexylrFkEtDUAnQ2OEeStMXtAdz13Czto2cu0mPm4e19OlRhofv5tEHR1n4wo+0lVnGi4lJCNqeT7VyzzPGhQygpUqJ3yv5VjQq5rOQfBzuxONyPssU4RcA8PDvcUmS4EHnBf0rl76UmbYtXDonMVcsAeTmQ9NJilzHjcF0kLUTuf1+AyTXsWgcdQ==" >> /home/ubuntu/.ssh/known_hosts
-
-chmod +x bin/*
 
 # update the package list
 apt-get update && \
@@ -42,11 +36,26 @@ apt-get -y install default-jre $EXTRA_PACKAGES
 # run whatever code is specified to run after installing packages
 eval $POST_APT_INSTALL
 
-# add start-tzar to the crontab so that it will run on reboot, or when started \
-# from an image. \
-su ubuntu -c '(crontab -l; echo "@reboot EXTRA_TZAR_FLAGS=$EXTRA_TZAR_FLAGS /home/ubuntu/bin/start-tzar.sh") \
-    | crontab -' && \
-\
-# start tzar \
-su ubuntu -c bin/start-tzar.sh
+# Create init script so that tzar starts on startup.
+cat << EOF > /etc/init/tzar.conf 
+# tzar pollandrun service
+#
+# This service starts the tzar node polling the database until shutdown.
 
+start on (local-filesystems and net-device-up IFACE!=lo)
+
+stop on runlevel [016]
+
+respawn
+respawn limit 10 5
+
+setuid ubuntu
+
+script
+    export HOME=/home/ubuntu
+    exec /usr/local/bin/tzar > /home/ubuntu/tzar/consolelog 2>&1
+end script
+EOF
+
+# start tzar!
+start tzar
