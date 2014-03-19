@@ -170,7 +170,7 @@ computeAggregateScores = function (aMatrix, curRow, aggScores, numCells,
 
 #par (mfrow = c (1,3))    #  pdf() seems to ignore this, so commenting out...
 
-#pdf ("aOverBplots.pdf")
+pdf ("aOverBplots_aggregated.pdf")
 
 aggScoresTemplate = 
     data.frame (
@@ -190,7 +190,7 @@ AminusBoverAplusB_errMag_aggScores = aggScoresTemplate
 minFracErr = -0.1
 maxFracErr = 0.1
 numSteps = 100
-fracErrStepSize = 0.001    #maxFracErr / numSteps
+fracErrStepSize = 0.01    #maxFracErr / numSteps
 #    fracErrStepSize = 0.05
 
 for (kkk in 1:numAoverBvalues)
@@ -741,5 +741,5 @@ plotAggregateMeasure ("BLOWUP OF: Median Relative Error\nacross A/B values",
 
 
 
-#dev.off()
+dev.off()
 
