@@ -471,9 +471,9 @@ plotAggregateMeasure ("Fraction of cells with ErrMag = 1\n(i.e., garbage-in garb
 # statisticName = "quant75"
 # statisticName = "quant50"
 
-    #-----------------------------
-    #  MEAN and MEDIAN of ErrMag
-    #-----------------------------
+#-----------------------------
+#  MEAN and SD as well as MEDIAN and MAD of ErrMag
+#-----------------------------
 
 par (mfrow = c (2,2))    #  pdf() seems to ignore this, so commenting out...
 #yAxisRange = c(0,3)
@@ -487,18 +487,18 @@ plotAggregateMeasure ("Mean Error Magnification\nacross A/B values",
                       showReferenceLine=TRUE, 
                       autoscale=TRUE, 
                       "topright"
-                      )
+                    )
 
-plotAggregateMeasure ("BLOWUP OF: Mean Error Magnification\nacross A/B values", 
-                      "mean", 
+plotAggregateMeasure ("SD of Error Magnification\nacross A/B values", 
+                      "sd", 
                       #                      errMeasureType, 
                       normDiff_aggScores, 
                       simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange=c(0,3), 
-                      showReferenceLine=TRUE, 
-                      autoscale=FALSE, 
+                      xAxisRange, yAxisRange, 
+                      showReferenceLine=FALSE, 
+                      autoscale=TRUE, 
                       "topright"
-                      )
+                    )
 
 plotAggregateMeasure ("Median Error Magnification\nacross A/B values", 
                       "median", 
@@ -509,48 +509,7 @@ plotAggregateMeasure ("Median Error Magnification\nacross A/B values",
                       showReferenceLine=TRUE, 
                       autoscale=TRUE, 
                       "topright"
-                    )
-
-plotAggregateMeasure ("BLOWUP OF: Median Error Magnification\nacross A/B values", 
-                      "mean", 
-                      #                      errMeasureType, 
-                      normDiff_aggScores, 
-                      simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange=c(0,3), 
-                      showReferenceLine=TRUE, 
-                      autoscale=FALSE, 
-                      "topright"
-                    )
-
-
-    #-----------------------------
-    #  SD and MAD of ErrMag
-    #-----------------------------
-
-par (mfrow = c (2,2))    #  pdf() seems to ignore this, so commenting out...
-#yAxisRange = c(0,3)
-
-plotAggregateMeasure ("Std Dev of Error Magnification\nacross A/B values", 
-                      "sd", 
-                      #                      errMeasureType, 
-                      normDiff_aggScores, 
-                      simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange, 
-                      showReferenceLine=TRUE, 
-                      autoscale=TRUE, 
-                      "topright"
 )
-
-plotAggregateMeasure ("BLOWUP OF: Std Dev of Error Magnification\nacross A/B values", 
-                      "sd", 
-                      #                      errMeasureType, 
-                      normDiff_aggScores, 
-                      simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange=c(0,3), 
-                      showReferenceLine=TRUE, 
-                      autoscale=FALSE, 
-                      "topright"
-                    )
 
 plotAggregateMeasure ("Median Abs Dev of Error Magnification\nacross A/B values", 
                       "mad", 
@@ -558,72 +517,10 @@ plotAggregateMeasure ("Median Abs Dev of Error Magnification\nacross A/B values"
                       normDiff_aggScores, 
                       simpleRatio_aggScores, 
                       xAxisRange, yAxisRange, 
-                      showReferenceLine=TRUE, 
+                      showReferenceLine=FALSE, 
                       autoscale=TRUE, 
                       "topright"
-                    )
-
-plotAggregateMeasure ("BLOWUP OF: Median Abs Dev of Error Magnification\nacross A/B values", 
-                      "mad", 
-                      #                      errMeasureType, 
-                      normDiff_aggScores, 
-                      simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange=c(0,3), 
-                      showReferenceLine=TRUE, 
-                      autoscale=FALSE, 
-                      "topright"
-                    )
-
-#-----------------------------
-#  MEAN and SD of ErrMag
-#-----------------------------
-
-par (mfrow = c (2,2))    #  pdf() seems to ignore this, so commenting out...
-#yAxisRange = c(0,3)
-
-plotAggregateMeasure ("Mean Error Magnification\nacross A/B values", 
-                      "mean", 
-                      #                      errMeasureType, 
-                      normDiff_aggScores, 
-                      simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange, 
-                      showReferenceLine=TRUE, 
-                      autoscale=TRUE, 
-                      "topright"
-                    )
-
-plotAggregateMeasure ("BLOWUP OF: Mean Error Magnification\nacross A/B values", 
-                      "mean", 
-                      #                      errMeasureType, 
-                      normDiff_aggScores, 
-                      simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange=c(0,3), 
-                      showReferenceLine=TRUE, 
-                      autoscale=FALSE, 
-                      "topright"
-                    )
-
-plotAggregateMeasure ("SD of Error Magnification\nacross A/B values", 
-                      "sd", 
-                      #                      errMeasureType, 
-                      normDiff_aggScores, 
-                      simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange, 
-                      showReferenceLine=TRUE, 
-                      autoscale=TRUE, 
-                      "topright"
-                    )
-
-plotAggregateMeasure ("BLOWUP OF: SD of Error Magnification\nacross A/B values", 
-                      "sd", 
-                      #                      errMeasureType, 
-                      normDiff_aggScores, 
-                      simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange=c(0,3), 
-                      showReferenceLine=TRUE, 
-                      autoscale=FALSE, 
-                      "topright"
-                    )
+)
 
 
     #-----------------------------
@@ -688,7 +585,7 @@ normDiff_aggScores = AminusBoverAplusB_relErr_aggScores
 simpleRatio_aggScores = AoverB_relErr_aggScores
 
 #-----------------------------
-#  MEAN and MEDIAN of ErrMag
+#  MEAN and MEDIAN as well as SD and MAD of Relative Error
 #-----------------------------
 
 par (mfrow = c (2,2))    #  pdf() seems to ignore this, so commenting out...
@@ -705,14 +602,14 @@ plotAggregateMeasure ("Mean Relative Error\nacross A/B values",
                       "topright"
 )
 
-plotAggregateMeasure ("BLOWUP OF: Mean Relative Error\nacross A/B values", 
-                      "mean", 
+plotAggregateMeasure ("Standard deviation of Relative Error\nacross A/B values", 
+                      "sd", 
                       #                      errMeasureType, 
                       normDiff_aggScores, 
                       simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange=c(0,3), 
-                      showReferenceLine=TRUE, 
-                      autoscale=FALSE, 
+                      xAxisRange, yAxisRange, 
+                      showReferenceLine=FALSE, 
+                      autoscale=TRUE, 
                       "topright"
 )
 
@@ -727,16 +624,17 @@ plotAggregateMeasure ("Median Relative Error\nacross A/B values",
                       "topright"
 )
 
-plotAggregateMeasure ("BLOWUP OF: Median Relative Error\nacross A/B values", 
-                      "mean", 
+plotAggregateMeasure ("Median absolute deviation of Relative Error\nacross A/B values", 
+                      "mad", 
                       #                      errMeasureType, 
                       normDiff_aggScores, 
                       simpleRatio_aggScores, 
-                      xAxisRange, yAxisRange=c(0,3), 
-                      showReferenceLine=TRUE, 
-                      autoscale=FALSE, 
+                      xAxisRange, yAxisRange, 
+                      showReferenceLine=FALSE, 
+                      autoscale=TRUE, 
                       "topright"
 )
+
 
 
 
