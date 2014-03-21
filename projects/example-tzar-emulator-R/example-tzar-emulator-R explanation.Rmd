@@ -1,12 +1,52 @@
 Emulating running tzar in R
 ===========================
 
-This document is divided into two parts.  The first part walks through each of 
+The emulation functionality explained in this document is aimed at allowing 
+you to run and debug jobs in an interactive environment that replicates some of 
+the most useful elements of tzar.  
+
+Debugging and developing R code that runs under tzar can sometimes be difficult 
+because you lack interactive access to console I/O and to debugging 
+tools when a tzar job is running in the background.  You _can_ emulate this 
+process interactively by running an R program outside of tzar 
+and mocking up some of tzar's useful services, such as 
+building the parameters list from the yaml file.  However, this 
+mocking up is time-consuming and not necessarily reliable or identical to tzar.  
+
+The code described in this document provides an interactive and very low 
+overhead alternative in the form of a tzar emulator that also guarantees a perfect match to the parameter lists and directory structures that tzar would provide.  The idea 
+behind the emulator is very simple:
+
+1) You embed a call to the emulator near the 
+start of your own project code and you source your code in the same way that you 
+would normally run a standalone R program.  
+
+2) The emulation function then 
+runs tzar externally, but only up to the 
+point where your model.R file calls your project code.  This means that tzar 
+just decodes the yaml file and creates the tzar output directory.  
+
+3) It will then save the location of that 
+output directory to a scratch file and return to the emulator function in 
+your project's source code.  There, the emulator retrieves the output directory 
+location from the scratch file.  
+
+4) The emulator then goes to that output directory 
+and sources the variables.R file where tzar always caches the parameters list that it 
+decoded from the yaml file.
+
+From that 
+point on, your project code runs just like it did under a normal local tzar run 
+because it now has the same parameters list and the same output directory.  
+
+This document is divided into 2 parts.  The first part walks through each of 
 the steps that are involved in an emulation run of tzar.  The second part 
 looks at running the example code in the example-tzar-emulator-R project.
 
+
 Steps in the emulation
 ---
+
 
 ### Loading the code
 
@@ -18,7 +58,7 @@ source ('emulateRunningUnderTzar.R')
 
 ### The controlling variable: emulateRunningUnderTzar
 
-There is a boolean variable in that file that controls whether emulations is 
+There is a boolean variable in that file that controls whether emulation is 
 done or not.  That variable is called emulateRunningUnderTzar.  
 
 If you set it to TRUE, then you can run your code in a tzar emulation.  This 
