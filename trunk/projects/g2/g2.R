@@ -5,10 +5,12 @@
 # source( 'g2.R' )
 
 #  To run under tzar on mac:
+#      Set emulateRunningUnderTzar = FALSE in emulateRunningUnderTzar.R
 #      cd /Users/Bill/D/rdv-framework
 #      java -jar tzar.jar execlocalruns ./projects/g2/
 
 #  To run under tzar on vmware windows emulator:
+#      Set emulateRunningUnderTzar = FALSE in emulateRunningUnderTzar.R
 #          #  Have to use "pushd" instead of "cd" to access shared files.
 #      pushd \\vmware-host\Shared Folders\Bill\D\rdv-framework
 #          #  Have to use tzar file name rather than symbolic link since 
@@ -16,6 +18,36 @@
 #      java -jar tzar-0.5.1.jar execlocalruns projects/g2
 #      or
 #      java -jar tzar.jar execlocalruns projects/g2    
+
+#-------------------------------------------------------------------------------
+
+#  To EMULATE running under tzar on a mac:  ***
+#      Set emulateRunningUnderTzar = TRUE in emulateRunningUnderTzar.R
+#      cd /Users/Bill/D/rdv-framework/projects/g2/
+#      source ('g2.R')
+
+#===============================================================================
+
+#  Sometimes, particularly when you're debugging, you'd like to 
+#  get parameters and create an output directory in the same way that 
+#  tzar would do it if you were running under tzar, but you still want 
+#  to be able to use debugging tools such as the browse() command and 
+#  you can't do that under tzar.
+
+#  In that case, set emulateRunningUnderTzar=TRUE in the 
+#  emulateRunningUnderTzar.R file.  
+#  If you really do want to run under tzar rather than emulating it, 
+#  then set emulateRunningUnderTzar=FALSE there.
+
+#  If you don't want to do either of the above, then you have to somehow 
+#  build your parameters list data structure yourself.
+
+#  In that case, if emulation is turned off, there is no problem.
+#  If you've left emulation turned on, then there are likely to be errors 
+#  in here when the emulation code tries to figure out where to read the 
+#  parameters file, etc.
+
+source ('emulateRunningUnderTzar.R')
 
 #===============================================================================
 
@@ -87,6 +119,36 @@
 
 #===============================================================================
 
+# First get the OS so you can deal with OS-specific issues.
+#   for linux this returns linux-gnu
+#   for mac this returns darwin9.8.0
+#   for windows this returns mingw32
+
+current.os <- sessionInfo()$R.version$os
+cat ("\n\nos = '", current.os, "'\n", sep='')
+
+#  ISN'T THERE AN R FUNCTION RELATED TO THIS?
+#  In fact, does it even matter in R?
+#  Does R already manage this in strings for file functions?
+#  Unfortunately, you do have to pay attention to this because 
+#  when file names are written out (e.g., to hand to Zonation), 
+#  all the slashes in a file name have to be going in the right 
+#  direction.
+dir.slash = "/"
+
+if (current.os == "mingw32")  
+    dir.slash = "\\"
+cat ("\n\ndir.slash = '", dir.slash, "'\n", sep='')
+
+arrayIdxBase = 1    #  1 is index base in R, need 0 if python
+
+#-------------------------------------------------------------------------------
+
+if (emulateRunningUnderTzar)
+    parameters = emulateRunningTzar (current.os, tzarEmulation_scratchFileName)
+
+#===============================================================================
+
 #  options (warn = 2)  =>  warnings are treated as errors, i.e., they're fatal.
 #  Here's what the options() help page in R says:
 #
@@ -109,30 +171,6 @@ options (warn = parameters$warningLevel)    #  This will eventually come from ya
 #randomSeed                    = 17
 randomSeed                    = parameters$randomSeed
 set.seed (randomSeed)
-
-#===============================================================================
-
-# First get the OS so you can deal with OS-specific issues.
-#   for linux this returns linux-gnu
-#   for mac this returns darwin9.8.0
-#   for windows this returns mingw32
-
-current.os <- sessionInfo()$R.version$os
-cat ("\n\nos = '", current.os, "'\n", sep='')
-
-    #  ISN'T THERE AN R FUNCTION RELATED TO THIS?
-    #  In fact, does it even matter in R?
-    #  Does R already manage this in strings for file functions?
-        #  Unfortunately, you do have to pay attention to this because 
-        #  when file names are written out (e.g., to hand to Zonation), 
-        #  all the slashes in a file name have to be going in the right 
-        #  direction.
-dir.slash = "/"
-
-if (current.os == "mingw32")  dir.slash = "\\"
-cat ("\n\ndir.slash = '", dir.slash, "'\n", sep='')
-
-arrayIdxBase = 1    #  1 is index base in R, need 0 if python
 
 #===============================================================================
 
@@ -462,6 +500,21 @@ evaluateMaxentResults (numSpp,
 
 #===============================================================================
 
+    #  Since I can't get wine working on the mac yet, 
+    #  I have to bail out before trying to run zonation if on the mac.
+    #  If I can ever get it to run, then this little chunk should be removed.
+
+if (runZonation & (regexpr ("darwin*", current.os) != -1))
+    {
+    if (emulateRunningUnderTzar)  cleanUpAfterTzarEmulation (parameters)    
+    
+    stop (paste0 ("\n\n=====>  Can't run zonation on Mac yet since ", 
+                  "wine doesn't work properly yet.",
+                  "\n=====>  Quitting now.\n\n"))
+    }
+        
+#===============================================================================
+    
     #-------------------------------------------------------------------
     #  Run zonation on apparent species maps and then on correct maps.
     #-------------------------------------------------------------------
@@ -606,6 +659,9 @@ cat ("\n\n             -----  ALL DONE WITH G2 RUN NOW  -----\n\n")
     #
     #----------------------------------------------------------------
 
+#===============================================================================
+
+if (emulateRunningUnderTzar)  cleanUpAfterTzarEmulation (parameters)    
 
 #===============================================================================
 
