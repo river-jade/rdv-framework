@@ -1,0 +1,193 @@
+Emulating running tzar in R
+===========================
+
+This document is divided into two parts.  The first part walks through each of 
+the steps that are involved in an emulation run of tzar.  The second part 
+looks at running the example code in the example-tzar-emulator-R project.
+
+Steps in the emulation
+---
+
+### Loading the code
+
+First, you need to load the code and variables that drive the emulation.
+
+```{r}
+source ('emulateRunningUnderTzar.R')
+```
+
+### The controlling variable: emulateRunningUnderTzar
+
+There is a boolean variable in that file that controls whether emulations is 
+done or not.  That variable is called emulateRunningUnderTzar.  
+
+If you set it to TRUE, then you can run your code in a tzar emulation.  This 
+means that you just run your R program as you would normally run it, e.g., 
+in the R command window or in RStudio.
+
+If you set it to FALSE, then you can run tzar as you normally would.
+
+I have initially set it to be TRUE for this explanation.  If the following 
+command displays it as FALSE, then go back and edit emulateRunningUnderTzar.R 
+so that emulateRunningUnderTzar=TRUE and rerun this explanation so that the 
+emulateRunningUnderTzar.R file is sourced again.  
+
+If you don't do this, then you may get a message like:
+"## Error: object 'parameters' not found" further down in this explanation 
+when it tries to find the parameters list.
+
+```{r}
+cat ("emulateRunningUnderTzar = ", emulateRunningUnderTzar)
+```
+
+###  Embedding the call to the emulation in your code
+
+Once that is set up, you would insert the following commands near the start of 
+your source code that you want to run in tzar emulation mode.  
+
+The emulator needs to use a slightly different command for Windows than for 
+other operating systems, so you either need to ask for the name of the OS 
+here or have already asked for it somewhere before you get to the call below 
+to emulateRunningTzar().  
+
+The call to emulateRunningTzar() will run tzar on your project so that tzar 
+will build the list of parameters from the yaml file and create the output 
+directory.  emulateRunningTzar() will then retrieve the list of parameters 
+and return that list.  
+
+If emulateRunningUnderTzar=FALSE, then it would not 
+have called emulateRunningTzar() and tzar would have loaded the parameters 
+list and called your project's source code itself.  In that case, all console 
+output would have gone to the tzar log file and you would not have been able 
+to have any interaction with the program while it was running (e.g., using the 
+browser() command or any of the debugging tools in RStudio).
+
+```{r}
+current.os = sessionInfo()$R.version$os
+
+if (emulateRunningUnderTzar)
+    parameters = emulateRunningTzar (current.os, tzarEmulation_scratchFileName)
+```
+
+###  Executing your program's normal activities
+
+Now that the emulation setup has run, you should have the same paraemeters list 
+in the parameters variable that tzar would have given you in a normal tzar run.
+Note that this includes all of the wildcard substitutions, etc.  
+
+At this point, you can do whatever you would normally do in your code.  As a 
+very simple example, I'll just print out the values of the parameter list.
+
+```{r}
+cat ("\n\n========  parameters = \n")
+print (parameters)
+cat ("\n\n========  END parameters = \n")
+```
+
+###  Cleaning up after the emulation
+
+Finally, once your program has finished doing whatever it normally does, 
+you can call a routine to clean up a couple of things that the emulation 
+either changed or left behind.  
+
+For example, it creates a scratch file in 
+your project directory that is no longer useful, so the 
+cleanUpAfterTzarEmulation() routine will delete that file.  You could delete 
+that file yourself if you did not call the cleanup routine or you could leave 
+it alone and it would be overwritten the next time the emulator was run.  
+Cleaning it up seems like it would usually be the best idea so that there's 
+not a lot of meaningless junk around.
+
+One other thing that cleaning up does is it allows you to rename the tzar 
+output directory's extension to indicate that the run was an emulation rather 
+than a normal tzar run.  
+
+While tzar is running normally, it attaches 
+".inProgress" to the output directory name, e.g., 
+"1_default_scenario.inProgress".  When the run completes successfully, tzar 
+removes that extension to leave just 1_default_scenario".  If the run fails, 
+then tzar attaches a ".failed" extension, as in "1_default_scenario.failed".  
+
+To designate the end of an emulation run, the cleanup routine will append 
+an extension of your choice (including no extension), with a default value of 
+".completedTzarEmulation", e.g., "1_default_scenario.completedTzarEmulation".  
+This value can be changed by changing the setting of the 
+tzarEmulation_completedDirExtension variable in emulateRunningUnderTzar.R.
+
+After the cleanup is finished, there should be no scratch file left in your 
+project area and the tzar output directory should have your designated 
+extension (or the default extension if you didn't change it).
+
+One thing to note is that your code can call the cleanup function regardless 
+of whether your run succeeded or failed, so having the extension on the 
+directory does not imply that your run succeeded.  However, because it's just 
+a variable in the program, you could get fancy and reset the extension value 
+yourself before calling the cleanup.  
+
+The primary reason why an extension is added at all is to make it clear which 
+tzar outputs are real tzar runs vs. emulations.  If this is not done, then it 
+could be confusing to come back to some old runs and find that their log 
+files are nearly empty in spite of the fact that tzar appeared to have run 
+successfully.
+```{r}
+if (emulateRunningUnderTzar)
+    {
+    cat ("\n\nCleaning up after running emulation...\n\n")
+    cleanUpAfterTzarEmulation (parameters)
+    }
+```
+
+The example emulation project
+---
+
+The example-tzar-emulator-R project contains a very simple example of how you 
+could put all this together.  It consists of 4 primary files:
+
+- model.R
+    - the mainline code expected and called first by tzar
+- project.yaml
+    - the yaml file that tzar expects as the source of parameter settings
+- example-tzar-emulator-R.R
+    - the source code file that would be where your project's code lives
+- emulateRunningUnderTzar.R
+    - the source code and parameter file for the emulator
+    
+To try this code under emulation, make sure that 
+emulateRunningUnderTzar.R has the 3 most important variables set correctly for 
+your situation:
+
+- *emulateRunningUnderTzar* set to TRUE
+- *projectPath* set to the full path to the directory of your project, e.g.,
+    - "/Users/Bill/D/rdv-framework/projects/example-tzar-emulator-R/"
+- *tzarJarPath* set to the full path to the tzar jar file to be executed, e.g., 
+    - "/Users/Bill/D/rdv-framework/tzar.jar"
+
+and then just source example-tzar-emulator-R.R:
+
+```{r}
+source ('example-tzar-emulator-R.R')
+```
+
+The output from sourcing the example code lists the parameters loaded for the 
+project.  One element of that list is called $fullOutputDirWithSlash and it 
+shows where the run was done, but it has a ".inProgress" extension.  The 
+cleanup routine will have changed that to a ".completedTzarEmulation" extension 
+and you can look in that area to see the results of the run.
+
+One thing that you will notice is that if you open the logging.log file, unlike 
+a normal tzar run, the log file  
+will not contain the same things that were echoed to the screen here.  For 
+example, one line of the output here says 
+
+"========  parameters IN emulation = "
+
+Because the emulated tzar only ran far enough to load up parameters from the 
+yaml file and to create the output directory, the log file won't show anything 
+after that.  Instead, you will already have had access to it in your normal 
+output console.  
+
+However, anything that your program did outside of the console should be just 
+the same as it would have been in a tzar run.  For example, if you had created 
+subdirectories for pieces of your output or you had written output files or 
+plots, tose should all be exactly where they would have been in a normal 
+tzar run.
