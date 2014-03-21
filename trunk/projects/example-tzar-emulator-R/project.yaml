@@ -1,0 +1,6 @@
+project_name: example-tzar-emulator-R
+runner_class: RRunner
+
+base_params:
+    fullOutputDirWithSlash: $$output_path$$
+    anExampleVariable: "blah blah blah"
