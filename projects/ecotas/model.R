@@ -1,17 +1,23 @@
-# R file for testing the output during dry runs
+# Simple population model tzar project 
+# Author: Ascelin Gordon ascelin.gordon@rmit.edu.au
 
-# define matrix to store the pop trajs 
 
+# Define a matrix to store the pop trajectory outputs 
 pop.traj <- matrix( ncol=parameters$no.timesteps+1, nrow=parameters$reps )
 pop.traj[,1] <- parameters$init.pop.size
 
 pop.traj.log <- matrix( ncol=parameters$no.timesteps+1, nrow=parameters$reps )
 pop.traj.log[,1] <- log(parameters$init.pop.size)
 
+       #------------------------
+       #  Calculate pop trajectories
+       #-------------------------
 
+# first for loop is for multiple model realizations
 for( r in 1:parameters$reps ) {
     
     eta <- rnorm(parameters$no.timesteps, mean=0, sd=parameters$sd )
+    
     for( t in 1:(parameters$no.timesteps) ) {
 
         pop.traj[r, t+1] <- pop.traj[r,t] * exp(parameters$mu) * exp( eta[t] )
@@ -23,9 +29,9 @@ for( r in 1:parameters$reps ) {
 
 
 
-       #------------------------
-       #  Calculate statistics
-       #-------------------------
+       #----------------------------------
+       #  Calculate statistics on outputs
+       #----------------------------------
 
 # calculate the mean pop trajectories
 mean.traj.log <- apply( pop.traj.log, 2, mean)
@@ -54,13 +60,13 @@ cat( '\nRun id =', parameters$run.id )
 cat( "\noutput file is", parameters$output.plot, '\n' )
 cat( "\noutput R dump file is", parameters$output.dump, '\n' )
 
-# write a graph of a single relisatin (the 1st)
+# Write a graph of a single relisatin (the 1st)
 pdf( paste( parameters$output.plot, '.single.pdf', sep='' ) )
 plot( 0:parameters$no.timesteps, pop.traj.log[1,], type='l', ylim=c(2,8),
      xlab="Time (years)", ylab="Log of population size" )
 dev.off()
 
-# now make a plot showing all realisations
+# Now make a plot showing all realisations
 pdf( paste(parameters$output.plot, 'multiple.pdf',sep='') )
 
 for( r in 1:parameters$reps) {
@@ -68,26 +74,26 @@ for( r in 1:parameters$reps) {
             xlab="Time (years)", ylab="Log of population size" )
     else lines (0:parameters$no.timesteps, pop.traj.log[r,], type='l' )
 }
-# plot the mean line
+# Plot the mean line
 lines(0:parameters$no.timesteps, mean.traj.log, type='l', col='red', lwd=4  )
 
-# show the version without the log transformation
+# Show the version without the log transformation
 for( r in 1:parameters$reps) {
     if( r==1 ) plot( 0:parameters$no.timesteps, pop.traj[r,], type='l', ylim=c(0,1200),
             xlab="Time (years)", ylab="Population size" )
     else lines (0:parameters$no.timesteps, pop.traj[r,], type='l')
 }
-# plot the mean line
+# Plot the mean line
 lines(0:parameters$no.timesteps, mean.traj, type='l', col='red', lwd=4  )
 
 dev.off()
 
-# Dumpt all the matrix with all the poptrajectories. 
+# Dump all the matrix with all the pop trajectories for offline analysis. 
 dump( "pop.traj", parameters$output.dump )
 
-
-
-glob.output.file <- paste( parameters$global.output.dir, '/', parameters$global.output.filename, sep='')
+# Finally, write a file containing summary info on the parameter
+# settings and model outputs. This is to be used in a sensitivity
+# analysis.
 
 
 column.names <- c('runId', 'initPopSize', 'mu', 'sd', 'reps', 'median', 'medianLog', 'var', 'varLog',
@@ -107,10 +113,7 @@ line.to.paste <- c(
     round(min.traj.log[parameters$timeToEvalPopStats],2)
     )
 
-if(  !file.exists(glob.output.file ) ) {
-    cat( column.names, '\n', file=glob.output.file, append=TRUE)
-}
-cat( line.to.paste, '\n', file=glob.output.file, append=TRUE)
+cat( column.names, '\n', line.to.paste, '\n', file=parameters$summary.filename )
 
 
 
