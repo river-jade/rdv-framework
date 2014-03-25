@@ -3,9 +3,9 @@ runner_class: RRunner
 
 
 libraries:
-#    -  name: GBIF-data
-#       repo_type: http_file
-#       url: http://data.gbif.org/ws/rest/occurrence/list?&taxonconceptkey=2427884&originisocountrycode=AU&format=kml
+    -  name: GBIF-data
+       repo_type: http_file
+       url: http://data.gbif.org/ws/rest/occurrence/list?&taxonconceptkey=2427884&originisocountrycode=AU&format=kml
 
     -  name: species-ranges-shp
        repo_type: http_zip
@@ -24,8 +24,8 @@ base_params:
     test.variable.3: xyz
     test.variable.4: abc
 
-#    path.to.GBIF.data: $$library_path(GBIF-data)$$
-    path.to.spp.ranges.shp: $$library_path(species-ranges-shp)$$ANURA.shp
+    path.to.GBIF.data: $$library_path(GBIF-data)$$
+    path.to.spp.ranges.shp: $$library_path(species-ranges-shp)$$
     path.to.crown.land.kml: $$library_path(crown-land-kml)$$
 
     test.output.filename: $$output_path$$test_output_file.txt
