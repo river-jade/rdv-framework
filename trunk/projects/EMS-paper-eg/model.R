@@ -6,7 +6,7 @@ crown_lyr<-ogrListLayers(dsn=parameters$path.to.crown.land.kml)
 crown_points <- readOGR(dsn=parameters$path.to.crown.land.kml, layer=crown_lyr)
 
 cat( "\n*** The path to Anuran species range shp file dir is :",  parameters$path.to.spp.ranges.shp, '\n' )
-shapefileName <- paste(parameters$path.to.spp.ranges.shp, "ANURA.shp", sep="\\")     
+shapefileName <- paste(parameters$path.to.spp.ranges.shp, "ANURA.shp", sep="/")     
 cat( "\n*** The path to the actual shapefile should be :",  shapefileName , '\n' )
 
 sp_lyr<-ogrListLayers(dsn=shapefileName )
