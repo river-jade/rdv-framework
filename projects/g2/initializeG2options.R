@@ -10,6 +10,12 @@
 
 #  2014 02 16 - BTL - Converting to use yaml file variables from tzar.
 
+#  2014 03 28 - BTL
+#      - fullPathToZonationFilesDir was being set individually for each OS, 
+#        but in the yaml file, each of the 3 different OS variants had the 
+#        the same value so I've reduced it all down to a single variable 
+#        here and in the yaml file.
+
 #===============================================================================
 
 #  Most (if not all) of these will come from the yaml file eventually...
@@ -88,7 +94,7 @@ if (current.os == "mingw32")
     maxentFullPathName = parameters$maxentFullPathName.windows.vmware
     fullPathToZonationExe = parameters$fullPathToZonationExe.windows.vmware
     fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.windows.vmware
-    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.windows.vmware
+#    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.windows.vmware
 
     } else if (regexpr ("darwin*", current.os) != -1)
     {
@@ -99,7 +105,7 @@ if (current.os == "mingw32")
     maxentFullPathName = parameters$maxentFullPathName.mac
     fullPathToZonationExe = parameters$fullPathToZonationExe.mac
     fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.mac
-    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.mac
+#    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.mac
 
     } else    #  Assume linux...
     {
@@ -110,9 +116,13 @@ if (current.os == "mingw32")
     maxentFullPathName = parameters$maxentFullPathName.linux
     fullPathToZonationExe = parameters$fullPathToZonationExe.linux
     fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.linux
-    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.linux
+#    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.linux
     }
 
+    #  BTL - 2014 03 28 
+    #  Replacing the individualization of the zonation files dir to OS 
+    #  with a single initialization since they all seemed to be the same.
+fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir
 cat ("\nfullPathToZonationFilesDir = '", fullPathToZonationFilesDir, "'", sep='')
 
 
@@ -127,7 +137,9 @@ cat ("\nfullPathToZonationFilesDir = '", fullPathToZonationFilesDir, "'", sep=''
 #envLayersSrcDir          = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/"
 #envLayersSrcDir = file.path (userPath, parameters$envLayersSrcDir)
 
-envLayersSrcDir = paste0 (userPath, dir.slash, envLayersSrcDir)
+#####  Using libraries now, so may not need to do this anymore...
+#####  BTL - 2014 03 28
+#####envLayersSrcDir = paste0 (userPath, dir.slash, envLayersSrcDir)
 
 #  This used to be called curFullMaxentEnvLayersDirName.
 #  I'm trying to get rid of references to maxent in cases where things
@@ -295,7 +307,9 @@ clusterFileNameStem = parameters$clusterFileNameStem
 
 #clusterFilePath = "/Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/"
 #clusterFilePath = file.path (userPath, parameters$clusterFilePath)
-clusterFilePath = paste0 (userPath, dir.slash, clusterFilePath)
+#####  Using libraries now, so may not need to do this anymore...
+#####  BTL - 2014 03 28
+#####clusterFilePath = paste0 (userPath, dir.slash, clusterFilePath)
 
 #clusterFilePath = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft/"
 #clusterFileNameWithPath = envClustersFileNameWithPath
