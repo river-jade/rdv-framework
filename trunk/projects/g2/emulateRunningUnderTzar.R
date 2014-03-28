@@ -6,9 +6,22 @@
 
 #===============================================================================
 
+    #  Need to change this every time you swap between emulating tzar and 
+    #  doing real tzar runs.
+
 emulateRunningUnderTzar = TRUE
 
-tzarCmd = "-jar /Users/Bill/D/rdv-framework/tzar.jar execlocalruns /Users/Bill/D/rdv-framework/projects/g2/"        
+#-------------------------------------------------------------------------------
+
+    #  Once initially set up for a particular user and project, 
+    #  probably won't need to change these.
+
+projectPath = "/Users/Bill/D/rdv-framework/projects/g2/"
+tzarJarPath = "/Users/Bill/D/rdv-framework/tzar.jar"      
+
+#-------------------------------------------------------------------------------
+
+    #  Probably never need to change these...
 
 tzarEmulation_scratchFileName = "./tzarEmulation_scratchFile.txt"
 tzarParametersSrcFileName = "parameters.R"
@@ -91,9 +104,9 @@ tzarFinishedExtension = ""
 #
 #               emulateRunningUnderTzar = TRUE
 #
-#      Note that you can also change the name of the temporary file where 
-#      the tzar output directory is saved, but I would imagine you'd almost 
-#      never have any reason to do this.
+#      Note that you can also change the name of some of the strings used 
+#      in the program, e.g., the name of the scratch file.  However, 
+#      I would imagine you'd almost never have any reason to do this.
 
 #===============================================================================
 
@@ -115,7 +128,9 @@ emulateRunningTzar = function (current.os, tzarEmulation_scratchFileName)
         #  -  start your normal code that would have run from the tzar
         #     output directory.
         #-----------------------------------------------------------------------
-    
+
+    tzarCmd = paste ("-jar", tzarJarPath, "execlocalruns", projectPath)
+        
     if (current.os == 'mingw32')
         {
         tzarsim.exit.code = system (paste0 ('java ', tzarCmd))            
@@ -177,12 +192,12 @@ emulateRunningTzar = function (current.os, tzarEmulation_scratchFileName)
 #-------------------------------------------------------------------------------
 
 cleanUpAfterTzarEmulation = function (parameters)
-{
+    {
     file.rename (parameters$tzarInProgressDirName, 
                  parameters$tzarEmulationCompletedDirName) 
     
     file.remove (parameters$tzarEmulation_scratchFileName)
-}
+    }
 
 #===============================================================================
 
