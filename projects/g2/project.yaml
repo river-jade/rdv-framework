@@ -12,6 +12,24 @@ libraries:
        repo_type: http_zip
        url: http://glass.eres.rmit.edu.au/tzar_input/g2/zonation.zip
 
+    -  name: envDataLayersLibrary
+       repo_type: local_file
+       url: file:///Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals
+#       repo_type: http_zip
+#       url: http://glass.eres.rmit.edu.au/tzar_input/g2/MtBuffaloEnvVars_Originals.zip
+
+    -  name: clusterLibrary
+       repo_type: local_file
+       url: file:///Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers
+#       repo_type: http_zip
+#       url: http://glass.eres.rmit.edu.au/tzar_input/g2/MtBuffaloSupervisedClusterLayers.zip
+
+    -  name: samplingBiasLibrary
+       repo_type: local_file
+       url: file:///Users/Bill/D/Data/MattsVicTestLandscape/MtBuffaloSamplingBiasVars
+#       repo_type: http_zip
+#       url: http://glass.eres.rmit.edu.au/tzar_input/g2/MtBuffaloSamplingBiasVars.zip
+
 #-------------------------------------------------------------------------------
 
 base_params:
@@ -41,14 +59,20 @@ base_params:
 #---------------------------------------
 
     envLayersSrcDir.mac: "D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
+
     envLayersSrcDir.windows.vmware: "D\\Data\\MattsVicTestLandscape\\MtBuffaloEnvVars_Originals\\LowerLeft_r256c256\\UpperRight_r128c128\\"
-    envLayersSrcDir.linux: "D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
+
+#    envLayersSrcDir.linux: "D/Data/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/LowerLeft_r256c256/UpperRight_r128c128/"
+    envLayersSrcDir.linux: "$$library_path(envDataLayersLibrary)$$/LowerLeft_r256c256/UpperRight_r128c128/"
 
 #---------------------------------------
 
     clusterFilePath.mac: "D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft_r256c256/UpperRight_r128c128/"
+
     clusterFilePath.windows.vmware: "D\\Data\\MattsVicTestLandscape\\MtBuffaloSupervisedClusterLayers\\LowerLeft_r256c256\\UpperRight_r128c128\\"
-    clusterFilePath.linux: "D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft_r256c256/UpperRight_r128c128/"
+
+#    clusterFilePath.linux: "D/Data/MattsVicTestLandscape/MtBuffaloSupervisedClusterLayers/LowerLeft_r256c256/UpperRight_r128c128/"
+    clusterFilePath.linux: "$$library_path(clusterLibrary)$$/LowerLeft_r256c256/UpperRight_r128c128/"
 
 #---------------------------------------
 
@@ -57,7 +81,9 @@ base_params:
 
 #    maxentFullPathName.windows.vmware: "D\\rdv-framework\\lib\\maxent\\maxent.jar"
     maxentFullPathName.windows.vmware: "$$library_path(maxentLibrary)$$\\maxent.jar"
-    maxentFullPathName.linux: "D/rdv-framework/lib/maxent/maxent.jar"
+
+#    maxentFullPathName.linux: "D/rdv-framework/lib/maxent/maxent.jar"
+    maxentFullPathName.linux: "$$library_path(maxentLibrary)$$/maxent.jar"
 
 #---------------------------------------
 
@@ -67,7 +93,8 @@ base_params:
 #    fullPathToZonationExe.windows.vmware: "D\\rdv-framework\\lib\\zonation\\zig3.exe"
     fullPathToZonationExe.windows.vmware: "$$library_path(zonationLibrary)$$\\zig3.exe"
 
-    fullPathToZonationExe.linux: "D/rdv-framework/lib/zonation/zig3.exe"
+#    fullPathToZonationExe.linux: "D/rdv-framework/lib/zonation/zig3.exe"
+    fullPathToZonationExe.linux: "$$library_path(zonationLibrary)$$/zig3.exe"
 
 #---------------------------------------
 
@@ -76,7 +103,8 @@ base_params:
 
 #    fullPathToZonationParameterFile.windows.vmware: "D\\rdv-framework\\lib\\zonation\\Z_parameter_settings.dat"
     fullPathToZonationParameterFile.windows.vmware: "$$library_path(zonationLibrary)$$\\Z_parameter_settings.dat"
-    fullPathToZonationParameterFile.linux: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
+#    fullPathToZonationParameterFile.linux: "D/rdv-framework/lib/zonation/Z_parameter_settings.dat"
+    fullPathToZonationParameterFile.linux: "$$library_path(zonationLibrary)$$/Z_parameter_settings.dat"
 
 #---------------------------------------
 
@@ -160,7 +188,7 @@ base_params:
         - "vis_sky"
 
 
-    envLayerWeights:
+    envLayerWeights:    #  not used yet.  Just remembering what Matt suggested.
         "aniso_heat": "randomIn0-1"
         "evap_jan": 0.5
         "evap_jul": 0.5

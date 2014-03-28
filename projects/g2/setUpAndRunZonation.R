@@ -258,12 +258,12 @@ setUpAndRunZonation = function (spp.list.filename,
             {
             retval = system (system.command.run.zonation)
             
-            } else if (regexpr ("darwin*", current.os) != -1)            
-            {
-            stop (paste0 ("\n\n=====>  Can't run zonation on Mac yet since ", 
-                          "wine doesn't work properly yet.",
-                          "\n=====>  Quitting now.\n\n"))
-                
+#             } else if (regexpr ("darwin*", current.os) != -1)            
+#             {
+#             stop (paste0 ("\n\n=====>  Can't run zonation on Mac yet since ", 
+#                           "wine doesn't work properly yet.",
+#                           "\n=====>  Quitting now.\n\n"))
+#                 
             } else
             {
             system.specific.cmd <- 'wine'
