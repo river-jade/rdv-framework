@@ -9,7 +9,8 @@
     #  Need to change this every time you swap between emulating tzar and 
     #  doing real tzar runs.
 
-emulateRunningUnderTzar = TRUE
+#emulateRunningUnderTzar = TRUE
+emulateRunningUnderTzar = FALSE
 
 #-------------------------------------------------------------------------------
 
