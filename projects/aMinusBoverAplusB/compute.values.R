@@ -19,6 +19,10 @@
 
 #==============================================================================
 
+library(lattice)
+
+#==============================================================================
+
 compute.values <- function (experiment.name, short.experiment.name,
                             experiment.eqn.string, func.M)
   {

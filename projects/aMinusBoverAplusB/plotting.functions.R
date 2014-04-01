@@ -26,6 +26,10 @@
 
 #==============================================================================
 
+library (lattice)  #  for levelplot
+
+#==============================================================================
+
 build.surface.for <- function (col.name.string,
                                z.values.in.one.col,
                                num.rows, num.cols
@@ -77,14 +81,14 @@ plot.surface.in.3D <- function (values.for.pairs,
 #  par (mfrow = c (1,1));
 #  par (mfrow = c (2,2));
 
-  if (DEBUG.PLOT)
+#  if (DEBUG.PLOT)
     {
     cat ("\nAt start of plot.surface.in.3D:",
          "\n    r = ", r, ", c = ", c,
          "z.min = ", z.min, ", z.max = ", z.max,
          sep='');
     }
-
+  
   zz <- build.surface.for (col.name.string, values.for.pairs,
                            length(r), length(c));
 
@@ -219,7 +223,13 @@ if (plot.2D.err.0.cross.sections)     # LS (2012.07.11) added option
 #  angle.step <- 150;
 #  angle.step <- 3300;
 
-  angle.step <- 240;
+#  BTL - 2014 01 18
+#  Trying to flip the plot around the other way to get 
+#  Error in A axis to match the orientation of the 
+#  correponding levelplot
+angle.step <- 150;    
+#angle.step <- 240;
+
   angle.start <- angle.step;
   angle.end <- angle.step;
   par (mfrow = c (1,1));
@@ -328,10 +338,41 @@ YlOrBr <- c("#FFFFD4", "#FED98E", "#FE9929", "#D95F0E", "#993404")
 #                                               bias = 0.5),
 #               asp = 1)
 
-showFilledContour = TRUE
+
+showLevelplot = TRUE
+if (showLevelplot)
+{
+        #  Legend values here refer to the plot legends, 
+        #  while Data values refer to the values in the matrix.
+        minLegendVal = 0.0   
+        maxLegendVal = 20.0
+        
+        numCutPts = 200
+        cutPts <- seq (minLegendVal, maxLegendVal, maxLegendVal/numCutPts)
+        
+#        cat ("\nAbout to levelPlot with magValues")
+#        cat ("\n    dim(magValues) = ", dim(magValues))
+#        print (magValues)
+        #  Create the first matrix so that it has high values that are 
+        #  still within the range of the legend's values.
+        #  Plot the matrix.
+        plot (
+        levelplot (magValues,
+                   pretty=FALSE,
+                   at=cutPts,
+                   xlab = "Error in A",
+                   ylab = "Error in B",
+                   col.regions=colorRampPalette(c("blue","yellow","red")),
+                   main=plot.title
+                )
+        )
+}
+
+showFilledContour = FALSE
 if (showFilledContour)
 {
-#  NOTE: colorRampPalette() help page says that bias is a positive
+    
+    #  NOTE: colorRampPalette() help page says that bias is a positive
 #        number and higher values give more widely spaced colors at
 #        the high end.
 filled.contour(x, y, magValues,

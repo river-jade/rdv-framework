@@ -351,8 +351,8 @@ if (build.err.tuples.from.normal.distributions)
 do.A.minus.B.over.A.plus.B <- FALSE  ##TRUE;    #  *****
 do.A.over.A.plus.B <- FALSE;           #  *****
 do.A.over.B <- FALSE  ##TRUE;                  #  *****
-do.A.minus.B <- FALSE;                 #  *****
-do.A.minus.B.over.B <- TRUE;           #  *****
+do.A.minus.B <- TRUE  ##FALSE;                 #  *****
+do.A.minus.B.over.B <- FALSE  ##TRUE;           #  *****
 do.A <- FALSE;                         #  *****
 
     #---------------------------------------------------------
