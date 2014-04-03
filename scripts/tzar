@@ -14,19 +14,19 @@ TZAR_FLAGS=$EXTRA_TZAR_FLAGS
 TZAR_FLAGS="$TZAR_FLAGS --repository-prefixes=$REPOSITORY_PREFIXES"
 
 # if clustername is set, add it to flags list
-if [ -n $CLUSTER_NAME ]; then
+if [ -n "$CLUSTER_NAME" ]; then
   TZAR_FLAGS="$TZAR_FLAGS --clustername=$CLUSTER_NAME"
 fi
 
-if [ -n $SCP_OUTPUT_HOST ]; then
+if [ -n "$SCP_OUTPUT_HOST" ]; then
   TZAR_FLAGS="$TZAR_FLAGS --scpoutputhost=$SCP_OUTPUT_HOST --finaloutputpath=$SCP_OUTPUT_PATH"
 fi
 
-if [ -n PEMFILE ]; then
+if [ -n "$PEMFILE" ]; then
   TZAR_FLAGS="$TZAR_FLAGS --pemfile=$PEMFILE"
 fi
 
-if [ -n $TZAR_VERSION ]; then
+if [ -n "$TZAR_VERSION" ]; then
   JARFILE="tzar-${TZAR_VERSION}.jar"
 else
   JARFILE="tzar.jar"
