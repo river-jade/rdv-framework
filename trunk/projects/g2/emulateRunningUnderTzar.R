@@ -131,10 +131,11 @@ emulateRunningTzar = function (current.os, tzarEmulation_scratchFileName)
         #-----------------------------------------------------------------------
 
     tzarCmd = paste ("-jar", tzarJarPath, "execlocalruns", projectPath)
-        
+        cat ("\n\nabout to test os at start of emulate...()\n\n")
     if (current.os == 'mingw32')
         {
-        tzarsim.exit.code = system (paste0 ('java ', tzarCmd))            
+        tzarsim.exit.code = system (paste0 ('java ', tzarCmd))   
+        
         } else 
         {
         tzarsim.exit.code = system2 ('java', tzarCmd, env="DISPLAY=:1")

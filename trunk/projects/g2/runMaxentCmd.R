@@ -108,7 +108,14 @@ runMaxentCmd  = function (maxentSamplesFileName,
 filenameQuote = ''    #  "'
 
 maxentCmd = paste (
-    '-mx1024m -jar ',    #  '-mx512m -jar ',  BTL - changing this 2014.02.09 to see if it helps
+    #  '-mx2048m -jar ',    #     BTL - 2014.03.31 - this caused a crash under vmware:
+    #                                 Error occurred during initialization of VM 
+    #                                 Could not reserve enough space for object heap
+    #                             Looks like it may have to do with using 32 bit java, 
+    #                             which is my only choice (I think) in my vmware, 
+    #                             because I think it's using Windows XP in 32 bits.
+    '-mx1024m -jar ',   
+    #  '-mx512m -jar ',  BTL - changing this 2014.02.09 to see if it helps
 
 	filenameQuote,
 					maxentFullPathName,

@@ -125,7 +125,6 @@ if (current.os == "mingw32")
 fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir
 cat ("\nfullPathToZonationFilesDir = '", fullPathToZonationFilesDir, "'", sep='')
 
-
 #===============================================================================
 
 #  For getEnvLayers()

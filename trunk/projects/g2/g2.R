@@ -181,6 +181,15 @@ set.seed (randomSeed)
 #  So, I have to make a special variable for the lead-in on lots of path
 #  names to have this work across OS variations.
 
+
+
+#**********
+#  BTL - 2014 04 04
+#  Is one of these two if statements that start with mingw32 wrong, i.e., 
+#  has it been superceded by the other but I forgot to eliminate the other 
+#  one or is this right?  Seems like the second one is going to overwrite the 
+#  first one.
+
 if (current.os == "mingw32")
     {
     userPath = parameters$userPath.windows.vmware
@@ -197,7 +206,7 @@ if (current.os == "mingw32")
         }
     }
 
-#===============================================================================
+#---------------------
 
 if (current.os == "mingw32")
     {
@@ -225,12 +234,21 @@ if (current.os == "mingw32")
 #rdvRootDir = file.path (userPath, parameters$rdvRootDir)
 rdvRootDir = paste0 (userPath, dir.slash, rdvRootDir)
 
-rdvSharedRsrcDir = paste0 (rdvRootDir, dir.slash, "R")
-g2ProjectRsrcDir = paste0 (rdvRootDir, dir.slash, "projects/g2")
-g2ProjectRsrcDirWithSlash = paste0 (g2ProjectRsrcDir, dir.slash)
+#  No longer used since the addition of the libraries command in the yaml file?
+#  Can't find any other references to it in this code anyway.
+#  BTL - 2014 04 04
+#rdvSharedRsrcDir = paste0 (rdvRootDir, dir.slash, "R")
 
-cat ("\n\nrdvRootDir = ", rdvRootDir, sep='')
-cat ("\nrdvSharedRsrcDir = ", rdvSharedRsrcDir, sep='')
+#  Doesn't work on linux.  
+#  Instead, need to assume that we've been dropped in the project R souce 
+#  directory.
+#  BTL - 2014 04 04
+#cat ("\n\nrdvRootDir = ", rdvRootDir, sep='')
+#g2ProjectRsrcDir = paste0 (rdvRootDir, dir.slash, "projects/g2")
+g2ProjectRsrcDir = "."
+#g2ProjectRsrcDirWithSlash = paste0 (g2ProjectRsrcDir, dir.slash)
+g2ProjectRsrcDirWithSlash = "./"
+#cat ("\nrdvSharedRsrcDir = ", rdvSharedRsrcDir, sep='')
 #cat ("\ng2ProjectRsrcDirWithSlash = ", g2ProjectRsrcDirWithSlash, sep='')
 cat ("\n\n")
 
@@ -526,6 +544,20 @@ cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
     #library (pixmap)
     #setwd (rdvRootDir)
 
+    #  BTL - 2014 03 30 
+    #  A quick hack to give zonation the correct number of species for the 
+    #  reserve selection.  
+    #  The current value for this is set in initializeG2options.R based on a 
+    #  value handed in from the yaml file.  However, that's based on old 
+    #  code that specified the number of species to be created in the yaml file.
+    #  Currently, the number of species is derived from counting the number 
+    #  of clusters in the cluster image, so it can be different from any other 
+    #  image and it can be different from what the yaml file thinks.  
+    #  So, just to get a few quick runs going tonight, I'm going to set 
+    #  the value right here to the number of species that the cluster counts 
+    #  showed.
+#sppUsedInReserveSelectionVector = 1:numSppInReserveSelection  #  code in initializeG2options.R
+sppUsedInReserveSelectionVector = 1:numSpp
 
     #  APPARENT
 setUpAndRunZonation (zonationAppSppListFilename,
