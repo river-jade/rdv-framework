@@ -212,8 +212,9 @@ cat ("\n\n")
 envLayerWeights = parameters$envLayerWeights
 cat ("\n\nenvLayerWeights = \n")
 print (envLayerWeights)
-cat ("\n\nenvLayerWeights[[2]] = \n")
-print (envLayerWeights[[2]])
+cat ("\n\nlength (envLayerWeights = ", length (envLayerWeights))
+#cat ("\n\nenvLayerWeights[[2]] = \n")
+#print (envLayerWeights[[2]])
 cat ("\n\n")
 
     #--------------------------------------------------------------------
