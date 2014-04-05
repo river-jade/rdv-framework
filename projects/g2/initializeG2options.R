@@ -117,6 +117,10 @@ if (current.os == "mingw32")
     fullPathToZonationExe = parameters$fullPathToZonationExe.linux
     fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.linux
 #    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.linux
+
+
+Sys.setenv (NOAWT=TRUE)
+
     }
 
     #  BTL - 2014 03 28 
