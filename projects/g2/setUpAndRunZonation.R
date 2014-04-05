@@ -269,7 +269,8 @@ setUpAndRunZonation = function (spp.list.filename,
             system.specific.cmd <- 'wine'
             cat ("\n\nAbout to run zonation using system.specific.cmd = '", system.specific.cmd, "'\n\n", sep='')
             
-            retval = system2 (system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1")
+#            retval = system2 (system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1")
+            retval = system2 (system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:0")
             }
         
         cat ("\n\nzonation retval = '", retval, "'.\n\n", sep='')        
