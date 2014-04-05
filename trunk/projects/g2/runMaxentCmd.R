@@ -8,8 +8,8 @@
 
 #  History:
 
-#  2014.02.08 - BTL 
-#  Copied over from guppy to g2 project and slightly modified so that variable 
+#  2014.02.08 - BTL
+#  Copied over from guppy to g2 project and slightly modified so that variable
 #  names match.
 
 #  2013.04 - BTL
@@ -66,15 +66,15 @@ runMaxentCmd  = function (maxentSamplesFileName,
                           doMaxentReplicates,
                           maxentReplicateType,
                           numMaxentReplicates,
-                          maxentFullPathName, 
-                          curFullMaxentEnvLayersDirName, 
+                          maxentFullPathName,
+                          curFullMaxentEnvLayersDirName,
                           numProcessors = 1, #
                           verboseMaxent = TRUE
                           )
 #  Old version with fewer arguments...
-# runMaxentCmd = function (maxentSamplesFileName, 
+# runMaxentCmd = function (maxentSamplesFileName,
 #                          maxentOutDir,
-#                         doMaxentReplicates, 
+#                         doMaxentReplicates,
 #                         maxentReplicateType,
 #                         numMaxentReplicates,
 #                         verboseMaxent = TRUE)
@@ -109,12 +109,12 @@ filenameQuote = ''    #  "'
 
 maxentCmd = paste (
     #  '-mx2048m -jar ',    #     BTL - 2014.03.31 - this caused a crash under vmware:
-    #                                 Error occurred during initialization of VM 
+    #                                 Error occurred during initialization of VM
     #                                 Could not reserve enough space for object heap
-    #                             Looks like it may have to do with using 32 bit java, 
-    #                             which is my only choice (I think) in my vmware, 
+    #                             Looks like it may have to do with using 32 bit java,
+    #                             which is my only choice (I think) in my vmware,
     #                             because I think it's using Windows XP in 32 bits.
-    '-mx1024m -jar ',   
+    '-mx1024m -jar ',
     #  '-mx512m -jar ',  BTL - changing this 2014.02.09 to see if it helps
 
 	filenameQuote,
@@ -237,13 +237,13 @@ if( current.os == 'mingw32' )
         {
         cat ("\n\nCalling mac version of maxent.\n\n")
         maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
-        } else 
+        } else
         {
         #    -Djava.awt.headless=true
         ##    maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
         #    maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:0")
-            cat ("\n\nCalling linux version of maxent.\n\n")
-            maxent.exit.code = system2 ('java -Djava.awt.headless=true', maxentCmd)
+        cat ("\n\nCalling linux version of maxent.\n\n")
+        maxent.exit.code = system2 ('java', paste0 ("'-Djava.awt.headless=true' ", maxentCmd))
         }
 
 cat ("\n\nmaxent.exit.code = ", maxent.exit.code,
