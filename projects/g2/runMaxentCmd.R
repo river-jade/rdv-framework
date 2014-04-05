@@ -243,7 +243,7 @@ if( current.os == 'mingw32' )
         ##    maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
         #    maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:0")
             cat ("\n\nCalling linux version of maxent.\n\n")
-            maxent.exit.code = system ('java -Djava.awt.headless=true', maxentCmd)
+            maxent.exit.code = system2 ('java -Djava.awt.headless=true', maxentCmd)
         }
 
 cat ("\n\nmaxent.exit.code = ", maxent.exit.code,
