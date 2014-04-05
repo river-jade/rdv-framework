@@ -232,7 +232,8 @@ cat ("\n\n")
 		if( current.os == 'mingw32' )
 			{
 maxent.exit.code = system (paste ('java ', maxentCmd))
-} else {
+} else if (regexpr ("darwin*", current.os) != -1)
+{
 maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
 } else {
 #    -Djava.awt.headless=true
