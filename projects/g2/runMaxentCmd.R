@@ -229,16 +229,22 @@ cat( '\n Running Maxent' );
 cat( '\n----------------------------------' );
 cat ("\n\n")
 
-		if( current.os == 'mingw32' )
-			{
-maxent.exit.code = system (paste ('java ', maxentCmd))
-} else if (regexpr ("darwin*", current.os) != -1)
-{
-maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
-} else {
-#    -Djava.awt.headless=true
-maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:0")
-}
+if( current.os == 'mingw32' )
+	{
+    cat ("\n\nCalling windows version of maxent.\n\n")
+    maxent.exit.code = system (paste ('java ', maxentCmd))
+    } else if (regexpr ("darwin*", current.os) != -1)
+        {
+        cat ("\n\nCalling mac version of maxent.\n\n")
+        maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
+        } else 
+        {
+        #    -Djava.awt.headless=true
+        ##    maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
+        #    maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:0")
+            cat ("\n\nCalling linux version of maxent.\n\n")
+            maxent.exit.code = system ('java -Djava.awt.headless=true', maxentCmd)
+        }
 
 cat ("\n\nmaxent.exit.code = ", maxent.exit.code,
 	", class (maxent.exit.code) = ", class (maxent.exit.code))
