@@ -234,6 +234,9 @@ cat ("\n\n")
 maxent.exit.code = system (paste ('java ', maxentCmd))
 } else {
 maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:1")
+} else {
+#    -Djava.awt.headless=true
+maxent.exit.code = system2 ('java', maxentCmd, env="DISPLAY=:0")
 }
 
 cat ("\n\nmaxent.exit.code = ", maxent.exit.code,
