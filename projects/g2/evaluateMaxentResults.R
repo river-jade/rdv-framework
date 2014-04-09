@@ -189,9 +189,9 @@ evaluateMaxentResults = function (numSppToCreate,
                             , no.data.value = -9999
                             , cellsize = 1
                             )
-            write.pgm.file (errBetweenMaxentAndTrueProbDists,
-                            paste (fullAnalysisDirWithSlash, "raw.error.in.dist.", sppName, sep=''),
-                            numImgRows, numImgCols)
+#             write.pgm.file (errBetweenMaxentAndTrueProbDists,
+#                             paste (fullAnalysisDirWithSlash, "raw.error.in.dist.", sppName, sep=''),
+#                             numImgRows, numImgCols)
             }
         #stop()
         
@@ -241,9 +241,9 @@ evaluateMaxentResults = function (numSppToCreate,
                             , cellsize = 1
                             )
             
-            write.pgm.file (errMagnitudes,
-                            paste (fullAnalysisDirWithSlash, "abs.error.in.dist.", sppName, sep=''),
-                            numImgRows, numImgCols)
+#             write.pgm.file (errMagnitudes,
+#                             paste (fullAnalysisDirWithSlash, "abs.error.in.dist.", sppName, sep=''),
+#                             numImgRows, numImgCols)
             }
         
         
@@ -300,7 +300,9 @@ evaluateMaxentResults = function (numSppToCreate,
 ###  BTL - 2014.02.09
 
         corRank = npmVec
+corRank = rank (npmVec)
         appRank = mnpdVec
+appRank = rank (mnpdVec)
         #plot (corRank, appRank)
         
         rankError = appRank - corRank
@@ -332,9 +334,13 @@ evaluateMaxentResults = function (numSppToCreate,
         pearson.cor = cor (npmVec, mnpdVec,
                             method = "pearson"
                             )
+cat ("\n\npearson.cor = ", pearson.cor)
+
         spearman.rank.cor = cor (npmVec, mnpdVec,
                                   method = "spearman"
                                 )
+cat ("\n\nspearman.cor = ", spearman.cor)
+
         
         #  this one hung R every time I used it...
         ##kendall.cor = cor (npmVec, mnpdVec,

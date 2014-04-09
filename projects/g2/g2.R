@@ -486,6 +486,8 @@ getSampledPresForEachSpp (numTruePresForEachSpp,
 
 #===============================================================================
 
+if (FALSE)
+{
     #  Set up for dismo SDM runs.
 
         #  The original code from the dismo vignette:
@@ -693,7 +695,8 @@ for (curSppID in 1:2)
 
 #browser()
 cat ("\n\n==================================================================\n\n")
-if (FALSE)    #  temporarily removing non-dismo maxent code
+}
+if (TRUE)    #  temporarily removing non-dismo maxent code
 {
 #===============================================================================
 
