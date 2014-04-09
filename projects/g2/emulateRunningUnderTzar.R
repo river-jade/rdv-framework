@@ -9,8 +9,8 @@
     #  Need to change this every time you swap between emulating tzar and 
     #  doing real tzar runs.
 
-#emulateRunningUnderTzar = TRUE
-emulateRunningUnderTzar = FALSE
+emulateRunningUnderTzar = TRUE
+#emulateRunningUnderTzar = FALSE
 
 #-------------------------------------------------------------------------------
 
@@ -24,12 +24,20 @@ tzarJarPath = "/Users/Bill/D/rdv-framework/tzar.jar"
 
     #  Probably never need to change these...
 
-tzarEmulation_scratchFileName = "./tzarEmulation_scratchFile.txt"
+#tzarEmulation_scratchFileName = "./tzarEmulation_scratchFile.txt"
+tzarEmulation_scratchFileName = "tzarEmulation_scratchFile.txt"
+
 tzarParametersSrcFileName = "parameters.R"
 
 tzarEmulation_completedDirExtension = ".completedTzarEmulation"
 tzarInProgressExtension = ".inprogress/"
 tzarFinishedExtension = ""
+
+#-------------------------------------------------------------------------------
+
+cat ("\n\n >>>>>  ")
+if (!emulateRunningUnderTzar) cat ("NOT ")
+cat ("emulating running under tzar.  <<<<<\n\n") 
 
 #===============================================================================
 
@@ -81,7 +89,7 @@ tzarFinishedExtension = ""
 #
 #      b)  After you've figured out what OS you have, see whether emulating and 
 #          if so, call the emulation code.  Note that you have to have determined 
-#          which OS you're running under so because the system call to invoke 
+#          which OS you're running under because the system call to invoke 
 #          tzar is slightly different on Windows:
 #
 #               if (emulateRunningUnderTzar)

@@ -1,5 +1,9 @@
 #===============================================================================
 
+emulateRunningUnderTzar = TRUE
+
+#===============================================================================
+
 #                                 g2.R
 
 # source( 'g2.R' )
@@ -48,13 +52,6 @@
 #  parameters file, etc.
 
 source ('emulateRunningUnderTzar.R')
-
-#===============================================================================
-
-#  Currently requires the following R packages:
-
-#      pixmap    (used in read.R)
-#      grDevices    (used in g2Utilities.R)
 
 #===============================================================================
 
@@ -116,6 +113,20 @@ source ('emulateRunningUnderTzar.R')
 #  Can't do this under tzar because it erases the parameters list passed in 
 #  from yaml!!
 #rm (list = ls())    #  Make sure there are no old variables lying around.
+
+#===============================================================================
+
+#  Currently requires the following R packages:
+
+#      pixmap    (used in read.R)
+#      grDevices    (used in g2Utilities.R)
+
+#  Install necessary R libraries.
+
+library (dismo)
+library (randomForest)
+library (maptools)        #  for wrld_simpl?
+library (kernlab)
 
 #===============================================================================
 
@@ -331,7 +342,11 @@ source (file.path (g2ProjectRsrcDir, 'initializeBeyondSettingOptions.R'))
 	#  Get environment layers.
 	#--------------------------------
 
-getEnvFiles (envLayersSrcDir, envLayersWorkingDirWithSlash)
+#envFileNames = getEnvFiles (envLayersSrcDir, envLayersWorkingDirWithSlash)  #  Was adding an extra slash before file name.  Leaving here until I'm sure it works correctly.
+envFileNames = getEnvFiles (envLayersSrcDir, envLayersWorkingDir)
+
+cat ("\n\nenvironment layers just after getEnvFiles = \n")
+print (envFileNames)
 
 #===============================================================================
 
@@ -471,6 +486,217 @@ getSampledPresForEachSpp (numTruePresForEachSpp,
 
 #===============================================================================
 
+    #  Set up for dismo SDM runs.
+
+        #  The original code from the dismo vignette:
+        # files <- list.files (path = '/Users/Bill/tzar/outputdata/g2/default_runset/464_default_scenario_dismoTestCopy/InputEnvLayers', 
+        #                      pattern='asc', 
+        #                      full.names=TRUE )
+        #predictors <- stack (files)
+
+        #----------------------------------------------------------------------
+        #  envFileNames is just a list of the full paths for all of the input 
+        #  environmental layers.
+        #----------------------------------------------------------------------
+    
+    cat ("\n\nenvironment layers = \n")
+    print (envFileNames)
+    
+    predictors <- stack (envFileNames)
+
+
+
+#library(maptools)
+data (wrld_simpl)
+plot (wrld_simpl, xlim=c(-80,70), ylim=c(-60,10), 
+      axes=TRUE, col='light yellow')
+
+# restore the box around the map    
+box ()
+
+for (curSppID in 1:2)
+#for (curSppID in 1:numSpp)
+    {
+    cat ("\n\n==================================================================\n\n")
+    cat ("Starting new species = ", curSppID, "\n\n", sep='')
+    
+    #  Build file name for current species sample file.
+    
+    sampleFileRoot = paste ("spp.", curSppID, ".sampledPres", sep='')
+    sampledPresFilename = paste0 (fullSppSamplesDirWithSlash, #  "/",
+                                  sampleFileRoot, ".csv")
+    
+#     file = 
+#         paste0 ("/Users/Bill/tzar/outputdata/g2/default_runset/495_default_scenario.inprogress/", 
+#                 "MaxentSamples/", 
+#                 "spp.", 
+#                 curSppID, 
+#                 ".sampledPres.csv")
+#     
+#     file <- "/Users/Bill/tzar/outputdata/g2/default_runset/495_default_scenario.inprogress/MaxentSamples/spp.1.sampledPres.csv"
+
+    file = sampledPresFilename
+    
+#    "/Users/Bill/tzar/outputdata/g2/default_runset/464_default_scenario_dismoTestCopy/MaxentSamples/spp.4.sampledPres.csv"
+
+        #  Load sample presences for current species.
+    curSpp <- read.table (file, header=TRUE, sep=',')
+    curSpp <- curSpp [,-1]
+    
+    presvals <- extract (predictors, curSpp)
+    backgr <- randomPoints (predictors, 500)
+    absvals <- extract (predictors, backgr)
+    pb <- c (rep (1, nrow (presvals)), rep(0, nrow (absvals)))
+    
+    sdmDataFrame <- data.frame (cbind (pb, rbind (presvals, absvals)))
+    sdmDataFrame [,'simpletenure2'] = as.factor (sdmDataFrame [,'simpletenure2'])
+    
+    pred_noFactors <- dropLayer (predictors, 'simpletenure2')
+    
+    group <- kfold (curSpp, 5)
+    pres_train <- curSpp [group != 1, ]
+    pres_test <- curSpp [group == 1, ]
+    
+    numBackgroundPts = 1000
+    backg <- randomPoints (pred_noFactors, n=numBackgroundPts)
+    colnames (backg) = c ('longitude', 'latitude')
+    
+    group <- kfold (backg, 5)
+    backg_train <- backg [group != 1, ]
+    backg_test <- backg [group == 1, ]
+    
+    r = raster (pred_noFactors, 1)
+    
+        #  Unnecessary?  In fact, would do nothing at all under tzar?
+    if (TRUE)
+        {
+        plot(!is.na (r), col=c ('white', 'light grey'), legend=FALSE)
+        points (backg_train, pch='-', cex=0.5, col='yellow')
+        points (backg_test, pch='-', cex=0.5, col='black')
+        points (pres_train, pch= '+', col='green')
+        points (pres_test, pch='+', col='blue')
+        }
+    
+    
+        #-------------------------------------------------------------------------
+        #  Set up for regression models    
+        #  NOTE:  simpletenure2 uses 0:2 as its factor range, but is that right?
+        #  Can it take on more values than that?  ASK MATT
+        #-------------------------------------------------------------------------
+    
+    train <- rbind (pres_train, backg_train)
+    pb_train <- c (rep (1, nrow (pres_train)), 
+                   rep (0, nrow (backg_train)))
+    envtrain <- extract (predictors, train)
+    envtrain <- data.frame ( cbind (pa=pb_train, envtrain) )
+    envtrain [,'simpletenure2'] = factor (envtrain [,'simpletenure2'], levels=0:2)
+    
+    testpres <- data.frame (extract (predictors, pres_test) )
+    testbackg <- data.frame (extract (predictors, backg_test) )
+    testpres [ ,'simpletenure2'] = factor (testpres [ ,'simpletenure2'], levels=0:2)
+    testbackg [ ,'simpletenure2'] = factor (testbackg [ ,'simpletenure2'], levels=0:2)
+    
+        #------------------------------------------------------------------------------
+        #  Run maxent via dismo
+        #
+        #  The data elements that maxent needs to have in place before it runs here are:
+        #      - location of maxent jar
+        #  - predictors
+        #  - pres_train
+        #  - names of predictors that are factors (not sure what form this has to take)
+        #  - pres_test
+        #  - backg_test
+        #------------------------------------------------------------------------------
+    
+    jar <- paste0 (system.file (package="dismo"), "/java/maxent.jar")
+        #  BTL mac location of jar file
+        #  maxent doesn't come with dismo, so either need to copy 
+        #  it to the location that this code expects or point it 
+        #  to the correct location.
+        #  For the moment, I'm just going to point to the right 
+        #  place because that's what's going to have to happen 
+        #  eventually when running on different operating systems.
+        #  This location will actually be set using the yaml file.
+        #  Just tried using this and it failed because 
+        #  dismo is still looking in the dismo directory.
+        #  If that's the case, not sure why you need to 
+        #  set the value for jar out here in the first place.
+        #  Here's the error I get:
+        ## Error: file missing:
+        ## /Users/Bill/D/R_libraries/dismo/java/maxent.jar.
+        ## Please download it here: http://www.cs.princeton.edu/~schapire/maxent/
+        #  So, will comment this out and just copy the maxent 
+        #  jar where they want it to be...
+        #jar = "/Users/Bill/D/rdv-framework/lib/maxent/maxent.jar"
+    
+    if (file.exists (jar)) 
+        {
+        cat ("\n\nAbout to call dismo's maxent.")
+        xm <- maxent (predictors, pres_train, factors='simpletenure2')
+        #####    xm <- maxent (predictors, pres_train)
+        cat ("\n\nBack from call to dismo's maxent.")
+        plot (xm)
+        } else 
+        {
+        cat ('cannot run this example because maxent is not available')
+        plot (1)
+        }
+    
+    if (file.exists (jar)) 
+        {
+        cat ("\n\nAbout to call dismo's response(xm)")
+        response (xm)
+        cat ("\n\nBack from call to dismo's response(xm)")
+    } else 
+        {
+        cat ('cannot run this example because maxent is not available')
+        }
+    
+    if (file.exists (jar)) 
+        {
+        cat ("\n\nAbout to call to dismo's evaluate(pres_test, backg_test, xm, predictors)")
+        e <- evaluate (pres_test, backg_test, xm, predictors)
+        cat ("\n\nBack from call to dismo's evaluate(pres_test, backg_test, xm, predictors)")
+        
+            #  Here are the things that evaluate() returns:
+            ## class          : ModelEvaluation 
+            ## n presences    : 3 
+            ## n absences     : 200 
+            ## AUC            : 0.4617 
+            ## cor            : -0.01735 
+            ## max TPR+TNR at : 0.3157    
+        print (e)
+        
+        str(e)
+        }
+    
+    
+        #  Make maxent predictions.
+    if (file.exists (jar)) 
+        {
+        cat ("\n\nAbout to call to dismo's predict(predictors, xm, progress=))")
+        px <- predict (predictors, xm, progress='')    
+        cat ("\n\nBack from call to dismo's predict(predictors, xm, progress=))")
+        par (mfrow=c (1,2))
+        plot (px, main='Maxent, raw values')
+        plot (wrld_simpl, add=TRUE, border='dark grey') 
+        
+        tr <- threshold (e, 'spec_sens')    
+        plot (px > tr, main='presence/absence')
+        plot (wrld_simpl, add=TRUE, border='dark grey')
+        points (pres_train, pch='+') 
+        } else 
+        {
+        plot (1)
+        }    
+    }
+
+#browser()
+cat ("\n\n==================================================================\n\n")
+if (FALSE)    #  temporarily removing non-dismo maxent code
+{
+#===============================================================================
+
     #----------------------------------------------------------------
     #  Run maxent to generate a predicted relative probability map.
     #----------------------------------------------------------------
@@ -517,105 +743,109 @@ evaluateMaxentResults (numSpp,
                        useDrawImage)
 
 #===============================================================================
+}  #  end if - temporarily removing non-dismo maxent call
 
     #  Since I can't get wine working on the mac yet, 
     #  I have to bail out before trying to run zonation if on the mac.
     #  If I can ever get it to run, then this little chunk should be removed.
 
-if (runZonation & (regexpr ("darwin*", current.os) != -1))
+if (runZonation)
     {
-    if (emulateRunningUnderTzar)  cleanUpAfterTzarEmulation (parameters)    
-    
-    stop (paste0 ("\n\n=====>  Can't run zonation on Mac yet since ", 
-                  "wine doesn't work properly yet.",
-                  "\n=====>  Quitting now.\n\n"))
-    }
+        #-------------------------------------------------------------------
+        #  Run zonation on apparent species maps and then on correct maps.
+        #-------------------------------------------------------------------
         
-#===============================================================================
+    cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
     
-    #-------------------------------------------------------------------
-    #  Run zonation on apparent species maps and then on correct maps.
-    #-------------------------------------------------------------------
+            #  These two commands were at the start of runZonation.R.
+            #  Not sure if they're necessary or not.
+        #library (pixmap)
+        #setwd (rdvRootDir)
     
-cat ("\n\n+++++\tBefore", "runZonation.R", "\n")
-
-        #  These two commands were at the start of runZonation.R.
-        #  Not sure if they're necessary or not.
-    #library (pixmap)
-    #setwd (rdvRootDir)
-
-    #  BTL - 2014 03 30 
-    #  A quick hack to give zonation the correct number of species for the 
-    #  reserve selection.  
-    #  The current value for this is set in initializeG2options.R based on a 
-    #  value handed in from the yaml file.  However, that's based on old 
-    #  code that specified the number of species to be created in the yaml file.
-    #  Currently, the number of species is derived from counting the number 
-    #  of clusters in the cluster image, so it can be different from any other 
-    #  image and it can be different from what the yaml file thinks.  
-    #  So, just to get a few quick runs going tonight, I'm going to set 
-    #  the value right here to the number of species that the cluster counts 
-    #  showed.
-#sppUsedInReserveSelectionVector = 1:numSppInReserveSelection  #  code in initializeG2options.R
-sppUsedInReserveSelectionVector = 1:numSpp
-
-    #  APPARENT
-setUpAndRunZonation (zonationAppSppListFilename,
-                     fullPathToZonationFilesDir,
-                     zonationAppInputMapsDir,
-                     sppUsedInReserveSelectionVector,
-                     zonationAppOutputFilename,
-                     fullPathToZonationParameterFile,
-                     fullPathToZonationExe,
-                     runZonation,
-                     sppFilePrefix,
-                     closeZonationWindowOnCompletion, 
-                     dir.slash
-                    )
-
-    #  CORRECT
-setUpAndRunZonation (zonationCorSppListFilename,
-                     fullPathToZonationFilesDir,
-                     zonationCorInputMapsDir,
-                     sppUsedInReserveSelectionVector,
-                     zonationCorOutputFilename,
-                     fullPathToZonationParameterFile,
-                     fullPathToZonationExe,
-                     runZonation,
-                     "true.prob.dist.spp",
-                     closeZonationWindowOnCompletion, 
-                     dir.slash
-                    )
-
-    #----------------------------------------------------------------
-    #  Evaluate the results of Zonation by comparing its output for
-    #  apparent species maps with its output for correct species 
-    #  maps.
-    #  This doesn't give you its "correctness" since we don't know 
-    #  the optimal result, but it gives you a measure of regret. 
-    #
-    #  *** Note that conceivably, the apparent maps could lead to a 
-    #  better result than the correct maps lead to.  This suggests 
-    #  that I need to better define what is a good result here so 
-    #  that it's possible to recognize that.  It would probably 
-    #  have to be phrased in terms of the total representation for 
-    #  each species at any rank cutoff and the better result would 
-    #  be the one that dominated the other one at every level.  
-    #  However, full domination wouldn't be required to happen, 
-    #  so some other notion of "better than" is necessary.  
-    #----------------------------------------------------------------
-
-cat ("\n\n+++++\tBefore", "evaluateZonationResults", "\n")
-
-evaluateZonationResults (#zonation.files.dir.with.slash, 
-                         paste0 (fullPathToZonationFilesDir, dir.slash), 
-                         #analysis.dir.with.slash, 
-                         fullAnalysisDirWithSlash, 
-                         #write.to.file, 
-                         writeToFile
-                         )    
-
-cat ("\n\nAt end of running and evaluation Zonation results.\n\n")
+        #  BTL - 2014 03 30 
+        #  A quick hack to give zonation the correct number of species for the 
+        #  reserve selection.  
+        #  The current value for this is set in initializeG2options.R based on a 
+        #  value handed in from the yaml file.  However, that's based on old 
+        #  code that specified the number of species to be created in the yaml file.
+        #  Currently, the number of species is derived from counting the number 
+        #  of clusters in the cluster image, so it can be different from any other 
+        #  image and it can be different from what the yaml file thinks.  
+        #  So, just to get a few quick runs going tonight, I'm going to set 
+        #  the value right here to the number of species that the cluster counts 
+        #  showed.
+    #sppUsedInReserveSelectionVector = 1:numSppInReserveSelection  #  code in initializeG2options.R
+    sppUsedInReserveSelectionVector = 1:numSpp
+    
+        #  APPARENT
+    setUpAndRunZonation (zonationAppSppListFilename,
+                         fullPathToZonationFilesDir,
+                         zonationAppInputMapsDir,
+                         sppUsedInReserveSelectionVector,
+                         zonationAppOutputFilename,
+                         fullPathToZonationParameterFile,
+                         fullPathToZonationExe,
+                         runZonation,
+                         sppFilePrefix,
+                         closeZonationWindowOnCompletion, 
+                         dir.slash
+                        )
+    
+        #  CORRECT
+    setUpAndRunZonation (zonationCorSppListFilename,
+                         fullPathToZonationFilesDir,
+                         zonationCorInputMapsDir,
+                         sppUsedInReserveSelectionVector,
+                         zonationCorOutputFilename,
+                         fullPathToZonationParameterFile,
+                         fullPathToZonationExe,
+                         runZonation,
+                         "true.prob.dist.spp",
+                         closeZonationWindowOnCompletion, 
+                         dir.slash
+                        )
+    
+    if (regexpr ("darwin*", current.os) != -1)
+        {
+        #        if (emulateRunningUnderTzar)  cleanUpAfterTzarEmulation (parameters)    
+        
+        cat ("\n\n=====>  Can't run or evaluate zonation on Mac yet since ", 
+             "wine doesn't work properly yet.", sep='')
+            
+        } else 
+        {                
+            #----------------------------------------------------------------
+            #  Evaluate the results of Zonation by comparing its output for
+            #  apparent species maps with its output for correct species 
+            #  maps.
+            #  This doesn't give you its "correctness" since we don't know 
+            #  the optimal result, but it gives you a measure of regret. 
+            #
+            #  *** Note that conceivably, the apparent maps could lead to a 
+            #  better result than the correct maps lead to.  This suggests 
+            #  that I need to better define what is a good result here so 
+            #  that it's possible to recognize that.  It would probably 
+            #  have to be phrased in terms of the total representation for 
+            #  each species at any rank cutoff and the better result would 
+            #  be the one that dominated the other one at every level.  
+            #  However, full domination wouldn't be required to happen, 
+            #  so some other notion of "better than" is necessary.  
+            #----------------------------------------------------------------
+        
+        cat ("\n\n+++++\tBefore", "evaluateZonationResults", "\n")
+        
+        evaluateZonationResults (#zonation.files.dir.with.slash, 
+                                 paste0 (fullPathToZonationFilesDir, dir.slash), 
+                                 #analysis.dir.with.slash, 
+                                 fullAnalysisDirWithSlash, 
+                                 #write.to.file, 
+                                 writeToFile
+                                 )    
+        
+        cat ("\n\nAt end of running and evaluation Zonation results.\n\n")
+        
+        }  #  end else - Not running on mac, so ok to run zonation
+    }  #  end if - runZonation
 
 #===============================================================================
 
