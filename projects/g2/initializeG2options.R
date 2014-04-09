@@ -119,7 +119,7 @@ if (current.os == "mingw32")
 #    fullPathToZonationFilesDir = parameters$fullPathToZonationFilesDir.linux
 
 
-Sys.setenv (NOAWT=TRUE)
+#Sys.setenv (NOAWT=TRUE)
 
     }
 
