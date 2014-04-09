@@ -339,7 +339,7 @@ cat ("\n\npearson.cor = ", pearson.cor)
         spearman.rank.cor = cor (npmVec, mnpdVec,
                                   method = "spearman"
                                 )
-cat ("\n\nspearman.cor = ", spearman.cor)
+cat ("\n\nspearman.rank.cor = ", spearman.rank.cor)
 
         
         #  this one hung R every time I used it...
