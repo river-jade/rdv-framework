@@ -148,8 +148,8 @@ base_params:
     trueProbDistFilePrefix: "true.prob.dist"
 
     useRandomNumTruePresForEachSpp: TRUE    #  variables$PAR.use.random.num.true.presences
-    minTruePresFracOfLandscape: 0.0002    #  0.002    #  variables$PAR.min.true.presence.fraction.of.landscape
-    maxTruePresFracOfLandscape: 0.002     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
+    minTruePresFracOfLandscape:  0.3    #  0.0002    #  0.002    #  variables$PAR.min.true.presence.fraction.of.landscape
+    maxTruePresFracOfLandscape:  0.6    #  0.002     #  0.2      # variables$PAR.max.true.presence.fraction.of.landscape
     numTruePresForEachSpp_string: "50,100,75"    #  variables$PAR.num.true.presences
 
     PARuseAllSamples: FALSE

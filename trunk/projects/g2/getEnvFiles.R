@@ -116,6 +116,21 @@ getEnvFiles = function (srcDir, targetDir,
         cat ("\n\    getEnvLayers()::srcFullNameList = ")
         print (srcFullNameList)
         }
+
+    
+#-------------------------------------------------------------------------------
+#  NOTE:  srcFullNameList has EVERY file in the directory that matches the 
+#         filespec (i.e., all .asc files).
+#         In the project.yaml file and in some places in the code (e.g., 
+#         in the clustering code I think), there is reference to what may 
+#         be a subset of this file list, i.e., asciiImgFileNameRoots.  
+#         It may be that this routine may need to be changed to make the 
+#         list here match the asciiImgFileNameRoots list instead of all 
+#         files in the directory.  At the moment, it doesn't seem to matter.
+#         BTL - 2014 04 08
+#-------------------------------------------------------------------------------
+
+    
     
         #------------------------------------------------------------------
         #  If the target directory does not exist, create it now.
