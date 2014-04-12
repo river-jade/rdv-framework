@@ -86,7 +86,7 @@ base_params:
     clusterFilePath.mac: "$$library_path(clusterLibrary)$$/LowerLeft_r256c256/UpperRight_r128c128/"
     clusterFilePath.linux: "$$library_path(clusterLibrary)$$/LowerLeft_r256c256/UpperRight_r128c128/"
 
-    clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerLeft_r256c256\\UpperRight_r128c12\\"
+    clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerLeft_r256c256\\UpperRight_r128c128\\"
 
 #---------------------------------------
 
@@ -234,6 +234,55 @@ base_params:
 
 
     numSppInReserveSelection: 28    ##  100    #  No reserve selection yet.
+
+
+scenarios:
+#    - name: Full512
+#      parameters:
+#          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$"
+#          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\"
+
+    - name: LowerRight256
+      parameters:
+          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerRight_r256c256"
+          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerRight_r256c256\\"
+##    - name: UpperRight256
+##      parameters:
+##          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperRight_r256c256"
+##          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperRight_r256c256\\"
+##    - name: LowerLeft256
+##      parameters:
+##          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerLeft_r256c256"
+##          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerLeft_r256c256\\"
+##    - name: UpperLeft256
+##      parameters:
+##          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperLeft_r256c256"
+##          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperLeft_r256c256\\"
+
+#---------------------------------------
+
+# Note that this file does all repetitions on scen 1, then on scen 2 etc...
+# Note that also the original value of the variable is not used.
+
+#repetitions:
+###    static_repetitions:
+###      - test.variable.2: 777
+#
+###      - test.variable.2: 888
+#
+#    generators:
+#      - key: randomSeed
+#        generator_type: linear_step
+#        start: 80
+#        step_size: 1
+#        count: 1
+#
+###      - key: test.variable.4
+###        generator_type: normal_distribution
+###        mean: 5
+###        std_dev: 1
+###        count: 2
+
 
 #===============================================================================
 
