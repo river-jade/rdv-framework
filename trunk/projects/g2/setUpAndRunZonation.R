@@ -271,9 +271,31 @@ cat ("\n\nfull.path.to.zonation.exe = ", full.path.to.zonation.exe)
             {
 #                system.specific.cmd <- 'wine'
                 system.specific.cmd <- ''
+                
+                
+                full.path.to.zonation.exe = "/usr/local/bin/zig3"
+                cat ("\n\nfull.path.to.zonation.exe = ", full.path.to.zonation.exe)
+                
+                system.command.run.zonation <- 
+                    paste0 (######    '/sw/bin/wine',
+#                        filenameQuote, full.path.to.zonation.exe, filenameQuote, " ", 
+                        '-r', " ", 
+                        filenameQuote, full.path.to.zonation.parameter.file, filenameQuote, " ", 
+                        filenameQuote, zonation.spp.list.full.filename, filenameQuote, " ", 
+                        filenameQuote, zonation.full.output.filename, filenameQuote, " ", 
+                        "0.0 0 1.0",  " ", 
+                        as.integer (closeZonationWindowOnCompletion)
+                    )
+                
+                
+                
+                
+                
+                
                 cat ("\n\nAbout to run zonation using system.specific.cmd = '", system.specific.cmd, "'\n\n", sep='')
             
-            retval = system2 (system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1")
+                retval = system2 (full.path.to.zonation.exe, args=system.command.run.zonation, env="DISPLAY=:1")
+#            retval = system2 (system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1")
 #            retval = system2 (system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:0")
             }
         
