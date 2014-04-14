@@ -220,6 +220,8 @@ setUpAndRunZonation = function (spp.list.filename,
     cat ("\n    zonation.spp.list.full.filename = '", zonation.spp.list.full.filename, "'", sep='')
     cat ("\n    zonation.full.output.filename = '", zonation.full.output.filename, "'", sep='')
 
+full.path.to.zonation.exe = "/usr/local/bin/zig3"
+
     system.command.run.zonation <- 
         paste0 (######    '/sw/bin/wine',
                 filenameQuote, full.path.to.zonation.exe, filenameQuote, " ", 
@@ -266,8 +268,9 @@ setUpAndRunZonation = function (spp.list.filename,
                 
             } else
             {
-            system.specific.cmd <- 'wine'
-            cat ("\n\nAbout to run zonation using system.specific.cmd = '", system.specific.cmd, "'\n\n", sep='')
+#                system.specific.cmd <- 'wine'
+                system.specific.cmd <- ''
+                cat ("\n\nAbout to run zonation using system.specific.cmd = '", system.specific.cmd, "'\n\n", sep='')
             
             retval = system2 (system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:1")
 #            retval = system2 (system.specific.cmd, args=system.command.run.zonation, env="DISPLAY=:0")
