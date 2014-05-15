@@ -10,7 +10,7 @@ base_params:
 
     step.interval: 5 # make sure you update PAR.management.cost.per.pixel if you change this
     numTimeSteps: 4
-
+    current.time.step: -99   
     pixel.size: 50
 
     DebugSaveLossModelOutFiles: False
@@ -33,6 +33,7 @@ base_params:
     num.planning.units.y: 15
     rows: 782
     cols: 832
+    non.habitat.indicator: -9999
 
     #----------------------------------------------------------------------
     # New Variables added when converting to Melb Grassland
