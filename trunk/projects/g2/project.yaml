@@ -12,9 +12,16 @@ libraries:
 
 #---------------------------------------
 
-    -  name: zonationLibrary
+    -  name: zonationLibraryLinux
        repo_type: http_zip
-       url: http://glass.eres.rmit.edu.au/tzar_input/g2/zonation.zip
+       url: http://glass.eres.rmit.edu.au/tzar_input/g2/zonationLinux.zip
+#       url: http://glass.eres.rmit.edu.au/tzar_input/g2/zig2.zip
+
+#---------------------------------------
+
+    -  name: zonationLibraryWindows
+       repo_type: http_zip
+       url: http://glass.eres.rmit.edu.au/tzar_input/g2/zonationWindows.zip
 #       url: http://glass.eres.rmit.edu.au/tzar_input/g2/zig2.zip
 
 #---------------------------------------
@@ -98,21 +105,21 @@ base_params:
 
 #---------------------------------------
 
-    fullPathToZonationExe.mac:            "$$library_path(zonationLibrary)$$/zig3.exe"
-    fullPathToZonationExe.linux:          "$$library_path(zonationLibrary)$$/zig3.exe"
+    fullPathToZonationExe.mac:            "$$library_path(zonationLibraryWindows)$$/zig3.exe"
+    fullPathToZonationExe.linux:          "$$library_path(zonationLibraryLinux)$$/zig3.exe"
 
-    fullPathToZonationExe.windows.vmware: "$$library_path(zonationLibrary)$$\\zig3.exe"
-
-#---------------------------------------
-
-    fullPathToZonationParameterFile.mac:            "$$library_path(zonationLibrary)$$/Z_parameter_settings.dat"
-    fullPathToZonationParameterFile.linux:          "$$library_path(zonationLibrary)$$/Z_parameter_settings.dat"
-
-    fullPathToZonationParameterFile.windows.vmware: "$$library_path(zonationLibrary)$$\\Z_parameter_settings.dat"
+    fullPathToZonationExe.windows.vmware: "$$library_path(zonationLibraryWindows)$$\\zig3.exe"
 
 #---------------------------------------
 
-        #  All of these are identical, so it looks unnecessary to split them 
+    fullPathToZonationParameterFile.mac:            "$$library_path(zonationLibraryWindows)$$/Z_parameter_settings.dat"
+    fullPathToZonationParameterFile.linux:          "$$library_path(zonationLibraryLinux)$$/Z_parameter_settings.dat"
+
+    fullPathToZonationParameterFile.windows.vmware: "$$library_path(zonationLibraryWindows)$$\\Z_parameter_settings.dat"
+
+#---------------------------------------
+
+        #  All of these are identical, so it looks unnecessary to split them
         #  up by OS.
         #  Commenting out - BTL - 2014 03 28.
 
