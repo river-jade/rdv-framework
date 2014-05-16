@@ -257,18 +257,18 @@ scenarios:
       parameters:
           envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerRight_r256c256"
           clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerRight_r256c256\\"
-##    - name: UpperRight256
-##      parameters:
-##          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperRight_r256c256"
-##          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperRight_r256c256\\"
-##    - name: LowerLeft256
-##      parameters:
-##          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerLeft_r256c256"
-##          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerLeft_r256c256\\"
-##    - name: UpperLeft256
-##      parameters:
-##          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperLeft_r256c256"
-##          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperLeft_r256c256\\"
+    - name: UpperRight256
+      parameters:
+          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperRight_r256c256"
+          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperRight_r256c256\\"
+    - name: LowerLeft256
+      parameters:
+          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerLeft_r256c256"
+          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerLeft_r256c256\\"
+    - name: UpperLeft256
+      parameters:
+          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperLeft_r256c256"
+          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperLeft_r256c256\\"
 
 #---------------------------------------
 
