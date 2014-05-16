@@ -108,7 +108,8 @@ base_params:
     fullPathToZonationExe.mac:            "$$library_path(zonationLibraryWindows)$$/zig3.exe"
 
 #    fullPathToZonationExe.linux:          "$$library_path(zonationLibraryLinux)$$/zig3.exe"    #  when calling windows exe via wine
-    fullPathToZonationExe.linux:          "$$library_path(zonationLibraryLinux)$$/zig3"         #  when calling linux executable w/o wine
+#    fullPathToZonationExe.linux:          "$$library_path(zonationLibraryLinux)$$/zig3"         #  when calling linux executable w/o wine - but this fails due to lack of permission on zig3...
+    fullPathToZonationExe.linux:          "/usr/local/bin/zig3"         #  requires zig3 to have already been installed there...
 
     fullPathToZonationExe.windows.vmware: "$$library_path(zonationLibraryWindows)$$\\zig3.exe"
 
