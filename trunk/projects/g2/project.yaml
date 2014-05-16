@@ -14,7 +14,7 @@ libraries:
 
     -  name: zonationLibraryLinux
        repo_type: http_zip
-       url: http://glass.eres.rmit.edu.au/tzar_input/g2/zonationLinux.zip
+       url: http://glass.eres.rmit.edu.au/tzar_input/g2/linuxz3compiledByAscelin20140414.zip
 #       url: http://glass.eres.rmit.edu.au/tzar_input/g2/zig2.zip
 
 #---------------------------------------
