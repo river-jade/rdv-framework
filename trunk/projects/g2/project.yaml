@@ -147,7 +147,7 @@ base_params:
 
     numSpp: NA
 
-    randomSeed: 17
+    randomSeed: 1
 
     imgFileType: "asc"
     numNonEnvDataCols: 0
@@ -250,8 +250,13 @@ base_params:
 scenarios:
 #    - name: Full512
 #      parameters:
-#          envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$"
-#          clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\"
+            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$"
+            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$"
+            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$"
+
+            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/"
+            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$"
+            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\"
 
     - name: LowerRight256
       parameters:
