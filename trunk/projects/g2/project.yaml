@@ -258,45 +258,45 @@ scenarios:
             clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/"
             clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\"
 
-    - name: LowerRight256
-      parameters:
-            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/LowerRight_r256c256"
-            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/LowerRight_r256c256"
-            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerRight_r256c256"
-
-            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/LowerRight_r256c256/"
-            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/LowerRight_r256c256/"
-            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerRight_r256c256\\"
-
-    - name: UpperRight256
-      parameters:
-            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/UpperRight_r256c256"
-            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/UpperRight_r256c256"
-            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperRight_r256c256"
-
-            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/UpperRight_r256c256/"
-            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/UpperRight_r256c256/"
-            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperRight_r256c256\\"
-
-    - name: LowerLeft256
-      parameters:
-            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/LowerLeft_r256c256"
-            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/LowerLeft_r256c256"
-            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerLeft_r256c256"
-
-            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/LowerLeft_r256c256/"
-            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/LowerLeft_r256c256/"
-            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerLeft_r256c256\\"
-
-    - name: UpperLeft256
-      parameters:
-            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/UpperLeft_r256c256"
-            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/UpperLeft_r256c256"
-            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperLeft_r256c256"
-
-            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/UpperLeft_r256c256/"
-            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/UpperLeft_r256c256/"
-            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperLeft_r256c256\\"
+#    - name: LowerRight256
+#      parameters:
+#            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/LowerRight_r256c256"
+#            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/LowerRight_r256c256"
+#            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerRight_r256c256"
+#
+#            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/LowerRight_r256c256/"
+#            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/LowerRight_r256c256/"
+#            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerRight_r256c256\\"
+#
+#    - name: UpperRight256
+#      parameters:
+#            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/UpperRight_r256c256"
+#            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/UpperRight_r256c256"
+#            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperRight_r256c256"
+#
+#            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/UpperRight_r256c256/"
+#            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/UpperRight_r256c256/"
+#            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperRight_r256c256\\"
+#
+#    - name: LowerLeft256
+#      parameters:
+#            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/LowerLeft_r256c256"
+#            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/LowerLeft_r256c256"
+#            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\LowerLeft_r256c256"
+#
+#            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/LowerLeft_r256c256/"
+#            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/LowerLeft_r256c256/"
+#            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerLeft_r256c256\\"
+#
+#    - name: UpperLeft256
+#      parameters:
+#            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/UpperLeft_r256c256"
+#            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/UpperLeft_r256c256"
+#            envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$\\UpperLeft_r256c256"
+#
+#            clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/UpperLeft_r256c256/"
+#            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/UpperLeft_r256c256/"
+#            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperLeft_r256c256\\"
 
 #---------------------------------------
 
