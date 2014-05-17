@@ -221,7 +221,7 @@ setUpAndRunZonation = function (spp.list.filename,
     cat ("\n    zonation.full.output.filename = '", zonation.full.output.filename, "'", sep='')
 
 #full.path.to.zonation.exe = "/usr/local/bin/zig3"
-#cat ("\n\nfull.path.to.zonation.exe = ", full.path.to.zonation.exe)
+cat ("\n\nImmediately before calling zonation, full.path.to.zonation.exe = ", full.path.to.zonation.exe)
 
     system.command.run.zonation <- 
         paste0 (######    '/sw/bin/wine',
