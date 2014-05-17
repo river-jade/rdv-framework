@@ -255,7 +255,7 @@ scenarios:
             envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$"
 
             clusterFilePath.mac:            "$$library_path(clusterLibrary)$$/"
-            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$"
+            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/"
             clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\"
 
     - name: LowerRight256
