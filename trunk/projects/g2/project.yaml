@@ -248,8 +248,8 @@ base_params:
 
 
 scenarios:
-#    - name: Full512
-#      parameters:
+    - name: Full512
+      parameters:
             envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$"
             envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$"
             envLayersSrcDir.windows.vmware: "$$library_path(envDataLayersLibrary)$$"
