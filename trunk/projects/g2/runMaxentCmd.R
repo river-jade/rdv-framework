@@ -114,7 +114,8 @@ maxentCmd = paste (
     #                             Looks like it may have to do with using 32 bit java,
     #                             which is my only choice (I think) in my vmware,
     #                             because I think it's using Windows XP in 32 bits.
-    '-mx3072m -jar ',
+    '-mx4096m -jar ',
+#    '-mx3072m -jar ',
 #    '-mx2048m -jar ',
 #    '-mx1024m -jar ',
     #  '-mx512m -jar ',  BTL - changing this 2014.02.09 to see if it helps
