@@ -51,6 +51,31 @@
 
 #===============================================================================
 
+#####  PROBABLY NEED TO REWRITE THE WRITE.PGM.FILE() FUNCTION OR CREATE A
+#####  DIFFERENT/OPTIONAL VERSION OF IT TO HANDLE FILES WHERE THERE ARE A
+#####  A SMALL NUMBER OF VERY EXTREME VALUES THAT MESS UP THE LINEAR
+#####  SCALING USED NOW.  FOR EXAMPLE, I THINK THAT IF YOU HAVE JUST ONE VALUE
+#####  THAT'S MUCH LARGER THAN ALL THE OTHERS (E.G., NOISE), THEN IT WILL
+#####  CURRENTLY SCALE EVERYTHING TO MAKE THAT PIXEL WHITE BUT ALL OTHER
+#####  PIXELS WILL BE SMASHED DOWN INTO THE LOWEST PIXEL COLOR, I.E., BLACK,
+#####  MAKING AN ALL BLACK IMAGE.
+#####
+#####  MIGHT BE BETTER TO RUN HIST() AND USE THE BOUNDS OF SOME QUANTILES
+#####  AS THE BOUNDS OF ALL BUT THE BLACKEST AND WHITEST PIXELS.
+#####
+#####  Another option would be to check for the range of the data and if it's
+#####  large, log the data before scaling and writing it out.
+#####  This isn't necessarily a great solution though, since it's likely to
+#####  violate expectations.  Would be better to offer it as an explicit option
+#####  passed to the function.  Maybe the same should apply to the quantile
+#####  idea above.
+#####
+#####  Note that this might apply to other things besides pgms, but they're
+#####  plotted by built-in R functions.  Not sure about this...
+#####
+#####  BTL - 2013.04.18 and 2014.05.05
+#####  copied this comment from g2Utilities.R and edited it here.
+
 write.pgm.file <- function (table.to.write, filename.root,
                             num.table.rows, num.table.cols)
   {
@@ -235,7 +260,7 @@ write.asc.file.usingStrHeaderVals <- function (table.to.write, filename.root,
                             ascFileHeaderAsStrVals
                             )
 {
-    
+
     ######################
     #write the arc asci file
     #example of an asc file header:
@@ -245,32 +270,52 @@ write.asc.file.usingStrHeaderVals <- function (table.to.write, filename.root,
     #yllcorner	0.0000
     #cellsize	40.00000000
     #NODATA_value	-1
-    
-    
+
+
     ascFileName = paste(filename.root, ".asc", sep = "" )
-    
+
     #make the header lines
     line1 = paste( "ncols         ", ascFileHeaderAsStrVals$numCols, "\n", sep = "" )
     line2 = paste( "nrows         ", ascFileHeaderAsStrVals$numRows, "\n", sep = "" )
-    
+
     otherLines = paste ("xllcorner     ", ascFileHeaderAsStrVals$xllCorner, "\n",
                         "yllcorner     ", ascFileHeaderAsStrVals$yllCorner, "\n",
                         "cellsize      ", ascFileHeaderAsStrVals$cellSize, "\n",
                         "NODATA_value  ", ascFileHeaderAsStrVals$noDataValue, "\n",
                         sep = "" )
-    
-    
+
+
     cat( line1 , file = ascFileName );
     cat( line2, file = ascFileName, append = TRUE );
     cat( otherLines, file = ascFileName, append = TRUE );
-    
+
     write.table( table.to.write, file= ascFileName,  append = TRUE,
                  row.names = FALSE, col.names = FALSE );
-    
+
     cat( '\nwrote', ascFileName );
-    
+
     #cat ("\n---->  At end of write.asc.file()\n")
     #browser()
+
+    if (TRUE)
+    {
+    jpgFileName = paste(filename.root, ".jpeg", sep = "" )
+    jpeg(filename = jpgFileName,
+         width = as.integer (ascFileHeaderAsStrVals$numCols),
+         height = as.integer (ascFileHeaderAsStrVals$numRows),
+         units = "px",
+         pointsize = 12,
+         quality = 100
+         #,    #  75,
+
+#         bg = "white",
+#         res = NA,
+#         type = c("cairo", "Xlib", "quartz"),
+#         antialias
+         )
+    }
+
+
 }
 
 #===============================================================================
