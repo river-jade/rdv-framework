@@ -160,6 +160,59 @@ doOneQuadrant = function (quadrantName, parentRaster,
 
 #-------------------------------------------------------------------------------
 
+#  BTL - 2014 05 17
+#  Just starting to work on a way to load a .asc file in and then write it 
+#  back out as a .jpeg file since those are easier to display in other programs
+#  at VxLabs (since I don't think they can read a .asc file).
+
+convertImgFormatOfAllFilesInADirectory = 
+    function (dirName, overwrite = FALSE)
+    {
+    cat ("\n******  dirName = ", dirName, "\n", sep='')
+    
+    listOfFiles = list.files (dirName, pattern=".asc", full.names=FALSE)
+    
+    for (curFilename in listOfFiles)
+        {
+        curBasename = file_path_sans_ext (curFilename)
+        curFullFilename = file.path (dirName, curFilename)
+        
+        curTifFilename = paste0 (file.path (dirName, curBasename), ".tif")
+        curjpgFilename = paste0 (file.path (dirName, curBasename), ".jpg")
+        
+        cat ("\ncurFilename = ", curFilename)
+        cat ("\ncurBasename = ", curBasename)
+        cat ("\ncurFullFilename = ", curFullFilename)
+        cat ("\ncurTifFilename = ", curTifFilename)
+        
+        cat ("\n\n")
+        
+        #----------------------
+        #  Load raster image.
+        #----------------------
+        
+        curRaster = raster (curFullFilename)
+        curPlotTitle = paste ("Full - ", curBasename, sep='')
+        plot (curRaster, main=curPlotTitle)
+        
+        #----------------------------------------------------------------
+        #  If still enough rows and columns left for quartering, do it.
+        #----------------------------------------------------------------
+        
+#        writeRaster (curRaster, curTifFilename, "GTiff", overwrite)        
+        tiff (curTifFilename)        
+        plot (curRaster, main=curPlotTitle)
+        dev.off()
+tiff (curjpgFilename)        
+plot (curRaster, main=curPlotTitle)
+dev.off()
+
+       }  #  end for - listoffiles
+    
+    }  #  end function - quarterAllFilesInADirectory()
+
+#-------------------------------------------------------------------------------
+
 quarterAllFilesInADirectory = function (dirName, 
                                         minAllowedDimension = 128, 
                                         overwrite = FALSE)
@@ -275,8 +328,11 @@ minAllowedDimension = 128            #  smallest image height/width allowed
 overwrite = FALSE                    #  whether to overwrite existing files 
                                      #  in split subdirectories 
 
-quarterAllFilesInADirectory (dirName, minAllowedDimension, overwrite)
-
+par (mfrow=c(1,1))
+     
+#quarterAllFilesInADirectory (dirName, minAllowedDimension, overwrite)
+convertImgFormatOfAllFilesInADirectory (dirName, overwrite)
+        
 #===============================================================================
 
 

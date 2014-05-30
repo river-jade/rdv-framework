@@ -449,7 +449,7 @@ if (useRandomNumTruePresForEachSpp)
                                               maxTruePresFracOfLandscape,
                                               numImgCells)
 
-    } else
+    } else  #  Specify the number of true presences for each species.
     {
     numTruePresForEachSpp =
         getNumTruePresForEachSpp_usingSpecifiedCts (numTruePresForEachSpp_string,
@@ -472,6 +472,8 @@ allSppTruePresLocsXY = getTruePresForEachSpp (numTruePresForEachSpp,
                                               nodataValue
                                               )
 
+#===============================================================================
+
     #-----------------------------------------------
     #  Get the sampled presences for each species.
     #  Taken from guppy/genTruePresencesPyper.R.
@@ -486,7 +488,7 @@ getSampledPresForEachSpp (numTruePresForEachSpp,
 
 #===============================================================================
 
-if (FALSE)
+if (FALSE)    #  use dismo to run maxent and other SDMs
 {
     #  Set up for dismo SDM runs.
 
@@ -696,7 +698,7 @@ for (curSppID in 1:2)
 #browser()
 cat ("\n\n==================================================================\n\n")
 }
-if (TRUE)    #  temporarily removing non-dismo maxent code
+if (TRUE)    #  use non-dismo maxent code
 {
 #===============================================================================
 
@@ -746,7 +748,7 @@ evaluateMaxentResults (numSpp,
                        useDrawImage)
 
 #===============================================================================
-}  #  end if - temporarily removing non-dismo maxent call
+}  #  end if - use non-dismo maxent call
 
     #  Since I can't get wine working on the mac yet, 
     #  I have to bail out before trying to run zonation if on the mac.
@@ -777,8 +779,26 @@ if (runZonation)
         #  So, just to get a few quick runs going tonight, I'm going to set 
         #  the value right here to the number of species that the cluster counts 
         #  showed.
-    #sppUsedInReserveSelectionVector = 1:numSppInReserveSelection  #  code in initializeG2options.R
-    sppUsedInReserveSelectionVector = 1:numSpp
+    
+useAllSppInReserveSelection = FALSE    #  temporary while getting the multi-zonation run stepping working  2014 05 30 BTL
+
+    sppUsedInReserveSelectionVector = NULL
+    if (useAllSppInReserveSelection)
+        {
+        sppUsedInReserveSelectionVector = 1:numSpp        
+        } else
+        {
+        if (numSppInReserveSelection > numSpp)
+            {
+            quit (paste0 ("\n\nnumSppInReserveSelection = ", numSppInReserveSelection, 
+                          " is greater than numSpp = ", numSpp, "\n\n"))
+            } else
+            {
+            sppUsedInReserveSelectionVector = 
+                    sample (1:numSppInReserveSelection, replace=FALSE)                      
+            }
+        }
+        
     
         #  APPARENT
     setUpAndRunZonation (zonationAppSppListFilename,
