@@ -315,7 +315,7 @@ repetitions:
         generator_type: linear_step
         start: 2
         step_size: 1
-        count: 4    #  28
+        count: 10    #  28
 #
 #      - key: randomSeed
 #        generator_type: linear_step
