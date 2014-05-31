@@ -795,9 +795,15 @@ useAllSppInReserveSelection = FALSE    #  temporary while getting the multi-zona
             } else
             {
             sppUsedInReserveSelectionVector = 
-                    sample (1:numSppInReserveSelection, replace=FALSE)                      
+                    sort (sample (1:numSpp, numSppInReserveSelection, replace=FALSE))
             }
         }
+
+    cat ("\n\n useAllSppInReserveSelection = ", useAllSppInReserveSelection, 
+         "\n     numSpp = ", numSpp, 
+         "\n     numSppInReserveSelection = ", numSppInReserveSelection, 
+         "\n     sppUsedInReserveSelectionVector = ")
+    print (sppUsedInReserveSelectionVector)
         
     
         #  APPARENT
