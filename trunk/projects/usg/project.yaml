@@ -11,7 +11,7 @@ base_params:
     z.executable: /usr/local/bin/zig3
     z.settings.file: /home/ubuntu/usg_zigtest/input_final/setMarch11_mask.dat
     z.spp.file: /home/ubuntu/usg_zigtest/input_final/splist.spp
-    z.output.file: output.txt
+    z.output.file: tz_output/output.txt
     z.other.cmd.line.args: 0.0 0 1.0 1
 
 
