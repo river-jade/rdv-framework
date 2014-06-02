@@ -14,6 +14,7 @@ cat( '\n\nThe commandline to run zonation is:\n', z.cmdline )
 
 cat( '\n\nTrying to run zonation....')
 
+setwd( '/home/ubuntu/usg_zigtest/')
 
 #system2( system.command, args=system.command.arguments, env="DISPLAY=:1" )      
 system( z.cmdline )
