@@ -16,5 +16,5 @@ cat( '\n\nTrying to run zonation....')
 
 
 #system2( system.command, args=system.command.arguments, env="DISPLAY=:1" )      
-#system( z.cmdline )
+system( z.cmdline )
 
