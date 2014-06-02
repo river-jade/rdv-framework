@@ -6,7 +6,7 @@ p <- parameters
 
 # build the commandline to run zonation
 
-z.cmdline <- paste( p$z.executable, p$z.settings.file, p$z.spp.file, p$z.output.file,
+z.cmdline <- paste( p$z.executable, '-r', p$z.settings.file, p$z.spp.file, p$z.output.file,
                    p$z.other.cmd.line.args )
 
 cat( '\n\nThe commandline to run zonation is:\n', z.cmdline )
