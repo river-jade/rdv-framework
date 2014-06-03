@@ -10,15 +10,19 @@ base_params:
     # Variables for running zonation 
     z.executable: /usr/local/bin/zig3
     z.settings.file: /home/ubuntu/usg_zigtest/input_final/setMarch11_mask.dat
-    z.spp.file: /home/ubuntu/usg_zigtest/input_final/splist.spp
-    z.output.file: tz_output/output.txt
+    z.output.file: zoutput.txt
     z.other.cmd.line.args: 0.0 0 1.0 1
-    z.spp.list.filename: $$output_path$$/zonation_spp_list.dat
+    z.spp.list.filename: $$output_path$$zonation_spp_list.dat
 
     # Note: we are assuming that the input spp maps are already on the
     # machine where this is running as there are many gigs of input
     # data
-    z.input.data.dir: /home/ubuntu/usg_data/spp_maps
+    #z.input.data.dir: /home/ubuntu/usg_data/spp_maps
+    z.input.data.dir: /Users/ascelin/analysis/USG/zonation/usg_zigtest/input_final
+
+
+    # to remove
+    z.spp.file: /home/ubuntu/usg_zigtest/input_final/splist.spp
 
 
 scenarios:
