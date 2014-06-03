@@ -21,7 +21,7 @@ if( length(spp.file.list) == 0 ) {cat('\nERROR: No species maps were found, stop
 # Now write the the zonation species list file (assuming all spp have
 # the same weight for now
 for( s in spp.file.list){
-    cat( '1.0 1.0 1 1 1', s, '\n', append=TRUE, file=p$z.spp.list.filename )
+    cat( '1.0 1.0 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
 }
 
 
