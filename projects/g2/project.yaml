@@ -249,7 +249,7 @@ base_params:
 
 scenarios:
 
-#    - name: Full512
+#    - name: g2_Full512
 #      parameters:
 #            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$"
 #            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$"
@@ -259,7 +259,7 @@ scenarios:
 #            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/"
 #            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\"
 
-    - name: LowerRight256
+    - name: g2_LowerRight256
       parameters:
             envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/LowerRight_r256c256"
             envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/LowerRight_r256c256"
@@ -269,7 +269,7 @@ scenarios:
             clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/LowerRight_r256c256/"
             clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerRight_r256c256\\"
 
-#    - name: UpperRight256
+#    - name: g2_UpperRight256
 #      parameters:
 #            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/UpperRight_r256c256"
 #            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/UpperRight_r256c256"
@@ -279,7 +279,7 @@ scenarios:
 #            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/UpperRight_r256c256/"
 #            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\UpperRight_r256c256\\"
 #
-#    - name: LowerLeft256
+#    - name: g2_LowerLeft256
 #      parameters:
 #            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/LowerLeft_r256c256"
 #            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/LowerLeft_r256c256"
@@ -289,7 +289,7 @@ scenarios:
 #            clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/LowerLeft_r256c256/"
 #            clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerLeft_r256c256\\"
 #
-#    - name: UpperLeft256
+#    - name: g2_UpperLeft256
 #      parameters:
 #            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/UpperLeft_r256c256"
 #            envLayersSrcDir.linux:          "$$library_path(envDataLayersLibrary)$$/UpperLeft_r256c256"
@@ -315,7 +315,7 @@ repetitions:
         generator_type: linear_step
         start: 13
         step_size: 1
-        count: 14    #  28
+        count: 2    #  28
 #
 #      - key: randomSeed
 #        generator_type: linear_step
