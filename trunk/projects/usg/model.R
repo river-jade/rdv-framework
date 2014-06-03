@@ -9,7 +9,8 @@ p <- parameters
     #--------------------------------------------
 
 cat( '\nThe input dir for species data is:',  p$z.input.data.dir )
-cat( '\nThe files name for the Zonation spp file is:',  p$z.spp.list.filename )
+cat( '\nFilename for the Zonation spp file:',  p$z.spp.list.filename )
+cat( '\nThe Zonation settings file is:',  p$z.settings.file )
 
 # Get a list of all the .asc in the input dir. These will all go into
 # the input species file
@@ -24,8 +25,6 @@ for( s in spp.file.list){
     cat( '1.0 1.0 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
 }
 
-
-cat( '\n #########length of s is', length(spp.file.list) )
 
 
 
