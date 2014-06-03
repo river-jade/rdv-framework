@@ -241,6 +241,7 @@ test = function (imgSize,
     ###topXOfRandomDiagonal = numRanks
     ###xValues = c(0,pointsToPlotX)
     topXOfRandomDiagonal = 1
+
     pointsToLabelX = (1:numPlotIntervals) / numPlotIntervals
         cat ("\n\n    pointsTo:LabelX = '", pointsToLabelX, "'", sep=',')        
     xValues = c(0,pointsToLabelX)
@@ -251,7 +252,7 @@ test = function (imgSize,
     #cat ("\n\n    pointsToPlotY = '", pointsToPlotY, "'", sep=',')
     yValues = c(0,fracTPRanks)      #pointsToPlotY)
     cat ("\n    yValues = '", yValues, "'")
-        
+
         #  See http://www.harding.edu/fmccown/r/ for simple example using 
         #  lots of options that would be useful here when I want to make 
         #  this fancier and/or save it to a file.
@@ -278,18 +279,46 @@ test = function (imgSize,
             col='black'
             )
 
-text (0.8, 0.4, algLegendString) 
-#    title(main=plotTitle)                
-#         legend("right", 
-#                c(algLegendString,
-#                  paste ("TP for thresh - ", buffer, sep=''), 
-#                  "random selection"), 
-#                cex=0.9, #col=plot_colors, 
-#                lty=1:3, #lwd=2, 
-#                bty="n",
-#                col=c('red','blue','black')
-#         );
-        
+#text (0.8, 0.4, algLegendString) 
+    title(main=plotTitle)                
+         legend("right", 
+                c(algLegendString,
+                  paste ("TP for thresh - ", buffer, sep=''), 
+                  "random selection"), 
+                cex=0.9, #col=plot_colors, 
+                lty=1:3, #lwd=2, 
+                bty="n",
+                col=c('red','blue','black')
+         );
+
+quarterOfPlotIntervals = numPlotIntervals #/ 4
+
+#  Absolute gain over random.
+gainYValues = (yValues - xValues) 
+plot (xValues [1:quarterOfPlotIntervals], 
+      gainYValues [1:quarterOfPlotIntervals], ylim=c(0,0.5), 
+      col='red')
+
+gainFracValues = (fracTPRanksMinus.1 - xValues) 
+lines (xValues [1:quarterOfPlotIntervals], 
+       gainFracValues [1:quarterOfPlotIntervals], 
+       col='blue')
+
+#  Gain over random expressed as a fraction of possible gain.
+#  If you're getting almost all of them right by random 
+#  guess, then you can only get a tiny bit of absolute gain 
+#  no matter how good your optimizer.
+gainYValues = gainYValues / (1 - xValues)
+plot (xValues [1:quarterOfPlotIntervals], 
+      gainYValues [1:quarterOfPlotIntervals], ylim=c(0,0.5), 
+      col='red')
+
+gainFracValues = gainFracValues / (1 - xValues)
+lines (xValues [1:quarterOfPlotIntervals], 
+       gainFracValues [1:quarterOfPlotIntervals], 
+       col='blue')
+
+browser()
     }
 
 #test(18)
@@ -315,7 +344,9 @@ testHardCodedMatrix = function (seed=18, verbose=FALSE,
             )
     }
 
-testZonation = function (numPlotIntervals=100, seed=18, 
+#testZonation = function (numPlotIntervals=100, seed=18, 
+testZonation = function (numPlotIntervals=1000, seed=18, 
+                                                  
                          verbose=FALSE,
                          buffer=CONST.defaultBufSize)
     {
