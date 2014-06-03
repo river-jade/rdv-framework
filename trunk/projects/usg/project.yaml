@@ -17,8 +17,8 @@ base_params:
     # Note: we are assuming that the input spp maps are already on the
     # machine where this is running as there are many gigs of input
     # data
-    #z.input.data.dir: /home/ubuntu/usg_data/spp_maps
-    z.input.data.dir: /Users/ascelin/analysis/USG/zonation/usg_zigtest/input_final
+    z.input.data.dir: /home/ubuntu/usg_data/spp_maps
+    #z.input.data.dir: /Users/ascelin/analysis/USG/zonation/usg_zigtest/input_final
 
 
     # to remove
