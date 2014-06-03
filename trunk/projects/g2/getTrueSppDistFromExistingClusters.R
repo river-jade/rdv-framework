@@ -122,7 +122,7 @@ getTrueSppDist =
         #----------------------------------------------------------------            
         {
         quit (paste0 ("\n\ngetTrueSppDist():  Unknown species source type = ", 
-                      trueSppSourceType, "\n\n")
+                      trueSppSourceType, "\n\n"))
         }
     
     return (numSpp)
