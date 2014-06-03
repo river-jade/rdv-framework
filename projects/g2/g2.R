@@ -176,6 +176,16 @@ if (emulateRunningUnderTzar)
 options (warn = parameters$warningLevel)    #  This will eventually come from yaml file
 #options (warn = variables$PAR.RwarningLevel)
 
+#----------
+
+#  http://www.meetup.com/r-enthusiasts/events/178954112/
+#  options (error=recover) gives a very nice lisp-like stack when 
+#  you make a mistake. 
+#  Generally much quicker than tracebacks and setting breakpoints 
+#  by hand (or using mtrace).
+
+#options (error=recover)
+
 #===============================================================================
 
 #  self.randomSeed = self.variables['PAR.random.seed']
@@ -370,17 +380,41 @@ print (envFileNames)
         #  SINCE I AM NOW DERIVING THE CORRECT VALUES FROM THE ENV LAYERS 
         #  RATHER THAN USING HARD-CODED VALUES.
 
-numSpp = getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrcDir,
-                                             numImgRows, numImgCols,
-                                             
-                                             ascFileHeaderAsStrVals, 
-                                             
-                                             sppGenOutputDirWithSlash,
-                                             asciiImgFileNameRoots, scaleInputs,
-                                             imgFileType, numNonEnvDataCols,
-                                             clusterFilePath, clusterFileNameStem,
-                                             arrayIdxBase
-                                             )
+#  CONSTANTS
+CONST_sppSource_sppLibraryLocal = 1
+CONST_sppSource_sppLibraryTzar = 2
+CONST_sppSource_sppLibraryRemoteURL = 3
+CONST_sppSource_existingClusters = 4
+
+trueSppDistSourceType = CONST_sppSource_existingClusters    #  temporary
+
+numSpp = getTrueSppDist (trueSppDistSourceType, 
+                      
+                        envLayersWorkingDirWithSlash, 
+                        numImgRows, numImgCols, 
+                        
+                        ascFileHeaderAsStrVals, 
+                        
+                        sppGenOutputDirWithSlash, 
+                        asciiImgFileNameRoots, scaleInputs, 
+                        imgFileType, numNonEnvDataCols, 
+                        clusterFilePath, clusterFileNameStem, 
+                        arrayIdxBase
+                        )
+        
+
+
+# numSpp = getTrueSppDistFromExistingClusters (envLayersWorkingDirWithSlash, # envLayersSrcDir,
+#                                              numImgRows, numImgCols,
+#                                              
+#                                              ascFileHeaderAsStrVals, 
+#                                              
+#                                              sppGenOutputDirWithSlash,
+#                                              asciiImgFileNameRoots, scaleInputs,
+#                                              imgFileType, numNonEnvDataCols,
+#                                              clusterFilePath, clusterFileNameStem,
+#                                              arrayIdxBase
+#                                              )
 
 #===============================================================================
 

@@ -32,6 +32,259 @@ distMeasure           = sumSquaredDist
 
 #-------------------------------------------------------------------------------
 
+getTrueSppDist = 
+    function (trueSppSourceType, 
+              
+              envLayersWorkingDirWithSlash, 
+              numImgRows, numImgCols, 
+              
+              ascFileHeaderAsStrVals, 
+              
+              sppGenOutputDirWithSlash, 
+              asciiImgFileNameRoots, scaleInputs, 
+              imgFileType, numNonEnvDataCols, 
+              clusterFilePath, clusterFileNameStem, 
+              arrayIdxBase = 1
+             )
+    {
+    numSpp = NA
+        
+    #--------------------------------------------------------
+    if (trueSppSourceType == CONST_sppSource_sppLibraryLocal)
+    #--------------------------------------------------------    
+        {
+        quit ("\n\ngetTrueSppDistFromSppLibraryLocal() not implemented yet.\n\n")
+#         numSpp = getTrueSppDistFromSppLibraryLocal (
+#                                         envLayersWorkingDirWithSlash, 
+#                                         numImgRows, numImgCols, 
+#                                         
+#                                         ascFileHeaderAsStrVals, 
+#                                         
+#                                         sppGenOutputDirWithSlash, 
+#                                         asciiImgFileNameRoots, scaleInputs, 
+#                                         imgFileType, numNonEnvDataCols, 
+#                                         clusterFilePath, clusterFileNameStem, 
+#                                         arrayIdxBase
+#                                         )        
+        #--------------------------------------------------------------
+        } else if (trueSppSourceType == CONST_sppSource_sppLibraryTzar)
+        #--------------------------------------------------------------    
+        {
+        quit ("\n\ngetTrueSppDistFromSppLibraryTzar() not implemented yet.\n\n")
+#         numSpp = getTrueSppDistFromSppLibraryTzar (
+#                                         envLayersWorkingDirWithSlash, 
+#                                         numImgRows, numImgCols, 
+#                                         
+#                                         ascFileHeaderAsStrVals, 
+#                                         
+#                                         sppGenOutputDirWithSlash, 
+#                                         asciiImgFileNameRoots, scaleInputs, 
+#                                         imgFileType, numNonEnvDataCols, 
+#                                         clusterFilePath, clusterFileNameStem, 
+#                                         arrayIdxBase
+#                                         )        
+        #-------------------------------------------------------------------            
+        } else if (trueSppSourceType == CONST_sppSource_sppLibraryRemoteURL)
+        #-------------------------------------------------------------------
+        {
+        quit ("\n\ngetTrueSppDistFromSppLibraryRemoteURL() not implemented yet.\n\n")
+#         numSpp = getTrueSppDistFromSppLibraryRemoteURL (
+#                                         envLayersWorkingDirWithSlash, 
+#                                         numImgRows, numImgCols, 
+#                                         
+#                                         ascFileHeaderAsStrVals, 
+#                                         
+#                                         sppGenOutputDirWithSlash, 
+#                                         asciiImgFileNameRoots, scaleInputs, 
+#                                         imgFileType, numNonEnvDataCols, 
+#                                         clusterFilePath, clusterFileNameStem, 
+#                                         arrayIdxBase
+#                                         )        
+        #----------------------------------------------------------------            
+        } else if (trueSppSourceType == CONST_sppSource_existingClusters)
+        #----------------------------------------------------------------    
+        {
+        numSpp = 
+            getTrueSppDistFromExistingClusters (
+                                        envLayersWorkingDirWithSlash, 
+                                        numImgRows, numImgCols, 
+                                          
+                                        ascFileHeaderAsStrVals, 
+                                          
+                                        sppGenOutputDirWithSlash, 
+                                        asciiImgFileNameRoots, scaleInputs, 
+                                        imgFileType, numNonEnvDataCols, 
+                                        clusterFilePath, clusterFileNameStem, 
+                                        arrayIdxBase
+                                        )
+        #----------------------------------------------------------------            
+        } else 
+        #----------------------------------------------------------------            
+        {
+        quit (paste0 ("\n\ngetTrueSppDist():  Unknown species source type = ", 
+                      trueSppSourceType, "\n\n")
+        }
+    
+    return (numSpp)
+    }
+        
+#-------------------------------------------------------------------------------
+
+getTrueSppDistFromSppLibraryLocal = 
+    function (envLayersWorkingDirWithSlash, 
+             numImgRows, numImgCols, 
+             
+             ascFileHeaderAsStrVals, 
+             
+             sppGenOutputDirWithSlash, 
+             asciiImgFileNameRoots, scaleInputs, 
+             imgFileType, numNonEnvDataCols, 
+             clusterFilePath, clusterFileNameStem, 
+             arrayIdxBase
+            )
+    {
+    numSpp = NA
+    
+    cat ("\n\nIn getTrueSppDistFromSppLibraryLocal().")
+    cat ("\n    dummy version...")
+    
+    return (numSpp)
+    }
+
+#-------------------------------------------------------------------------------
+
+getTrueSppDistFromSppLibraryTzar = 
+    function (envLayersWorkingDirWithSlash, 
+              numImgRows, numImgCols, 
+              
+              ascFileHeaderAsStrVals, 
+              
+              sppGenOutputDirWithSlash, 
+              asciiImgFileNameRoots, scaleInputs, 
+              imgFileType, numNonEnvDataCols, 
+              clusterFilePath, clusterFileNameStem, 
+              arrayIdxBase
+    )
+    {
+        numSpp = NA
+        
+        cat ("\n\nIn getTrueSppDistFromSppLibraryTzar().")
+        cat ("\n    dummy version...")
+        
+        return (numSpp)
+    }
+
+#-------------------------------------------------------------------------------
+
+getTrueSppDistFromSppLibraryRemoteURL = 
+    function (envLayersWorkingDirWithSlash, 
+              numImgRows, numImgCols, 
+              
+              ascFileHeaderAsStrVals, 
+              
+              sppGenOutputDirWithSlash, 
+              asciiImgFileNameRoots, scaleInputs, 
+              imgFileType, numNonEnvDataCols, 
+              clusterFilePath, clusterFileNameStem, 
+              arrayIdxBase
+            )
+    {
+    numSpp = NA
+    
+    cat ("\n\nIn getTrueSppDistFromSppLibraryRemote().")
+    cat ("\n    dummy version...")
+
+    #         useRemoteEnvDir = variables$PAR.useRemoteEnvDir
+    #         cat ("\n\nvariables$PAR.useRemoteEnvDir = '", variables$PAR.useRemoteEnvDir, "'", sep='')
+    #         cat ("\n\nuseRemoteEnvDir = '", useRemoteEnvDir, "'", sep='')
+    #         
+    #         cat ("\n\nvariables$PAR.remoteEnvDir = '", variables$PAR.remoteEnvDir, "'", sep='')
+    #         cat ("\n\nvariables$PAR.localEnvDirMac = '", variables$PAR.localEnvDirMac, "'", sep='')
+    #         cat ("\n\nvariables$PAR.localEnvDirWin = '", variables$PAR.localEnvDirWin, "'", sep='')
+    #         
+    #         #envLayersDir = "http://glass.eres.rmit.edu.au/tzar_input/guppy/AlexFractalData/H"
+    #         envLayersDir = variables$PAR.remoteEnvDir
+    #         
+    #         if (!useRemoteEnvDir)
+    #         {
+    #             ##    	envLayersDir = variables$PAR.localEnvDir
+    #             #envLayersDir = "/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01\ -\ simulated_ecology/MaxentTests/AlexsSyntheticLandscapes/IDLOutputAll2/H"
+    #             
+    #             if (current.os == "mingw32")
+    #             {
+    #                 envLayersDir = variables$PAR.localEnvDirWin
+    #                 
+    #             } else
+    #             {
+    #                 envLayersDir = variables$PAR.localEnvDirMac
+    #             }
+    #         }
+    #         cat ("\n\nenvLayersDir = '", envLayersDir, "'", sep='')
+    #         
+    #         for (suffix in c(".asc", ".pgm"))   #
+    #         {
+    #             imgFileName = paste (imgFileRoot, suffix, sep='')
+    #             fullImgFileDestPath = paste (cur.full.maxent.env.layers.dir.name, "/",
+    #                                          eLayerFileNamePrefix, imgFileName, sep='')
+    #             cat ("\n\nfullImgFileDestPath = '", fullImgFileDestPath,  "'", sep='')
+    #             
+    #             srcImgFileName = paste (imgFileRoot, fileSizeSuffix, suffix, sep='')
+    #             srcFile = paste (envSrcDir, srcImgFileName, sep='')
+    #             cat ("\nsrcFile = '", srcFile, "'")
+    #             
+    #             if (useRemoteEnvDir)
+    #             {
+    #                 err = try (download.file (srcFile, destfile = fullImgFileDestPath,
+    #                                           quiet = TRUE),
+    #                            silent = TRUE)
+    #                 if (class (err) == "try-error")
+    #                 {
+    #                     #  you may be hitting the server too hard , so backoff and try again later.
+    #                     Sys.sleep (5)  #  in seconds , adjust as necessary
+    #                     try (download.file (srcFile,
+    #                                         destfile = fullImgFileDestPath,
+    #                                         quiet = TRUE),
+    #                          silent = TRUE )
+    #                 }
+    #             }  else
+    #             {
+    #                 #  Copy file from local directory to fullImgFileDestPath
+    #                 
+    #                 file.copy (srcFile, fullImgFileDestPath)
+    #                 
+    #             }  #  end else - using local env dir files
+    #             
+    #             cat ("\n\nsuffix = '", suffix, "'\n", sep='')
+    #             #			if (suffix == ".pnm")
+    #             if (suffix == ".pgm")
+    #             {
+    #                 cat ("\n\nsuffix is .pnm so adding env.layer\n", sep='')
+    #                 cat ("\nlength (env.layers) before = '", length(env.layers), sep='')
+    #                 new.env.layer = get.img.matrix.from.pnm (fullImgFileDestPath)
+    #                 cat ("\ndim (new.env.layer) before = '", dim (new.env.layer), sep='')
+    #                 cat ("\n\nis.matrix(new.env.layer) in get.img.matrix.from.pnm = '", is.matrix(new.env.layer), "\n", sep='')
+    #                 cat ("\n\nis.vector(new.env.layer) in get.img.matrix.from.pnm = '", is.vector(new.env.layer), "\n", sep='')
+    #                 cat ("\n\nclass(new.env.layer) in get.img.matrix.from.pnm = '", class(new.env.layer), "\n", sep='')
+    #                 
+    #                 env.layers [[curEnvLayerIdx]]= new.env.layer
+    #                 
+    #                 cat ("\nlength (env.layers) AFTER = '", length(env.layers), sep='')
+    #                 cat ("\n\nnew.env.layer [1:3,1:3] = \n", new.env.layer [1:3,1:3], "\n", sep='')    #  Echo a bit of the result...
+    #                 for (row in 1:3)
+    #                     for (col in 1:3)
+    #                     {
+    #                         cat ("\nnew.env.layer [", row, ", ", col, "] = ", new.env.layer[row,col], ", and class = ", class(new.env.layer[row,col]), sep='')
+    #                     }
+    #                 #	print (new.env.layer [1:3,1:3])    #  Echo a bit of the result...
+    #                 
+    #             }  #  end if - pnm file
+    #         }  #  end for - suffixes
+    
+    return (numSpp)
+    }
+
+#-------------------------------------------------------------------------------
+
 getTrueSppDistFromExistingClusters = 
     function (envLayersWorkingDirWithSlash, 
               numImgRows, numImgCols, 
@@ -45,6 +298,11 @@ getTrueSppDistFromExistingClusters =
               arrayIdxBase = 1
             )
     {        
+        
+    numSpp = NA
+    
+    cat ("\n\nIn getTrueSppDistFromExistingClusters().")
+                
     numPixelsPerImg = numImgRows * numImgCols    
     numEnvLayers = length (asciiImgFileNameRoots)    
     numColsInEnvLayersTable = numEnvLayers + numNonEnvDataCols

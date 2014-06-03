@@ -313,9 +313,9 @@ repetitions:
     generators:
       - key: numSppInReserveSelection
         generator_type: linear_step
-        start: 2
+        start: 13
         step_size: 1
-        count: 10    #  28
+        count: 14    #  28
 #
 #      - key: randomSeed
 #        generator_type: linear_step
