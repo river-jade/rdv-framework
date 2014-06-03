@@ -1,6 +1,12 @@
 project_name: USG-analysis
 runner_class: RRunner
 
+libraries:
+    -  name: zonation-dat-file
+       repo_type: http_file
+       url: https://www.dropbox.com/s/nzrenv2vc43djie/setMarch11_mask.dat
+
+
 base_params:
 
     test.variable.1: 123
@@ -10,8 +16,10 @@ base_params:
     # Variables for running zonation 
     z.executable: /usr/local/bin/zig3
 
-         # orig set file /home/ubuntu/usg_zigtest/input_final/setMarch11_mask.dat
-    z.settings.file: /home/ubuntu/usg_data/setMarch11_mask.dat
+    # orig set file /home/ubuntu/usg_zigtest/input_final/setMarch11_mask.dat
+    # nectar VM: /home/ubuntu/usg_data/setMarch11_mask.dat
+    z.settings.file: $$library_path(zonation-dat-file)$$ 
+
     z.output.file: zoutput.txt
     z.other.cmd.line.args: 0.0 0 1.0 1
     z.spp.list.filename: $$output_path$$zonation_spp_list.dat
