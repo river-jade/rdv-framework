@@ -17,7 +17,7 @@ base_params:
     z.executable: /usr/local/bin/zig3
 
  
-    z.settings.file: $$library_path(zonation-dat-files)$$/z_settings_S1.dat 
+    z.settings.file: $$library_path(zonation-dat-files)$$/old_z_settings_S1.dat 
 
     z.output.file: $$output_path$$zoutput.txt
     z.other.cmd.line.args: 0.0 0 1.0 1
