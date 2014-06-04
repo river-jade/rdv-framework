@@ -43,6 +43,7 @@ sample.reps <- ceiling( no.coutnries/PAR.num.coalitions)
 
 sampled.coals <- sample( 1:PAR.num.coalitions, length(1:PAR.num.coalitions), replace = FALSE)
 
+# this make a vector of coalition ids to be assigned to each country
 for( i in 1:(sample.reps -1) ) {
   sampled.coals <- c(sampled.coals, sample( 1:PAR.num.coalitions, length(1:PAR.num.coalitions), replace = FALSE) )
 }
