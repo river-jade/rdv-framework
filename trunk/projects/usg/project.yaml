@@ -2,10 +2,10 @@ project_name: USG-analysis
 runner_class: RRunner
 
 libraries:
-    -  name: zonation-dat-file
-       repo_type: http_file
-       url: https://www.dropbox.com/s/nzrenv2vc43djie/setMarch11_mask.dat
-
+    -  name: zonation-dat-files
+       repo_type: svn
+       url: https://rdv-framework.googlecode.com/svn/trunk/projects/usg/zsettings
+       revision: 467
 
 base_params:
 
@@ -18,7 +18,7 @@ base_params:
 
     # orig set file /home/ubuntu/usg_zigtest/input_final/setMarch11_mask.dat
     # nectar VM: /home/ubuntu/usg_data/setMarch11_mask.dat
-    z.settings.file: $$library_path(zonation-dat-file)$$ 
+    z.settings.file: $$library_path(zonation-dat-files)$$z_settings_S1.dat 
 
     z.output.file: zoutput.txt
     z.other.cmd.line.args: 0.0 0 1.0 1
@@ -27,7 +27,8 @@ base_params:
     # Note: we are assuming that the input spp maps are already on the
     # machine where this is running as there are many gigs of input
     # data
-    z.input.data.dir: /home/ubuntu/usg_data/spp_maps
+    #z.input.data.dir: /home/ubuntu/usg_data/spp_maps
+    z.input.data.dir: /mnt/data/input_SDMspart1
     #z.input.data.dir: /Users/ascelin/analysis/USG/zonation/usg_zigtest/input_final
 
 
