@@ -18,7 +18,7 @@ base_params:
 
     # orig set file /home/ubuntu/usg_zigtest/input_final/setMarch11_mask.dat
     # nectar VM: /home/ubuntu/usg_data/setMarch11_mask.dat
-    z.settings.file: $$library_path(zonation-dat-files)$$z_settings_S1.dat 
+    z.settings.file: $$library_path(zonation-dat-files)$$/z_settings_S1.dat 
 
     z.output.file: $$output_path$$zoutput.txt
     z.other.cmd.line.args: 0.0 0 1.0 1
