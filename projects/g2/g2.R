@@ -399,7 +399,9 @@ numSpp = getTrueSppDist (trueSppDistSourceType,
                         asciiImgFileNameRoots, scaleInputs, 
                         imgFileType, numNonEnvDataCols, 
                         clusterFilePath, clusterFileNameStem, 
-                        arrayIdxBase
+                        arrayIdxBase, 
+                        
+                        sppLibDir    #  new argument 2014 06 05 - BTL                        
                         )
         
 
