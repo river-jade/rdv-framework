@@ -1,6 +1,6 @@
-1 input/condition_sc10brykeyr_frog.asc
-2 input/condition_sc10brykeyr_groundbird.asc
-3 input/condition_sc10brykeyr_mamm.asc
-4 input/condition_sc10brykeyr_otherbird.asc
-5 input/condition_sc10brykeyr_plant.asc
-6 input/condition_sc10brykeyr_reptile.asc
+1 /mnt/data/scenarios/condition_sc10brykeyr_frog.asc
+2 /mnt/data/scenarios/condition_sc10brykeyr_groundbird.asc
+3 /mnt/data/scenarios/condition_sc10brykeyr_mamm.asc
+4 /mnt/data/scenarios/condition_sc10brykeyr_otherbird.asc
+5 /mnt/data/scenarios/condition_sc10brykeyr_plant.asc
+6 /mnt/data/scenarios/condition_sc10brykeyr_reptile.asc
