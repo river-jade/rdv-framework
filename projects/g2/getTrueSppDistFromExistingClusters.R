@@ -55,7 +55,8 @@ getTrueSppDist =
     if (trueSppSourceType == CONST_sppSource_sppLibraryLocal)
     #--------------------------------------------------------    
         {
-        quit ("\n\ngetTrueSppDistFromSppLibraryLocal() not implemented yet.\n\n")
+        cat ("\n\nAbout to call getTrueSppDistFromSppLibraryLocal().")
+            quit ("\n\ngetTrueSppDistFromSppLibraryLocal() not implemented yet.\n\n")
 #         numSpp = getTrueSppDistFromSppLibraryLocal (
 #                                         envLayersWorkingDirWithSlash, 
 #                                         numImgRows, numImgCols, 
@@ -72,24 +73,28 @@ getTrueSppDist =
         } else if (trueSppSourceType == CONST_sppSource_sppLibraryTzar)
         #--------------------------------------------------------------    
         {
-        quit ("\n\ngetTrueSppDistFromSppLibraryTzar() not implemented yet.\n\n")
-#         numSpp = getTrueSppDistFromSppLibraryTzar (
-#                                         envLayersWorkingDirWithSlash, 
-#                                         numImgRows, numImgCols, 
-#                                         
-#                                         ascFileHeaderAsStrVals, 
-#                                         
-#                                         sppGenOutputDirWithSlash, 
-#                                         asciiImgFileNameRoots, scaleInputs, 
-#                                         imgFileType, numNonEnvDataCols, 
-#                                         clusterFilePath, clusterFileNameStem, 
-#                                         arrayIdxBase
-#                                         )        
+        cat ("\n\nAbout to call getTrueSppDistFromSppLibraryTzar().")
+            #        quit ("\n\ngetTrueSppDistFromSppLibraryTzar() not implemented yet.\n\n")
+        numSpp = getTrueSppDistFromSppLibraryTzar (
+                                        envLayersWorkingDirWithSlash, 
+                                        numImgRows, numImgCols, 
+                                        
+                                        ascFileHeaderAsStrVals, 
+                                        
+                                        sppGenOutputDirWithSlash, 
+                                        asciiImgFileNameRoots, scaleInputs, 
+                                        imgFileType, numNonEnvDataCols, 
+                                        clusterFilePath, clusterFileNameStem, 
+                                        arrayIdxBase, 
+                                        
+                                        sppLibDir    #  new argument 2014 06 05 - BTL                                        
+                                        )        
         #-------------------------------------------------------------------            
         } else if (trueSppSourceType == CONST_sppSource_sppLibraryRemoteURL)
         #-------------------------------------------------------------------
         {
-        quit ("\n\ngetTrueSppDistFromSppLibraryRemoteURL() not implemented yet.\n\n")
+        cat ("\n\nAbout to call getTrueSppDistFromSppLibraryRemoteURL().")
+            quit ("\n\ngetTrueSppDistFromSppLibraryRemoteURL() not implemented yet.\n\n")
 #         numSpp = getTrueSppDistFromSppLibraryRemoteURL (
 #                                         envLayersWorkingDirWithSlash, 
 #                                         numImgRows, numImgCols, 
@@ -106,7 +111,8 @@ getTrueSppDist =
         } else if (trueSppSourceType == CONST_sppSource_existingClusters)
         #----------------------------------------------------------------    
         {
-        numSpp = 
+        cat ("\n\nAbout to call getTrueSppDistExistingClusters().")
+            numSpp = 
             getTrueSppDistFromExistingClusters (
                                         envLayersWorkingDirWithSlash, 
                                         numImgRows, numImgCols, 
