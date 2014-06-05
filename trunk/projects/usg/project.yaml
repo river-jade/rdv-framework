@@ -5,7 +5,7 @@ libraries:
     -  name: zonation-dat-files
        repo_type: svn
        url: https://rdv-framework.googlecode.com/svn/trunk/projects/usg/zsettings
-       revision: 475
+       revision: 478
 
 base_params:
 
