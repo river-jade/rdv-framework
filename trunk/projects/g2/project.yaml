@@ -46,6 +46,13 @@ libraries:
 
 #---------------------------------------
 
+    -  name: sppLibrary
+
+       repo_type: http_zip
+       url: http://glass.eres.rmit.edu.au/tzar_input/g2/SppLibrary.zip
+
+#---------------------------------------
+
     -  name: samplingBiasLibrary
 
 #       repo_type: local_file
@@ -269,6 +276,10 @@ scenarios:
             clusterFilePath.linux:          "$$library_path(clusterLibrary)$$/LowerRight_r256c256/"
             clusterFilePath.windows.vmware: "$$library_path(clusterLibrary)$$\\LowerRight_r256c256\\"
 
+            sppLibPath.linux:               "$$library_path(sppLibrary)$$/LowerRight_r256c256/"
+
+
+
 #    - name: g2_UpperRight256
 #      parameters:
 #            envLayersSrcDir.mac:            "$$library_path(envDataLayersLibrary)$$/UpperRight_r256c256"
@@ -313,9 +324,9 @@ repetitions:
     generators:
       - key: numSppInReserveSelection
         generator_type: linear_step
-        start: 13
+        start: 12
         step_size: 1
-        count: 2    #  28
+        count: 1    #  28
 #
 #      - key: randomSeed
 #        generator_type: linear_step

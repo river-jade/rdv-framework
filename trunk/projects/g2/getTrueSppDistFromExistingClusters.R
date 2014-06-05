@@ -44,7 +44,9 @@ getTrueSppDist =
               asciiImgFileNameRoots, scaleInputs, 
               imgFileType, numNonEnvDataCols, 
               clusterFilePath, clusterFileNameStem, 
-              arrayIdxBase = 1
+              arrayIdxBase = 1, 
+              
+              sppLibDir=""    #  new argument 2014 06 05 - BTL
              )
     {
     numSpp = NA
@@ -153,6 +155,16 @@ getTrueSppDistFromSppLibraryLocal =
 
 #-------------------------------------------------------------------------------
 
+#  Remove trailing slash if there is one.
+removeTrailingSlash = function (aPath)
+    {
+    aPathNoSlash = aPath
+    lastChar = str_sub (aPathNoSlash, -1, -1)
+    if (lastChar == '/')
+        aPathNoSlash = str_sub (aPathNoSlash, 1, -2)
+    return (aPathNoSlash)
+    }
+
 getTrueSppDistFromSppLibraryTzar = 
     function (envLayersWorkingDirWithSlash, 
               numImgRows, numImgCols, 
@@ -163,15 +175,81 @@ getTrueSppDistFromSppLibraryTzar =
               asciiImgFileNameRoots, scaleInputs, 
               imgFileType, numNonEnvDataCols, 
               clusterFilePath, clusterFileNameStem, 
-              arrayIdxBase
+              arrayIdxBase, 
+              
+              sppLibDir
     )
     {
         numSpp = NA
         
-        cat ("\n\nIn getTrueSppDistFromSppLibraryTzar().")
-        cat ("\n    dummy version...")
+#         cat ("\n\nIn getTrueSppDistFromSppLibraryTzar().")
+#         cat ("\n    dummy version...")
         
-        return (numSpp)
+        #---------------------------------------------------------
+        #  Get species layers from a library downloaded by tzar.
+        #---------------------------------------------------------
+    
+sppLayersWorkingDir = removeTrailingSlash (sppGenOutputDirWithSlash)
+
+sppFileNames = getEnvFiles (sppLibDir, sppLayersWorkingDir)
+
+cat ("\n\nspp layers just after getEnvFiles = \n")
+print (sppFileNames)
+
+numSpp = length (sppFileNames)    
+cat ("\n\nnumSpp  = \n", numSpp, sep='')
+
+quit("\n\nTemporary quit after trying to read spp library files.\n\n")
+
+return (numSpp)
+
+# 
+# #--------------
+# 
+# b01211027b-02:g2 Bill$ grep -in envLayersWorkingDirWithSlash *.R
+# 
+# initializeG2options.R:162:envLayersWorkingDirWithSlash = paste0 (envLayersWorkingDir, dir.slash)
+# initializeG2options.R:164:cat ("\n\nenvLayersWorkingDirWithSlash = '",
+# initializeG2options.R:165:     envLayersWorkingDirWithSlash, "'\n\n", sep='')
+# initializeG2options.R:556:curFullMaxentEnvLayersDirName = envLayersWorkingDirWithSlash
+# 
+# lengthOfString = nchar (envLayersWorkingDirWithSlash)
+# lastChar = substr (envLayersWorkingDirWithSlash, lengthOfString, lengthOfString)
+# if (lastChar == '/')
+#     envLayersWorkingDirNoSlash = sub_str (envLayersWorkingDirWithSlash, 
+#                                           1, lengthOfString - 1)
+# 
+# envLayersWorkingDirNoSlash = removeTrailingSlash (envLayersWorkingDirWithSlash)
+# 
+# b01211027b-02:g2 Bill$ 
+#      
+# 
+# #--------------
+# 
+# envLayersSrcDir = parameters$envLayersSrcDir.linux
+# clusterFilePath = parameters$clusterFilePath.linux
+# 
+# envLayersWorkingDirName = parameters$envLayersWorkingDirName
+# 
+# cat ("\n\nenvLayersWorkingDirName = '",
+#      envLayersWorkingDirName, "'\n\n", sep='')
+# 
+# envLayersWorkingDir = paste0 (curFullTzarExpOutputDirRootWithSlash,
+#                               envLayersWorkingDirName)
+# envLayersWorkingDirWithSlash = paste0 (envLayersWorkingDir, dir.slash)
+# 
+# cat ("\n\nenvLayersWorkingDirWithSlash = '",
+#      envLayersWorkingDirWithSlash, "'\n\n", sep='')
+# 
+# ascFileHeaderAsNumAndStr =
+#     #    getAscFileHeaderAsNamedList (paste0 (envLayersSrcDir,
+#     getAscFileHeaderAsNamedList (paste0 (envLayersSrcDir, dir.slash,
+#                                          asciiImgFileNameRoots [arrayIdxBase],
+#                                          ".asc"))
+# curFullMaxentEnvLayersDirName = envLayersWorkingDirWithSlash
+# 
+# #----------------
+ 
     }
 
 #-------------------------------------------------------------------------------
