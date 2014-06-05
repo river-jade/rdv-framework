@@ -13,19 +13,19 @@ base_params:
     do.dry.run: True
 
     # Variables for running zonation 
-	#location of zonation run file
+    #location of zonation run file
     z.executable: /usr/local/bin/zig3
-
+    
 	#location of the .dat file
     z.settings.file: $$library_path(zonation-dat-files)$$/old_z_settings_S1.dat 
 
-	$location of the .spp file	(this file is generated dynamically by R by listing files in input directory)
-	z.spp.list.filename: $$output_path$$zonation_spp_list.spp
-	
+    #location of the .spp file	(this file is generated dynamically by R by listing files in input directory)
+    z.spp.list.filename: $$output_path$$zonation_spp_list.spp
+    
 	#location of the output files (don't need to change this)
     z.output.file: $$output_path$$zoutput.txt
-	
-	#last numbers on the zonation command line system call (we won't change these for now)
+
+    #last numbers on the zonation command line system call (we won't change these for now)
     z.other.cmd.line.args: 0.0 0 1.0 1
 
     # Note: we are assuming that the input spp maps are already on the
@@ -34,7 +34,7 @@ base_params:
 
     z.input.data.dir: /mnt/data/all_input_maps
     
-	#NOTE: THIS IS THE TEST DIRECTORY:
+    #NOTE: THIS IS THE TEST DIRECTORY:
     #z.input.data.dir: /home/ubuntu/usg_data/spp_maps
 
 scenarios:
