@@ -10,13 +10,16 @@ p <- parameters
 
 cat( '\nThe input dir for species data is:',  p$z.input.data.dir )
 cat( '\nFilename for the Zonation spp file:',  p$z.spp.list.filename )
-cat( '\nThe Zonation settings file is:',  p$z.settings.file )
+cat( '\nThe Zonation settings .dat file is:',  p$z.settings.file )
 
 # Get a list of all the .asc in the input dir. These will all go into
 # the input species file
 spp.file.list <- dir( p$z.input.data.dir, pattern='asc', full.names=TRUE )
 
-if( length(spp.file.list) == 0 ) {cat('\nERROR: No species maps were found, stopping.\n\n'); stop()}
+if( length(spp.file.list) == 0 ) {
+    cat('\nERROR: No species maps were found, stopping.\n\n')
+	stop()
+}
 
 
 # Now write the the zonation species list file (assuming all spp have
@@ -43,10 +46,6 @@ z.cmdline <- paste( p$z.executable, '-r', p$z.settings.file, p$z.spp.list.filena
 cat( '\n\nThe commandline to run zonation is:\n', z.cmdline )
 cat( '\n\nTrying to run zonation....')
 
-#setwd( '/home/ubuntu/usg_zigtest/')
+if( !p$do.dry.run ) system( z.cmdline )
 
-system( z.cmdline )
-
-
-#system2( system.command, args=system.command.arguments, env="DISPLAY=:1" )      
 

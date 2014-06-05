@@ -1,6 +1,6 @@
 [Settings]
 removal rule = 1
-warp factor = 1000
+warp factor = 10000
 edge removal = 1
 add edge points = 0
 use SSI = 0
@@ -12,7 +12,7 @@ initial removal percent = 0.0
 use cost = 0
 cost file = tutorial_input/cost.asc
 use mask = 1
-mask file = input/currinfpamask.asc
+mask file = /mnt/data/scenarios/currinfpamask.asc
 use boundary quality penalty = 0
 BQP profiles file = tutorial_input/BQPcurves.txt
 BQP mode = 1

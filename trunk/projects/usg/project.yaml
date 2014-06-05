@@ -9,38 +9,38 @@ libraries:
 
 base_params:
 
-    test.variable.1: 123
-    test.variable.2: 456
-
+    #If this is true, it will run the R script without running zonation (most of the time this will be false once the R scripts are good to go)
+    do.dry.run: True
 
     # Variables for running zonation 
+	#location of zonation run file
     z.executable: /usr/local/bin/zig3
 
- 
+	#location of the .dat file
     z.settings.file: $$library_path(zonation-dat-files)$$/old_z_settings_S1.dat 
 
+	$location of the .spp file	(this file is generated dynamically by R by listing files in input directory)
+	z.spp.list.filename: $$output_path$$zonation_spp_list.spp
+	
+	#location of the output files (don't need to change this)
     z.output.file: $$output_path$$zoutput.txt
+	
+	#last numbers on the zonation command line system call (we won't change these for now)
     z.other.cmd.line.args: 0.0 0 1.0 1
-    z.spp.list.filename: $$output_path$$zonation_spp_list.dat
 
     # Note: we are assuming that the input spp maps are already on the
     # machine where this is running as there are many gigs of input
     # data
 
     z.input.data.dir: /mnt/data/all_input_maps
+    
+	#NOTE: THIS IS THE TEST DIRECTORY:
     #z.input.data.dir: /home/ubuntu/usg_data/spp_maps
-    #z.input.data.dir: /mnt/data/input_SDMspart1
-    #z.input.data.dir: /Users/ascelin/analysis/USG/zonation/usg_zigtest/input_final
-
-
-    # to remove
-    z.spp.file: /home/ubuntu/usg_zigtest/input_final/splist.spp
-
 
 scenarios:
-    - name: Example scenario 1
+    - name: S1 base
       parameters:
-    # - name: Example scenario 2
-    #   parameters:
-    #       test.variable.1: 789
-
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_base_scen1.dat
+    - name: S2 current
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen2current.dat
