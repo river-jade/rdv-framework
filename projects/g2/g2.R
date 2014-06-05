@@ -386,7 +386,7 @@ CONST_sppSource_sppLibraryTzar = 2
 CONST_sppSource_sppLibraryRemoteURL = 3
 CONST_sppSource_existingClusters = 4
 
-trueSppDistSourceType = CONST_sppSource_existingClusters    #  temporary
+trueSppDistSourceType = CONST_sppSource_sppLibraryTzar    #  temporary
 
 numSpp = getTrueSppDist (trueSppDistSourceType, 
                       
