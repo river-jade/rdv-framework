@@ -161,15 +161,17 @@ getTrueSppDistFromSppLibraryLocal =
 
 #-------------------------------------------------------------------------------
 
-#  Remove trailing slash if there is one.
+    #  Remove trailing slash if there is one.
 removeTrailingSlash = function (aPath)
     {
     aPathNoSlash = aPath
-    lastChar = str_sub (aPathNoSlash, -1, -1)
-    if (lastChar == '/')
-        aPathNoSlash = str_sub (aPathNoSlash, 1, -2)
+    lengthOfString = nchar (aPath)
+    lastChar = substr (aPath, lengthOfString, lengthOfString)
+    if (lastChar == '/')  aPathNoSlash = strtrim (aPath, lengthOfString-1)
     return (aPathNoSlash)
     }
+
+#----------
 
 getTrueSppDistFromSppLibraryTzar = 
     function (envLayersWorkingDirWithSlash, 
