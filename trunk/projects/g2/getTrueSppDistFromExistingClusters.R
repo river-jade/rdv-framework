@@ -208,7 +208,8 @@ print (sppFileNames)
 numSpp = length (sppFileNames)    
 cat ("\n\nnumSpp  = \n", numSpp, sep='')
 
-quit("\n\nTemporary quit after trying to read spp library files.\n\n")
+stop ("\n\nTemporary quit after trying to read spp library files.\n\n")
+#quit(save="no")
 
 return (numSpp)
 
