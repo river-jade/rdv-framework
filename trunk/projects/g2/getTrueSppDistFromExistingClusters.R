@@ -199,7 +199,8 @@ getTrueSppDistFromSppLibraryTzar =
     
 sppLayersWorkingDir = removeTrailingSlash (sppGenOutputDirWithSlash)
 
-sppFileNames = getEnvFiles (sppLibDir, sppLayersWorkingDir)
+sppFileNames = getEnvFiles (sppLibDir, sppLayersWorkingDir, 
+                            overwrite=TRUE)
 
 cat ("\n\nspp layers just after getEnvFiles = \n")
 print (sppFileNames)
