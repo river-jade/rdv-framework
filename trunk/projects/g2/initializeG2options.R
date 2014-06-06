@@ -113,7 +113,7 @@ if (current.os == "mingw32")
 
     envLayersSrcDir = parameters$envLayersSrcDir.linux
     clusterFilePath = parameters$clusterFilePath.linux
-sppLibPath = parameters$sppLibPath.linux
+sppLibDir = parameters$sppLibPath.linux
     maxentFullPathName = parameters$maxentFullPathName.linux
     fullPathToZonationExe = parameters$fullPathToZonationExe.linux
     fullPathToZonationParameterFile = parameters$fullPathToZonationParameterFile.linux
