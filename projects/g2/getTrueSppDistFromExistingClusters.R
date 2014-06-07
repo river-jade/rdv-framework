@@ -200,15 +200,16 @@ getTrueSppDistFromSppLibraryTzar =
 sppLayersWorkingDir = removeTrailingSlash (sppGenOutputDirWithSlash)
 
 sppFileNames = getEnvFiles (sppLibDir, sppLayersWorkingDir, 
-                            overwrite=TRUE)
+                            overwrite=TRUE, verbose=TRUE)
 
 cat ("\n\nspp layers just after getEnvFiles = \n")
 print (sppFileNames)
 
 numSpp = length (sppFileNames)    
-cat ("\n\nnumSpp  = \n", numSpp, sep='')
+cat ("\n\nnumSpp  = ", numSpp, "\n\n", sep='')
 
-stop ("\n\nTemporary quit after trying to read spp library files.\n\n")
+#cat ("\n\nTemporary quit after trying to read spp library files.\n\n")
+#stop()
 #quit(save="no")
 
 return (numSpp)
