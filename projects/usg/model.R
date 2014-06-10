@@ -27,12 +27,12 @@ if( length(spp.file.list) == 0 ) {
 # Now write the the zonation species list file (assuming all spp have
 # the same weight for now
 
-# ctr <- 1
-# for( s in spp.file.list){
-    # #cat( '1.0 ', x[ctr] ' 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
-    # cat( '1.0 1.0 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
-	# ctr <- ctr + 1
-# }
+ctr <- 1
+for( s in spp.file.list){
+    #cat( '1.0 ', x[ctr] ' 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
+    cat( '1.0 1.0 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
+	ctr <- ctr + 1
+}
 
 
 
