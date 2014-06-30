@@ -87,5 +87,5 @@ scenarios:
     #      z.input.data.dir: /mnt/data/all_input_maps
     - name: S2 current
       parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/currinfpamask.dat
+          z.settings.file: $$library_path(zonation-dat-files)$$/currinfnopas.dat
           z.input.data.dir: /mnt/data/all_input_maps
