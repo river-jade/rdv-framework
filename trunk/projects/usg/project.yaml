@@ -5,7 +5,7 @@ libraries:
     -  name: zonation-dat-files
        repo_type: svn
        url: https://rdv-framework.googlecode.com/svn/trunk/projects/usg/zsettings
-       revision: 504
+       revision: 505
 
 base_params:
 
@@ -85,7 +85,7 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_scen12.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: S2 current
+    - name: S2 current no pas
       parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/currinfnopas.dat
+          z.settings.file: $$library_path(zonation-dat-files)$$/setJun30_masknopa_100warp.dat
           z.input.data.dir: /mnt/data/all_input_maps
