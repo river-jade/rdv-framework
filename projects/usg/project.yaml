@@ -5,7 +5,7 @@ libraries:
     -  name: zonation-dat-files
        repo_type: svn
        url: https://rdv-framework.googlecode.com/svn/trunk/projects/usg/zsettings
-       revision: 507
+       revision: 508
 
 base_params:
 
@@ -57,18 +57,18 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen5.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: S6 new condition eyre
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_scen6.dat
-          z.input.data.dir: /mnt/data/all_input_maps
+    #- name: S6 new condition eyre
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_scen6.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
     #- name: S7 new mask eyre yorke
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen7.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: S8 new condition eyre yorke
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_scen8.dat
-          z.input.data.dir: /mnt/data/all_input_maps
+    #- name: S8 new condition eyre yorke
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_scen8.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
     #- name: S9 new mask eyre yorke braemar
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen9.dat
@@ -89,3 +89,19 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/setJun30_masknopa_100warp.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
+    - name: S5 current no pas
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/setJul3_masknopas_scen5.dat
+          z.input.data.dir: /mnt/data/all_input_maps
+    - name: S7 current no pas
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/setJul3_masknopas_scen7.dat
+          z.input.data.dir: /mnt/data/all_input_maps
+    - name: S9 current no pas
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/setJul3_masknopas_scen9.dat
+          z.input.data.dir: /mnt/data/all_input_maps
+    - name: S11 current no pas
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/setJul3_masknopas_scen11.dat
+          z.input.data.dir: /mnt/data/all_input_maps		  
