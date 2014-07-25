@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [[ -z $TZAR_DB ]];
-then
-  echo "The TZAR_DB environment variable must be set for tzar to function correctly"
-fi
-
 TZAR_VERSION=${TZAR_VERSION:-0.5.2}
 
 mkdir /usr/local/lib/tzar
