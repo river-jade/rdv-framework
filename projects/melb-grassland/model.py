@@ -78,10 +78,9 @@ class Model(basemodel.BaseModel):
                 self.logger.fine('='*50)
                 
                 self.logger.fine("\ngrassland condition model...")
-
                 self.run_r_code("grassland.condition.model.R", runparams, overrides )
                 
-                
+                self.logger.fine("\nupdate.planning.unit.info...")
                 self.run_r_code("update.planning.unit.info.R", runparams, overrides )
                 
         
@@ -98,62 +97,10 @@ class Model(basemodel.BaseModel):
                     self.logger.fine("\ngen reserved PUs...")
                     self.run_r_code("gen.reserved.pus.from.patches.R", runparams, overrides)
 
-
-                    # Up to here!! 
-                    
-                else:
-                    if variables['BudgetForPubReserves'] > 0:
-                        overrides['PAR.budget.for.timestep'] = variables['BudgetForPubReserves']
-                        overrides['PAR.reserve.duration'] = variables['publicReserveDuration']
-                        overrides['OPT.action.type'] = variables['OPT.VAL.public.reserve']
-                        
-                        if variables['reserveSelectionMethod'] == "RANDOM":
-                            self.logger.fine("\nreserve RANDOM for public reserves...")
-                            self.run_r_code("reserve.random.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
-
-                        if variables['reserveSelectionMethod'] == "CONDITION":
-                            self.logger.fine("\nreserve CONDITION for public reserves...")
-                            self.run_r_code("reserve.condition.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
-                            
-                    if variables['BudgetForPrivateManagement'] > 0:
-                        overrides['PAR.budget.for.timestep'] = variables['BudgetForPrivateManagement']
-                        overrides['OPT.action.type'] = variables['OPT.VAL.private.management']
-                        overrides['PAR.reserve.duration'] = variables['privateReserveDuration']
-						
-                        if variables['reserveSelectionMethod'] == "RANDOM":
-                            self.logger.fine("\nreserve RANDOM for private management...")
-                            self.run_r_code("reserve.random.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
-
-                        if variables['reserveSelectionMethod'] == "CONDITION":
-                            self.logger.fine("\nreserve CONDITDION for private managemnt")
-                            self.run_r_code("reserve.condition.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
-
-
-                    if variables['reserveSelectionMethod'] == "CONDITION_AND_RANDOM":
-
-                        # for now only using the case where running
-                        # RANDOM for private and CONDITION for public.
-                        
-                        if variables['BudgetForPrivateManagement'] > 0:
-                            self.logger.fine("\nRunning CONDITION_AND_RANDOM")
-                            self.logger.fine("reserve RANDOM for private management...")
-                            overrides['PAR.budget.for.timestep'] = variables['BudgetForPrivateManagement']
-                            overrides['OPT.action.type'] = variables['OPT.VAL.private.management']
-                            overrides['PAR.reserve.duration'] = variables['privateReserveDuration']
-                            self.run_r_code("reserve.random.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
-                            
-                        if variables['BudgetForPubReserves'] > 0:
-                            self.logger.fine("\nRunning CONDITION_AND_RANDOM")
-                            self.logger.fine("reserve CONDITION for public reserves...")
-                            overrides['PAR.budget.for.timestep'] = variables['BudgetForPubReserves']
-                            overrides['PAR.reserve.duration'] = variables['publicReserveDuration']
-                            overrides['OPT.action.type'] = variables['OPT.VAL.public.reserve']
-                            self.run_r_code("reserve.condition.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
-                
                 self.logger.fine("\nloss model...")
                 # Note: currently offset model is called from inside loss model
                 #self.run_r_code("loss.model.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
-                self.run_r_code("loss.model.melb.grassland.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
+                self.run_r_code("loss.model.melb.grassland.R",  runparams, overrides)
 
                 # now save the output of the offset model
 				
@@ -171,7 +118,7 @@ class Model(basemodel.BaseModel):
                     os.system("copy %s %s" % (filename1, filename2))
 					
                 self.logger.fine("\nevaluate condition model...")
-                self.run_r_code("eval.cond.R", timestep=timeStep, variables=overrides, inputfiles=inputOverDict)
+                self.run_r_code("eval.cond.R", runparams, overrides)
 
                 
         #raw_input("Hit enter to continue:" )

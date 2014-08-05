@@ -186,7 +186,7 @@ write.to.3.forms.of.files <- function (table.to.write, filename.root,
       
       cat ("\nIn write.to.3.forms.of.files:");
       cat ("\n\tis.integer(table.to.write) = ", is.integer(table.to.write));
-      cat ("\n\tis.real(table.to.write) = ", is.real(table.to.write));
+      cat ("\n\tis.double(table.to.write) = ", is.double(table.to.write));
       cat ("\n\tis.numeric(table.to.write) = ", is.numeric(table.to.write));
     }
 

@@ -64,6 +64,8 @@ close.database.connection <- function() {
 
 write.data.to.db <- function( table.name, data.to.write) {
 
+#    browser()
+    
   # the data is not in a data frame then convert to be one
   if( !is.data.frame( data.to.write ) ) {
     
