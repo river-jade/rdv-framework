@@ -124,7 +124,7 @@ update.grassland.condtion.model <- function( cond.scores, current.time.step) {
   managed.habitat.indices   <- get.managed.habitat.indices()
   unmanaged.habitat.indices <- get.unmanaged.habitat.indices( cond.scores )
 
-browser()
+#browser()
   
   #=======================================================
   # Evolve each pixel of grassland based on the curves defined

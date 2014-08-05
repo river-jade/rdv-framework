@@ -10,7 +10,7 @@ base_params:
     Debug.Test.With.20.PUs: False
     DEBUG: False
     
-    Debug.Test.With.given.num.of.PUs: True
+    Debug.Test.With.given.num.of.PUs: False
     Debug.Num.of.PUs.to.test.with: 10
 
     step.interval: 5 # make sure you update PAR.management.cost.per.pixel if you change this
@@ -46,8 +46,6 @@ base_params:
     #-----------------------------------------
     start_point: 1
 
-    num.planning.units.x: 15
-    num.planning.units.y: 15
     rows: 782
     cols: 832
     #non.habitat.indicator:  -9999
@@ -73,7 +71,9 @@ base_params:
     OPT.use.offsetting.in.loss.model: True
     PAR.pus.lost.per.timestep: 0
     loss.model.root.filename: $$output_path$$lossModel
-
+    
+    # specifies how long the reserves (offsets?) will last
+    PAR.management.duration: 9999
 
     #----------------------------
     #  Variables for offset.model.R
@@ -107,6 +107,9 @@ base_params:
 
     OPT.use.smoothing.in.grassland.cond.model: False
     PAR.prob.of.crossing.thresh: 0.0005
+
+    # With this true unmanaged areas don't degrade
+    OPT.unmanaged.is.stable: False
 
     PAR.grassland.variability.std.dev: 0.02
     PAR.grassland.threshold.value: 0.35
