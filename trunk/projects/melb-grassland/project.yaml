@@ -32,6 +32,7 @@ base_params:
     dynamicPUinfoTableName: dynamicPUinfo
     staticPUinfoTableName: staticPUinfo
     offsettingTestingInfoTableName: offsettingTestingInfo
+    LandscapeCondTableName: landscapeCondition
 
     PUcondTableName: PUcond
 
@@ -49,7 +50,8 @@ base_params:
     num.planning.units.y: 15
     rows: 782
     cols: 832
-    non.habitat.indicator:  -9999
+    #non.habitat.indicator:  -9999
+    non.habitat.indicator:  0
 
     #----------------------------------------------------------------------
     # New Variables added when converting to Melb Grassland
@@ -70,6 +72,8 @@ base_params:
     #----------------------------
     OPT.use.offsetting.in.loss.model: True
     PAR.pus.lost.per.timestep: 0
+    loss.model.root.filename: $$output_path$$lossModel
+
 
     #----------------------------
     #  Variables for offset.model.R
@@ -114,7 +118,10 @@ base_params:
 
     OPT.use.raster.maps.for.input.and.output: True
 
-
+    PAR.time.steps.filename: $$model_path$$input_data/condModel_timesteps.txt
+    PAR.managed.above.thresh.filename: $$model_path$$input_data/condModel_above_thresh_curve.txt
+    PAR.managed.below.thresh.filename: $$model_path$$input_data/condModel_below_thresh_curve.txt
+    PAR.unmanaged.filename: $$model_path$$input_data/condModel_unmanaged_curve.txt
 
     #-------------------------------------------
     #  Variables for reserve.random.R
@@ -139,9 +146,6 @@ base_params:
 
 
 #  input_files
-    PAR.managed.above.thresh.filename: $$model_path$$input_data/condModel_above_thresh_curve.txt
-    PAR.managed.below.thresh.filename: $$model_path$$input_data/condModel_below_thresh_curve.txt
-    PAR.unmanaged.filename: $$model_path$$input_data/condModel_unmanaged_curve.txt
 
     master.habitat.map.zo1.base.filename: $$model_path$$input_data/hab.map.master.zo1
 
@@ -174,7 +178,6 @@ base_params:
     pu.reserve.info.file: $$output_path$$puReserveInfo.txt
     reserved.planning.units.filename.base: $$output_path$$reservedPlanningUnits
     managed.planning.units.filename.base: $$output_path$$managedPlanningUnits
-
 
 
 scenarios:
