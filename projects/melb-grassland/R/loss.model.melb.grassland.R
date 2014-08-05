@@ -260,7 +260,7 @@ if( current.time.step == 0 ) {
     #------------------------------------------------------------
 
 
-  timestep.with.mgmt.expiring <- current.time.step - PAR.management.duration;
+  timestep.with.mgmt.expiring <- current.time.step - PAR.management.duration
   
 
    #   cat( '\n timestep.with.mgmt.expiring:', timestep.with.mgmt.expiring);
