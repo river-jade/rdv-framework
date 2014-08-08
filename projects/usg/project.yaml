@@ -5,7 +5,7 @@ libraries:
     -  name: zonation-dat-files
        repo_type: svn
        url: https://rdv-framework.googlecode.com/svn/trunk/projects/usg/zsettings
-       revision: 510
+       revision: 511
 
 base_params:
 
@@ -65,10 +65,10 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen7.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: S8 new condition eyre yorke
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_scen8.dat
-          z.input.data.dir: /mnt/data/all_input_maps
+    #- name: S8 new condition eyre yorke
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_scen8.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
     #- name: S9 new mask eyre yorke braemar
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen9.dat
@@ -121,3 +121,11 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_nopas_scen12.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
+    - name: newS13 new mask 3ports unshared
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen13_3p24unshare.dat
+          z.input.data.dir: /mnt/data/all_input_maps
+    - name: newS15 new mask 8ports unshared
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen15_8p24unshare.dat
+          z.input.data.dir: /mnt/data/all_input_maps
