@@ -1,0 +1,6 @@
+1 /mnt/data/scenarios/condition_currclearinfnopas.asc
+2 /mnt/data/scenarios/condition_currclearinfnopas.asc
+3 /mnt/data/scenarios/condition_currclearinfnopas.asc
+4 /mnt/data/scenarios/condition_currclearinfnopas.asc
+5 /mnt/data/scenarios/condition_currclearinfnopas.asc
+6 /mnt/data/scenarios/condition_currclearinfnopas.asc
