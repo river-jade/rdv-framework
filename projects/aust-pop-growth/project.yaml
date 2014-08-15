@@ -1,0 +1,30 @@
+project_name: aust-pop-growth
+runner_class: RRunner
+
+
+base_params:
+
+    buff1: <<input_data/buffers/b100.shp>>
+    buff.cache: "input_data/all.buffer.areas.Rdump"
+    OPT.use.buff.cache: TRUE
+
+    # this is people per km^2
+    #development.denisty: 100
+    development.denisty: 200
+
+    # percentage increase for all cities
+    percentage.increase: 4
+
+    # output files
+    output.filename.buff.areas: <<$$output_path$$/all.buffer.areas.Rdump>>
+    output.filename.city.buff.sizes: <<$$output_path$$/city.buffer.sizes.txt>>
+    output.filename.city.buff.sizes.csv: <<$$output_path$$/city.buffer.sizes.csv>>
+
+
+scenarios:
+    - name: Example scenario 1
+      parameters:
+    # - name: Example scenario 2
+    #   parameters:
+    #       test.variable.1: 789
+
