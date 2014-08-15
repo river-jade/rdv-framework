@@ -26,7 +26,7 @@ PAR.managed.above.thresh.filename <- "/Users/ascelin/analysis/src/rdv-framework/
 reserved.pid.list.filename <- "/Users/ascelin/tzar/outputdata/Melb_grassland/default_runset/44_Do_nothing.inprogress/reserved.pid.list.txt"
 PAR.pus.in.dev.pool <- "/Users/ascelin/tzar/outputdata/Melb_grassland/default_runset/44_Do_nothing.inprogress/PUs_IN_DEV_POOL.txt"
 OPT.specify.development.pool.with.map <- TRUE
-current.time.step <- 0
+current.time.step <- 20
 PAR.pus.lost.per.timestep <- 0
 OPT.use.smoothing.in.grassland.cond.model <- FALSE
 reserve.map.name.base <- "/Users/ascelin/tzar/outputdata/Melb_grassland/default_runset/44_Do_nothing.inprogress/zreserve.map"
