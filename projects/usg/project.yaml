@@ -5,12 +5,12 @@ libraries:
     -  name: zonation-dat-files
        repo_type: svn
        url: https://rdv-framework.googlecode.com/svn/trunk/projects/usg/zsettings
-       revision: 525
+       revision: 526
 
 base_params:
 
     #If this is true, it will run the R script without running zonation (most of the time this will be false once the R scripts are good to go)
-    do.dry.run: True
+    do.dry.run: False
 
     # Variables for running zonation 
     #location of zonation run file
