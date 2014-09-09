@@ -161,18 +161,18 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_linear_mask_scen3eyykbra.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    #- name: newbase_cond pamask no new inf
-    #  parameters:
-    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_base.dat
-    #      z.input.data.dir: /mnt/data/all_input_maps
-    #- name: newbase_cond nomask no new inf
-    #  parameters:
-    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_nomask.dat
-    #      z.input.data.dir: /mnt/data/all_input_maps
-    #- name: newbase_nocond pamask
-    #  parameters:
-    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_locnoconditionpamask_base.dat
-    #      z.input.data.dir: /mnt/data/all_input_maps		  
+    - name: newbase_cond pamask no new inf
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_base.dat
+          z.input.data.dir: /mnt/data/all_input_maps
+    - name: newbase_cond nomask no new inf
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_nomask.dat
+          z.input.data.dir: /mnt/data/all_input_maps
+    - name: newbase_nocond pamask
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_locnoconditionpamask_base.dat
+          z.input.data.dir: /mnt/data/all_input_maps		  
     - name: newS3condret pamask 3ports shared weight1000
       parameters:
           z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_s3brae_weight1000.dat
