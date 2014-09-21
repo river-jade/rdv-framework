@@ -10,11 +10,42 @@
     #  Created June 29, 2006 - Ascelin Gordon                   #
     #  source( '../R/make.rectangular.planning.units.R' )       #
     #                                                           #
-    #  2014 09 16 - BTL                                         #
+    #  2014 09 21 - BTL                                         #
     #  Updated for use in new marxan package                    #
     #                                                           #
     #-----------------------------------------------------------#
 
+#===============================================================================
+#
+#  2014 09 21 - BTL
+#  Gradually changing the ancient code for make.rectangular.planning.units.R
+#  into part of a new reserveselection package.
+#
+#-------------------------------------------------------------------------------
+#
+#  Step 1
+#
+#  Used RStudio's "Extract Function" to wrap a function around all of
+#  the code in the file so that I could figure out what are all the
+#  external dependencies in here.
+#  It was originally a quick inline hack inside the early rdv-framework code
+#  and assumed that many variables had been set.  The "Extract Function"
+#  automatically finds all those variables and puts them into an argument
+#  list for the extracted function.
+#  The first try at running the extraction failed with a message that said:
+#      Extract Function
+#      The selected code could not be parsed.
+#  Some trial and error partitioning of the code showed that there was one
+#  offending line that was part of creating and initializing a matrix.
+#  The problem was in the second line of this pair:
+#      PU_map <- matrix (data = NA,  nrow = num_rows, ncol = num_cols)
+#      PU_map[,] <- as.integer (non_habitat_indicator)
+#  I've now combined those two into a single initialization that satisfied
+#  the function extraction:
+#      PU_map <- matrix (data = as.integer (non_habitat_indicator),
+#                        nrow = num_rows, ncol = num_cols)
+#
+#===============================================================================
 
 make_rectangular_planning_units <- function (cols, num.planning.units.x,
                                              rows, num.planning.units.y,
