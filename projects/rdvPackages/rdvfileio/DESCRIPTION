@@ -1,0 +1,11 @@
+Package: rdvfileio
+Title: rdv file I/O routines
+Version: 0.1
+Authors@R: as.person (c("Ascelin Gordon <ascelin.gordon@rmit.edu.au> [aut]",
+    "Bill Langford <bill.langford@rmit.edu.au> [aut, cre]"))
+Description: Collection of rdv file I/O routines, mostly related to reading and
+    writing image and map matrices.
+Depends:
+    R (>= 3.1.1)
+License: CC0
+LazyData: true
