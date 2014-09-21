@@ -23,7 +23,7 @@
 #
 #-------------------------------------------------------------------------------
 #
-#  Step 1
+#  Step 1 - extract as a function
 #
 #  Used RStudio's "Extract Function" to wrap a function around all of
 #  the code in the file so that I could figure out what are all the
@@ -38,22 +38,39 @@
 #  Some trial and error partitioning of the code showed that there was one
 #  offending line that was part of creating and initializing a matrix.
 #  The problem was in the second line of this pair:
-#      PU_map <- matrix (data = NA,  nrow = num_rows, ncol = num_cols)
-#      PU_map[,] <- as.integer (non_habitat_indicator)
+#      pu.map <- matrix (data = NA,  nrow = num_rows, ncol = num_cols)
+#      pu.map[,] <- as.integer (non_habitat_indicator)
 #  I've now combined those two into a single initialization that satisfied
 #  the function extraction:
-#      PU_map <- matrix (data = as.integer (non_habitat_indicator),
+#      pu.map <- matrix (data = as.integer (non_habitat_indicator),
 #                        nrow = num_rows, ncol = num_cols)
+#
+#-------------------------------------------------------------------------------
+#
+#  Step 2 - fixing errors I introduced when I fixed the pu.map above
+#
+#  I had done the fix above in an earlier try at making this a function in
+#  a different file.  There, I had changed pu.map to PU_map and rows and cols
+#  to num_rows and num_cols.  I had copied the fix above from that old file
+#  and consequently, injected these new, unknown variable names in here.
+#  So, I've reverted these to pu.map, rows, and cols in here to make them
+#  consistent with the rest of the file and redone the extraction of the
+#  function in RStudio.
+#
+#  There is still one odd thing.  RStudio has extracted pu.x and pu.y as
+#  function arguments, but as far as I can tell, they are purely local
+#  variables here, so I'm commenting them out of the argument list for now.
 #
 #===============================================================================
 
-make_rectangular_planning_units <- function (cols, num.planning.units.x,
-                                             rows, num.planning.units.y,
-                                             non_habitat_indicator,
-                                             num_rows, num_cols,
-                                             pu.x, pu.y, pu.map,
-                                             DEBUG,
-                                             planning.units.filename.base)
+make_rectangular_planning_units <-
+    function (rows, cols,
+              num.planning.units.x, num.planning.units.y,
+#              pu.x, pu.y,
+              planning.units.filename.base,
+              non_habitat_indicator,
+              DEBUG
+              )
     {
       planning.unit.size.x <- floor( cols / num.planning.units.x);
       planning.unit.size.y <- floor( rows / num.planning.units.y);
@@ -109,10 +126,10 @@ make_rectangular_planning_units <- function (cols, num.planning.units.x,
       #      Extract Function
       #      The selected code could not be parsed.
       #  So, I've moved the assignment back into the initialization.
-      #PU_map <- matrix (data = NA,  nrow = num_rows, ncol = num_cols)
-      #PU_map[,] <- as.integer (non_habitat_indicator)
-      PU_map <- matrix (data = as.integer (non_habitat_indicator),
-                        nrow = num_rows, ncol = num_cols)
+      #pu.map <- matrix (data = NA,  nrow = num_rows, ncol = num_cols)
+      #pu.map[,] <- as.integer (non_habitat_indicator)
+      pu.map <- matrix (data = as.integer (non_habitat_indicator),
+                        nrow = rows, ncol = cols)
 
       cat( '\n\n' )
 
