@@ -75,6 +75,7 @@
 #' @export
 #' @return nothing.
 #' @examples
+#' \dontrun{
 #' rows = 4
 #' cols = 8
 #' num.planning.units.x = 2
@@ -88,6 +89,7 @@
 #'                                  planning.units.filename.base,
 #'                                  non_habitat_indicator,
 #'                                  DEBUG)
+#'          }
 
 make_rectangular_planning_units <-
     function (rows, cols,
