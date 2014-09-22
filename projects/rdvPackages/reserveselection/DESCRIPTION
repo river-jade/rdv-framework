@@ -10,8 +10,7 @@ Description: Currently, the aim is just to make it possible to call Marxan,
 Depends:
     R (>= 3.1.1)
 Imports:
-    rdvfileio,
-    assertthat
+    rdvfileio
 Suggests:
     testthat
 License: CC0

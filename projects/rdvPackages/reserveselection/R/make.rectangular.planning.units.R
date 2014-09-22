@@ -63,6 +63,32 @@
 #
 #===============================================================================
 
+#' Make files containing (image? and list? of) rectangular planning units.
+#'
+#' @param rows An integer
+#' @param cols An integer
+#' @param num.planning.units.x An integer
+#' @param num.planning.units.y An integer
+#' @param planning.units.filename.base A filename (and path?)
+#' @param non_habitat_indicator An integer
+#' @param DEBUG An integer/boolean
+#' @export
+#' @return nothing.
+#' @examples
+#' rows = 4
+#' cols = 8
+#' num.planning.units.x = 2
+#' num.planning.units.y = 4
+#' planning.units.filename.base = 'planning.units.uid'
+#' non_habitat_indicator = 0
+#' DEBUG = TRUE
+#' make_rectangular_planning_units (rows, cols,
+#'                                  num.planning.units.x,
+#'                                  num.planning.units.y,
+#'                                  planning.units.filename.base,
+#'                                  non_habitat_indicator,
+#'                                  DEBUG)
+
 make_rectangular_planning_units <-
     function (rows, cols,
               num.planning.units.x, num.planning.units.y,
@@ -196,30 +222,9 @@ make_rectangular_planning_units <-
 
     cat( '\n\n' )
 
-    write.pgm.txt.files( pu.map, planning.units.filename.base, rows, cols );
-    write.asc.file( pu.map, planning.units.filename.base, rows, cols );
+    rdvfileio::write.pgm.txt.files( pu.map, planning.units.filename.base, rows, cols );
+    rdvfileio::write.asc.file( pu.map, planning.units.filename.base, rows, cols );
     }
-
-#===============================================================================
-
-num_rows = 16
-num_cols = 16
-DEBUG = TRUE
-num_PUs_x = 2
-num_PUs_y = 4
-#  reserve.design.validation.R:376:
-#      planning.units.filename.base <- 'planning.units.uid'
-#    PUs_filename_base = '/Users/Bill/D/rdv-framework/projects/rdvPackages/reserveselection/tests/testthat/planning.units.uid'
-PUs_filename_base = 'planning.units.uid'
-non_habitat_indicator = 0
-
-
-make_rectangular_planning_units (num_rows, num_cols,
-                                 num_PUs_x, num_PUs_y,
-                                 PUs_filename_base,
-                                 non_habitat_indicator,
-                                 DEBUG
-                                )
 
 #===============================================================================
 
