@@ -1,0 +1,13 @@
+Package: marxan
+Title: Write input files for Marxan and run Marxan.
+Version: 0.1
+Authors@R: as.person ("Bill Langford <bill.langford@rmit.edu.au> [aut, cre]")
+Description: Makes it easier to build input files for marxan and to 
+run marxan from R, particularly when you are using simulated data.  Currently, 
+it ignores the bound.dat file and uses the default input.dat file.
+Depends:
+    R (>= 3.1.1)
+Suggests:
+    testthat
+License: GPL (>= 2)
+LazyData: true
