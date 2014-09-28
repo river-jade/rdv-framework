@@ -11,7 +11,7 @@
 #' @return nothing.
 #' @examples
 #' \dontrun{
-#' PU_IDs = 1:10
+#' PU_IDs = c(3,5,6,7,21,32)
 #' write_marxan_pu.dat_input_file (PU_IDs)
 #'          }
 
@@ -38,7 +38,7 @@ write_marxan_pu.dat_input_file = function (PU_IDs)
 #' @return nothing.
 #' @examples
 #' \dontrun{
-#' PU_IDs = 1:10
+#' spp_IDs = 1:10
 #' write_marxan_spec.dat_input_file (spp_IDs)
 #'          }
 
@@ -74,7 +74,7 @@ write_marxan_spec.dat_input_file = function (spp_IDs)
 #' @param num_spp An integer number of species to generate.
 #' @param sppAmount An integer amount of each species to generate on each patch.
 #' @export
-#' @return nothing.
+#' @return A data frame with column headings "species", "pu", and "amount".
 #' @examples
 #' \dontrun{
 #' num_PUs = 10
@@ -121,10 +121,21 @@ gen_random_spp_PU_amount_table =
 #' @param spp_PU_amount_table A data frame of species IDs vs planning unit IDs
 #' @export
 #' @return nothing.
+#' @details
+#' The spp_PU_amount_table is expected to have 3 columns called (in left to 
+#' right order) "species", 
+#' "pu", and "amount".  Marxan requires this table to be sorted in increasing 
+#' order on the planning unit column.  I don't think the order within planning 
+#' unit matters on the 
+#' other columns.  See source code for the function 
+#' \code{\link{gen_random_spp_PU_amount_table}} for an example of creating 
+#' this table.
 #' @examples
 #' \dontrun{
-#' PU_IDs = 1:10
-#' write_marxan_puvspr.dat_input_file (spp_IDs)
+#' num_PUs = 100
+#' num_spp = 3
+#' spp_PU_amount_table = gen_random_spp_PU_amount_table (num_PUs, num_spp)
+#' write_marxan_puvspr.dat_input_file (spp_PU_amount_table)
 #'          }
 
 write_marxan_puvspr.dat_input_file = function (spp_PU_amount_table)
@@ -134,6 +145,49 @@ write_marxan_puvspr.dat_input_file = function (spp_PU_amount_table)
                  sep=",",
                  quote=FALSE,
                  row.names=FALSE)
+    }
+
+#-------------------------------------------------------------------------------
+
+#' Write all marxan input files except bound.dat and input.dat.
+#'
+#' @param PU_IDs A vector of planning unit IDs
+#' @param spp_IDs A vector of species IDs
+#' @param spp_PU_amount_table A data frame of species IDs vs planning unit IDs
+#' @export
+#' @return nothing.
+#' @details
+#' The spp_PU_amount_table is expected to have 3 columns called (in left to 
+#' right order) "species", 
+#' "pu", and "amount".  Marxan requires this table to be sorted in increasing 
+#' order on the planning unit column.  I don't think the order within planning 
+#' unit matters on the 
+#' other columns.  See source code for the function 
+#' \code{\link{gen_random_spp_PU_amount_table}} for an example of creating 
+#' this table.
+#' @examples
+#' \dontrun{
+#' num_PUs = 100
+#' num_spp = 3
+#' PU_IDs = 1:num_PUs
+#' spp_IDs = 1:num_spp
+#' 
+#' spp_PU_amount_table = gen_random_spp_PU_amount_table (num_PUs, num_spp)
+#' 
+#'     #  Write all input files at once.
+#' write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
+#' 
+#'     #  Write each input file individually.
+#' write_marxan_pu.dat_input_file (PU_IDs)
+#' write_marxan_spec.dat_input_file (spp_IDs)   
+#' write_marxan_puvspr.dat_input_file (spp_PU_amount_table)
+#'          }
+
+write_all_marxan_input_files = function (PU_IDs, spp_IDs, spp_PU_amount_table)
+    {
+    write_marxan_pu.dat_input_file (PU_IDs)
+    write_marxan_spec.dat_input_file (spp_IDs)    
+    write_marxan_puvspr.dat_input_file (spp_PU_amount_table)
     }
 
 #------------------------------------------------------------------
@@ -149,11 +203,8 @@ test_write_marxan_input_files <- function ()
     PU_IDs = 1:num_PUs
     spp_IDs = 1:num_spp
 
-    write_marxan_pu.dat_input_file (PU_IDs)
-    write_marxan_spec.dat_input_file (spp_IDs)
-
     spp_PU_amount_table = gen_random_spp_PU_amount_table (num_PUs, num_spp)
-    write_marxan_puvspr.dat_input_file (spp_PU_amount_table)
+    write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
     }
 
 #------------------------------------------------------------------
