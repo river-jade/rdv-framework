@@ -4,9 +4,10 @@
 
 #====================================================================================
 
-write_marxan_pu.dat_input_file = function (num_PUs)
+write_marxan_pu.dat_input_file = function (PU_IDs)
     {
-    pu_cost_status_table = data.frame (id = 1:num_PUs,
+    num_PUs = length (PU_IDs)
+    pu_cost_status_table = data.frame (id = PU_IDs,
                                        cost = rep (1, num_PUs),
                                        status = rep (0, num_PUs))
 
@@ -19,9 +20,10 @@ write_marxan_pu.dat_input_file = function (num_PUs)
 
 #-------------------------------------------------------------------------------
 
-write_marxan_spec.dat_input_file = function (num_spp)
+write_marxan_spec.dat_input_file = function (spp_IDs)
     {
-    spp_target_spf_table = data.frame (id = 1:num_spp,
+    num_spp = length (spp_IDs)
+    spp_target_spf_table = data.frame (id = spp_IDs,
                                        target = rep (1, num_spp),  #  prop?
                                        spf = rep (1, num_spp))
 
@@ -34,13 +36,13 @@ write_marxan_spec.dat_input_file = function (num_spp)
 
 #-------------------------------------------------------------------------------
 
-choose_spp_for_patch = function (num_spp)
-    {
-    num_spp_for_patch = sample (1:num_spp, 1)
-    spp_for_patch = sample (1:num_spp, num_spp_for_patch, replace=FALSE)
-
-    return (spp_for_patch)
-    }
+# choose_random_spp_for_patch = function (num_spp)
+#     {
+#     num_spp_for_patch = sample (1:num_spp, 1)
+#     spp_for_patch = sample (1:num_spp, num_spp_for_patch, replace=FALSE)
+#
+#     return (spp_for_patch)
+#     }
 
 #-------------------------------------------------------------------------------
 
@@ -99,9 +101,11 @@ test_write_marxan_input_files <- function ()
     num_PUs = 100
     num_spp = 3
 
+    PU_IDs = 1:num_PUs
+    spp_IDs = 1:num_spp
 
-    write_marxan_pu.dat_input_file (num_PUs)
-    write_marxan_spec.dat_input_file (num_spp)
+    write_marxan_pu.dat_input_file (PU_IDs)
+    write_marxan_spec.dat_input_file (spp_IDs)
 
     spp_PU_amount_table = gen_random_spp_PU_amount_table (num_PUs, num_spp)
     write_marxan_puvspr.dat_input_file (spp_PU_amount_table)
