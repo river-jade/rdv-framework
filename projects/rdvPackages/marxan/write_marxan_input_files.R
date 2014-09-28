@@ -4,6 +4,17 @@
 
 #====================================================================================
 
+#' Write marxan planning units input file (pu.dat).
+#'
+#' @param PU_IDs A vector of planning unit IDs
+#' @export
+#' @return nothing.
+#' @examples
+#' \dontrun{
+#' PU_IDs = 1:10
+#' write_marxan_pu.dat_input_file (PU_IDs)
+#'          }
+
 write_marxan_pu.dat_input_file = function (PU_IDs)
     {
     num_PUs = length (PU_IDs)
@@ -19,6 +30,17 @@ write_marxan_pu.dat_input_file = function (PU_IDs)
     }
 
 #-------------------------------------------------------------------------------
+
+#' Write species input file (spec.dat).
+#'
+#' @param spp_IDs A vector of species IDs
+#' @export
+#' @return nothing.
+#' @examples
+#' \dontrun{
+#' PU_IDs = 1:10
+#' write_marxan_spec.dat_input_file (spp_IDs)
+#'          }
 
 write_marxan_spec.dat_input_file = function (spp_IDs)
     {
@@ -46,13 +68,25 @@ write_marxan_spec.dat_input_file = function (spp_IDs)
 
 #-------------------------------------------------------------------------------
 
+#' Generate a random species vs. planning unit table.
+#'
+#' @param num_PUs An integer number of planning units to generate.
+#' @param num_spp An integer number of species to generate.
+#' @param sppAmount An integer amount of each species to generate on each patch.
+#' @export
+#' @return nothing.
+#' @examples
+#' \dontrun{
+#' num_PUs = 10
+#' num_spp = 10
+#' gen_random_spp_PU_amount_table (num_PUs, num_spp)
+#'          }
+
 gen_random_spp_PU_amount_table =
         function (num_PUs, num_spp,
                   sppAmount = 1  #  Use same amount for every species
                  )
     {
-#    sppAmount = 1  #  Use same amount for every species
-
     num_spp_in_PU = sample (1:num_spp, num_PUs, replace=TRUE)
     total_num_spp_PU_pairs = sum (num_spp_in_PU)
 
@@ -81,6 +115,17 @@ gen_random_spp_PU_amount_table =
     }
 
 #-------------------------------------------------------------------------------
+
+#' Write planning unit vs. species input file (puvspr.dat).
+#'
+#' @param spp_PU_amount_table A data frame of species IDs vs planning unit IDs
+#' @export
+#' @return nothing.
+#' @examples
+#' \dontrun{
+#' PU_IDs = 1:10
+#' write_marxan_puvspr.dat_input_file (spp_IDs)
+#'          }
 
 write_marxan_puvspr.dat_input_file = function (spp_PU_amount_table)
     {
