@@ -23,7 +23,37 @@ getLargeSubsetID = function (linkColl, linkID, largeSubsetIDcol)
 getGroupIDofSubset = function (groupIDofSubset, subsetID)
     { return (groupIDofSubset [subsetID]) }
 
-# For every subset pair whose two subsets are in the same group, 
+addLinkToSubsetsColl = function (subsetsColl, linkID, subsetID)
+    { 
+    subsetsColl [[as.character (subsetID)]] = 
+                append (subsetsColl [[as.character (subsetID)]], linkID)
+    
+    return (subsetsColl)
+    }
+
+#===============================================================================
+
+setSubsetsCollAt = function (subsetsColl, subsetID)
+    {
+    subsetsColl [[as.character (subsetID)]] = list()
+    
+    return (subsetsColl)
+    }
+
+createEmptySubsetsColl = function (numSubsets)
+    {
+    subsetsColl = hash ()
+    for (curSubsetID in 1:numSubsets)
+        {
+        subsetsColl [[as.character (curSubsetID)]] = list()
+        }
+    
+    return (subsetsColl)
+    }        
+
+#===============================================================================
+
+    # For every subset pair whose two subsets are in the same group, 
     # put its index number in its two subsets, i.e., build cliques.
 buildCliques = function (numLinks, linkColl, #curLinkID, 
                          smallSubsetIDcol, largeSubsetIDcol, 
@@ -31,21 +61,21 @@ buildCliques = function (numLinks, linkColl, #curLinkID,
     {
     for (curLinkID in 1:numLinks)
         {
-        #  Get the subset IDs at the ends of this link.
-        smallSubsetID = linkColl [curLinkID, smallSubsetIDcol]
-        largeSubsetID = linkColl [curLinkID, largeSubsetIDcol]
+            #  Get the subset IDs at the ends of this link.
         
-        #  Find the group ID for each of the 2 subsets.
-        smallSubsetGroupID = groupIDofSubset [smallSubsetID]
-        largeSubsetGroupID = groupIDofSubset [largeSubsetID]
+        smallSubsetID = getSmallSubsetID (linkColl, curLinkID, smallSubsetIDcol) 
+        largeSubsetID = getLargeSubsetID (linkColl, curLinkID, largeSubsetIDcol)
         
-        #  If they're in the same group, add the link to both subsets.
+            #  Find the group ID for each of the 2 subsets.
+        smallSubsetGroupID = getGroupIDofSubset (groupIDofSubset, smallSubsetID)
+        largeSubsetGroupID = getGroupIDofSubset (groupIDofSubset, largeSubsetID)
+        
+        
+            #  If they're in the same group, add the link to both subsets.
         if (smallSubsetGroupID == largeSubsetGroupID)
             {
-            subsetsColl [[as.character(smallSubsetID)]] = 
-                append (subsetsColl [[as.character(smallSubsetID)]], curLinkID)
-            subsetsColl [[as.character(largeSubsetID)]] = 
-                append (subsetsColl [[as.character(largeSubsetID)]], curLinkID)
+            subsetsColl = addLinkToSubsetsColl (subsetsColl, curLinkID, smallSubsetID)
+            subsetsColl = addLinkToSubsetsColl (subsetsColl, curLinkID, largeSubsetID)
             }
         }
     
@@ -82,6 +112,8 @@ numSubsets = numGroups ^ (alpha + 1)
 numIntergroupLinkingRounds = r_density * numGroups * log (numGroups)
 targetNumLinksBetweenGroups = propOfLinksBetweenGroups * (numGroups^alpha)
 
+#-------------------------------------------------------------------------------
+
         # ```
         # 
         # From Xu page:
@@ -94,14 +126,9 @@ targetNumLinksBetweenGroups = propOfLinksBetweenGroups * (numGroups^alpha)
         # This could just be an array of lists if R allowed it.
         # It could also be a list of lists, but that's hard to use properly.
         # So, maybe a hash of lists would be a decent approximation to an array of lists?
-        # ```{r}
-subsetsColl = hash ()
-for (curSubsetID in 1:numSubsets)
-    {
-    subsetsColl [[as.character (curSubsetID)]] = list()
-    }
-        # ```
-        # 
+
+subsetsColl = createEmptySubsetsColl (numSubsets)
+
         # b)  Uniformly divide subsets into n groups (where alpha > 0 is a constant), 
         # i.e., each of which has n^alpha empty subsets.
         # 
@@ -110,21 +137,26 @@ for (curSubsetID in 1:numSubsets)
         # Choose a different alpha?
         # Produce an error message and quit?
         # Make all groups the same size except for one remainder group?
-        # 
-        # ```{r}
-subsetIDsInGroup = matrix (1:numSubsets, nrow=numGroups, 
-                            ncol=numSubsetsPerGroup, byrow=TRUE)
-groupIDofSubset = rep (0, numSubsets)
-curSubsetIdx = 0
-for (curGroupID in 1:numGroups)
+
+
+assignSubsetsToGroups <- function (numSubsets, numGroups, numSubsetsPerGroup, curGroupID) 
     {
-    for (curIdx in 1:numSubsetsPerGroup)
+    subsetIDsInGroup = matrix (1:numSubsets, nrow=numGroups, 
+                               ncol=numSubsetsPerGroup, byrow=TRUE)
+    groupIDofSubset = rep (0, numSubsets)
+    curSubsetIdx = 0
+    for (curGroupID in 1:numGroups)
         {
-        curSubsetIdx = curSubsetIdx + 1
-        groupIDofSubset [curSubsetIdx] = curGroupID
+        for (curIdx in 1:numSubsetsPerGroup)
+              {
+              curSubsetIdx = curSubsetIdx + 1
+              groupIDofSubset [curSubsetIdx] = curGroupID
+              }
         }
     }
 
+groupIDofSubset = assignSubsetsToGroups (numSubsets, numGroups, numSubsetsPerGroup, curGroupID) 
+    
     #  Choose the independent set to use as the complement of the solution set.
     #  Do this by randomly choosing 1 node (subset) from each group and 
     #  adding it to the independent set.
