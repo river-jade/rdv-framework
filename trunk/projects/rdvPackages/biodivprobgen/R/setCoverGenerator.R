@@ -1,13 +1,58 @@
+#===============================================================================
+
         # ---
         #     title: "Set Cover Generator Test"
         # author: "BTL"
         # date: "August 29, 2014"
         # output: html_document
         # ---
-        #     
-        #     For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+
+                #  dependency injection?
+
+
+#===============================================================================
+
+getSmallSubsetID = function (linkColl, linkID, smallSubsetIDcol) 
+    { return (linkColl [linkID, smallSubsetIDcol]) }
+
+getLargeSubsetID = function (linkColl, linkID, largeSubsetIDcol) 
+    { return (linkColl [linkID, largeSubsetIDcol]) }
+
+getGroupIDofSubset = function (groupIDofSubset, subsetID)
+    { return (groupIDofSubset [subsetID]) }
+
+# For every subset pair whose two subsets are in the same group, 
+    # put its index number in its two subsets, i.e., build cliques.
+buildCliques = function (numLinks, linkColl, #curLinkID, 
+                         smallSubsetIDcol, largeSubsetIDcol, 
+                         groupIDofSubset, subsetsColl) 
+    {
+    for (curLinkID in 1:numLinks)
+        {
+        #  Get the subset IDs at the ends of this link.
+        smallSubsetID = linkColl [curLinkID, smallSubsetIDcol]
+        largeSubsetID = linkColl [curLinkID, largeSubsetIDcol]
         
-        #```{r}
+        #  Find the group ID for each of the 2 subsets.
+        smallSubsetGroupID = groupIDofSubset [smallSubsetID]
+        largeSubsetGroupID = groupIDofSubset [largeSubsetID]
+        
+        #  If they're in the same group, add the link to both subsets.
+        if (smallSubsetGroupID == largeSubsetGroupID)
+            {
+            subsetsColl [[as.character(smallSubsetID)]] = 
+                append (subsetsColl [[as.character(smallSubsetID)]], curLinkID)
+            subsetsColl [[as.character(largeSubsetID)]] = 
+                append (subsetsColl [[as.character(largeSubsetID)]], curLinkID)
+            }
+        }
+    
+    return (subsetsColl)
+    }
+
+#===============================================================================
 
 library (hash)
 
@@ -165,31 +210,12 @@ for (smallSubsetID in 1:(numSubsets-1))
     }
 cat ("\n\n")
 
-        # ```
-        # 
-        # Then, for every subset pair whose two subsets are in the same group, 
-        # put its index number in its two subsets, i.e., build cliques.
-        # 
-        # ```{r}
-for (curLinkID in 1:numLinks)
-    {
-        #  Get the subset IDs at the ends of this link.
-    smallSubsetID = linkColl [curLinkID, smallSubsetIDcol]
-    largeSubsetID = linkColl [curLinkID, largeSubsetIDcol]
-    
-        #  Find the group ID for each of the 2 subsets.
-    smallSubsetGroupID = groupIDofSubset [smallSubsetID]
-    largeSubsetGroupID = groupIDofSubset [largeSubsetID]
-    
-        #  If they're in the same group, add the link to both subsets.
-    if (smallSubsetGroupID == largeSubsetGroupID)
-        {
-        subsetsColl [[as.character(smallSubsetID)]] = 
-            append (subsetsColl [[as.character(smallSubsetID)]], curLinkID)
-        subsetsColl [[as.character(largeSubsetID)]] = 
-            append (subsetsColl [[as.character(largeSubsetID)]], curLinkID)
-        }
-    }
+    # Then, for every subset pair whose two subsets are in the same group, 
+    # put its index number in its two subsets, i.e., build cliques.
+
+subsetsColl = buildCliques (numLinks, linkColl, #curLinkID, 
+                            smallSubsetIDcol, largeSubsetIDcol, 
+                            groupIDofSubset, subsetsColl) 
 
     #  Steps 2 & 3.
     #  Step 2: 
@@ -260,3 +286,7 @@ targetNumLinksBetweenGroups = round (targetNumLinksBetweenGroups)
 solutionSet = (1:numSubsets) [-independentSet]
 cat ("\nindependentSet = ", independentSet)
 cat ("\nsolutionSet = ", solutionSet, "\n\n")
+
+#===============================================================================
+
+
