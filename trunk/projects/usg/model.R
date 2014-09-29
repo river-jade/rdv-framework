@@ -38,13 +38,13 @@ if( length(spp.file.list) == 0 ) {
 
 #note: for retention analyses, the spp file has to have 2 copies of the species names, so repeat the about command if running retention analyses:
 ctr <- 1
-for( s in spp.file.list){
+for( s in spp.file.list[1:10]){
     #cat( '1.0 ', x[ctr] ' 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
     cat( '1.0 1.0 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
 	ctr <- ctr + 1
 }
 ctr <- 1
-for( s in spp.file.list){
+for( s in spp.file.list[1:10]){
     #cat( '1.0 ', x[ctr] ' 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
     cat( '1.0 1.0 1 1 1 ', s, '\n', append=TRUE, file=p$z.spp.list.filename, sep='' )
 	ctr <- ctr + 1
