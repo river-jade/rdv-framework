@@ -21,6 +21,62 @@ calculate_num_possible_solutions = function (num_PUs)
 
 #===============================================================================
 
+#  node_contents_dict
+#  node link
+
+#===============================================================================
+
+    #  Link 2 nodes
+    #  A link is just a 2 item vector of then node IDs of the endpoints.
+    #  The node IDs are in increasing order.
+
+link_2_nodes = function (node1_ID, node2_ID)
+    {
+    c (min (node1_ID, node2_ID), max (node1_ID, node2_ID))
+    }
+
+#-------------------------------------------------------------------------------
+
+put_link_in_link_set_for_node = function (link_ID, node_ID, links_for_each_node)
+    {
+    last_row = dim (links_for_each_node) [1]
+    links_for_each_node [last_row + 1] =
+    }
+
+#-------------------------------------------------------------------------------
+
+put_link_in_end_node_sets = function (link_ID, node1_ID, node2_ID)
+    {
+    put_link_in_link_set_for_node (link_ID, node1_ID)
+    put_link_in_link_set_for_node (link_ID, node2_ID)
+    }
+
+#===============================================================================
+
+#  define initial option and derived values
+#  create dependent set nodes
+#  build set of cliques given a set of clique IDs
+    #  build clique given a set of node IDs
+        #  link all nodes in clique
+            #  link each node to all other nodes in clique
+                #  link a node to all other nodes in clique
+                    #  link 2 nodes and put link in both nodes
+#  create independent set nodes
+    #  attach each to a different clique
+                #  link a node to all other nodes in clique
+                    #  link 2 nodes and put link in both nodes
+#  do rounds of interclique linking
+    #  randomly choose two different cliques
+        #  do rounds of linking between the given clique pair
+            #  randomly choose a node pair, one node in each clique, without replacement
+                        #  link 2 nodes and put link in both nodes
+#  test that invariant properties hold
+
+
+
+
+#===============================================================================
+
 getSmallSubsetID = function (linkColl, linkID, smallSubsetIDcol)
     { return (linkColl [linkID, smallSubsetIDcol]) }
 
