@@ -1,0 +1,11 @@
+Package: biodivprobgen
+Type: Package
+Title: Generates biodiversity reserve and distribution problems for simulation.
+Version: 0.1
+Date: 2014-09-29
+Author: Bill Langford
+Maintainer: Bill Langford <bill.langford@rmit.edu.au>
+Description: Generates problems of varying difficulty for simulating and
+    testing biodiversity algorithms such as species distribution modelling and
+    reserve selection.
+License: GPL (>= 2)
