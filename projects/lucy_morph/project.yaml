@@ -30,9 +30,9 @@ base_params:
     input_file: <<$$model_path$$/input_data/new_elev.asc>>
 
     output_dir: $$output_path$$
-    ascii_dem: <<$$output_path$$DEM.asc>>
-    output_features: <<$$output_path$$surfaceFeatures.srf>>
-    landserf_output: <<$$output_path$$output.csv>>
+    ascii_dem: $$output_path$$DEM.asc
+    output_features: $$output_path$$surfaceFeatures.srf
+    landserf_output: $$output_path$$output.csv
     
 scenarios:
     - name: S1
