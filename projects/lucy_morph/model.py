@@ -39,13 +39,21 @@ class Model(basemodel.BaseModel):
         # if the --verbose flag is specified, all logging will also go to the console.
         # self.logger.fine("I'm in model.py!!")
 
+
+        params = runparams['parameters']
+
+        
         # get parameters qualified by input and output file paths
         # This is only required if you want to read / write input / output files from python.
-        qualifiedparams = runparams.getQualifiedParams(self.inputpath, self.outputpath)
-
+        #qualifiedparams = runparams.getQualifiedParams(self.inputpath, self.outputpath)
+        qualifiedparams = params
         # gets the variables, with (java) decimal values converted to python decimals
         # this is useful if you want to use arithmetic operations within python.
-        variables = self.get_decimal_params(runparams)
+        # variables = self.get_decimal_params(runparams)
+        variables = params
+
+
+        
 
 # Line below is for testing outside the framework
 # variables = dict(window_size=5, ascii_dem="Output/DEM.asc", output_features="Output/surfaceFeatures.srf", landserf_output="Output/landserf_results.txt", max_level=9, sigma=1, seed=0, normalise=True, H1=0.7, H2=0.65, H3=0.4, H1wt=0.7, H2wt=0.2, H3wt=0.1, elev_min=0, elev_max=1309, erosion_num=1, river_drop=5)

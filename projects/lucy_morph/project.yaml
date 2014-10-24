@@ -1,0 +1,85 @@
+project_name: Lucy_Morph
+runner_class: PythonRunner
+
+base_params: 
+    window_size: 7
+    window_count: 3
+    window_step: 8
+    max_level: 9
+    sigma: 1
+    seed1: 0
+    seed2: 65
+    seed3: 6
+    H: 0.7
+    normalise: True
+    lowerBound: 0
+    upperBound: 255
+    H1: 0.8
+    H2: 0.55
+    H3: 0.40
+    H1wt: 0.6
+    H2wt: 0.2
+    H3wt: 0.2
+    elev_min: 0
+    elev_max: 1309
+    erosion_num: 16
+    river_drop: 8
+    DEMcreator_option: fm2D
+    
+    input_path: $$model_path$$
+    input_file: <<$$model_path$$/input_data/new_elev.asc>>
+
+    output_dir: $$output_path$$
+    ascii_dem: <<$$output_path$$DEM.asc>>
+    output_features: <<$$output_path$$/surfaceFeatures.srf>>
+    landserf_output: <<$$output_path$$/output.csv>>
+    
+scenarios:
+    - name: S1
+      parameters: 
+
+#    - name: S2
+#      parameters: 
+#        H1: 0.9
+#        H2: 0.55
+#        H3: 0.20
+
+#    - name: S3
+#      parameters: 
+#        H1: 0.9
+#        H2: 0.35
+#        H3: 0.20
+
+repetitions:
+      
+  generators:
+    - key: H2wt
+      generator_type: linear_step
+      start: 0.05
+      step_size: 0.3
+      count: 4
+  
+    - key: H3wt
+      generator_type: linear_step
+      start: 0.05
+      step_size: 0.3
+      count: 4
+  
+    - key: seed1
+      generator_type: normal_distribution
+      mean: 50
+      std_dev: 5
+      count: 1
+  
+    - key: seed2
+      generator_type: normal_distribution
+      mean: 50
+      std_dev: 5
+      count: 1
+  
+  
+    - key: seed3
+      generator_type: normal_distribution
+      mean: 50
+      std_dev: 5
+      count: 1
