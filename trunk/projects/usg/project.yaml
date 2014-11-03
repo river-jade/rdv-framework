@@ -5,7 +5,7 @@ libraries:
     -  name: zonation-dat-files
        repo_type: svn
        url: https://rdv-framework.googlecode.com/svn/trunk/projects/usg/zsettings
-       revision: 561
+       revision: 565
 
 base_params:
 
@@ -125,10 +125,10 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen13_3p24unshare.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: newS15 new mask 8ports unshared
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen15_8p24unshare.dat
-          z.input.data.dir: /mnt/data/all_input_maps
+    #- name: newS15 new mask 8ports unshared
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_mask_scen15_8p24unshare.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
     #- name: newS1condret pamask 1port shared
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_s1eyre.dat
@@ -149,38 +149,38 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_s58portunshare.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: newS1linear pamask 1port shared
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_linear_mask_scen1ey.dat
-          z.input.data.dir: /mnt/data/all_input_maps
+    #- name: newS1linear pamask 1port shared
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_linear_mask_scen1ey.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
     #- name: newS2linear pamask 2port shared
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_linear_mask_scen2eyyk.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: newS3linear pamask 3port shared
+    #- name: newS3linear pamask 3port shared
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_linear_mask_scen3eyykbra.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
+    - name: newbase_cond pamask no new inf 181EPBC
       parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_linear_mask_scen3eyykbra.dat
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_base.dat
           z.input.data.dir: /mnt/data/all_input_maps
-    #- name: newbase_cond pamask no new inf
-    #  parameters:
-    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_base.dat
-    #      z.input.data.dir: /mnt/data/all_input_maps
-    #- name: newbase_cond nomask no new inf
-    #  parameters:
-    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_nomask.dat
-    #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: newbase_nocond pamask
+    - name: newbase_cond nomask no new inf 181EPBC
       parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_locnoconditionpamask_base.dat
-          z.input.data.dir: /mnt/data/all_input_maps		  
-    #- name: newS3condret pamask 3ports shared weight1000
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_condition_nomask.dat
+          z.input.data.dir: /mnt/data/all_input_maps
+    #- name: newbase_nocond pamask
     #  parameters:
-    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_s3brae_weight1000.dat
-    #      z.input.data.dir: /mnt/data/all_input_maps
-    #- name: newS1condret pamask 1port shared
-    #  parameters:
-    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_s1eyre_wj1000.dat
-    #      z.input.data.dir: /mnt/data/all_input_maps
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_locnoconditionpamask_base.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps		  
+    - name: newS3condret pamask 3ports shared weight1000 181EPBC
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_s3brae_weight1000.dat
+          z.input.data.dir: /mnt/data/all_input_maps
+    - name: newS1condret pamask 1port shared weight1000 181EPBC
+      parameters:
+          z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_s1eyre_wj1000.dat
+          z.input.data.dir: /mnt/data/all_input_maps
     #- name: newS1condret pamask 1port shared test 10sp
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_test10sp.dat
@@ -189,19 +189,19 @@ scenarios:
     #  parameters:
     #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc1_epbc181sp.dat
     #      z.input.data.dir: /mnt/data/all_input_maps
-    - name: newS2condret pamask 2ports shared 181EPBC
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc2_epbc181sp.dat
-          z.input.data.dir: /mnt/data/all_input_maps
-    - name: newS3condret pamask 3ports shared 181EPBC
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc3_epbc181sp.dat
-          z.input.data.dir: /mnt/data/all_input_maps
-    - name: newS4condret pamask 3ports unshared 181EPBC
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc4_3un_epbc181sp.dat
-          z.input.data.dir: /mnt/data/all_input_maps
-    - name: newS5condret pamask 8ports unshared 181EPBC
-      parameters:
-          z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc5_8un_epbc181sp.dat
-          z.input.data.dir: /mnt/data/all_input_maps
+    #- name: newS2condret pamask 2ports shared 181EPBC
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc2_epbc181sp.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
+    #- name: newS3condret pamask 3ports shared 181EPBC
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc3_epbc181sp.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
+    #- name: newS4condret pamask 3ports unshared 181EPBC
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc4_3un_epbc181sp.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
+    #- name: newS5condret pamask 8ports unshared 181EPBC
+    #  parameters:
+    #      z.settings.file: $$library_path(zonation-dat-files)$$/set_retention_sc5_8un_epbc181sp.dat
+    #      z.input.data.dir: /mnt/data/all_input_maps
