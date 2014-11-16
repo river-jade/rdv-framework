@@ -1,9 +1,7 @@
 Package: reserveselection
 Title: Call reserve selection programs such as Marxan.
 Version: 0.1
-Authors@R: as.person (c("Ascelin Gordon <ascelin.gordon@rmit.edu.au> [aut]",
-    "Alex Lechner <alex.lechner@rmit.edu.au> [aut]",
-    "Bill Langford <bill.langford@rmit.edu.au> [aut, cre]"))
+Authors@R: as.person ("Bill Langford <bill.langford@rmit.edu.au> [aut, cre]")
 Description: Currently, the aim is just to make it possible to call Marxan,
     but it may evolve to also add calls for Zonation and various algorithms
     like simple richness and unprotected richness.
@@ -13,5 +11,5 @@ Imports:
     rdvfileio
 Suggests:
     testthat
-License: CC0
+License: GPL (>= 2)
 LazyData: true
