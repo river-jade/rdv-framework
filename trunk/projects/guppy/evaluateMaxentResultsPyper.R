@@ -473,6 +473,19 @@ for (spp.id in 0:(numSppToCreate - 1))      #  now created by python so 0 base..
 						num.img.rows, num.img.cols)
 		}
 
+
+
+png (paste (analysisDirWithSlash, "hist.err.between.maxent.and.true.prob.dists.", spp.name, ".png", sep=''))
+                        #	hist (percent.err.magnitudes [percent.err.magnitudes <= 100])
+hist (err.between.maxent.and.true.prob.dists)
+dev.off()
+
+png (paste (analysisDirWithSlash, "hist.err.magnitudes.", spp.name, ".png", sep=''))
+hist (err.magnitudes)
+dev.off()
+
+
+
 	tot.err.magnitude <- sum (err.magnitudes)
 	max.err.magnitude <- max (err.magnitudes)
 
@@ -489,6 +502,47 @@ for (spp.id in 0:(numSppToCreate - 1))      #  now created by python so 0 base..
 
 	npm.vec <- as.vector (norm.prob.matrix)
 	mnpd.vec <- as.vector (maxent.norm.prob.dist)
+
+#-----------------------------------------------
+#  Should compute rank error here?
+#  Also, rank error in top n % only?
+#       Maybe do a cumulative rank error starting from best rank?
+#  What about % rank error?
+#       Seems like that would automatically weight best ranks most important,
+#       although it's not in a way that you've made explicit, so it's
+#       probably better to just do raw error and then transform that with
+#       an explicit weight that can be based on rank as well.
+#-----------------------------------------------
+
+png (paste (analysisDirWithSlash, "hist.err.between.maxent.and.true.prob.dists.", spp.name, ".png", sep=''))
+                        #	hist (percent.err.magnitudes [percent.err.magnitudes <= 100])
+hist (err.between.maxent.and.true.prob.dists)
+dev.off()
+
+corRank = npm.vec
+appRank = mnpd.vec
+#plot (corRank, appRank)
+
+rankError = appRank - corRank
+#plot (corRank, rankError)
+
+pctRankError = rankError/corRank
+#plot (corRank, pctRankError)
+
+png (paste (analysisDirWithSlash, "hist.rank.err.", spp.name, ".png", sep=''))
+
+rankError = appRank - corRank
+#plot (corRank, rankError)
+hist (rankError)
+dev.off()
+
+png (paste (analysisDirWithSlash, "hist.pct.rank.err.", spp.name, ".png", sep=''))
+pctRankError = rankError/corRank
+#plot (corRank, pctRankError)
+hist (pctRankError)
+
+dev.off()
+
 
 	pearson.cor <- cor (npm.vec, mnpd.vec,
 						method = "pearson"

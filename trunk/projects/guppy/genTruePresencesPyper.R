@@ -50,21 +50,29 @@ xy.rel.to.lower.left.by.col <- function (n, nrow, ncol)
 
 spatial.xy.rel.to.lower.left.by.row <- function (n, nrow, ncol, llcorner,  cellsize)    #**** the key function ****#
     {
+<<<<<<< .mine
+cat (file = debuggingOutputFile, "\n\nat START of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+=======
 #####cat ("\n\nat START of spatial.xy.rel.to.lower.left.by.row()")
+>>>>>>> .r362
     xy = xy.rel.to.lower.left.by.row (n, nrow, ncol)
 
 ###    return ( c (xllcorner + (cellsize * x), yllcorner + (cellsize * y) ) )
 ##    return (llcorner + (cellsize * xy))
 #    return (llcorner + ((cellsize * xy) -(cellsize * 0.5)))
 
+<<<<<<< .mine
+#    cat (">>>> (xy - 0.5) = ", (xy - 0.5), ", cellsize = ", cellsize, ", llcorner = ", llcorner)
+cat (file = debuggingOutputFile, "\n\nat END of spatial.xy.rel.to.lower.left.by.row()", append = TRUE)
+=======
 #    cat (">>>> (xy - 0.5) = ", (xy - 0.5), ", cellsize = ", cellsize, ", llcorner = ", llcorner)
 #####cat ("\n\nat END of spatial.xy.rel.to.lower.left.by.row()")
 #####cat ("\nretVal = ")
     retVal = (llcorner + (cellsize * (xy - 0.5)))
 #####print (retVal)
+>>>>>>> .r362
 
-
-    return (retval)
+    return (llcorner + (cellsize * (xy - 0.5)))
     }
 
 #===============================================================================
@@ -232,19 +240,30 @@ cat ("\n\n+++PYPER+++  top of For Loop over numSppToCreate with spp.id = ", spp.
             #  get the TRUE PRESENCES.
             #-------------------------------------------------------------
 
+<<<<<<< .mine
+cat (file = debuggingOutputFile, "\n\nspp.id = ", spp.id, append = TRUE)
+cat ("\nnum.true.presences = \n")
+print (num.true.presences)
+=======
 cat ("\n\nspp.id = ", spp.id)
 cat ("\nnum.true.presences = \n")
 print (num.true.presences)
+>>>>>>> .r362
 
 
         true.presence.indices <- sample (1:(num.rows * num.cols),
                                         num.true.presences [spp.id],
                                         replace = FALSE,
                                         prob = norm.prob.matrix)
+<<<<<<< .mine
+        cat ("\ntrue.presence.indices = \n")
+        print (true.presence.indices)
+=======
 #        cat ("\ntrue.presence.indices = \n")
         cat ("\nhead (true.presence.indices) = \n")
 #        print (true.presence.indices)
         head (true.presence.indices)
+>>>>>>> .r362
 
             #----------------------------------------------------------------
             #  Convert the sample from single index values to x,y locations
@@ -273,12 +292,16 @@ print (num.true.presences)
 
 
 
+<<<<<<< .mine
+#####cat (file = debuggingOutputFile, "\n\nBEFORE for (cur.loc...)", append = TRUE)
+=======
 cat ("\n\nBEFORE for (cur.loc...)")
 flush.console()
 
 debugCtr = 0
 curNumPresToGen = num.true.presences [spp.id]
 
+>>>>>>> .r362
             #  Can probably replace this with an apply() call instead...
 #        for (cur.loc in 1:num.true.presences [spp.id])
         for (cur.loc in 1:curNumPresToGen)
@@ -299,9 +322,13 @@ cat ("\ndebugCtr = ", debugCtr, " / ", curNumPresToGen)
 cat ("\n\nIN for (cur.loc...) AFTER spatial.xy.rel.to.lower.left.by.row()")
 
             }
+<<<<<<< .mine
+#####cat (file = debuggingOutputFile, "\n\nAFTER for (cur.loc...)", append = TRUE)
+=======
 cat ("\n\nAFTER for (cur.loc...)")
 cat ("\n\ntrue.presence.locs.x.y = ")
 print (true.presence.locs.x.y)
+>>>>>>> .r362
 
             #-----------------------------------------------------------------------
             #  Bind the species names to the presence locations to make a data frame
@@ -340,8 +367,13 @@ print (true.presence.locs.x.y)
     ##	true.presences.filename <- paste (samples.dir, outfile.root, ".csv", sep='')
         true.presences.filename <- paste (cur.full.maxent.samples.dir.name, "/",
                                             outfile.root, ".csv", sep='')
+<<<<<<< .mine
+        cat ("\n\ntrue.presences.filename = '", true.presences.filename, "'", sep='')
+#####cat (file = debuggingOutputFile, "\n\nbefore write.csv (true.presences.table...)", append = TRUE)
+=======
         cat ("\n\ntrue.presences.filename = '", true.presences.filename, "'", sep='')
 cat ("\n\nbefore write.csv (true.presences.table...)")
+>>>>>>> .r362
 
         write.csv (true.presences.table,
         ###  	   file = sampled.presences.filename,
@@ -362,7 +394,11 @@ cat ("\n\nbefore write.csv (true.presences.table...)")
 
         #===========================================================================
 
+<<<<<<< .mine
+#####cat (file = debuggingOutputFile, "\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()", append = TRUE)
+=======
 cat ("\n\n+++PYPER+++  bottom of For Loop over numSppToCreate in genTruePresences()")
+>>>>>>> .r362
 
         }  #  end for - all species
 
@@ -537,8 +573,15 @@ cat ("\n\n+++PYPER+++  STARTING createSampledPresences()")
 
     #-------------------------------------------
 
+<<<<<<< .mine
     cat ("\n\ncombined.spp.sampled.presences.table = \n")
     print (combined.spp.sampled.presences.table)
+=======
+    cat ("\n\ncombined.spp.sampled.presences.table = \n")
+    print (combined.spp.sampled.presences.table)
+    cat ("\n\n")
+>>>>>>> .r362
+
     cat ("\n\n")
 
         #  This last bit is copied from saveCombinedPresencesForMaxent.R.
