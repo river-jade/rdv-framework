@@ -12,8 +12,8 @@ make.marxan.puvspr2.dat <-
                     pixel.size,
               OPT.use.patches.in.representation,
                     # vars in ascelin list but not in extracted list
-              sp.in.pu,  #  created in here, not passed in?
-              pu.spp.rep.filename  #  created in here, not passed in?
+                  sp.in.pu,  #  created in here, not passed in?
+                  pu.spp.rep.filename  #  created in here, not passed in?
               )
         {
   # make.marxan.puvspr2.dat<-function(planning.units.filename,
