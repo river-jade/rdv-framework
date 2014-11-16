@@ -319,7 +319,11 @@ testZonation = function (numPlotIntervals=100, seed=18,
                          verbose=FALSE,
                          buffer=CONST.defaultBufSize)
     {
-    zonationInputDir = "/Users/Bill/tzar/outputdata/Guppy/WindowsRuns/101_Scen_1/Zonation/"
+#     zonationInputDir = "/Users/Bill/tzar/outputdata/Guppy/WindowsRuns/101_Scen_1/Zonation/"
+#     corRankFileNameBase="zonation_app_output.rank"
+#     appRankFileNameBase="zonation_cor_output.rank"
+
+    zonationInputDir = "/Users/Bill/tzar/outputdata/g2/default_runset/WindowsRuns/33_UpperRight256/Zonation/"
     corRankFileNameBase="zonation_app_output.rank"
     appRankFileNameBase="zonation_cor_output.rank"
     
@@ -357,18 +361,24 @@ testMaxent = function (startSppNum=1, endSppNum=1,
         #               EVALUATE ALL OF THIS.  I THINK THAT 
         #               THE BASIC IDEA IS PROBABLY RIGHT, BUT 
         #               PROBABLY STILL NEEDS SOME TWEAKING.
-    corMaxentInputDir = "/Users/Bill/tzar/outputdata/Guppy/WindowsRuns/101_Scen_1/MaxentGenOutputs/"
-    appMaxentInputDir = "/Users/Bill/tzar/outputdata/Guppy/WindowsRuns/101_Scen_1/MaxentOutputs/"
+#     corMaxentInputDir = "/Users/Bill/tzar/outputdata/Guppy/WindowsRuns/101_Scen_1/MaxentGenOutputs/"
+#     appMaxentInputDir = "/Users/Bill/tzar/outputdata/Guppy/WindowsRuns/101_Scen_1/MaxentOutputs/"
 
+    corMaxentInputDir = "/Users/Bill/tzar/outputdata/g2/default_runset/WindowsRuns/33_UpperRight256/SppGenOutputs/"
+    appMaxentInputDir = "/Users/Bill/tzar/outputdata/g2/default_runset/WindowsRuns/33_UpperRight256/MaxentOutputs/"
+    
 
     for (curSppNum in startSppNum:endSppNum)
         {
-        sppFileNameBase = paste ("spp.", curSppNum, sep='')
+#        sppFileNameBase = paste ("spp.", curSppNum, sep='')
+
+        corSppFileNameBase = paste ("true.prob.dist.spp.", curSppNum, sep='')
+        appSppFileNameBase = paste ("spp.", curSppNum, sep='')
         
         test (CONST.imgSize.inputFile, 
                 numPlotIntervals, 
-                sppFileNameBase, 
-                sppFileNameBase, 
+                corSppFileNameBase, 
+                appSppFileNameBase, 
                 corMaxentInputDir,
                 appMaxentInputDir,
 #                paste ("maxent spp ", curSppNum, sep=''), 
@@ -404,8 +414,11 @@ testRandom = function (imgSize=25, numPlotIntervals=5,
 #source ("analyzeZonationResults.R")
 testAll = function (bufSize=CONST.defaultBufSize)
 {
-#    testMaxent (1,100, buffer=bufSize)
+    #    testMaxent (1,100, buffer=bufSize)
+    #    testMaxent (1,20, buffer=bufSize)
     testHardCodedMatrix (buffer=bufSize)
     testRandom (buffer=bufSize)
     testZonation (buffer=bufSize)
 }
+bufSize=CONST.defaultBufSize
+

@@ -253,7 +253,8 @@ def readAscFileToMatrix (baseAscFilenameToRead, numRows, numCols, inputDir = "")
 
 
 def test_readAscFileToMatrix ():
-    x = readAscFileToMatrix ('true.prob.dist.spp.2', '/Users/Bill/tzar/outputdata/Guppy/default_runset/152_Scen_1/MaxentProbDistLayers/')
+#    x = readAscFileToMatrix ('true.prob.dist.spp.2', '/Users/Bill/tzar/outputdata/Guppy/default_runset/152_Scen_1/MaxentProbDistLayers/')
+    x = readAscFileToMatrix ('aniso', '/Users/Bill/D/Projects_RMIT/AAA_PapersInProgress/G01 - simulated_ecology/MaxentTests/MattsVicTestLandscape/MtBuffaloEnvVars_Originals/')
     print "\nx.shape = " + str (x.shape)
 
 #===============================================================================
