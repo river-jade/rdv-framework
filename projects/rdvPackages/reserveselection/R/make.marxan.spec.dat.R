@@ -15,7 +15,7 @@ make.marxan.spec.dat <-
                    OPT.use.patches.in.representation,
                        spp.hab.info.table.A.TOT,
                        spp.used.in.reserve.selection.vector,
-                       spp,
+                       spp,  #  temp idx in for loop?
                        num.objective.funs.entries,
                        OPT.representation.calculation,
                        OPT.VAL.use.proportions.in.represerntaion.goal,

@@ -6,6 +6,20 @@
 
 #===============================================================================
 
+#  2014 08 15 - BTL - "dry run"
+
+#  Note:  This functionality may end up being replaced by something in tzar 
+#  itself and called "dry run" instead of "emulate".
+#  A few months ago, River, Ascelin, and I talked at lunch about adding 
+#  something like this to tzar itself and River said it wouldn only take minutes 
+#  to do, but it's currently not a very high priority.  When River added 
+#  it to the tzar task list spreadsheet, he called the task 
+#  "Add dry run flag?".  So, if you're looking for whether the code here 
+#  has been superceded by something in tzar, look for "dry run" instead of 
+#  "emulate".
+
+#===============================================================================
+
     #  Need to change this every time you swap between emulating tzar and 
     #  doing real tzar runs.
 

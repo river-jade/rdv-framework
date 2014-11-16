@@ -1,5 +1,13 @@
 #===============================================================================
 
+#  2014 09 23 - BTL
+#  This looks like it might have been the code that was originally in
+#  the script file called make.marxan.rectangular.boundry.file.R.
+#  Can't tell for sure and not sure why the name of the function here
+#  seems so different from that.
+
+#===============================================================================
+
 make.marxan.bound.dat.using.user.supplied.data <-
     function (PAR.Marxan2.input.dir,
               num.planning.units.x,
