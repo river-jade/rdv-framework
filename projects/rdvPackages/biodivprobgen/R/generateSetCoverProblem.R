@@ -1,5 +1,7 @@
 #===============================================================================
 
+library (plyr)    #  For count()
+
 integerize = function (x) 
     { 
     round (x) 
@@ -15,18 +17,18 @@ add_link = function (node_link_pairs, next_node_link_pair_row,
     
     node_link_pairs [next_node_link_pair_row, "node_ID"] = smaller_node_ID
     node_link_pairs [next_node_link_pair_row, "link_ID"] = next_link_ID
-            cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
-            print (node_link_pairs [next_node_link_pair_row,])
+#             cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
+#             print (node_link_pairs [next_node_link_pair_row,])
     next_node_link_pair_row = next_node_link_pair_row + 1
     
     node_link_pairs [next_node_link_pair_row, "node_ID"] = larger_node_ID
     node_link_pairs [next_node_link_pair_row, "link_ID"] = next_link_ID
-            cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
-            print (node_link_pairs [next_node_link_pair_row,])
+#             cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
+#             print (node_link_pairs [next_node_link_pair_row,])
     next_node_link_pair_row = next_node_link_pair_row + 1
 
     next_link_ID = next_link_ID + 1
-    cat ("\n\t\tnext_link_ID = ", next_link_ID)
+#             cat ("\n\t\tnext_link_ID = ", next_link_ID)
     
     updated_links = list()
     updated_links$next_node_link_pair_row = next_node_link_pair_row
@@ -185,6 +187,11 @@ if (num_nodes_per_clique < 2)
     print (node_link_pairs)
     cat ("\n\n")
 
+initial_link_counts_for_each_node = 
+    count (node_link_pairs, vars="node_ID")
+initial_node_counts_for_each_link = 
+    count (node_link_pairs, vars="link_ID")
+
 #===============================================================================
 
 #  Now all cliques and their within clique links have been built.  
@@ -223,9 +230,9 @@ for (cur_round in 1:num_rounds_of_linking_between_cliques)
     
         #  Make sure that there are no duplicate links in the list.
     pairs = unique (cbind (clique_1_sampled_nodes, clique_2_sampled_nodes))
-    cat ("\n\n interclique pairs for round ", cur_round, " = \n")
-    print (pairs)
-    cat ("\n")
+#                 cat ("\n\n interclique pairs for round ", cur_round, " = \n")
+#                 print (pairs)
+#                 cat ("\n")
     
     for (cur_idx in 1:length (pairs))
         {
@@ -240,6 +247,117 @@ for (cur_round in 1:num_rounds_of_linking_between_cliques)
         }
     
     }
+
+#===============================================================================
+
+#  Compute and plot the degree distribution of the node graph.
+#  It may be that we can use metrics over this graph as features of the 
+#  problem that give information about its difficulty.
+#  For example, people are always going off about power laws in the 
+#  degree distribution.  Would something like that explain anything?
+
+#  What about other measures like various forms of centrality?
+
+#  Also, need to plot the graph using eric's software (or something similar) 
+#  to see if the visual layout gives any information.
+
+#  After plotting, I realized that this degree distribution has the same 
+#  shape as a rank abundance curve, however, it's the opposite of a rank 
+#  abundance curve in that it's saying how many spp per patch, not how 
+#  many patches per spp.  I need to plot that now to see how it compares 
+#  to a typical rank abundance curve.  However, because of the way that 
+#  this problem generator currently works, the distribution will be 
+#  perfectly flat, i.e. 2 patches for every species, one for each end of 
+#  the link.  I need to start adding copies of the link IDs to other 
+#  patches after this generator finishes and see if you're still able to 
+#  have a deceptive problem even without the flat rank abundance 
+#  distribution?  In fact, can you add link IDs/species to non-independent 
+#  patches that still preserves the correct solution but purposely drives 
+#  the optimizer toward a wrong solution by knowing what kinds of things 
+#  it values?  Could you use annealing (or even Marxan itself) to search 
+#  for better "plate stackings" that lie over the hidden solution and 
+#  the optimizer finds some feature that lets it drive toward finding 
+#  difficult problems?  (Need good change operators too though.  However, 
+#  Marxan's own change operator is mindlessly simple and might work for 
+#  this as well if you do enough iterations the way Marxan does.)
+
+#  What about cooccurrence matrices for the species?  Is there any measure 
+#  or visual display over those (e.g., something about their degree 
+#  distribution) that can be used as a predictive feature?
+
+cat ("\n\nNumber of links per node BEFORE interclique linking:\n")
+print (initial_link_counts_for_each_node)
+
+final_link_counts_for_each_node = count (node_link_pairs, vars="node_ID")
+
+cat ("\n\nNumber of links per node AFTER interclique linking:\n")
+print (final_link_counts_for_each_node)
+
+final_degree_dist = arrange (final_link_counts_for_each_node, -freq)
+final_degree_dist[,"node_ID"] = 1:dim(final_degree_dist)[1]
+plot (final_degree_dist)
+
+#-------------------------------------------------------------------------------
+
+cat ("\n\nNumber of nodes per link BEFORE interclique linking:\n")
+print (initial_node_counts_for_each_link)
+
+final_node_counts_for_each_link = count (node_link_pairs, vars="link_ID")
+
+cat ("\n\nNumber of nodes per link AFTER interclique linking:\n")
+print (final_node_counts_for_each_link)
+
+final_rank_abundance_dist = arrange (final_node_counts_for_each_link, -freq)
+final_rank_abundance_dist[,"link_ID"] = 1:dim(final_rank_abundance_dist)[1]
+plot (final_rank_abundance_dist)
+
+#===============================================================================
+
+#  Something was wrong here at first, but it does suggest some good tests 
+#  to build based on what I'm expecting here.
+
+#  1)  Each node in the initial linking should have exactly 3 links in this 
+#      case, i.e., num_links should be num_nodes_per_clique - 1.
+#
+#  2)  All of the nodes should appear in the first list, i.e., not just the 
+#      first 12.
+
+# Number of links per node BEFORE interclique linking:
+#     node_ID freq
+# 1        1    3
+# 2        2    3
+# 3        3    3
+# 4        4    3
+# 5        5    3
+# 6        6    3
+# 7        7    3
+# 8        8    3
+# 9        9    3
+# 10      10    1
+# 11      11    1
+# 12      12    1
+# 
+# 
+# Number of links per node AFTER interclique linking:
+#     node_ID freq
+# 1        1    3
+# 2        2    3
+# 3        3    3
+# 4        4    3
+# 5        5    3
+# 6        6    3
+# 7        7    3
+# 8        8    3
+# 9        9    3
+# 10      10    3
+# 11      11    3
+# 12      12    3
+# 13      13    3
+# 14      14    3
+# 15      15    2
+# 16      16    2
+
+
 
 #===============================================================================
 
