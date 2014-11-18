@@ -187,12 +187,60 @@ if (num_nodes_per_clique < 2)
 
 #===============================================================================
 
-# derive_control_parameters (n__num_cliques                   = 5, 
-#                            alpha__                          = 0.8, 
-#                            p__prop_of_links_between_cliques = 0.5,  
-#                            r__density                       = 0.5
-#                           )
-        
+#  Now all cliques and their within clique links have been built.  
+
+#  Ready to start doing rounds of interclique linking.
+
+for (cur_round in 1:num_rounds_of_linking_between_cliques)
+    {
+        #  Draw a random pair of cliques to link in this round.
+    cur_clique_pair = sample (1:n__num_cliques, 2, replace=FALSE)
+    
+            #  I'm using min and max here because smaller clique IDs were 
+            #  filled with smaller node IDs, so every node ID in the 
+            #  smaller clique ID should be the smaller node ID of any pairing 
+            #  of nodes between the cliques and the linking routine 
+            #  expcts the smaller node ID to come before the larger one 
+            #  in the linking argument list.  This may be a vestigial thing 
+            #  from earlier schemes that doesn't matter any more, but 
+            #  it's easy to maintain here for the moment, just in case it 
+            #  does still matter in some way.  In any case, it doesn't 
+            #  hurt anything to do this now other than the little bit of 
+            #  extra execution time to compute the min and max.
+    
+    clique_1 = min (cur_clique_pair [1])
+    clique_1_nodes = nodes [nodes$clique_ID == clique_1, "node_ID"]
+    
+    clique_2 = max (cur_clique_pair [2])
+    clique_2_nodes = nodes [nodes$clique_ID == clique_2, "node_ID"]
+    
+    clique_1_sampled_nodes = 
+        sample (clique_1_nodes, target_num_links_between_2_cliques_per_round, 
+                replace=TRUE)
+    clique_2_sampled_nodes = 
+        sample (clique_2_nodes, target_num_links_between_2_cliques_per_round, 
+                replace=TRUE)
+    
+        #  Make sure that there are no duplicate links in the list.
+    pairs = unique (cbind (clique_1_sampled_nodes, clique_2_sampled_nodes))
+    cat ("\n\n interclique pairs for round ", cur_round, " = \n")
+    print (pairs)
+    cat ("\n")
+    
+    for (cur_idx in 1:length (pairs))
+        {
+        updated_links = 
+            add_link (node_link_pairs, next_node_link_pair_row, 
+                      pairs [1], 
+                      pairs [2], 
+                      next_link_ID)
+        next_node_link_pair_row = updated_links$next_node_link_pair_row
+        next_link_ID = updated_links$next_link_ID
+        node_link_pairs = updated_links$node_link_pairs
+        }
+    
+    }
+
 #===============================================================================
 
 
