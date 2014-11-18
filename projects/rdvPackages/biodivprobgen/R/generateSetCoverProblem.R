@@ -4,6 +4,7 @@
 #  v2 - 
 #  v3 - add degree distribution calculations
 #  v4 - cleaning up code layout formatting
+#  v5 - replacing node_link_pairs with link_node_pairs to match marxan puvspr
 
 #===============================================================================
 
@@ -66,11 +67,16 @@ add_link = function (node_link_pairs, next_node_link_pair_row,
 #              )
 #     {
         
-n__num_cliques                   = 5
-alpha__                          = 0.8
-p__prop_of_links_between_cliques = 0.5  
-r__density                       = 0.5
-        
+# n__num_cliques                   = 5
+# alpha__                          = 0.8
+# p__prop_of_links_between_cliques = 0.5  
+# r__density                       = 0.5
+
+n__num_cliques                   = 12
+alpha__                          = 1.5
+p__prop_of_links_between_cliques = 0.3  
+r__density                       = 0.8
+
 #-------------------------------------------------------------------------------
 
     #  Derived control parameters.
