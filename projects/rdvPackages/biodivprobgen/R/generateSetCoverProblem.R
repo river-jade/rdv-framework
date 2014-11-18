@@ -1,6 +1,16 @@
 #===============================================================================
 
+#  v1 - 
+#  v2 - 
+#  v3 - add degree distribution calculations
+#  v4 - cleaning up code layout formatting
+
+#===============================================================================
+
 library (plyr)    #  For count()
+library (marxan)
+
+#-------------------------------------------------------------------------------
 
 integerize = function (x) 
     { 
@@ -8,6 +18,8 @@ integerize = function (x)
 #    celiing (x)
 #    floor (x)
     }
+
+#-------------------------------------------------------------------------------
 
 add_link = function (node_link_pairs, next_node_link_pair_row, 
                      smaller_node_ID, larger_node_ID, 
@@ -38,7 +50,7 @@ add_link = function (node_link_pairs, next_node_link_pair_row,
     return (updated_links)
     }
 
-
+#-------------------------------------------------------------------------------
 
 # derive_control_parameters = 
 #     function (n__num_cliques = 3, 
@@ -59,7 +71,8 @@ alpha__                          = 0.8
 p__prop_of_links_between_cliques = 0.5  
 r__density                       = 0.5
         
-        
+#-------------------------------------------------------------------------------
+
     #  Derived control parameters.
     
     num_nodes_per_clique = integerize (n__num_cliques ^ alpha__)
@@ -96,7 +109,9 @@ r__density                       = 0.5
     cat ("\n\t\t max_possible_num_links_between_cliques = ", max_possible_num_links_between_cliques)
     cat ("\n\t\t max_possible_tot_num_links = ", max_possible_tot_num_links)
     cat ("\n\n")
-    
+
+#-------------------------------------------------------------------------------
+
         #--------------------------------------------------
         #  Create structures to hold the nodes and links.
         #--------------------------------------------------    
@@ -147,6 +162,8 @@ r__density                       = 0.5
     
 #df[df$value>3.0,] 
 
+#-------------------------------------------------------------------------------
+
 if (num_nodes_per_clique < 2)
     quit ("\n\n***  num_nodes_per_clique (", num_nodes_per_clique, 
           ") must be at least 2.\n\n")
@@ -186,6 +203,8 @@ if (num_nodes_per_clique < 2)
     cat ("\n\nnode_link_pairs = \n")
     print (node_link_pairs)
     cat ("\n\n")
+
+#-------------------------------------------------------------------------------
 
 initial_link_counts_for_each_node = 
     count (node_link_pairs, vars="node_ID")
@@ -356,8 +375,6 @@ plot (final_rank_abundance_dist)
 # 14      14    3
 # 15      15    2
 # 16      16    2
-
-
 
 #===============================================================================
 
