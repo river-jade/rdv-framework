@@ -13,6 +13,11 @@ library (marxan)
 
 #-------------------------------------------------------------------------------
 
+seed = 17
+set.seed (seed)
+
+#-------------------------------------------------------------------------------
+
 integerize = function (x) 
     { 
     round (x) 
@@ -67,19 +72,21 @@ add_link = function (node_link_pairs, next_node_link_pair_row,
 #              )
 #     {
         
-# n__num_cliques                   = 5
-# alpha__                          = 0.8
-# p__prop_of_links_between_cliques = 0.5  
-# r__density                       = 0.5
+n__num_cliques                   = 5
+alpha__                          = 0.8
+p__prop_of_links_between_cliques = 0.5  
+r__density                       = 0.5
 
-n__num_cliques                   = 12
-alpha__                          = 1.5
-p__prop_of_links_between_cliques = 0.3  
-r__density                       = 0.8
+# n__num_cliques                   = 12
+# alpha__                          = 1.5
+# p__prop_of_links_between_cliques = 0.3  
+# r__density                       = 0.8
 
 #-------------------------------------------------------------------------------
 
     #  Derived control parameters.
+
+    cat ("\n\n--------------------  Building derived control parameters.\n")
     
     num_nodes_per_clique = integerize (n__num_cliques ^ alpha__)
     tot_num_nodes = n__num_cliques * num_nodes_per_clique
@@ -121,24 +128,53 @@ r__density                       = 0.8
         #--------------------------------------------------
         #  Create structures to hold the nodes and links.
         #--------------------------------------------------    
-    
+
+    cat ("\n\n--------------------  Creating structures to hold the nodes and links.\n")
+
     node_IDs = 1:tot_num_nodes
     
+            #  For each node ID, what clique does it belong to?
     clique_IDs = 1 + (0:(tot_num_nodes - 1) %/% num_nodes_per_clique)
-    
+
+            #  Assign lowest node ID in each clique to be the independent node 
+            #  in that clique.
     independent_node_IDs = seq (from=1, 
                                 by=num_nodes_per_clique, 
                                 length.out=n__num_cliques)
-    
+
+            #  For each node ID, flag whether it is in the dependent set or not.
     dependent_set_members = rep (TRUE, tot_num_nodes)
     dependent_set_members [independent_node_IDs] = FALSE
     
-    dependent_node_IDs = node_IDs [which (dependent_set_members)]
+            #  Collect the IDs of just the dependent nodes.
+    dependent_node_IDs = node_IDs [-independent_node_IDs]
     
+            #  Build an overall data frame that shows for each node, 
+            #  its node ID and clique ID, plus a flag indicating whether 
+            #  it's in the dependent set or not.  For example, if there 
+            #  are 3 nodes per clique:
+            #
+            #       node_ID     clique_ID       dependent_set_member
+            #         1            1                 TRUE
+            #         2            1                 TRUE
+            #         3            1                 FALSE
+            #         4            2                 TRUE
+            #         5            2                 TRUE
+            #         6            2                 FALSE
+            #        ...          ...                 ...
+
+
 #    nodes = cbind (node_IDs, clique_IDs, dependent_set_member)
     nodes = data.frame (node_ID = node_IDs,
                         clique_ID = clique_IDs, 
                         dependent_set_member = dependent_set_members)
+
+#     cat ("\n\nnodes and their clique IDs:")
+#     for (cur_node_ID in 1:tot_num_nodes)
+#         {
+#         cat ("\n\t", cur_node_ID, "\t", clique_IDs [cur_node_ID])    
+#         }
+#     cat ("\n")
 
     cat ("\n\t\t independent_node_IDs = ", independent_node_IDs)
     cat ("\n\t\t dependent_node_IDs = ", dependent_node_IDs)
@@ -148,15 +184,27 @@ r__density                       = 0.8
     cat ("\n\n")
     
 #    nodes_df = as.data.frame (nodes)
-#    browser()
     
+            #  Build a data frame with all the links for all of the nodes.  
+            #  For each node, there is a separate line for each link associated 
+            #  with that node.  So, for example, if there are two nodes, 3 and 5, 
+            #  and node 3 has 2 links, 18 and 93, and node 5 has 3 links, 11,15, and 21, 
+            #  then there should be 5 lines in the table:
+            #
+            #      node_ID    link_ID
+            #       3            18
+            #       3            93
+            #       5            11
+            #       5            15
+            #       5            21
+
     max_possible_tot_num_node_link_pairs = 2 * max_possible_tot_num_links
     node_link_pairs = matrix (NA, 
                               nrow=max_possible_tot_num_node_link_pairs, 
                               ncol=2)
     node_link_pairs = as.data.frame (node_link_pairs)
     names (node_link_pairs) = c("node_ID", "link_ID")
-    
+
     next_node_link_row = 1
     next_link_ID = 1
     cur_clique_ID = 1
@@ -169,6 +217,8 @@ r__density                       = 0.8
 #df[df$value>3.0,] 
 
 #-------------------------------------------------------------------------------
+
+cat ("\n\n--------------------  Linking all nodes within each clique.\n")
 
 if (num_nodes_per_clique < 2)
     quit ("\n\n***  num_nodes_per_clique (", num_nodes_per_clique, 
@@ -190,6 +240,12 @@ if (num_nodes_per_clique < 2)
                 cat ("\n\ncur_clique_nodes_sorted for clique ", cur_clique_ID, " = ")
                 print (cur_clique_nodes_sorted)
         
+            #  Link each node in the clique to all nodes with a higher node ID in 
+            #  the same clique.  
+            #  Doing it this way insures that all nodes in the clique are linked to 
+            #  all other nodes in the clique but that the linking action is only done 
+            #  once for each pair.
+        
         for (cur_idx in 1:num_nodes_per_clique_minus_1)
             {
             for (other_node_idx in (cur_idx+1):num_nodes_per_clique)
@@ -206,7 +262,7 @@ if (num_nodes_per_clique < 2)
             }
         }
         
-    cat ("\n\nnode_link_pairs = \n")
+    cat ("\n\nnode_link_pairs (with last lines NA to hold interclique links to be loaded in next step):\n\n")
     print (node_link_pairs)
     cat ("\n\n")
 
@@ -214,6 +270,7 @@ if (num_nodes_per_clique < 2)
 
 initial_link_counts_for_each_node = 
     count (node_link_pairs, vars="node_ID")
+
 initial_node_counts_for_each_link = 
     count (node_link_pairs, vars="link_ID")
 
@@ -223,8 +280,14 @@ initial_node_counts_for_each_link =
 
 #  Ready to start doing rounds of interclique linking.
 
+cat ("\n\n--------------------  Doing rounds of interclique linking.\n")
+
+#browser()
+
 for (cur_round in 1:num_rounds_of_linking_between_cliques)
     {
+    cat ("\nRound", cur_round)
+    
         #  Draw a random pair of cliques to link in this round.
     cur_clique_pair = sample (1:n__num_cliques, 2, replace=FALSE)
     
@@ -240,12 +303,28 @@ for (cur_round in 1:num_rounds_of_linking_between_cliques)
             #  hurt anything to do this now other than the little bit of 
             #  extra execution time to compute the min and max.
     
+#***-----------------------------------------------------------------------------------
+#***
+#***  ISN'T THERE A BUG HERE?  SHOULDN'T THE SELECTION EXCLUDE INDEPENDENT SET NODES?
+#***  OR, IS IT THAT NO INDEPENDENT SET NODE CAN LINK TO ANY OTHER NODE IN THE 
+#***  INDEPENDENT SET, BUT IT _CAN_ LINK TO _DEPENDENT_ SET NODES IN OTHER CLIQUES?
+#***
+#***  Does this "&" clause fix the problem (assuming it exists)?
+#***
+#***---------------------------------------
+
     clique_1 = min (cur_clique_pair [1])
-    clique_1_nodes = nodes [nodes$clique_ID == clique_1, "node_ID"]
+#***clique_1_nodes = nodes [nodes$clique_ID == clique_1, "node_ID"]
+    clique_1_nodes = nodes [(nodes$clique_ID == clique_1) & (nodes$dependent_set_member), 
+                            "node_ID"]
     
     clique_2 = max (cur_clique_pair [2])
-    clique_2_nodes = nodes [nodes$clique_ID == clique_2, "node_ID"]
-    
+#***clique_2_nodes = nodes [nodes$clique_ID == clique_2, "node_ID"]
+    clique_2_nodes = nodes [(nodes$clique_ID == clique_2) & (nodes$dependent_set_member), 
+                            "node_ID"]
+ 
+#***-----------------------------------------------------------------------------------
+
     clique_1_sampled_nodes = 
         sample (clique_1_nodes, target_num_links_between_2_cliques_per_round, 
                 replace=TRUE)
@@ -254,26 +333,44 @@ for (cur_round in 1:num_rounds_of_linking_between_cliques)
                 replace=TRUE)
     
         #  Make sure that there are no duplicate links in the list.
-    pairs = unique (cbind (clique_1_sampled_nodes, clique_2_sampled_nodes))
-#                 cat ("\n\n interclique pairs for round ", cur_round, " = \n")
-#                 print (pairs)
-#                 cat ("\n")
-    
-    for (cur_idx in 1:length (pairs))
+    cur_non_unique_pairs = cbind (clique_1_sampled_nodes, clique_2_sampled_nodes)
+    cur_num_non_unique_pairs = dim (cur_non_unique_pairs) [1]  #  number of rows
+
+#    unique_pairs = unique (cbind (clique_1_sampled_nodes, clique_2_sampled_nodes))
+    cur_unique_pairs = unique (cur_non_unique_pairs)
+    cur_num_unique_pairs = dim (cur_unique_pairs) [1]    #  number of rows
+                cat ("\n\n interclique pairs for round ", cur_round, " = \n")
+                cat ("\n\tcur_num_non_unique_pairs =", cur_num_non_unique_pairs)
+                cat ("\n\tcur_non_unique_pairs = \n")
+                print (cur_non_unique_pairs)
+                cat ("\n\tcur_num_unique_pairs =", cur_num_unique_pairs)
+                cat ("\n\tcur_unique_pairs = \n")
+                print (cur_unique_pairs)
+                cat ("\n")
+
+# s1 = c(3,3)
+# s2=c(5,5)
+# x=cbind(s1,s2)
+# x
+# p=unique(x)
+
+
+    for (cur_idx in 1:cur_num_unique_pairs)
         {
         updated_links = 
             add_link (node_link_pairs, next_node_link_pair_row, 
-                      pairs [1], 
-                      pairs [2], 
+                      cur_unique_pairs [cur_idx, 1], 
+                      cur_unique_pairs [cur_idx, 2], 
                       next_link_ID)
         next_node_link_pair_row = updated_links$next_node_link_pair_row
         next_link_ID = updated_links$next_link_ID
         node_link_pairs = updated_links$node_link_pairs
         }
-    
     }
 
 #===============================================================================
+
+cat ("\n\n--------------------  Computing and plotting degree distribution of node graph.\n")
 
 #  Compute and plot the degree distribution of the node graph.
 #  It may be that we can use metrics over this graph as features of the 
@@ -338,6 +435,27 @@ plot (final_rank_abundance_dist)
 
 #===============================================================================
 
+    #  Write out the data as Marxan input files.
+
+cat ("\n\n--------------------  Writing out the data as Marxan input files.\n")
+
+library (marxan)
+
+sppAmount = 1
+
+num_node_link_pairs = length (node_link_pairs [,"node_ID"])
+PU_IDs = unique (node_link_pairs [,"node_ID"])
+spp_IDs = unique (node_link_pairs [,"link_ID"])
+
+spp_PU_amount_table =
+    data.frame (species = node_link_pairs [,"link_ID"],
+                pu      = node_link_pairs [,"node_ID"],
+                amount  = rep (sppAmount, num_node_link_pairs))
+
+write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
+
+#===============================================================================
+
 #  Something was wrong here at first, but it does suggest some good tests 
 #  to build based on what I'm expecting here.
 
@@ -346,6 +464,15 @@ plot (final_rank_abundance_dist)
 #
 #  2)  All of the nodes should appear in the first list, i.e., not just the 
 #      first 12.
+#
+#  More general things that should always be true based on the underlying idea 
+#  behind the design of the algorithm:
+#
+#  3)  No node in the independent set should be connected to any other node 
+#      in the independent set.
+#
+#  4)  No node in the independent set should be connected to any node in 
+#      a different clique?
 
 # Number of links per node BEFORE interclique linking:
 #     node_ID freq
