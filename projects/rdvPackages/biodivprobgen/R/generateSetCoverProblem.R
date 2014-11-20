@@ -35,22 +35,22 @@ add_link = function (node_link_pairs, next_node_link_pair_row,
     
     node_link_pairs [next_node_link_pair_row, "node_ID"] = smaller_node_ID
     node_link_pairs [next_node_link_pair_row, "link_ID"] = next_link_ID
-#             cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
-#             print (node_link_pairs [next_node_link_pair_row,])
-    next_node_link_pair_row = next_node_link_pair_row + 1
-    
+             cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
+             print (node_link_pairs [next_node_link_pair_row,])
+
+    next_node_link_pair_row = next_node_link_pair_row + 1    
     node_link_pairs [next_node_link_pair_row, "node_ID"] = larger_node_ID
     node_link_pairs [next_node_link_pair_row, "link_ID"] = next_link_ID
-#             cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
-#             print (node_link_pairs [next_node_link_pair_row,])
+             cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
+             print (node_link_pairs [next_node_link_pair_row,])
     next_node_link_pair_row = next_node_link_pair_row + 1
 
-    next_link_ID = next_link_ID + 1
-#             cat ("\n\t\tnext_link_ID = ", next_link_ID)
+#     next_link_ID = next_link_ID + 1
+#              cat ("\n\t\tnext_link_ID = ", next_link_ID)
     
     updated_links = list()
     updated_links$next_node_link_pair_row = next_node_link_pair_row
-    updated_links$next_link_ID = next_link_ID
+#     updated_links$next_link_ID = next_link_ID
     updated_links$node_link_pairs = node_link_pairs
     
     return (updated_links)
@@ -185,6 +185,11 @@ r__density                       = 0.5
     
 #    nodes_df = as.data.frame (nodes)
     
+    linked_node_pairs = matrix (NA, 
+                                nrow = max_possible_tot_num_links, 
+                                ncol = 2, 
+                                byrow = TRUE)
+
             #  Build a data frame with all the links for all of the nodes.  
             #  For each node, there is a separate line for each link associated 
             #  with that node.  So, for example, if there are two nodes, 3 and 5, 
@@ -201,11 +206,13 @@ r__density                       = 0.5
     max_possible_tot_num_node_link_pairs = 2 * max_possible_tot_num_links
     node_link_pairs = matrix (NA, 
                               nrow=max_possible_tot_num_node_link_pairs, 
-                              ncol=2)
+                              ncol=2, 
+                              byrow=TRUE
+                              )
     node_link_pairs = as.data.frame (node_link_pairs)
     names (node_link_pairs) = c("node_ID", "link_ID")
 
-    next_node_link_row = 1
+    next_node_link_row = 1    #  NEVER USED?  DELETE THIS?
     next_link_ID = 1
     cur_clique_ID = 1
     
@@ -216,7 +223,7 @@ r__density                       = 0.5
     
 #df[df$value>3.0,] 
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 cat ("\n\n--------------------  Linking all nodes within each clique.\n")
 
@@ -225,106 +232,77 @@ if (num_nodes_per_clique < 2)
           ") must be at least 2.\n\n")
 
 
-    num_nodes_per_clique_minus_1 = num_nodes_per_clique - 1
-    next_node_link_pair_row = 1
-    next_link_ID = 1
+num_nodes_per_clique_minus_1 = num_nodes_per_clique - 1
+cur_row = 1
 
-    for (cur_clique_ID in 1:n__num_cliques)
+for (cur_clique_ID in 1:n__num_cliques)
+    {
+    #  NOTE:  The code in this loop assumes the clique nodes are sorted.  
+    #         These clique nodes are probably already sorted, 
+    #         but this just makes sure, as a safeguard against 
+    #         some future change.
+    cur_clique_nodes_sorted = 
+        sort (nodes [nodes$clique_ID == cur_clique_ID, "node_ID"])
+    cat ("\n\ncur_clique_nodes_sorted for clique ", cur_clique_ID, " = ")
+    print (cur_clique_nodes_sorted)
+    
+    #  Link each node in the clique to all nodes with a higher node ID in 
+    #  the same clique.  
+    #  Doing it this way insures that all nodes in the clique are linked to 
+    #  all other nodes in the clique but that the linking action is only done 
+    #  once for each pair.
+    
+    for (cur_idx in 1:num_nodes_per_clique_minus_1)
         {
-            #  NOTE:  The code in this loop assumes the clique nodes are sorted.  
-            #         These clique nodes are probably already sorted, 
-            #         but this just makes sure, as a safeguard against 
-            #         some future change.
-        cur_clique_nodes_sorted = 
-            sort (nodes [nodes$clique_ID == cur_clique_ID, "node_ID"])
-                cat ("\n\ncur_clique_nodes_sorted for clique ", cur_clique_ID, " = ")
-                print (cur_clique_nodes_sorted)
-        
-            #  Link each node in the clique to all nodes with a higher node ID in 
-            #  the same clique.  
-            #  Doing it this way insures that all nodes in the clique are linked to 
-            #  all other nodes in the clique but that the linking action is only done 
-            #  once for each pair.
-        
-        for (cur_idx in 1:num_nodes_per_clique_minus_1)
+        for (other_node_idx in (cur_idx+1):num_nodes_per_clique)
             {
-            for (other_node_idx in (cur_idx+1):num_nodes_per_clique)
-                {
-                updated_links = 
-                    add_link (node_link_pairs, next_node_link_pair_row, 
-                              cur_clique_nodes_sorted [cur_idx], 
-                              cur_clique_nodes_sorted [other_node_idx], 
-                              next_link_ID)
-                next_node_link_pair_row = updated_links$next_node_link_pair_row
-                next_link_ID = updated_links$next_link_ID
-                node_link_pairs = updated_links$node_link_pairs
-                }
+            linked_node_pairs [cur_row, 1] = cur_clique_nodes_sorted [cur_idx]
+            linked_node_pairs [cur_row, 2] = cur_clique_nodes_sorted [other_node_idx]
+            cur_row = cur_row + 1
             }
         }
-        
-    cat ("\n\nnode_link_pairs (with last lines NA to hold interclique links to be loaded in next step):\n\n")
-    print (node_link_pairs)
-    cat ("\n\n")
+    }
 
-#-------------------------------------------------------------------------------
-
-initial_link_counts_for_each_node = 
-    count (node_link_pairs, vars="node_ID")
-
-initial_node_counts_for_each_link = 
-    count (node_link_pairs, vars="link_ID")
+cat ("\n\nlinked_node_pairs (with last lines NA to hold interclique links to be loaded in next step):\n\n")
+print (linked_node_pairs)
+cat ("\n\n")
 
 #===============================================================================
 
-#  Now all cliques and their within clique links have been built.  
-
-#  Ready to start doing rounds of interclique linking.
+    #  Now all cliques and their within clique links have been built.  
+    #  Ready to start doing rounds of interclique linking.
 
 cat ("\n\n--------------------  Doing rounds of interclique linking.\n")
-
-#browser()
 
 for (cur_round in 1:num_rounds_of_linking_between_cliques)
     {
     cat ("\nRound", cur_round)
     
-        #  Draw a random pair of cliques to link in this round.
+    #  Draw a random pair of cliques to link in this round.
     cur_clique_pair = sample (1:n__num_cliques, 2, replace=FALSE)
     
-            #  I'm using min and max here because smaller clique IDs were 
-            #  filled with smaller node IDs, so every node ID in the 
-            #  smaller clique ID should be the smaller node ID of any pairing 
-            #  of nodes between the cliques and the linking routine 
-            #  expcts the smaller node ID to come before the larger one 
-            #  in the linking argument list.  This may be a vestigial thing 
-            #  from earlier schemes that doesn't matter any more, but 
-            #  it's easy to maintain here for the moment, just in case it 
-            #  does still matter in some way.  In any case, it doesn't 
-            #  hurt anything to do this now other than the little bit of 
-            #  extra execution time to compute the min and max.
+    #  I'm using min and max here because smaller clique IDs were 
+    #  filled with smaller node IDs, so every node ID in the 
+    #  smaller clique ID should be the smaller node ID of any pairing 
+    #  of nodes between the cliques and the linking routine 
+    #  expcts the smaller node ID to come before the larger one 
+    #  in the linking argument list.  This may be a vestigial thing 
+    #  from earlier schemes that doesn't matter any more, but 
+    #  it's easy to maintain here for the moment, just in case it 
+    #  does still matter in some way.  In any case, it doesn't 
+    #  hurt anything to do this now other than the little bit of 
+    #  extra execution time to compute the min and max.
     
-#***-----------------------------------------------------------------------------------
-#***
-#***  ISN'T THERE A BUG HERE?  SHOULDN'T THE SELECTION EXCLUDE INDEPENDENT SET NODES?
-#***  OR, IS IT THAT NO INDEPENDENT SET NODE CAN LINK TO ANY OTHER NODE IN THE 
-#***  INDEPENDENT SET, BUT IT _CAN_ LINK TO _DEPENDENT_ SET NODES IN OTHER CLIQUES?
-#***
-#***  Does this "&" clause fix the problem (assuming it exists)?
-#***
-#***---------------------------------------
-
-    clique_1 = min (cur_clique_pair [1])
-#***clique_1_nodes = nodes [nodes$clique_ID == clique_1, "node_ID"]
+    clique_1 = min (cur_clique_pair)
     clique_1_nodes = nodes [(nodes$clique_ID == clique_1) & (nodes$dependent_set_member), 
                             "node_ID"]
     
-    clique_2 = max (cur_clique_pair [2])
-#***clique_2_nodes = nodes [nodes$clique_ID == clique_2, "node_ID"]
+    clique_2 = max (cur_clique_pair)
     clique_2_nodes = nodes [(nodes$clique_ID == clique_2) & (nodes$dependent_set_member), 
                             "node_ID"]
- 
-#***-----------------------------------------------------------------------------------
-
+    
+    #***-----------------------------------------------------------------------------------
+    
     clique_1_sampled_nodes = 
         sample (clique_1_nodes, target_num_links_between_2_cliques_per_round, 
                 replace=TRUE)
@@ -332,40 +310,47 @@ for (cur_round in 1:num_rounds_of_linking_between_cliques)
         sample (clique_2_nodes, target_num_links_between_2_cliques_per_round, 
                 replace=TRUE)
     
-        #  Make sure that there are no duplicate links in the list.
-    cur_non_unique_pairs = cbind (clique_1_sampled_nodes, clique_2_sampled_nodes)
-    cur_num_non_unique_pairs = dim (cur_non_unique_pairs) [1]  #  number of rows
-
-#    unique_pairs = unique (cbind (clique_1_sampled_nodes, clique_2_sampled_nodes))
-    cur_unique_pairs = unique (cur_non_unique_pairs)
-    cur_num_unique_pairs = dim (cur_unique_pairs) [1]    #  number of rows
-                cat ("\n\n interclique pairs for round ", cur_round, " = \n")
-                cat ("\n\tcur_num_non_unique_pairs =", cur_num_non_unique_pairs)
-                cat ("\n\tcur_non_unique_pairs = \n")
-                print (cur_non_unique_pairs)
-                cat ("\n\tcur_num_unique_pairs =", cur_num_unique_pairs)
-                cat ("\n\tcur_unique_pairs = \n")
-                print (cur_unique_pairs)
-                cat ("\n")
-
-# s1 = c(3,3)
-# s2=c(5,5)
-# x=cbind(s1,s2)
-# x
-# p=unique(x)
-
-
-    for (cur_idx in 1:cur_num_unique_pairs)
-        {
-        updated_links = 
-            add_link (node_link_pairs, next_node_link_pair_row, 
-                      cur_unique_pairs [cur_idx, 1], 
-                      cur_unique_pairs [cur_idx, 2], 
-                      next_link_ID)
-        next_node_link_pair_row = updated_links$next_node_link_pair_row
-        next_link_ID = updated_links$next_link_ID
-        node_link_pairs = updated_links$node_link_pairs
+    for (cur_node_pair_idx in 1:target_num_links_between_2_cliques_per_round)
+        {                
+        linked_node_pairs [cur_row, 1] = clique_1_sampled_nodes [cur_node_pair_idx]
+        linked_node_pairs [cur_row, 2] = clique_2_sampled_nodes [cur_node_pair_idx]
+        cur_row = cur_row + 1
         }
+    }
+
+#===============================================================================
+
+    #  All node pairs should be loaded into the linked_node_pairs table now 
+    #  and there should be no NA lines left in the table.
+    
+    #  However no duplicate links are allowed, so need to go through all 
+    #  node pairs and remove non-unique ones.
+
+unique_linked_node_pairs = unique (linked_node_pairs)
+
+num_non_unique_linked_node_pairs = dim (linked_node_pairs)[1]
+num_unique_linked_node_pairs = dim (unique_linked_node_pairs)[1]
+
+cat ("\n\nnum_non_unique_linked_node_pairs =", num_non_unique_linked_node_pairs)
+cat ("\nnum_unique_linked_node_pairs =", num_unique_linked_node_pairs)
+cat ("\n")
+
+#===============================================================================
+
+next_node_link_pair_row = 1
+
+for (cur_link_ID in 1:num_unique_linked_node_pairs)
+    {
+    updated_links = 
+        add_link (node_link_pairs, 
+                  next_node_link_pair_row, 
+                  unique_linked_node_pairs [cur_link_ID, 1], 
+                  unique_linked_node_pairs [cur_link_ID, 2], 
+                  cur_link_ID)
+    
+    node_link_pairs = updated_links$node_link_pairs
+    
+    next_node_link_pair_row = updated_links$next_node_link_pair_row
     }
 
 #===============================================================================
@@ -407,8 +392,8 @@ cat ("\n\n--------------------  Computing and plotting degree distribution of no
 #  or visual display over those (e.g., something about their degree 
 #  distribution) that can be used as a predictive feature?
 
-cat ("\n\nNumber of links per node BEFORE interclique linking:\n")
-print (initial_link_counts_for_each_node)
+# cat ("\n\nNumber of links per node BEFORE interclique linking:\n")
+# print (initial_link_counts_for_each_node)
 
 final_link_counts_for_each_node = count (node_link_pairs, vars="node_ID")
 
@@ -421,8 +406,8 @@ plot (final_degree_dist)
 
 #-------------------------------------------------------------------------------
 
-cat ("\n\nNumber of nodes per link BEFORE interclique linking:\n")
-print (initial_node_counts_for_each_link)
+# cat ("\n\nNumber of nodes per link BEFORE interclique linking:\n")
+# print (initial_node_counts_for_each_link)
 
 final_node_counts_for_each_link = count (node_link_pairs, vars="link_ID")
 
