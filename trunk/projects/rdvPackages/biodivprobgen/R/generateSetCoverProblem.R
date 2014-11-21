@@ -31,18 +31,18 @@ add_link = function (node_link_pairs, next_node_link_pair_row,
                      smaller_node_ID, larger_node_ID, 
                      next_link_ID)
     {
-    cat ("\n\t\t[", smaller_node_ID, ",", larger_node_ID, "]")
+#     cat ("\n\t\t[", smaller_node_ID, ",", larger_node_ID, "]")
     
     node_link_pairs [next_node_link_pair_row, "node_ID"] = smaller_node_ID
     node_link_pairs [next_node_link_pair_row, "link_ID"] = next_link_ID
-             cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
-             print (node_link_pairs [next_node_link_pair_row,])
+#              cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
+#              print (node_link_pairs [next_node_link_pair_row,])
 
     next_node_link_pair_row = next_node_link_pair_row + 1    
     node_link_pairs [next_node_link_pair_row, "node_ID"] = larger_node_ID
     node_link_pairs [next_node_link_pair_row, "link_ID"] = next_link_ID
-             cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
-             print (node_link_pairs [next_node_link_pair_row,])
+#              cat ("\n\t\t\tnode_link_pairs [", next_node_link_pair_row, ", ] = \n")
+#              print (node_link_pairs [next_node_link_pair_row,])
     next_node_link_pair_row = next_node_link_pair_row + 1
 
 #     next_link_ID = next_link_ID + 1
@@ -204,13 +204,13 @@ r__density                       = 0.5
             #       5            21
 
     max_possible_tot_num_node_link_pairs = 2 * max_possible_tot_num_links
-    node_link_pairs = matrix (NA, 
-                              nrow=max_possible_tot_num_node_link_pairs, 
-                              ncol=2, 
-                              byrow=TRUE
-                              )
-    node_link_pairs = as.data.frame (node_link_pairs)
-    names (node_link_pairs) = c("node_ID", "link_ID")
+#     node_link_pairs = matrix (NA, 
+#                               nrow=max_possible_tot_num_node_link_pairs, 
+#                               ncol=2, 
+#                               byrow=TRUE
+#                               )
+#     node_link_pairs = as.data.frame (node_link_pairs)
+#     names (node_link_pairs) = c("node_ID", "link_ID")
 
     next_node_link_row = 1    #  NEVER USED?  DELETE THIS?
     next_link_ID = 1
@@ -337,6 +337,16 @@ cat ("\n")
 
 #===============================================================================
 
+num_node_link_pairs = 2 * num_unique_linked_node_pairs
+node_link_pairs = matrix (NA, 
+                          nrow=num_node_link_pairs, 
+                          ncol=2, 
+                          byrow=TRUE
+                          )
+
+node_link_pairs = as.data.frame (node_link_pairs)
+names (node_link_pairs) = c("node_ID", "link_ID")
+
 next_node_link_pair_row = 1
 
 for (cur_link_ID in 1:num_unique_linked_node_pairs)
@@ -438,6 +448,154 @@ spp_PU_amount_table =
                 amount  = rep (sppAmount, num_node_link_pairs))
 
 write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
+
+
+x2 <- by (spp_PU_amount_table$amount, spp_PU_amount_table$pu, sum)
+do.call(rbind,as.list(x2))
+cat ("\n\nx2 =\n")
+print (x2)
+
+#-------------------------------------------------------------------------------
+
+#  TODO:
+
+    #  NOTE:  Many of the entries below have to do with reading marxan output 
+    #         and loading it into this program and doing something with it.
+    #         I should build functions for doing those things and add them to 
+    #         the marxan package.  Should talk to Ascelin about this too and 
+    #         see if there is any overlap with what he's doing.
+
+    #  Build structures holding:
+        #  Make a function to automatically do these subtotalling actions 
+        #  since I need to do it all the time.
+            #  May want one version for doing these give a table or dataframe 
+            #  and another for doing them given a list or list of lists 
+            #  since those are the most common things I do (e.g, in 
+            #  distSppOverPatches()).
+        #  Species richness for each patch.
+        #  Number of patches for each spp.
+        #  Correct solution.
+        #  Things in dist spp over patches?
+            #  Patch list for each species.
+            #  Species list for each patch.
+    #  Are some of these already built for the plotting code above?
+
+    #  Copy results to marxan input area.
+
+    #  Build marxan input.dat file.
+        #  The user's manual has a table showing all options and their 
+        #  default values.  Can use that as a starting point.
+
+    #  Build some kind of a program that searches for good input settings 
+    #  for a given input problem.  This could also be added to the marxan 
+    #  package and be elaborated on by marxan experts.
+        #  Seems like this and some of the other things here are fairly 
+        #  generic to any reserve selector or other kind of mathematical 
+        #  conservation tool.  So, may be worth making some kind of OOP 
+        #  abstraction of this stuff and apply it to Zonation as a test 
+        #  of its general utility.
+
+    #  Run marxan.
+        #  Should include this in the marxan package.
+
+    #  Read various marxan outputs into this program.
+        #  Should include these in the marxan package.
+        #  Marxan's best solution.
+        #  Marxan's votes for including each planning unit.
+        #  
+
+    #  Compute or extract number of species represented by marxan solution.
+
+    #  Compare marxan results to correct solution.
+
+    #  Compute marxan error.
+
+    #  Compute what percentage of species were represented in the marxan 
+    #  solution.
+
+    #  Compute the cost benefit ratio for the marxan solution, i.e., 
+    #  (number of patches / number of species represented) in solution.
+
+    #  Plot total representation as you add planning units to the reserve 
+    #  set in decreasing order by the number of votes received.
+        #  NOTE:  See all areas of the Marxan user manual where Fischer is 
+        #         cited.  There are lots of things there about how you 
+        #         have to be careful about how you interpret the summed 
+        #         solution.  Also talks about various sensitivity analysis 
+        #         things.
+        #  Might be good to show on the same plot the identical curve if 
+        #  you were to add planning units in order by:
+            #  simple richness
+            #  unprotected richness
+            #  cost/benefit of planning unit
+                #  though at the moment, all costs are the same, so 
+                #  benefit (i.e., species (protected or unprotected)) 
+                #  is all that matters
+            #  unprotected cost/benefit of planning unit
+
+    #************************************
+    #  I can still ask questions like all of these under uncertainty by using 
+    #  the same problem generator and then adding known uncertainties to it 
+    #  so that we still know the correct answer.
+    #************************************
+
+    #  Programs to search for hard problems.
+        #  Don't just want to find hard problems though.  Want to be able to 
+            #  predict what problems will be easy and hard, i.e., what is the 
+            #  likely error or suboptimality of the reserve selector?
+        #  Kinds of search to try:
+            #  Systematic grid search using tzar's control option.
+            #  Some kind of gradient search that runs over continuous problem 
+                #  characteristics.
+                #  However, this requires a parametric description of the 
+                #  problem space to do the optimization over.  
+                #  Learn a predictive model and do gradient search over that  
+                    #  learned model.
+                    #  Active learning?
+                    #  Systematic experimentation?
+                    #  Experimental design?
+                    #  Something from the SAMO course?
+            #  Heuristic search like simulated annealing.
+            #  Integer/linear/... programming search.
+
+    #  Network measures over the adjacency matrix as input features for 
+        #  predicting performance/difficulty.
+
+    #  Do any of the entropy/diversity measures that people like Christy 
+        #  use have any predictive power here?  
+            #  alpha, beta, gamma diversity
+            #  Shannon information measures
+                #  entropy
+        #  This seems like it might be important because evenness of species 
+            #  distribution seems like it makes it harder to get a feasible 
+            #  solution.
+
+    #  What about some variant of expressing/measuring complementarity of 
+        #  co-occurrence?  
+        #  Seems like things that occur as ensembles/communities may also 
+        #  make the problem easier (somehow reducing entropy again?) since 
+        #  you know that if one species occurs in a place, a whole suite 
+        #  of other ones may occur there as well.  This would allow you 
+        #  to search for solutions over a much smaller set of species and 
+        #  thereby reduce the computational complexity of the search.
+
+    #  Need to write test functions if this is going to be made more 
+    #  publically available and used to support production of papers.
+
+    #  These linear programming papers ignore the uncertainty issues in 
+    #  optimality, but are worth paying attention to in differentiating 
+    #  what my results are aimed at doing, particularly prediction of 
+    #  of likely accuracy given a problem description.  
+    #  Need to be sure that this is in the foreground of my paper, 
+    #  i.e., that the primary contribution is related to prediction 
+    #  and to defining features that characterize what makes 
+    #  problems hard or easy.  
+        #  1)  vanderkam et al 2007. "Heuristic algorithms vs. linear programs 
+        #  for designing efficient conservation reserve networks: Evaluation 
+        #  of solution optimality and processing time"
+        #  2)  fischer and church 2005.  "The SITES reserve selection system: 
+        #  a critical review"
+
 
 #===============================================================================
 
