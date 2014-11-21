@@ -447,15 +447,16 @@ spp_PU_amount_table =
                 pu      = node_link_pairs [,"node_ID"],
                 amount  = rep (sppAmount, num_node_link_pairs))
 
+#-------------------------------------------------------------------------------
+
+    #***  Need to modify the write_all...() function to prepend the 
+    #***  name of the directory to put the results in (but can  
+    #***  default to writing in "." instead?).
+
+marxan_input_dir = "/Users/bill/D/Marxan/input/"
 write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
 
-
-x2 <- by (spp_PU_amount_table$amount, spp_PU_amount_table$pu, sum)
-do.call(rbind,as.list(x2))
-cat ("\n\nx2 =\n")
-print (x2)
-
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 #  TODO:
 
@@ -464,6 +465,8 @@ print (x2)
     #         I should build functions for doing those things and add them to 
     #         the marxan package.  Should talk to Ascelin about this too and 
     #         see if there is any overlap with what he's doing.
+
+#-------------------------------------------------------------------------------
 
     #  Build structures holding:
         #  Make a function to automatically do these subtotalling actions 
@@ -480,11 +483,28 @@ print (x2)
             #  Species list for each patch.
     #  Are some of these already built for the plotting code above?
 
-    #  Copy results to marxan input area.
+
+    #  Is this counting up the number of species on each patch?
+x2 <- by (spp_PU_amount_table$amount, spp_PU_amount_table$pu, sum)
+do.call(rbind,as.list(x2))
+
+cat ("\n\nx2 =\n")
+print (x2)
+
+#-------------------------------------------------------------------------------
 
     #  Build marxan input.dat file.
         #  The user's manual has a table showing all options and their 
         #  default values.  Can use that as a starting point.
+
+        #  Definitely need to set at least the following values:
+            #  random seed
+
+    #  An example on one of the web pages I found tonight reads in the 
+    #  input.dat file and modifies something, then writes it back out...
+        #  http://lists.science.uq.edu.au/pipermail/marxan/2008-May/000319.html
+
+#-------------------------------------------------------------------------------
 
     #  Build some kind of a program that searches for good input settings 
     #  for a given input problem.  This could also be added to the marxan 
@@ -495,23 +515,131 @@ print (x2)
         #  abstraction of this stuff and apply it to Zonation as a test 
         #  of its general utility.
 
+#-------------------------------------------------------------------------------
+
     #  Run marxan.
         #  Should include this in the marxan package.
+
+    #*******
+    #  NOTE:  Random seed is set to -1 in the cplan input.dat.
+    #           I think that means to use a different seed each time.
+    #           I probably need to change this to any positive number, 
+    #           at least in the default input.dat that I'm using now 
+    #           so that I get reproducible results.
+    #*******
+
+run_marxan = function ()
+    {
+    marxan_dir = "/Users/bill/D/Marxan/"
+    
+    original_dir = getwd()
+    cat ("\n\noriginal_dir =", original_dir)
+    
+    cat ("\n\nImmediately before calling marxan, marxan_dir = ", marxan_dir)
+    setwd (marxan_dir)
+    
+    cat("\n =====> The current wd is", getwd() )
+    
+        #  The -s deals with the problem of Marxan waiting for you to hit 
+        #  return at the end of the run when you're running in the background.  
+        #  Without it, the system() command never comes back.
+        #       (From p. 24 of marxan.net tutorial:
+        #        http://marxan.net/tutorial/Marxan_net_user_guide_rev2.1.pdf
+        #        I'm not sure if it's even in the normal user's manual or 
+        #        best practices manual for marxan.)
+    
+    system.command.run.marxan = "./MarOpt_v243_Mac64 -s"    
+    cat( "\n\n>>>>>  The system command to run marxan will be:\n'", 
+         system.command.run.marxan, "'\n>>>>>\n\n", sep='')
+    
+    retval = system (system.command.run.marxan)    #  , wait=FALSE)
+    cat ("\n\nmarxan retval = '", retval, "'.\n\n", sep='')        
+    
+    setwd (original_dir)
+    cat ("\n\nAfter setwd (original_dir), sitting in:", getwd(), "\n\n")
+    
+    return (retval)
+    }
+
+run_marxan()
+
+#-------------------------------------------------------------------------------
 
     #  Read various marxan outputs into this program.
         #  Should include these in the marxan package.
         #  Marxan's best solution.
         #  Marxan's votes for including each planning unit.
-        #  
+    
+        #  Marxan output files to read from the Marxan output directory 
+        #  (need to look these file names up in the manual):
+
+            #  output_best.csv
+            #  output_mvbest.csv
+
+            #  output_ssoln.csv
+            #  output_solutionsmatrix.csv
+            #  output_sum.csv
+
+            #  output_penalty_planning_units.csv
+            #  output_penalty.csv
+
+            #  output_sen.dat
+
+marxan_output_dir_path = "/Users/bill/D/Marxan/output/"
+
+marxan_output_best_file_name = "output_best.csv"
+marxan_output_ssoln_file_name = "output_ssoln.csv"
+
+marxan_best_df = 
+    read.csv (paste (marxan_output_dir_path, marxan_output_best_file_name, sep=''), 
+                     header=TRUE)
+cat ("\n\nAfter loading output_best.csv, marxan_best_df =")
+print (marxan_best_df)
+
+marxan_ssoln_df = 
+    read.csv (paste (marxan_output_dir_path, marxan_output_ssoln_file_name, sep=''),
+                     header=TRUE)
+cat ("\n\nAfter loading output_ssoln.csv, marxan_ssoln_df =")
+print (marxan_ssoln_df)
+
+    #  Make sure both are sorted in increasing order of planning unit ID.
+marxan_best_df = sort (marxan_best_df, ???)
+marxan_ssoln_df = sort (marxan_ssoln_df, ???)
+
+    #  Build a master table containing:
+        #  planning unit ID
+                #  marxan_best_df$PUID
+        #  correct (optimal) answer (as boolean flags on sorted planning units)
+        #  best marxan guess
+                #  marxan_best_df$SOLUTION
+        #  marxan number of votes for each puid
+                #  marxan_ssoln_df$number
+        #  difference between correct and best (i.e., (cor - best), FP, FN, etc)
+        #  absolute value of difference (to make counting them easier)
+        #  number of species on each patch (i.e., simple richness)
+
+
+
+
+
+#-------------------------------------------------------------------------------
 
     #  Compute or extract number of species represented by marxan solution.
 
+#-------------------------------------------------------------------------------
+
     #  Compare marxan results to correct solution.
+
+#-------------------------------------------------------------------------------
 
     #  Compute marxan error.
 
+#-------------------------------------------------------------------------------
+
     #  Compute what percentage of species were represented in the marxan 
     #  solution.
+
+#-------------------------------------------------------------------------------
 
     #  Compute the cost benefit ratio for the marxan solution, i.e., 
     #  (number of patches / number of species represented) in solution.
@@ -533,11 +661,13 @@ print (x2)
                 #  is all that matters
             #  unprotected cost/benefit of planning unit
 
-    #************************************
+#-------------------------------------------------------------------------------
+
     #  I can still ask questions like all of these under uncertainty by using 
     #  the same problem generator and then adding known uncertainties to it 
     #  so that we still know the correct answer.
-    #************************************
+
+#-------------------------------------------------------------------------------
 
     #  Programs to search for hard problems.
         #  Don't just want to find hard problems though.  Want to be able to 
@@ -558,29 +688,40 @@ print (x2)
             #  Heuristic search like simulated annealing.
             #  Integer/linear/... programming search.
 
-    #  Network measures over the adjacency matrix as input features for 
-        #  predicting performance/difficulty.
+#-------------------------------------------------------------------------------
 
-    #  Do any of the entropy/diversity measures that people like Christy 
-        #  use have any predictive power here?  
-            #  alpha, beta, gamma diversity
-            #  Shannon information measures
-                #  entropy
-        #  This seems like it might be important because evenness of species 
-            #  distribution seems like it makes it harder to get a feasible 
-            #  solution.
+    #  Features that might be useful in measuring problem difficulty and 
+    #  in problem generation.  Some of these have occurred to me as 
+    #  features just because I was thinking algorithmically about how 
+    #  you might make the problem harder.
 
-    #  What about some variant of expressing/measuring complementarity of 
-        #  co-occurrence?  
-        #  Seems like things that occur as ensembles/communities may also 
-        #  make the problem easier (somehow reducing entropy again?) since 
-        #  you know that if one species occurs in a place, a whole suite 
-        #  of other ones may occur there as well.  This would allow you 
-        #  to search for solutions over a much smaller set of species and 
-        #  thereby reduce the computational complexity of the search.
+        #  Network measures over the adjacency matrix as input features for 
+            #  predicting performance/difficulty.
+    
+        #  Do any of the entropy/diversity measures that people like Christy 
+            #  use have any predictive power here?  
+                #  alpha, beta, gamma diversity
+                #  Shannon information measures
+                    #  entropy
+            #  This seems like it might be important because evenness of species 
+                #  distribution seems like it makes it harder to get a feasible 
+                #  solution.
+    
+        #  What about some variant of expressing/measuring complementarity of 
+            #  co-occurrence?  
+            #  Seems like things that occur as ensembles/communities may also 
+            #  make the problem easier (somehow reducing entropy again?) since 
+            #  you know that if one species occurs in a place, a whole suite 
+            #  of other ones may occur there as well.  This would allow you 
+            #  to search for solutions over a much smaller set of species and 
+            #  thereby reduce the computational complexity of the search.
+
+#-------------------------------------------------------------------------------
 
     #  Need to write test functions if this is going to be made more 
     #  publically available and used to support production of papers.
+
+#-------------------------------------------------------------------------------
 
     #  These linear programming papers ignore the uncertainty issues in 
     #  optimality, but are worth paying attention to in differentiating 
@@ -595,6 +736,15 @@ print (x2)
         #  of solution optimality and processing time"
         #  2)  fischer and church 2005.  "The SITES reserve selection system: 
         #  a critical review"
+
+#-------------------------------------
+
+    #  Need to add a test of ensemble optimization based on choosing best 
+    #  solution when evaluated across a family of possible disturbances 
+    #  rather than just summing or some other kind of voting method.  
+    #  This is an important thing to do so that things are a bit more 
+    #  constructive rather than always being about showing what's wrong 
+    #  with existing methods.
 
 
 #===============================================================================
