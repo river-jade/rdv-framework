@@ -1,5 +1,4 @@
 #===============================================================================
-
 #  v1 - 
 #  v2 - 
 #  v3 - add degree distribution calculations
@@ -21,7 +20,7 @@ set.seed (seed)
 integerize = function (x) 
     { 
     round (x) 
-#    celiing (x)
+#    ceiling (x)
 #    floor (x)
     }
 
@@ -58,6 +57,52 @@ add_link = function (node_link_pairs, next_node_link_pair_row,
 
 #-------------------------------------------------------------------------------
 
+    #  Run marxan.
+        #  Should include this in the marxan package.
+
+    #*******
+    #  NOTE:  Random seed is set to -1 in the cplan input.dat.
+    #           I think that means to use a different seed each time.
+    #           I probably need to change this to any positive number, 
+    #           at least in the default input.dat that I'm using now 
+    #           so that I get reproducible results.
+    #*******
+
+run_marxan = function ()
+    {
+    marxan_dir = "/Users/bill/D/Marxan/"
+    
+    original_dir = getwd()
+    cat ("\n\noriginal_dir =", original_dir)
+    
+    cat ("\n\nImmediately before calling marxan, marxan_dir = ", marxan_dir)
+    setwd (marxan_dir)
+    
+    cat("\n =====> The current wd is", getwd() )
+    
+        #  The -s deals with the problem of Marxan waiting for you to hit 
+        #  return at the end of the run when you're running in the background.  
+        #  Without it, the system() command never comes back.
+        #       (From p. 24 of marxan.net tutorial:
+        #        http://marxan.net/tutorial/Marxan_net_user_guide_rev2.1.pdf
+        #        I'm not sure if it's even in the normal user's manual or 
+        #        best practices manual for marxan.)
+    
+    system.command.run.marxan = "./MarOpt_v243_Mac64 -s"    
+    cat( "\n\n>>>>>  The system command to run marxan will be:\n'", 
+         system.command.run.marxan, "'\n>>>>>\n\n", sep='')
+    
+    retval = system (system.command.run.marxan)    #  , wait=FALSE)
+    cat ("\n\nmarxan retval = '", retval, "'.\n\n", sep='')        
+    
+    setwd (original_dir)
+    cat ("\n\nAfter setwd (original_dir), sitting in:", getwd(), "\n\n")
+    
+    return (retval)
+    }
+
+#===============================================================================
+
 # derive_control_parameters = 
 #     function (n__num_cliques = 3, 
 #               alpha__ = 1, 
@@ -81,6 +126,47 @@ r__density                       = 0.5
 # alpha__                          = 1.5
 # p__prop_of_links_between_cliques = 0.3  
 # r__density                       = 0.8
+
+#-------------------------------------------------------------------------------
+
+num_runs = 10
+
+results_df = 
+    data.frame (num_PUs = rep (NA, num_runs), 
+                num_spp = rep (NA, num_runs), 
+                
+                    #  Xu options
+                n__num_cliques = rep (NA, num_runs), 
+                alpha__ = rep (NA, num_runs), 
+                p__prop_of_links_between_cliques = rep (NA, num_runs), 
+                r__density = rep (NA, num_runs),
+                
+                    #  Derived options
+                num_nodes_per_clique = rep (NA, num_runs),
+                tot_num_nodes = rep (NA, num_runs),
+                num_independent_set_nodes = rep (NA, num_runs),
+                num_dependent_set_nodes = rep (NA, num_runs),
+                num_rounds_of_linking_between_cliques = rep (NA, num_runs),
+                target_num_links_between_2_cliques_per_round = rep (NA, num_runs), 
+                num_links_within_one_clique = rep (NA, num_runs),
+                tot_num_links_inside_cliques = rep (NA, num_runs),
+                max_possible_num_links_between_cliques = rep (NA, num_runs),
+                max_possible_tot_num_links = rep (NA, num_runs),
+                
+                    #  Results
+                cor_num_patches = rep (NA, num_runs),
+                marxan_best_num_patches = rep (NA, num_runs), 
+                marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
+                abs_marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
+                marxan_best_solution_NUM_spp_covered = rep (NA, num_runs), 
+                marxan_best_solution_FRAC_spp_covered = rep (NA, num_runs), 
+                spp_rep_shortfall = rep (NA, num_runs)                
+                )
+
+cur_idx = 0
+
+for (n__num_cliques in 3:5)
+{
 
 #-------------------------------------------------------------------------------
 
@@ -447,6 +533,9 @@ spp_PU_amount_table =
                 pu      = node_link_pairs [,"node_ID"],
                 amount  = rep (sppAmount, num_node_link_pairs))
 
+num_PUs = length (PU_IDs)
+num_spp = length (spp_IDs)
+
 #-------------------------------------------------------------------------------
 
     #***  Need to modify the write_all...() function to prepend the 
@@ -455,6 +544,18 @@ spp_PU_amount_table =
 
 marxan_input_dir = "/Users/bill/D/Marxan/input/"
 write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
+
+system ("rm /Users/bill/D/Marxan/output/*")
+
+system ("rm /Users/bill/D/Marxan/input/pu.dat")
+system ("cp ./pu.dat /Users/bill/D/Marxan/input")
+
+system ("rm /Users/bill/D/Marxan/input/spec.dat")
+system ("cp ./spec.dat /Users/bill/D/Marxan/input")
+
+system ("rm /Users/bill/D/Marxan/input/puvspr.dat")
+system ("cp ./puvspr.dat /Users/bill/D/Marxan/input")
+
 
 #===============================================================================
     
@@ -505,50 +606,6 @@ write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
 
 #===============================================================================
 
-    #  Run marxan.
-        #  Should include this in the marxan package.
-
-    #*******
-    #  NOTE:  Random seed is set to -1 in the cplan input.dat.
-    #           I think that means to use a different seed each time.
-    #           I probably need to change this to any positive number, 
-    #           at least in the default input.dat that I'm using now 
-    #           so that I get reproducible results.
-    #*******
-
-run_marxan = function ()
-    {
-    marxan_dir = "/Users/bill/D/Marxan/"
-    
-    original_dir = getwd()
-    cat ("\n\noriginal_dir =", original_dir)
-    
-    cat ("\n\nImmediately before calling marxan, marxan_dir = ", marxan_dir)
-    setwd (marxan_dir)
-    
-    cat("\n =====> The current wd is", getwd() )
-    
-        #  The -s deals with the problem of Marxan waiting for you to hit 
-        #  return at the end of the run when you're running in the background.  
-        #  Without it, the system() command never comes back.
-        #       (From p. 24 of marxan.net tutorial:
-        #        http://marxan.net/tutorial/Marxan_net_user_guide_rev2.1.pdf
-        #        I'm not sure if it's even in the normal user's manual or 
-        #        best practices manual for marxan.)
-    
-    system.command.run.marxan = "./MarOpt_v243_Mac64 -s"    
-    cat( "\n\n>>>>>  The system command to run marxan will be:\n'", 
-         system.command.run.marxan, "'\n>>>>>\n\n", sep='')
-    
-    retval = system (system.command.run.marxan)    #  , wait=FALSE)
-    cat ("\n\nmarxan retval = '", retval, "'.\n\n", sep='')        
-    
-    setwd (original_dir)
-    cat ("\n\nAfter setwd (original_dir), sitting in:", getwd(), "\n\n")
-    
-    return (retval)
-    }
-
 run_marxan()
 
 #===============================================================================
@@ -577,6 +634,7 @@ marxan_output_dir_path = "/Users/bill/D/Marxan/output/"
 
 marxan_output_best_file_name = "output_best.csv"
 marxan_output_ssoln_file_name = "output_ssoln.csv"
+marxan_output_mvbest_file_name = "output_mvbest.csv"
 
 
     #  Make sure both are sorted in increasing order of planning unit ID.
@@ -601,6 +659,36 @@ cat ("\n\n-------------------")
 
 #---------------------------------
 
+marxan_mvbest_df = 
+    read.csv (paste (marxan_output_dir_path, marxan_output_mvbest_file_name, sep=''), 
+              header=TRUE)
+cat ("\n\nAfter loading output_mvbest.csv, marxan_mvbest_df =")
+print (marxan_mvbest_df)
+
+    #  The call to "arrange()" below gives a weird error when run on the 
+    #  data frame because the column names have spaces in them (e.g., 
+    #  "Conservation Feature").  Renaming them seems to fix the problem
+names (marxan_mvbest_df) = 
+    c ("ConservationFeature", 
+       "FeatureName",
+       "Target",
+       "AmountHeld",
+       "OccurrenceTarget",
+       "OccurrencesHeld",
+       "SeparationTarget",
+       "SeparationAchieved",
+       "TargetMet",
+       "MPM"  
+       )
+
+marxan_mvbest_df = arrange (marxan_mvbest_df, ConservationFeature)
+
+cat ("\n\nAfter sorting, marxan_mvbest_df = \n")
+print (marxan_mvbest_df)
+cat ("\n\n-------------------")
+
+#---------------------------------
+
 marxan_ssoln_df = 
     read.csv (paste (marxan_output_dir_path, marxan_output_ssoln_file_name, sep=''),
               header=TRUE)
@@ -615,13 +703,34 @@ cat ("\n\n-------------------")
 
 #---------------------------------
 
-solutions_df = cbind (marxan_best_df$PUID, 
-                      nodes$dependent_set_member, 
-                      marxan_best_df$SOLUTION, 
-                      marxan_ssoln_df$number
-                      )
+#  Build a master table containing:
+    #  planning unit ID
+            #  marxan_best_df$PUID
+    #  correct (optimal) answer (as boolean flags on sorted planning units)
+    #  best marxan guess
+            #  marxan_best_df$SOLUTION
+    #  marxan number of votes for each puid
+            #  marxan_ssoln_df$number
+    #  difference between correct and best (i.e., (cor - best), FP, FN, etc)
+    #  absolute value of difference (to make counting them easier)
+    #  number of species on each patch (i.e., simple richness)
 
-    #  Need to be sure that the puid column matches in the nodes data frame 
+#  Need to bind together:
+#   problem setup
+#       - planning unit IDs (goes with all of these, even if they're split 
+#         into separate tables)
+#       - number of species (simple richness) on patch as counts
+#   correct/optimal solution
+#       - correct/optimal solution as 0/1
+#   marxan solution(s)
+#       - marxan best solution as 0/1
+#       - marxan solution votes as counts
+#   performance measure(s)
+#       - difference between marxan best and optimal solution to represent 
+#         error direction (e.g., FP, FN, etc.)
+#       - abs (difference) to represent error or no error
+
+    #  *** Need to be sure that the puid column matches in the nodes data frame 
     #  and the marxan data frames.  Otherwise, there could be a mismatch in 
     #  the assignments for inclusion or exclusion of patches in the solutions.
 
@@ -638,21 +747,11 @@ solutions_df = data.frame (puid = marxan_best_df$PUID,
                            num_spp_on_patch = final_link_counts_for_each_node$freq
                            )
 
-    #  correct/optimal number of patches (cost)
-    #  This is also just the size of the dependent set...
-cor_num_patches = sum (solutions_df$optimal_solution)
-
-    #  marxan best solution number of patches (cost)
-marxan_best_num_patches = sum (solutions_df$marxan_best_solution)
-
-    #  signed marxan best solution err fraction
-marxan_best_solution_cost_err_frac = 
-    (marxan_best_num_patches - cor_num_patches) / cor_num_patches
-
-    #  unsigned marxan best solution err fraction
-abs_marxan_best_solution_cost_err_frac = 
-    abs (marxan_best_solution_cost_err_frac)
-
+#  STILL NEED TO DO THIS
+#       However, might be able to read these values from the marxan summary 
+#       file that talks about missing values.  I'm just not sure how to 
+#       tell which line in there corresponds to the "best" solution.
+#
 #       - marxan best solution % of species covered
 #               - sum of number of uniques species in marxan best solution set
 #                       - unique (select (species) where (puid in best solution))
@@ -665,48 +764,40 @@ abs_marxan_best_solution_cost_err_frac =
 #       - representation shortfall:  marxan best solution err fraction
 #               - (1 - marxan best solution % of species covered)
 
-    
 
-    #  Build a master table containing:
-        #  planning unit ID
-                #  marxan_best_df$PUID
-        #  correct (optimal) answer (as boolean flags on sorted planning units)
-        #  best marxan guess
-                #  marxan_best_df$SOLUTION
-        #  marxan number of votes for each puid
-                #  marxan_ssoln_df$number
-        #  difference between correct and best (i.e., (cor - best), FP, FN, etc)
-        #  absolute value of difference (to make counting them easier)
-        #  number of species on each patch (i.e., simple richness)
-
-
-#???
-#  Need to bind together:
-#   problem setup
-#       - planning unit IDs (goes with all of these, even if they're split 
-#         into separate tables)
-#       - number of species (simple richness) on patch as counts
-#   correct/optimal solution
-#       - correct/optimal solution as 0/1
-#   marxan solution(s)
-#       - marxan best solution as 0/1
-#       - marxan solution votes as counts
-#   performance measure(s)
-#       - difference between marxan best and optimal solution to represent 
-#         error direction (e.g., FP, FN, etc.)
-#       - abs (difference) to represent error or no error
 
 #  Aggregate measures not in binding (may be computed From the bound data)
+
+    #  correct/optimal number of patches (cost)
+    #  This is also just the size of the dependent set...
 #       - correct/optimal number of patches (cost)
 #               - sum of 0/1 bits in correct solution
 #                 Although, this is more directly available as the size of 
 #                 the dependent set.  Still, it's more reusable to compute it 
 #                 rather than assume the existance of a dependent set. 
+cor_num_patches = sum (solutions_df$optimal_solution)
+cat ("\n\ncor_num_patches =", cor_num_patches)
+
+    #  marxan best solution number of patches (cost)
 #       - marxan best solution number of patches (cost)
 #               - sum of 0/1 bits in marxan solution
+marxan_best_num_patches = sum (solutions_df$marxan_best_solution)
+cat ("\nmarxan_best_num_patches =", marxan_best_num_patches)
+
+    #  signed marxan best solution err fraction
 #       - marxan best solution err fraction
 #               - abs (1 - (correct/optimal number of patches - 
 #                           marxan best solution number of patches))
+marxan_best_solution_cost_err_frac = 
+    (marxan_best_num_patches - cor_num_patches) / cor_num_patches
+cat ("\nmarxan_best_solution_cost_err_frac =", marxan_best_solution_cost_err_frac)
+
+    #  unsigned marxan best solution err fraction
+abs_marxan_best_solution_cost_err_frac = 
+    abs (marxan_best_solution_cost_err_frac)
+cat ("\nabs_marxan_best_solution_cost_err_frac =", 
+     abs_marxan_best_solution_cost_err_frac)
+
 #       - marxan best solution % of species covered
 #               - sum of number of uniques species in marxan best solution set
 #                       - unique (select (species) where (puid in best solution))
@@ -718,6 +809,13 @@ abs_marxan_best_solution_cost_err_frac =
 #                             }
 #       - representation shortfall:  marxan best solution err fraction
 #               - (1 - marxan best solution % of species covered)
+marxan_best_solution_NUM_spp_covered = sum (marxan_mvbest_df$MPM)
+marxan_best_solution_FRAC_spp_covered = marxan_best_solution_NUM_spp_covered / num_spp
+spp_rep_shortfall = 1 - marxan_best_solution_FRAC_spp_covered
+
+cat ("\n\nmarxan_best_solution_NUM_spp_covered =", marxan_best_solution_NUM_spp_covered)
+cat ("\nmarxan_best_solution_FRAC_spp_covered =", marxan_best_solution_FRAC_spp_covered)
+cat ("\nspp_rep_shortfall =", spp_rep_shortfall)
 
 
 #  Supporting data not in binding
@@ -728,7 +826,78 @@ abs_marxan_best_solution_cost_err_frac =
 #       - planning unit IDs
 #       - set of species on planning unit
 
+# results_df = 
+#     data.frame (num_PUs = NA, 
+#                 num_spp = NA, 
+#                 
+#                     #  Xu options
+#                 n__num_cliques = NA, 
+#                 alpha__ = NA, 
+#                 p__prop_of_links_between_cliques = NA, 
+#                 r__density = NA,
+#                 
+#                     #  Derived options
+#                 num_nodes_per_clique = NA,
+#                 tot_num_nodes = NA,
+#                 num_independent_set_nodes = NA,
+#                 num_dependent_set_nodes = NA,
+#                 num_rounds_of_linking_between_cliques = NA,
+#                 target_num_links_between_2_cliques_per_round = NA, 
+#                 num_links_within_one_clique = NA,
+#                 tot_num_links_inside_cliques = NA,
+#                 max_possible_num_links_between_cliques = NA,
+#                 max_possible_tot_num_links = NA,
+#                 
+#                     #  Results
+#                 cor_num_patches = NA,
+#                 marxan_best_num_patches = NA, 
+#                 marxan_best_solution_cost_err_frac = NA, 
+#                 abs_marxan_best_solution_cost_err_frac = NA, 
+#                 marxan_best_solution_NUM_spp_covered = NA, 
+#                 marxan_best_solution_FRAC_spp_covered = NA, 
+#                 spp_rep_shortfall = NA                
+#                 )
+
+cur_idx = cur_idx + 1
+
+results_df$num_PUs [cur_idx]                                = num_PUs
+results_df$num_spp [cur_idx]                                = num_spp
+results_df$seed [cur_idx]                                   = seed
+
+results_df$n__num_cliques [cur_idx]                         = n__num_cliques
+results_df$alpha__ [cur_idx]                                = alpha__
+results_df$p__prop_of_links_between_cliques [cur_idx]       = p__prop_of_links_between_cliques
+results_df$r__density [cur_idx]                             = r__density
+
+results_df$num_nodes_per_clique                             = num_nodes_per_clique
+results_df$tot_num_nodes                                    = tot_num_nodes
+results_df$num_independent_set_nodes                        = num_independent_set_nodes
+results_df$num_dependent_set_nodes                          = num_dependent_set_nodes
+results_df$num_rounds_of_linking_between_cliques            = num_rounds_of_linking_between_cliques
+results_df$target_num_links_between_2_cliques_per_round     = target_num_links_between_2_cliques_per_round
+results_df$num_links_within_one_clique                      = num_links_within_one_clique
+results_df$tot_num_links_inside_cliques                     = tot_num_links_inside_cliques
+results_df$max_possible_num_links_between_cliques           = max_possible_num_links_between_cliques
+results_df$max_possible_tot_num_links                       = max_possible_tot_num_links
+
+results_df$cor_num_patches [cur_idx]                        = cor_num_patches
+results_df$marxan_best_num_patches [cur_idx]                = marxan_best_num_patches
+results_df$marxan_best_solution_cost_err_frac [cur_idx]     = marxan_best_solution_cost_err_frac
+results_df$abs_marxan_best_solution_cost_err_frac [cur_idx] = abs_marxan_best_solution_cost_err_frac
+results_df$marxan_best_solution_NUM_spp_covered [cur_idx]   = marxan_best_solution_NUM_spp_covered
+results_df$marxan_best_solution_FRAC_spp_covered [cur_idx]  = marxan_best_solution_FRAC_spp_covered
+results_df$spp_rep_shortfall [cur_idx]                      = spp_rep_shortfall                
+
+write.csv (results_df, file = "./prob_diff_results.csv", row.names = FALSE)
+
 #===============================================================================
+
+
+    
+}  #  end - for n__num_cliques
+
+
+
 #===============================================================================
 #===============================================================================
 #===============================================================================
@@ -1116,6 +1285,25 @@ for (i in 1:length (blm))
 
 #===============================================================================
 
+#  Some R files for Marxan from marxan tutorials
+#       http://marxan.net/tutorial.html
+#  
+#  http://marxan.net/tutorial/MarxanTutorial_rev2.1.R
+#######################################################################################
+# Author: Matt Watts, m.watts@uq.edu.au                                               #
+# Date: November 2013                                                                 #
+# Run Marxan, perform cluster analysis, display output graphs, maps and tables.       #
+# This file, MarxanTutorial_rev2.1.R, contains the commands you need to run Marxan with #
+# R Studio Server on Marxan.net                                                       #
+# It includes commands for the "MPA_Activity" and "Tas_Activity" datasets.            #
+#######################################################################################
+#
+#  http://marxan.net/tutorial/Marxan_rev2.1.R
+# Software purpose: Run Marxan, perform cluster analysis, display output
+# graphs, maps and tables.
+# This file, Marxan_rev2.1.R, contains the R function definitions.
+
+#===============================================================================
 
 }  #  end - if (FALSE)    #  Basically just commenting out a big block
 
