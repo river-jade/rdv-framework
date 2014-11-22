@@ -457,8 +457,8 @@ marxan_input_dir = "/Users/bill/D/Marxan/input/"
 write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
 
 #===============================================================================
-
-#  TODO:
+    
+    #  TODO:
 
     #  NOTE:  Many of the entries below have to do with reading marxan output 
     #         and loading it into this program and doing something with it.
@@ -466,8 +466,8 @@ write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
     #         the marxan package.  Should talk to Ascelin about this too and 
     #         see if there is any overlap with what he's doing.
 
-#-------------------------------------------------------------------------------
-
+#===============================================================================
+    
     #  Build structures holding:
         #  Make a function to automatically do these subtotalling actions 
         #  since I need to do it all the time.
@@ -483,39 +483,27 @@ write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
             #  Species list for each patch.
     #  Are some of these already built for the plotting code above?
 
+    #  *** Maybe this should be done using sqlite instead of lists of lists and 
+    #  tables and data frames?
 
+
+    #  http://stackoverflow.com/questions/1660124/how-to-group-columns-by-sum-in-r
     #  Is this counting up the number of species on each patch?
-x2 <- by (spp_PU_amount_table$amount, spp_PU_amount_table$pu, sum)
-do.call(rbind,as.list(x2))
+# x2  <-  by (spp_PU_amount_table$amount, spp_PU_amount_table$pu, sum)
+# do.call(rbind,as.list(x2))
+# 
+# cat ("\n\nx2 =\n")
+# print (x2)
 
-cat ("\n\nx2 =\n")
-print (x2)
+#===============================================================================
 
-#-------------------------------------------------------------------------------
+    #  Aside:  The mention of distSppOverPatches() above reminds me that I 
+    #           found something the other day saying that copulas were 
+    #           a way to generate distributions with specified marginal 
+    #           distributions.  I think that I saved a screen grab and 
+    #           named the image using copula in the title somehow...
 
-    #  Build marxan input.dat file.
-        #  The user's manual has a table showing all options and their 
-        #  default values.  Can use that as a starting point.
-
-        #  Definitely need to set at least the following values:
-            #  random seed
-
-    #  An example on one of the web pages I found tonight reads in the 
-    #  input.dat file and modifies something, then writes it back out...
-        #  http://lists.science.uq.edu.au/pipermail/marxan/2008-May/000319.html
-
-#-------------------------------------------------------------------------------
-
-    #  Build some kind of a program that searches for good input settings 
-    #  for a given input problem.  This could also be added to the marxan 
-    #  package and be elaborated on by marxan experts.
-        #  Seems like this and some of the other things here are fairly 
-        #  generic to any reserve selector or other kind of mathematical 
-        #  conservation tool.  So, may be worth making some kind of OOP 
-        #  abstraction of this stuff and apply it to Zonation as a test 
-        #  of its general utility.
-
-#-------------------------------------------------------------------------------
+#===============================================================================
 
     #  Run marxan.
         #  Should include this in the marxan package.
@@ -563,7 +551,7 @@ run_marxan = function ()
 
 run_marxan()
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
     #  Read various marxan outputs into this program.
         #  Should include these in the marxan package.
@@ -590,21 +578,94 @@ marxan_output_dir_path = "/Users/bill/D/Marxan/output/"
 marxan_output_best_file_name = "output_best.csv"
 marxan_output_ssoln_file_name = "output_ssoln.csv"
 
+
+    #  Make sure both are sorted in increasing order of planning unit ID.
+    #  "arrange()" syntax taken from Wickham comment in:
+    #  http://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
+
+library (plyr)      #  for arrange()
+
+#---------------------------------
+
 marxan_best_df = 
     read.csv (paste (marxan_output_dir_path, marxan_output_best_file_name, sep=''), 
-                     header=TRUE)
+              header=TRUE)
 cat ("\n\nAfter loading output_best.csv, marxan_best_df =")
 print (marxan_best_df)
 
+marxan_best_df = arrange (marxan_best_df, PUID)
+
+cat ("\n\nAfter sorting, marxan_best_df = \n")
+print (marxan_best_df)
+cat ("\n\n-------------------")
+
+#---------------------------------
+
 marxan_ssoln_df = 
     read.csv (paste (marxan_output_dir_path, marxan_output_ssoln_file_name, sep=''),
-                     header=TRUE)
+              header=TRUE)
 cat ("\n\nAfter loading output_ssoln.csv, marxan_ssoln_df =")
 print (marxan_ssoln_df)
 
-    #  Make sure both are sorted in increasing order of planning unit ID.
-marxan_best_df = sort (marxan_best_df, ???)
-marxan_ssoln_df = sort (marxan_ssoln_df, ???)
+marxan_ssoln_df = arrange (marxan_ssoln_df, planning_unit)
+
+cat ("\n\nAfter sorting, marxan_ssoln_df = \n")
+print (marxan_ssoln_df)
+cat ("\n\n-------------------")
+
+#---------------------------------
+
+solutions_df = cbind (marxan_best_df$PUID, 
+                      nodes$dependent_set_member, 
+                      marxan_best_df$SOLUTION, 
+                      marxan_ssoln_df$number
+                      )
+
+    #  Need to be sure that the puid column matches in the nodes data frame 
+    #  and the marxan data frames.  Otherwise, there could be a mismatch in 
+    #  the assignments for inclusion or exclusion of patches in the solutions.
+
+    #  Create table holding all the information to compare solutions.
+signed_difference = marxan_best_df$SOLUTION - nodes$dependent_set_member
+abs_val_signed_difference = abs (signed_difference)
+
+solutions_df = data.frame (puid = marxan_best_df$PUID,
+                           optimal_solution = nodes$dependent_set_member, 
+                           marxan_best_solution = marxan_best_df$SOLUTION, 
+                           marxan_votes = marxan_ssoln_df$number, 
+                           signed_diff = signed_difference, 
+                           abs_val_diff = abs_val_signed_difference, 
+                           num_spp_on_patch = final_link_counts_for_each_node$freq
+                           )
+
+    #  correct/optimal number of patches (cost)
+    #  This is also just the size of the dependent set...
+cor_num_patches = sum (solutions_df$optimal_solution)
+
+    #  marxan best solution number of patches (cost)
+marxan_best_num_patches = sum (solutions_df$marxan_best_solution)
+
+    #  signed marxan best solution err fraction
+marxan_best_solution_cost_err_frac = 
+    (marxan_best_num_patches - cor_num_patches) / cor_num_patches
+
+    #  unsigned marxan best solution err fraction
+abs_marxan_best_solution_cost_err_frac = 
+    abs (marxan_best_solution_cost_err_frac)
+
+#       - marxan best solution % of species covered
+#               - sum of number of uniques species in marxan best solution set
+#                       - unique (select (species) where (puid in best solution))
+#               - This suggests that there should be a function that computes 
+#                 these values for ANY given solution.
+#                         percentSppCovered = function (solutionAs01, sppPuidDB)
+#                             {
+#                             unique (select (species) where puids[which (solutionAs01==TRUE)])   
+#                             }
+#       - representation shortfall:  marxan best solution err fraction
+#               - (1 - marxan best solution % of species covered)
+
+    
 
     #  Build a master table containing:
         #  planning unit ID
@@ -619,8 +680,159 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
         #  number of species on each patch (i.e., simple richness)
 
 
+#???
+#  Need to bind together:
+#   problem setup
+#       - planning unit IDs (goes with all of these, even if they're split 
+#         into separate tables)
+#       - number of species (simple richness) on patch as counts
+#   correct/optimal solution
+#       - correct/optimal solution as 0/1
+#   marxan solution(s)
+#       - marxan best solution as 0/1
+#       - marxan solution votes as counts
+#   performance measure(s)
+#       - difference between marxan best and optimal solution to represent 
+#         error direction (e.g., FP, FN, etc.)
+#       - abs (difference) to represent error or no error
+
+#  Aggregate measures not in binding (may be computed From the bound data)
+#       - correct/optimal number of patches (cost)
+#               - sum of 0/1 bits in correct solution
+#                 Although, this is more directly available as the size of 
+#                 the dependent set.  Still, it's more reusable to compute it 
+#                 rather than assume the existance of a dependent set. 
+#       - marxan best solution number of patches (cost)
+#               - sum of 0/1 bits in marxan solution
+#       - marxan best solution err fraction
+#               - abs (1 - (correct/optimal number of patches - 
+#                           marxan best solution number of patches))
+#       - marxan best solution % of species covered
+#               - sum of number of uniques species in marxan best solution set
+#                       - unique (select (species) where (puid in best solution))
+#               - This suggests that there should be a function that computes 
+#                 these values for ANY given solution.
+#                         percentSppCovered = function (solutionAs01, sppPuidDB)
+#                             {
+#                             unique (select (species) where puids[which (solutionAs01==TRUE)])   
+#                             }
+#       - representation shortfall:  marxan best solution err fraction
+#               - (1 - marxan best solution % of species covered)
 
 
+#  Supporting data not in binding
+#   species vs planning units (database?) to allow computation of performance 
+#   measures related to which species are covered in solutions
+#   (e.g., SELECT species WHERE planning unit ID == curPlanningUnitID)
+#   (e.g., SELECT planning unit ID WHERE species == curSpeciesID))
+#       - planning unit IDs
+#       - set of species on planning unit
+
+#===============================================================================
+#===============================================================================
+#===============================================================================
+#===============================================================================
+#===============================================================================
+
+if (FALSE)    #  Basically just commenting out a big scratch area down to EOF
+{
+    
+#===============================================================================
+
+    #  Write one or more lines of summary output to be collected by tzar's 
+    #  aggregation operator.
+    #       - Does the current aggregation operator assume that it's reading 
+    #         from a flat file with a single line or something like that?
+    #       - Could you do more complex structures, e.g., sqlite?
+
+    #  What needs to go in that output?
+    #  That depends on what I'm going to do down the line with that output.
+    #  1)  Learn a model to predict the error given the problem characteristics.
+    #  2)  Display summary plot(s) of marxan behavior given the problem 
+    #      characteristics or even just overall (to show the minimum range of  
+    #      different performance levels that marxan can exhibit).
+    #           a)  Note that this has been done to a certain extent in the 
+    #               papers by the linear programming people.
+    #               However, none of those papers (that I have seen) use 
+    #               synthetic problems to explore the space.  They all seem 
+    #               to be the usual small collection of real world case 
+    #               studies.
+    #  3)  Use the data as the seed/basis for something like active learning in 
+    #      searching for hard and easy problems.
+
+    #  So, that means that each run needs to record:
+    #       - Problem characteristics
+    #           - problem input characteristics
+    #               - Xu control parameters: alpha, etc.
+    #               - number of species
+    #               - number of patches
+    #               - target rank abundance distribution shape
+    #                   - flat, lognormal, etc.
+    #                   - how to characterize this?
+    #                       - curve type
+    #                       - fit parameters
+    #           - problem characteristics measured after the problem is 
+    #             generated
+    #               - network measures over the adjacency matrix?
+    #               - diversity measures 
+    #                   - alpha, beta, gamma, etc
+    #                   - or do these end up being inputs as well?
+    #               - actual (not target) rank abundance distribution shape
+    #                   - flat, lognormal, etc.
+    #                   - how to characterize this?
+    #                       - curve type
+    #                       - fit parameters
+    #       - Performance measures
+    #           - Single number aggregates
+    #               - % error in estimation of cost of optimal solution
+    #                   - e.g., number of patches as cost
+    #               - % of species achieving their representation targets
+    #               - cost/benefit ratios
+    #                 Not sure if these are actually useful, but the marxan 
+    #                 crowd seems to be in love with them right now...
+    #                 Seems like they might be hard to compare across solutions, 
+    #                 e.g., you might choose just one parcel and it has a 
+    #                 great cost/benefit ratio, but comes nowhere near 
+    #                 representing all species.  When something like that 
+    #                 is happening, then you have to get into designing all 
+    #                 kinds of penalty functions to be able to make fair 
+    #                 comparison between solutions...
+    #                   - cost/benefit ratio for marxan solution
+    #                   - cost/benefit ratio for optimal solution
+    #           - Rolling measures
+    #             These might just be output as plots in in the tzar output 
+    #             area for the given run so that they could be selectively 
+    #             viewed later instead of actually being aggregated.
+    #               - curve of % of species achieving targets as a function of 
+    #                 choosing patches in order by:
+    #                   - simple richness
+    #                   - unprotected richness
+    #                   - ssoln votes for patch
+    #                   - cost/benefit ratio for patch
+    #                       - When cost is 1 for every patch, this degenerates 
+    #                         to richness.
+    #           - *** Fully interrogatable species/patch record for 
+    #               - marxan solution
+    #               - optimal solution
+    #             so that you can come back to the problem later without having 
+    #             to re-run things when you come up with some new measure to 
+    #             apply to the data.  This could also serve as an object that 
+    #             could be served up over the web for people to operate on 
+    #             without having to do the runs themselves.  Would need a 
+    #             similar kind of structure for the problem itself.  Maybe 
+    #             all of the things that I've listed above become an sqlite 
+    #             database (or some other more complex structure?) and that 
+    #             is the universally addressed object that you can write code 
+    #             to service.
+    #               - Seems like spatial information like maps will also have 
+    #                 to figure in this somehow (which might imply the need 
+    #                 for postgresql gis-related functions).
+    #               - How does all of this relate to zonation?  
+    #                   - Can it be treated similarly?
+    #                   - Is there some hierarchical view of all this that 
+    #                     allows some parts of this to be identical for 
+    #                     for marxan and zonation but eventually has to split 
+    #                     because of their different world views?
 
 #-------------------------------------------------------------------------------
 
@@ -629,9 +841,6 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
 #-------------------------------------------------------------------------------
 
     #  Compare marxan results to correct solution.
-
-#-------------------------------------------------------------------------------
-
     #  Compute marxan error.
 
 #-------------------------------------------------------------------------------
@@ -643,6 +852,8 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
 
     #  Compute the cost benefit ratio for the marxan solution, i.e., 
     #  (number of patches / number of species represented) in solution.
+
+#-------------------------------------------------------------------------------
 
     #  Plot total representation as you add planning units to the reserve 
     #  set in decreasing order by the number of votes received.
@@ -661,13 +872,114 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
                 #  is all that matters
             #  unprotected cost/benefit of planning unit
 
-#-------------------------------------------------------------------------------
+#===============================================================================
+
+#  Build marxan input.dat file.
+#  The user's manual has a table showing all options and their 
+#  default values.  Can use that as a starting point.
+
+#  Definitely need to set at least the following values:
+#  random seed
+
+#  An example on one of the web pages I found tonight reads in the 
+#  input.dat file and modifies something, then writes it back out...
+#  http://lists.science.uq.edu.au/pipermail/marxan/2008-May/000319.html
+
+####################### MARXAN RUNS ############################################
+
+####################### Step 1 #################################################
+
+#  Read and obtain Input.dat parameters
+
+input.file <- dir (pattern  = "input.dat")
+input <- readLines (input.file[1], n  = -1)
+
+#  Parameters to be changed in input.dat file
+
+nreps  = 5    #  Numreps
+blm <- as.character (format (c (0.00, 1.00), nsmall  = 2)) # Vector of Blm to be used
+
+#  Penalty factor to be used
+
+spf.t <- sprintf ("%03d", c (1, 10, 100)) # Vector of spf to be used
+
+#  Read and obtain target.dat parameters
+
+target.file <- dir (pattern = "target.dat")
+target <- read.table (target.file[1], header = T, dec = ".", sep = ",")
+
+####################### Step 2 #################################################
+
+#  Loop for sequential sfp
+
+for (ii in 1:length (spf.t))
+{
+    # Target parameters ## NOT USED YET
+    
+    target[, 4] <- rep (spf.t[ii], nrow (target))
+    write.table (target, "target.dat", sep = ",", row.names = F)
+    
+    #  Loop for sequential Marxan Runs
+    
+    for (i in 1:length (blm))        
+    {
+        #  Input.dat parameters
+        
+        #blmf = blm[i] # Variation in BLM
+        
+        input[10] <- paste ("BLM", blm[i]) # BLM in input.dat        
+        input[14] <- paste ("NUMREPS", nreps) # Number of runs in input.dat        
+        input[35] <- paste ("SCENNAME", "", formatC (ii, width = 3, flag = "0"), "_", 
+                            formatC (i, width = 3, flag = "0"), "output", 
+                            "spf", spf.t[ii], "blm", blm[i], sep = "") # Output name for series 
+        
+        write (input, "input.dat")    # Re-write input file at each run with the corresponding parameters changed
+        
+        system ("Marxan.exe", wait = T, invisible = T) # Call Marxan to execute
+    }
+}
+
+#  I’m now trying to produce interpretable graphs. 
+#  All outputs can be mapped with maptools, with something similar to:
+
+grid <- read.shape ("grid1.shp")
+win.graph () # New window
+par (mfrow = c (2, 3))
+nblm <- as.numeric (blm)
+
+for (i in 1:length (blm))    
+{    
+    sortd <- d.soln[order (d.soln$blm, d.soln$planning.unit), ]    
+    cores <- sortd$number[sortd$blm==blm[i]]    
+    cores <- cores+1
+    
+    #  Plot of the Grid for each BLM used
+    
+    plot (grid, 
+          fg = topo.colors ((max(cores) - min(cores)),  alpha = 1) [cores], 
+          main = paste ("Blm:", blm[i])) # Plotting of the grid with resulting summed result
+}
+
+####################### END CODE FOR MARXAN RUNS ###############################
+
+#===============================================================================
+
+#  Build some kind of a program that searches for good input settings 
+#  for a given input problem.  This could also be added to the marxan 
+#  package and be elaborated on by marxan experts.
+#  Seems like this and some of the other things here are fairly 
+#  generic to any reserve selector or other kind of mathematical 
+#  conservation tool.  So, may be worth making some kind of OOP 
+#  abstraction of this stuff and apply it to Zonation as a test 
+#  of its general utility.
+
+#===============================================================================
 
     #  I can still ask questions like all of these under uncertainty by using 
     #  the same problem generator and then adding known uncertainties to it 
     #  so that we still know the correct answer.
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
     #  Programs to search for hard problems.
         #  Don't just want to find hard problems though.  Want to be able to 
@@ -688,7 +1000,7 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
             #  Heuristic search like simulated annealing.
             #  Integer/linear/... programming search.
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
     #  Features that might be useful in measuring problem difficulty and 
     #  in problem generation.  Some of these have occurred to me as 
@@ -716,12 +1028,12 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
             #  to search for solutions over a much smaller set of species and 
             #  thereby reduce the computational complexity of the search.
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
     #  Need to write test functions if this is going to be made more 
     #  publically available and used to support production of papers.
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
     #  These linear programming papers ignore the uncertainty issues in 
     #  optimality, but are worth paying attention to in differentiating 
@@ -737,7 +1049,7 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
         #  2)  fischer and church 2005.  "The SITES reserve selection system: 
         #  a critical review"
 
-#-------------------------------------
+#===============================================================================
 
     #  Need to add a test of ensemble optimization based on choosing best 
     #  solution when evaluated across a family of possible disturbances 
@@ -746,7 +1058,7 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
     #  constructive rather than always being about showing what's wrong 
     #  with existing methods.
 
-
+#===============================================================================
 #===============================================================================
 
 #  Something was wrong here at first, but it does suggest some good tests 
@@ -802,6 +1114,15 @@ marxan_ssoln_df = sort (marxan_ssoln_df, ???)
 # 15      15    2
 # 16      16    2
 
+#===============================================================================
+
+
+}  #  end - if (FALSE)    #  Basically just commenting out a big block
+
+#===============================================================================
+#===============================================================================
+#===============================================================================
+#===============================================================================
 #===============================================================================
 
 
