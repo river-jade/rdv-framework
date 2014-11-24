@@ -1,0 +1,114 @@
+project_name: biodivprobgen
+runner_class: RRunner
+
+    #  Cloned from project.yaml in example-R-pop-model.
+    
+base_params:
+
+    seed: 17
+
+            #  1 - num_cliques = tot cost, so increase n to reduce cost
+            #  What is a reasonable range?
+            #  Xu uses ???
+            #
+            #      num_nodes_per_clique = integerize (n__num_cliques ^ alpha__)
+    n__num_cliques: 5
+    
+            #  Drives the number of PUs per clique and so, tot num PUs
+            #  What is a reasonable range?
+            #  Xu uses ???
+            #
+            #  Increase alpha to increase num of PUs.
+            #      tot_num_nodes = n__num_cliques * num_nodes_per_clique
+    alpha__: 0.8
+
+            #  p and r drive num of spp (increase p to increase num of spp)
+            #  What is a reasonable range?
+            #  Xu uses ???
+            #
+            #     target_num_links_between_2_cliques_per_round = 
+            #         integerize (p__prop_of_links_between_cliques * num_nodes_per_clique)          
+            #     num_rounds_of_linking_between_cliques = integerize (r__density * n__num_cliques * log (n__num_cliques))            
+            #     max_possible_num_links_between_cliques = 
+            #         integerize (target_num_links_between_2_cliques_per_round * num_rounds_of_linking_between_cliques)
+            #     max_possible_tot_num_links = integerize (tot_num_links_inside_cliques + max_possible_num_links_between_cliques)
+
+    p__prop_of_links_between_cliques: 0.5
+    r__density: 0.5
+
+
+
+#    n__num_cliques: 12
+#    alpha__: 1.5
+#    p__prop_of_links_between_cliques: 0.3
+#    r__density: 0.8
+    
+    run_id: $$run_id$$
+    
+    marxan_input_parameters_file_name: "/Users/bill/D/Marxan/input.dat"
+    marxan_num_reps: 100
+    
+        # Outputs
+        
+    summary_filename: $$output_path$$prob_diff_results.csv
+#    output.plot : $$output_path$$poptraj
+#    output.dump : $$output_path$$projtraj.R
+
+#scenarios:
+#    - name: easy
+#        parameters: 
+#            variables: 
+#                n__num_cliques: 5
+#                alpha__: 0.8
+#                p__prop_of_links_between_cliques: 0.5
+#                r__density: 0.5
+
+#    - name: harder
+#        parameters: 
+#            variables: 
+#                n__num_cliques: 12
+#                alpha__: 1.5
+#                p__prop_of_links_between_cliques: 0.3
+#                r__density: 0.8
+
+# Note that this file does all repetitions on scen 1, then on scen 2 etc...
+# Note that also the original value of the variable is not used.
+
+repetitions:
+       generators:
+        - key: n__num_cliques
+          generator_type: linear_step
+          start: 5
+          step_size: 7
+          count: 2
+
+        - key: alpha__
+          generator_type: linear_step
+          start: 0.8
+          step_size: 0.7
+          count: 2
+
+        - key: p__prop_of_links_between_cliques
+          generator_type: linear_step
+          start: 0.3
+          step_size: 0.2
+          count: 2
+
+        - key: r__density
+          generator_type: linear_step
+          start: 0.5
+          step_size: 0.3
+          count: 2
+
+#        - key: seed
+#          generator_type: linear_step
+#          start: 23
+#          step_size: 1
+#          count: 5
+
+
+#concatenate:    #  Taken from example-java
+#    heading_row: true
+#    input_filename: prob_diff_results.csv
+#    output_filename: all_results.csv
+

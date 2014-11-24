@@ -12,7 +12,8 @@ library (marxan)
 
 #-------------------------------------------------------------------------------
 
-seed = 17
+seed = 19
+seed = parameters$seed
 set.seed (seed)
 
 #-------------------------------------------------------------------------------
@@ -116,11 +117,16 @@ run_marxan = function ()
 #               r__density = 0.5
 #              )
 #     {
-        
-n__num_cliques                   = 5
-alpha__                          = 0.8
-p__prop_of_links_between_cliques = 0.5  
-r__density                       = 0.5
+
+n__num_cliques                   = parameters$n__num_cliques
+alpha__                          = parameters$alpha__
+p__prop_of_links_between_cliques = parameters$p__prop_of_links_between_cliques
+r__density                       = parameters$r__density
+
+# n__num_cliques                   = 5
+# alpha__                          = 0.8
+# p__prop_of_links_between_cliques = 0.5  
+# r__density                       = 0.5
 
 # n__num_cliques                   = 12
 # alpha__                          = 1.5
@@ -129,17 +135,27 @@ r__density                       = 0.5
 
 #-------------------------------------------------------------------------------
 
-num_runs = 10
+num_runs = 1
 
 results_df = 
     data.frame (num_PUs = rep (NA, num_runs), 
                 num_spp = rep (NA, num_runs), 
+                seed = rep (NA, num_runs), 
                 
                     #  Xu options
                 n__num_cliques = rep (NA, num_runs), 
                 alpha__ = rep (NA, num_runs), 
                 p__prop_of_links_between_cliques = rep (NA, num_runs), 
                 r__density = rep (NA, num_runs),
+
+                    #  Results
+                spp_rep_shortfall = rep (NA, num_runs),                
+                marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
+                abs_marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
+                cor_num_patches = rep (NA, num_runs),
+                marxan_best_num_patches = rep (NA, num_runs), 
+                marxan_best_solution_NUM_spp_covered = rep (NA, num_runs), 
+                marxan_best_solution_FRAC_spp_covered = rep (NA, num_runs), 
                 
                     #  Derived options
                 num_nodes_per_clique = rep (NA, num_runs),
@@ -151,23 +167,16 @@ results_df =
                 num_links_within_one_clique = rep (NA, num_runs),
                 tot_num_links_inside_cliques = rep (NA, num_runs),
                 max_possible_num_links_between_cliques = rep (NA, num_runs),
-                max_possible_tot_num_links = rep (NA, num_runs),
-                
-                    #  Results
-                cor_num_patches = rep (NA, num_runs),
-                marxan_best_num_patches = rep (NA, num_runs), 
-                marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
-                abs_marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
-                marxan_best_solution_NUM_spp_covered = rep (NA, num_runs), 
-                marxan_best_solution_FRAC_spp_covered = rep (NA, num_runs), 
-                spp_rep_shortfall = rep (NA, num_runs)                
+                max_possible_tot_num_links = rep (NA, num_runs)
                 )
 
-cur_idx = 0
+cur_result_row = 0
 
-for (n__num_cliques in 3:5)
-{
-
+# for (n__num_cliques in 3:7)
+# {
+# for (cur_repeat in 1:5)
+# {
+        
 #-------------------------------------------------------------------------------
 
     #  Derived control parameters.
@@ -192,7 +201,7 @@ for (n__num_cliques in 3:5)
         integerize (target_num_links_between_2_cliques_per_round * num_rounds_of_linking_between_cliques)
     
     max_possible_tot_num_links = integerize (tot_num_links_inside_cliques + max_possible_num_links_between_cliques)
-    
+
     cat ("\n\nInput variable settings")
     cat ("\n\t\t n__num_cliques = ", n__num_cliques)
     cat ("\n\t\t alpha__ = ", alpha__)
@@ -606,6 +615,112 @@ system ("cp ./puvspr.dat /Users/bill/D/Marxan/input")
 
 #===============================================================================
 
+    #  General Parameters
+marxan_BLM = 1
+marxan_PROP  = 0.5
+marxan_RANDSEED  = seed
+marxan_NUMREPS  = parameters$marxan_num_reps
+
+    #  Annealing Parameters
+marxan_NUMITNS  = "1000000"
+marxan_STARTTEMP  = -1
+marxan_NUMTEMP  = 10000
+
+    #  Cost Threshold
+marxan_COSTTHRESH   = "0.00000000000000E+0000"
+marxan_THRESHPEN1   = "1.40000000000000E+0001"
+marxan_THRESHPEN2   = "1.00000000000000E+0000"
+
+    #  Input Files
+marxan_INPUTDIR  = "input"
+marxan_PUNAME  = "pu.dat"
+marxan_SPECNAME  = "spec.dat"
+marxan_PUVSPRNAME  = "puvspr.dat"
+
+    #  Save Files
+marxan_SCENNAME  = "output"
+marxan_SAVERUN  = 3
+marxan_SAVEBEST  = 3
+marxan_SAVESUMMARY  = 3
+marxan_SAVESCEN  = 3
+marxan_SAVETARGMET  = 3
+marxan_SAVESUMSOLN  = 3
+marxan_SAVEPENALTY  = 3
+marxan_SAVELOG  = 2
+marxan_OUTPUTDIR  = "output"
+
+    #  Program control
+marxan_RUNMODE  = 1
+marxan_MISSLEVEL  = 1
+marxan_ITIMPTYPE  = 0
+marxan_HEURTYPE  = -1
+marxan_CLUMPTYPE  = 0
+marxan_VERBOSITY  = 3
+
+marxan_SAVESOLUTIONSMATRIX  = 3
+
+#-------------------
+
+marxan_input_parameters_file_name = "/Users/bill/D/Marxan/input.dat"
+#marxan_input_parameters_file_name = parameters$marxan_input_parameters_file_name
+
+rm_cmd = paste ("rm", marxan_input_parameters_file_name)
+system (rm_cmd)
+
+#marxan_input_file_conn = file (marxan_input_parameters_file_name)
+marxan_input_file_conn = marxan_input_parameters_file_name
+    
+cat ("Marxan input file", file=marxan_input_file_conn, append=TRUE)
+
+cat ("\n\nGeneral Parameters", file=marxan_input_file_conn, append=TRUE)
+
+cat ("\nBLM", marxan_BLM, file=marxan_input_file_conn, append=TRUE)
+cat ("\nPROP", marxan_PROP, file=marxan_input_file_conn, append=TRUE)
+cat ("\nRANDSEED", marxan_RANDSEED, file=marxan_input_file_conn, append=TRUE)
+cat ("\nNUMREPS", marxan_NUMREPS, file=marxan_input_file_conn, append=TRUE)
+
+cat ("\n\nAnnealing Parameters", file=marxan_input_file_conn, append=TRUE)
+cat ("\nNUMITNS", marxan_NUMITNS, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSTARTTEMP", marxan_STARTTEMP, file=marxan_input_file_conn, append=TRUE)
+cat ("\nNUMTEMP", marxan_NUMTEMP, file=marxan_input_file_conn, append=TRUE)
+
+cat ("\n\nCost Threshold", file=marxan_input_file_conn, append=TRUE)
+cat ("\nCOSTTHRESH", marxan_COSTTHRESH, file=marxan_input_file_conn, append=TRUE)
+cat ("\nTHRESHPEN1", marxan_THRESHPEN1, file=marxan_input_file_conn, append=TRUE)
+cat ("\nTHRESHPEN2", marxan_THRESHPEN2, file=marxan_input_file_conn, append=TRUE)
+
+cat ("\n\nInput Files", file=marxan_input_file_conn, append=TRUE)
+cat ("\nINPUTDIR", marxan_INPUTDIR, file=marxan_input_file_conn, append=TRUE)
+cat ("\nPUNAME", marxan_PUNAME, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSPECNAME", marxan_SPECNAME, file=marxan_input_file_conn, append=TRUE)
+cat ("\nPUVSPRNAME", marxan_PUVSPRNAME, file=marxan_input_file_conn, append=TRUE)
+
+cat ("\n\nSave Files", file=marxan_input_file_conn, append=TRUE)
+cat ("\nSCENNAME", marxan_SCENNAME, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSAVERUN", marxan_SAVERUN, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSAVEBEST", marxan_SAVEBEST, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSAVESUMMARY", marxan_SAVESUMMARY, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSAVESCEN", marxan_SAVESCEN, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSAVETARGMET", marxan_SAVETARGMET, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSAVESUMSOLN", marxan_SAVESUMSOLN, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSAVEPENALTY", marxan_SAVEPENALTY, file=marxan_input_file_conn, append=TRUE)
+cat ("\nSAVELOG", marxan_SAVELOG, file=marxan_input_file_conn, append=TRUE)
+cat ("\nOUTPUTDIR", marxan_OUTPUTDIR, file=marxan_input_file_conn, append=TRUE)
+
+cat ("\n\nProgram control.", file=marxan_input_file_conn, append=TRUE)
+cat ("\nRUNMODE", marxan_RUNMODE, file=marxan_input_file_conn, append=TRUE)
+cat ("\nMISSLEVEL", marxan_MISSLEVEL, file=marxan_input_file_conn, append=TRUE)
+cat ("\nITIMPTYPE", marxan_ITIMPTYPE, file=marxan_input_file_conn, append=TRUE)
+cat ("\nHEURTYPE", marxan_HEURTYPE, file=marxan_input_file_conn, append=TRUE)
+cat ("\nCLUMPTYPE", marxan_CLUMPTYPE, file=marxan_input_file_conn, append=TRUE)
+cat ("\nVERBOSITY", marxan_VERBOSITY, file=marxan_input_file_conn, append=TRUE)
+
+cat ("\nSAVESOLUTIONSMATRIX", marxan_SAVESOLUTIONSMATRIX, file=marxan_input_file_conn, append=TRUE)
+
+#close (marxan_input_file_conn)
+
+#===============================================================================
+
 run_marxan()
 
 #===============================================================================
@@ -826,77 +941,59 @@ cat ("\nspp_rep_shortfall =", spp_rep_shortfall)
 #       - planning unit IDs
 #       - set of species on planning unit
 
-# results_df = 
-#     data.frame (num_PUs = NA, 
-#                 num_spp = NA, 
-#                 
-#                     #  Xu options
-#                 n__num_cliques = NA, 
-#                 alpha__ = NA, 
-#                 p__prop_of_links_between_cliques = NA, 
-#                 r__density = NA,
-#                 
-#                     #  Derived options
-#                 num_nodes_per_clique = NA,
-#                 tot_num_nodes = NA,
-#                 num_independent_set_nodes = NA,
-#                 num_dependent_set_nodes = NA,
-#                 num_rounds_of_linking_between_cliques = NA,
-#                 target_num_links_between_2_cliques_per_round = NA, 
-#                 num_links_within_one_clique = NA,
-#                 tot_num_links_inside_cliques = NA,
-#                 max_possible_num_links_between_cliques = NA,
-#                 max_possible_tot_num_links = NA,
-#                 
-#                     #  Results
-#                 cor_num_patches = NA,
-#                 marxan_best_num_patches = NA, 
-#                 marxan_best_solution_cost_err_frac = NA, 
-#                 abs_marxan_best_solution_cost_err_frac = NA, 
-#                 marxan_best_solution_NUM_spp_covered = NA, 
-#                 marxan_best_solution_FRAC_spp_covered = NA, 
-#                 spp_rep_shortfall = NA                
-#                 )
+cur_result_row = cur_result_row + 1
 
-cur_idx = cur_idx + 1
+results_df$num_PUs [cur_result_row]                                          = num_PUs
+results_df$num_spp [cur_result_row]                                          = num_spp
+results_df$seed [cur_result_row]                                             = seed
 
-results_df$num_PUs [cur_idx]                                = num_PUs
-results_df$num_spp [cur_idx]                                = num_spp
-results_df$seed [cur_idx]                                   = seed
+    #  Xu options
+results_df$n__num_cliques [cur_result_row]                                   = n__num_cliques
+results_df$alpha__ [cur_result_row]                                          = alpha__
+results_df$p__prop_of_links_between_cliques [cur_result_row]                 = p__prop_of_links_between_cliques
+results_df$r__density [cur_result_row]                                       = r__density
 
-results_df$n__num_cliques [cur_idx]                         = n__num_cliques
-results_df$alpha__ [cur_idx]                                = alpha__
-results_df$p__prop_of_links_between_cliques [cur_idx]       = p__prop_of_links_between_cliques
-results_df$r__density [cur_idx]                             = r__density
+    #  Results
+results_df$spp_rep_shortfall [cur_result_row]                                = spp_rep_shortfall                
+results_df$marxan_best_solution_cost_err_frac [cur_result_row]               = marxan_best_solution_cost_err_frac
+results_df$abs_marxan_best_solution_cost_err_frac [cur_result_row]           = abs_marxan_best_solution_cost_err_frac
+results_df$cor_num_patches [cur_result_row]                                  = cor_num_patches
+results_df$marxan_best_num_patches [cur_result_row]                          = marxan_best_num_patches
+results_df$marxan_best_solution_NUM_spp_covered [cur_result_row]             = marxan_best_solution_NUM_spp_covered
+results_df$marxan_best_solution_FRAC_spp_covered [cur_result_row]            = marxan_best_solution_FRAC_spp_covered
 
-results_df$num_nodes_per_clique                             = num_nodes_per_clique
-results_df$tot_num_nodes                                    = tot_num_nodes
-results_df$num_independent_set_nodes                        = num_independent_set_nodes
-results_df$num_dependent_set_nodes                          = num_dependent_set_nodes
-results_df$num_rounds_of_linking_between_cliques            = num_rounds_of_linking_between_cliques
-results_df$target_num_links_between_2_cliques_per_round     = target_num_links_between_2_cliques_per_round
-results_df$num_links_within_one_clique                      = num_links_within_one_clique
-results_df$tot_num_links_inside_cliques                     = tot_num_links_inside_cliques
-results_df$max_possible_num_links_between_cliques           = max_possible_num_links_between_cliques
-results_df$max_possible_tot_num_links                       = max_possible_tot_num_links
+    #  Derived options
+results_df$num_nodes_per_clique [cur_result_row]                             = num_nodes_per_clique
+results_df$tot_num_nodes [cur_result_row]                                    = tot_num_nodes
+results_df$num_independent_set_nodes [cur_result_row]                        = num_independent_set_nodes
+results_df$num_dependent_set_nodes [cur_result_row]                          = num_dependent_set_nodes
+results_df$num_rounds_of_linking_between_cliques [cur_result_row]            = num_rounds_of_linking_between_cliques
+results_df$target_num_links_between_2_cliques_per_round [cur_result_row]     = target_num_links_between_2_cliques_per_round
+results_df$num_links_within_one_clique [cur_result_row]                      = num_links_within_one_clique
+results_df$tot_num_links_inside_cliques [cur_result_row]                     = tot_num_links_inside_cliques
+results_df$max_possible_num_links_between_cliques [cur_result_row]           = max_possible_num_links_between_cliques
+results_df$max_possible_tot_num_links [cur_result_row]                       = max_possible_tot_num_links
 
-results_df$cor_num_patches [cur_idx]                        = cor_num_patches
-results_df$marxan_best_num_patches [cur_idx]                = marxan_best_num_patches
-results_df$marxan_best_solution_cost_err_frac [cur_idx]     = marxan_best_solution_cost_err_frac
-results_df$abs_marxan_best_solution_cost_err_frac [cur_idx] = abs_marxan_best_solution_cost_err_frac
-results_df$marxan_best_solution_NUM_spp_covered [cur_idx]   = marxan_best_solution_NUM_spp_covered
-results_df$marxan_best_solution_FRAC_spp_covered [cur_idx]  = marxan_best_solution_FRAC_spp_covered
-results_df$spp_rep_shortfall [cur_idx]                      = spp_rep_shortfall                
+#  Getting an error.  Not sure why...  Is it because the free variable names 
+#  like num_PUs, are the same as the list element names, like results_df$num_PUs?
+#
+#  Error in `$<-.data.frame`(`*tmp*`, "num_PUs", value = c(NA, 12L)) :  
+#    replacement has 2 rows, data has 1 
+#  Calls: source ... withVisible -> eval -> eval -> $<- -> $<-.data.frame 
+#  Execution halted 
 
-write.csv (results_df, file = "./prob_diff_results.csv", row.names = FALSE)
+
+#write.csv (results_df, file = "./prob_diff_results.csv", row.names = FALSE)
+write.csv (results_df, file = parameters$summary_filename, row.names = FALSE)
 
 #===============================================================================
 
 
-    
-}  #  end - for n__num_cliques
-
-
+# }  #  end - for cur_repeat
+#     
+# }  #  end - for n__num_cliques
+# 
+# plot (1:num_runs, results_df$spp_rep_shortfall)
 
 #===============================================================================
 #===============================================================================
@@ -1312,5 +1409,4 @@ for (i in 1:length (blm))
 #===============================================================================
 #===============================================================================
 #===============================================================================
-
 
