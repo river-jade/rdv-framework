@@ -31,23 +31,60 @@ write_marxan_pu.dat_input_file = function (PU_IDs)
 
 #-------------------------------------------------------------------------------
 
-#' Write species input file (spec.dat).
+#' Write species input file (spec.dat) using constant values for species penalties and targets.
 #'
 #' @param spp_IDs A vector of species IDs
+#' @param spf_const A constant species penalty factor to be applied to all species
+#' @param target_const A constant target representation level to be applied to all species
 #' @export
 #' @return nothing.
 #' @examples
 #' \dontrun{
 #' spp_IDs = 1:10
 #' write_marxan_spec.dat_input_file (spp_IDs)
+#' #'
+#' spp_IDs = 1:10
+#' write_marxan_spec.dat_input_file (spp_IDs, 10, 1)
 #'          }
 
-write_marxan_spec.dat_input_file = function (spp_IDs)
+write_marxan_spec.dat_input_file = function (spp_IDs, 
+                                             spf_const = 1, 
+                                             target_const = 1)
     {
     num_spp = length (spp_IDs)
+    
+    spf_values = rep (spf_const, num_spp)
+    target_values = rep (target_const, num_spp)
+
+    write_marxan_spec.dat_input_file_from_vectors (spp_IDs, 
+                                                   spf_values, 
+                                                   target_values)
+                                
+    }
+
+#-------------------------------------------------------------------------------
+
+#' Write species input file (spec.dat) given vectors of target and spf values.
+#'
+#' @param spp_IDs A vector of species IDs
+#' @param spf_values A vector of species penalty factors
+#' @param spp_IDs A vector of target values
+#' @export
+#' @return nothing.
+#' @examples
+#' \dontrun{
+#' spp_IDs = 1:5
+#' spf_values = c(2,3,8,1,4)
+#' target_values = c(20,20,10,100,5)
+#' write_marxan_spec.dat_input_file (spp_IDs, spf_values, target_values)
+#'          }
+
+write_marxan_spec.dat_input_file_from_vectors = 
+                            function (spp_IDs, spf_values, target_values)
+    {
     spp_target_spf_table = data.frame (id = spp_IDs,
-                                       target = rep (1, num_spp),  #  prop?
-                                       spf = rep (1, num_spp))
+                                       target = target_values, 
+                                       spf = spf_values)
 
     write.table (spp_target_spf_table,
                  file="./spec.dat",
