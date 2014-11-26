@@ -1,5 +1,5 @@
 # R file for testing the output during dry runs
-# library("rgdal")
+library("rgdal")
 
 cat( "\n*** The path to the DSE data for protected areas in GML format is:",  parameters$path.to.crown.land.kml, '\n' )
 # crown_lyr<-ogrListLayers(dsn=parameters$path.to.crown.land.kml)
@@ -9,8 +9,8 @@ cat( "\n*** The path to Anuran species range shp file dir is :",  parameters$pat
 shapefileName <- paste(parameters$path.to.spp.ranges.shp, "ANURA.shp", sep="")     
 cat( "\n*** The path to the actual shapefile should be :",  shapefileName , '\n' )
 
-sp_lyr<-ogrListLayers(dsn=shapefileName )
-sp_polys <- readOGR(dsn=shapefileName , layer=sp_lyr)
+# sp_lyr<-ogrListLayers(dsn=shapefileName )
+# sp_polys <- readOGR(dsn=shapefileName, layer=sp_lyr)
 
 cat('The working dir is', getwd(), '\n')
 cat('test.output.filename=', parameters$'test.output.filename', '\n')
