@@ -22,4 +22,4 @@ cat( "\n*** The path to the downloaded GBIF data for a single frog species is:",
 # frog_points <- readOGR(dsn=parameters$path.to.GBIF.data, layer=frog_lyr)
 
 cat( "\n*** Library paths:", '\n' )
-.libPaths()
+cat(.libPaths())
