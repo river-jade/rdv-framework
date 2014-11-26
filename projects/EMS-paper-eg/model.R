@@ -2,6 +2,8 @@
 # library("rgdal", lib.loc="E:/bastilu/My Documents/R/win-library/3.1/")
 # library("rgdal")
 
+.libPaths()
+
 cat( "\n*** The path to the DSE data for protected areas in GML format is:",  parameters$path.to.crown.land.kml, '\n' )
 # crown_lyr<-ogrListLayers(dsn=parameters$path.to.crown.land.kml)
 # crown_points <- readOGR(dsn=parameters$path.to.crown.land.kml, layer=crown_lyr)
