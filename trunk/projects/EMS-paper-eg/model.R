@@ -1,7 +1,7 @@
 # R file for testing the output during dry runs
 # library("rgdal")
 
-#cat( "\n*** The path to the DSE data for protected areas in GML format is:",  parameters$path.to.crown.land.kml, '\n' )
+cat( "\n*** The path to the DSE data for protected areas in GML format is:",  parameters$path.to.crown.land.kml, '\n' )
 crown_lyr<-ogrListLayers(dsn=parameters$path.to.crown.land.kml)
 crown_points <- readOGR(dsn=parameters$path.to.crown.land.kml, layer=crown_lyr)
 
