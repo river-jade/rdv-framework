@@ -1,5 +1,5 @@
 # R file for testing the output during dry runs
-library("rgdal", lib.loc="E:/bastilu/My Documents/R/win-library/3.1/")
+# library("rgdal", lib.loc="E:/bastilu/My Documents/R/win-library/3.1/")
 
 cat( "\n*** The path to the DSE data for protected areas in GML format is:",  parameters$path.to.crown.land.kml, '\n' )
 # crown_lyr<-ogrListLayers(dsn=parameters$path.to.crown.land.kml)
