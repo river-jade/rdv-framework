@@ -2,8 +2,6 @@
 # library("rgdal", lib.loc="E:/bastilu/My Documents/R/win-library/3.1/")
 # library("rgdal")
 
-.libPaths()
-
 cat( "\n*** The path to the DSE data for protected areas in GML format is:",  parameters$path.to.crown.land.kml, '\n' )
 # crown_lyr<-ogrListLayers(dsn=parameters$path.to.crown.land.kml)
 # crown_points <- readOGR(dsn=parameters$path.to.crown.land.kml, layer=crown_lyr)
@@ -22,3 +20,6 @@ cat('test.output.filename=', parameters$'test.output.filename', '\n')
 cat( "\n*** The path to the downloaded GBIF data for a single frog species is:",  parameters$path.to.GBIF.data, '\n' )
 # frog_lyr<-ogrListLayers(dsn=parameters$path.to.GBIF.data)
 # frog_points <- readOGR(dsn=parameters$path.to.GBIF.data, layer=frog_lyr)
+
+cat( "\n*** Library paths:", '\n' )
+.libPaths()
