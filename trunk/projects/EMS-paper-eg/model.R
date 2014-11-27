@@ -2,10 +2,10 @@
 
 # library("rgdal", lib.loc="E:/bastilu/My Documents/R/win-library/3.1/")
 
-#cat( "\n*** Library paths:", '\n' )
-#cat(.libPaths())
+cat( "\n*** Library paths:", '\n' )
+cat(.libPaths())
 
-library("rgdal")
+# library("rgdal")
 
 # cat( "\n*** The path to the DSE data for protected areas in GML format is:",  parameters$path.to.crown.land.kml, '\n' )
 # crown_lyr<-ogrListLayers(dsn=parameters$path.to.crown.land.kml)
