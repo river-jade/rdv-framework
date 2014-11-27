@@ -2,8 +2,8 @@
 
 # library("rgdal", lib.loc="E:/bastilu/My Documents/R/win-library/3.1/")
 
-cat( "\n*** Library paths:", '\n' )
-cat(.libPaths())
+#cat( "\n*** Library paths:", '\n' )
+#cat(.libPaths())
 
 library("rgdal")
 
