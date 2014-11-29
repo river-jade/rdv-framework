@@ -6,6 +6,59 @@
 #  v5 - replacing node_link_pairs with link_node_pairs to match marxan puvspr
 
 #===============================================================================
+                    #  START EMULATION CODE
+#===============================================================================
+
+    #  Need to set emulation flag every time you swap between emulating 
+    #  and not emulating.  
+    #  This is the only variable you should need to set for that.
+    #  Make the change in the file called emulatingTzarFlag.R so that 
+    #  every file that needs to know the value of this flag is using 
+    #  the synchronized to the same value.
+
+source ("emulatingTzarFlag.R")
+
+#--------------------
+
+    #  Need to set these variables just once, i.e., at start of a new project. 
+    #  Would never need to change after that for that project unless 
+    #  something strange like the path to the project or to tzar itself has 
+    #  changed.  
+    #  Note that the scratch file can go anywhere you want and it will be 
+    #  erased after the run if it is successful and you have inserted the 
+    #  call to the cleanup code at the end of your project's code.  
+    #  However, if your code crashes during the emulation, you may have to 
+    #  delete the file yourself.  I don't think it hurts anything if it's 
+    #  left lying around though.
+
+projectPath = "~/D/rdv-framework/projects/rdvPackages/biodivprobgen/R"
+tzarJarPath = "~/D/rdv-framework/tzar.jar"
+tzarEmulation_scratchFileName = "~/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/tzarEmulation_scratchFile.txt"
+
+#-------------------------------------------------------------------------------
+
+    #  This is the only code you need to run the emulator.
+    #  However, if you want it to clean up the tzar directory name extensions 
+    #  after it is finished, you also need to run the routine called 
+    #  cleanUpAfterTzarEmulation() after your project code has finished 
+    #  running, e.g., as the last act in this file. 
+
+source ('emulateRunningUnderTzar.R')
+
+if (emulateRunningUnderTzar)
+    {
+    cat ("\n\nIn generateSetCoverProblem:  emulating running under tzar...")
+
+    parameters = emulateRunningTzar (projectPath, 
+                                     tzarJarPath, 
+                                     tzarEmulation_scratchFileName)
+    }
+
+#===============================================================================
+                    #  END EMULATION CODE
+#===============================================================================
+
+browser()
 
 library (plyr)    #  For count()
 library (marxan)
@@ -138,7 +191,8 @@ r__density                       = parameters$r__density
 num_runs = 1
 
 results_df = 
-    data.frame (num_PUs = rep (NA, num_runs), 
+    data.frame (run_ID = rep (NA, num_runs), 
+                num_PUs = rep (NA, num_runs), 
                 num_spp = rep (NA, num_runs), 
                 seed = rep (NA, num_runs), 
                 
@@ -149,11 +203,11 @@ results_df =
                 r__density = rep (NA, num_runs),
 
                     #  Results
-                spp_rep_shortfall = rep (NA, num_runs),                
-                marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
-                abs_marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
                 cor_num_patches = rep (NA, num_runs),
                 marxan_best_num_patches = rep (NA, num_runs), 
+                abs_marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
+                marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
+                spp_rep_shortfall = rep (NA, num_runs),                
                 marxan_best_solution_NUM_spp_covered = rep (NA, num_runs), 
                 marxan_best_solution_FRAC_spp_covered = rep (NA, num_runs), 
                 
@@ -167,7 +221,30 @@ results_df =
                 num_links_within_one_clique = rep (NA, num_runs),
                 tot_num_links_inside_cliques = rep (NA, num_runs),
                 max_possible_num_links_between_cliques = rep (NA, num_runs),
-                max_possible_tot_num_links = rep (NA, num_runs)
+                max_possible_tot_num_links = rep (NA, num_runs), 
+                
+                    #  Marxan options
+                marxan_spf_const = rep (NA, num_runs),
+                marxan_PROP = rep (NA, num_runs),
+                marxan_RANDSEED = rep (NA, num_runs),
+                marxan_NUMREPS = rep (NA, num_runs),
+
+                    #  Marxan Annealing Parameters
+                marxan_NUMITNS = rep (NA, num_runs),
+                marxan_STARTTEMP = rep (NA, num_runs),
+                marxan_NUMTEMP = rep (NA, num_runs),
+
+                    #  Marxan Cost Threshold
+                marxan_COSTTHRESH = rep (NA, num_runs),
+                marxan_THRESHPEN1 = rep (NA, num_runs),
+                marxan_THRESHPEN2 = rep (NA, num_runs),
+
+                    #  Marxan Program control
+                marxan_RUNMODE = rep (NA, num_runs),
+                marxan_MISSLEVEL = rep (NA, num_runs),
+                marxan_ITIMPTYPE = rep (NA, num_runs),
+                marxan_HEURTYPE = rep (NA, num_runs),
+                marxan_CLUMPTYPE = rep (NA, num_runs)
                 )
 
 cur_result_row = 0
@@ -527,6 +604,8 @@ plot (final_rank_abundance_dist)
 
     #  Write out the data as Marxan input files.
 
+#-------------------------------------------------------------------------------
+
 cat ("\n\n--------------------  Writing out the data as Marxan input files.\n")
 
 library (marxan)
@@ -534,16 +613,94 @@ library (marxan)
 sppAmount = 1
 
 num_node_link_pairs = length (node_link_pairs [,"node_ID"])
+
 PU_IDs = unique (node_link_pairs [,"node_ID"])
+num_PUs = length (PU_IDs)
+
 spp_IDs = unique (node_link_pairs [,"link_ID"])
+num_spp = length (spp_IDs)
 
 spp_PU_amount_table =
     data.frame (species = node_link_pairs [,"link_ID"],
                 pu      = node_link_pairs [,"node_ID"],
                 amount  = rep (sppAmount, num_node_link_pairs))
 
-num_PUs = length (PU_IDs)
-num_spp = length (spp_IDs)
+    #----------------------------------------------------------------------
+    #  Sort the table in ascending order by species within planning unit.
+    #  Taken from Wickham comment in:
+    #  http://stackoverflow.com/questions/1296646/how-to-sort-a-dataframe-by-columns-in-r
+    #
+    #  BTL - 2014 11 28
+    #
+    #  Note that Marxan doesn't work correctly if the table is not sorted 
+    #  by planning unit ID (e.g., it can't find satisfying solutions).  
+    #  Ascelin said that the Marxan manual shows a picture of the values 
+    #  sorted incorrectly, i.e., by species.
+    #
+    #  I should probably move this arrange() call into the code that 
+    #  writes the table as a Marxan input file.  That would make sure 
+    #  that no one can write the table out incorrectly if they use that 
+    #  call.
+    #----------------------------------------------------------------------
+
+spp_PU_amount_table = arrange (spp_PU_amount_table, pu, species)
+
+#-------------------------------------------------------------------------------
+
+#  Choosing spf values
+#  Taken from pp. 38-39 of Marxan_User_Manual_2008.pdf.
+#  Particularly note the second paragraph, titled "Getting Started".
+
+# 3.2.2.4 Conservation Feature Penalty Factor
+
+# Variable – ‘spf’ Required: Yes
+# Description: The letters ‘spf’ stands for Species Penalty Factor. This
+# variable is more correctly referred to as the Conservation Feature
+# Penalty Factor. The penalty factor is a multiplier that determines the
+# size of the penalty that will be added to the objective function if the
+# target for a conservation feature is not met in the current reserve
+# scenario (see Appendix B -1.4 for details of how this penalty is
+# calculated and applied). The higher the value, the greater the relative
+# penalty, and the more emphasis Marxan will place on ensuring that
+# feature’s target is met. The SPF thus serves as a way of distinguishing
+# the relative importance of different conservation features. Features of
+# high conservation value, for example highly threatened features or those
+# of significant social or economic importance, should have higher SPF
+# values than less important features. This signifies that you are less
+# willing to compromise their representation in the reserve system.
+# Choosing a suitable value for this variable is essential to achieving
+# good solutions in Marxan. If it is too low, the representation of
+# conservation features may fall short of the targets. If it is too high,
+# Marxan’s ability to find good solutions will be impaired (i.e. it will
+# sacrifice other system properties such as lower cost and greater
+# compactness in an effort to fully meet the conservation feature targets).
+
+# Getting Started: It will often require some experimentation to determine
+# appropriate SPFs. This should be done in an iterative fashion. A good
+# place to start is to choose the lowest value that is of the same order
+# of magnitude as the number of conservation features, e.g. if you have 30
+# features, start with test SPFs of, say, 10 for all features. Do a number
+# of repeat of runs (perhaps 10) and see if your targets are being met in
+# the solutions. If not all targets are being met try increasing the SPF
+# by a factor of two and doing the repeat runs again. When you get to a
+# point where all targets are being met, decrease the SPFs slightly and
+# see if they are still being met. 
+
+# After test runs are sorted out, then
+# differing relative values can be applied, based on considerations such
+# as rarity, ecological significance, etc., as outlined above.
+# Even if all your targets are being met, always try lower values . By
+# trying to achieve the lowest SPF that produces satisfactory solutions,
+# Marxan has the greatest flexibility to find good solutions. In general,
+# unless you have some a priori reason to weight the inclusion of features
+# in your reserve system, you should start all features with the same SPF.
+# If however, the targets for one or two features are consistently being
+# missed even when all other features are adequately represented , it may
+# be appropriate to raise the SPF for these features. Once again, see the
+# MGPH for more detail on setting SPFs.
+
+#spf_const = 10 ^ (floor (log10 (num_spp)))
+spf_const = parameters$marxan_spf_const
 
 #-------------------------------------------------------------------------------
 
@@ -552,7 +709,14 @@ num_spp = length (spp_IDs)
     #***  default to writing in "." instead?).
 
 marxan_input_dir = "/Users/bill/D/Marxan/input/"
-write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table)
+write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table, 
+                              spf_const)
+#                               spf_const = spf_const)
+# write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table, 
+#                                          spf_const = 1, 
+#                                          target_const = 1, 
+#                                          cost_const = 1, 
+#                                          status_const = 0)
 
 system ("rm /Users/bill/D/Marxan/output/*")
 
@@ -943,6 +1107,7 @@ cat ("\nspp_rep_shortfall =", spp_rep_shortfall)
 
 cur_result_row = cur_result_row + 1
 
+results_df$run_ID [cur_result_row]                                          = parameters$run_id
 results_df$num_PUs [cur_result_row]                                          = num_PUs
 results_df$num_spp [cur_result_row]                                          = num_spp
 results_df$seed [cur_result_row]                                             = seed
@@ -954,15 +1119,15 @@ results_df$p__prop_of_links_between_cliques [cur_result_row]                 = p
 results_df$r__density [cur_result_row]                                       = r__density
 
     #  Results
-results_df$spp_rep_shortfall [cur_result_row]                                = spp_rep_shortfall                
-results_df$marxan_best_solution_cost_err_frac [cur_result_row]               = marxan_best_solution_cost_err_frac
-results_df$abs_marxan_best_solution_cost_err_frac [cur_result_row]           = abs_marxan_best_solution_cost_err_frac
 results_df$cor_num_patches [cur_result_row]                                  = cor_num_patches
 results_df$marxan_best_num_patches [cur_result_row]                          = marxan_best_num_patches
+results_df$abs_marxan_best_solution_cost_err_frac [cur_result_row]           = abs_marxan_best_solution_cost_err_frac
+results_df$marxan_best_solution_cost_err_frac [cur_result_row]               = marxan_best_solution_cost_err_frac
+results_df$spp_rep_shortfall [cur_result_row]                                = spp_rep_shortfall                
 results_df$marxan_best_solution_NUM_spp_covered [cur_result_row]             = marxan_best_solution_NUM_spp_covered
 results_df$marxan_best_solution_FRAC_spp_covered [cur_result_row]            = marxan_best_solution_FRAC_spp_covered
 
-    #  Derived options
+    #  Derived Xu options
 results_df$num_nodes_per_clique [cur_result_row]                             = num_nodes_per_clique
 results_df$tot_num_nodes [cur_result_row]                                    = tot_num_nodes
 results_df$num_independent_set_nodes [cur_result_row]                        = num_independent_set_nodes
@@ -973,6 +1138,30 @@ results_df$num_links_within_one_clique [cur_result_row]                      = n
 results_df$tot_num_links_inside_cliques [cur_result_row]                     = tot_num_links_inside_cliques
 results_df$max_possible_num_links_between_cliques [cur_result_row]           = max_possible_num_links_between_cliques
 results_df$max_possible_tot_num_links [cur_result_row]                       = max_possible_tot_num_links
+
+    #  Marxan options
+results_df$marxan_spf_const [cur_result_row]                                 = spf_const
+results_df$marxan_PROP [cur_result_row]                                      = marxan_PROP
+results_df$marxan_RANDSEED [cur_result_row]                                  = marxan_RANDSEED
+results_df$marxan_NUMREPS [cur_result_row]                                   = marxan_NUMREPS
+
+    #  Marxan Annealing Parameters
+results_df$marxan_NUMITNS [cur_result_row]                                   = marxan_NUMITNS
+results_df$marxan_STARTTEMP [cur_result_row]                                 = marxan_STARTTEMP
+results_df$marxan_NUMTEMP [cur_result_row]                                   = marxan_NUMTEMP
+
+    #  Marxan Cost Threshold
+results_df$marxan_COSTTHRESH [cur_result_row]                                = marxan_COSTTHRESH
+results_df$marxan_THRESHPEN1 [cur_result_row]                                = marxan_THRESHPEN1
+results_df$marxan_THRESHPEN2 [cur_result_row]                                = marxan_THRESHPEN2
+
+    #  Marxan Program control
+results_df$marxan_RUNMODE [cur_result_row]                                   = marxan_RUNMODE
+results_df$marxan_MISSLEVEL [cur_result_row]                                 = marxan_MISSLEVEL
+results_df$marxan_ITIMPTYPE [cur_result_row]                                 = marxan_ITIMPTYPE
+results_df$marxan_HEURTYPE [cur_result_row]                                  = marxan_HEURTYPE
+results_df$marxan_CLUMPTYPE [cur_result_row]                                 = marxan_CLUMPTYPE
+
 
 #  Getting an error.  Not sure why...  Is it because the free variable names 
 #  like num_PUs, are the same as the list element names, like results_df$num_PUs?
@@ -1297,7 +1486,7 @@ for (i in 1:length (blm))
 #===============================================================================
 
     #  Need to write test functions if this is going to be made more 
-    #  publically available and used to support production of papers.
+    #  publicly available and used to support production of papers.
 
 #===============================================================================
 
@@ -1405,8 +1594,27 @@ for (i in 1:length (blm))
 }  #  end - if (FALSE)    #  Basically just commenting out a big block
 
 #===============================================================================
+
+cat ("\n\n")
+sessionInfo()
+cat ("\n\n")
+
+
+
 #===============================================================================
 #===============================================================================
 #===============================================================================
+#===============================================================================
+                    #  START EMULATION CODE
+#===============================================================================
+
+if (emulateRunningUnderTzar)
+    {
+    cat ("\n\nIn generateSetCoverProblem:  Cleaning up after running emulation...\n\n")
+    cleanUpAfterTzarEmulation (parameters)
+    }
+
+#===============================================================================
+                    #  END EMULATION CODE
 #===============================================================================
 
