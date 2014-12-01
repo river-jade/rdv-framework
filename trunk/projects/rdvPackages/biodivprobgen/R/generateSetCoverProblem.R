@@ -186,69 +186,6 @@ r__density                       = parameters$r__density
 # p__prop_of_links_between_cliques = 0.3  
 # r__density                       = 0.8
 
-#-------------------------------------------------------------------------------
-
-num_runs = 1
-
-results_df = 
-    data.frame (run_ID = rep (NA, num_runs), 
-                num_PUs = rep (NA, num_runs), 
-                num_spp = rep (NA, num_runs), 
-                seed = rep (NA, num_runs), 
-                
-                    #  Xu options
-                n__num_cliques = rep (NA, num_runs), 
-                alpha__ = rep (NA, num_runs), 
-                p__prop_of_links_between_cliques = rep (NA, num_runs), 
-                r__density = rep (NA, num_runs),
-
-                    #  Results
-                cor_num_patches = rep (NA, num_runs),
-                marxan_best_num_patches = rep (NA, num_runs), 
-                abs_marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
-                marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
-                spp_rep_shortfall = rep (NA, num_runs),                
-                marxan_best_solution_NUM_spp_covered = rep (NA, num_runs), 
-                marxan_best_solution_FRAC_spp_covered = rep (NA, num_runs), 
-                
-                    #  Derived options
-                num_nodes_per_clique = rep (NA, num_runs),
-                tot_num_nodes = rep (NA, num_runs),
-                num_independent_set_nodes = rep (NA, num_runs),
-                num_dependent_set_nodes = rep (NA, num_runs),
-                num_rounds_of_linking_between_cliques = rep (NA, num_runs),
-                target_num_links_between_2_cliques_per_round = rep (NA, num_runs), 
-                num_links_within_one_clique = rep (NA, num_runs),
-                tot_num_links_inside_cliques = rep (NA, num_runs),
-                max_possible_num_links_between_cliques = rep (NA, num_runs),
-                max_possible_tot_num_links = rep (NA, num_runs), 
-                
-                    #  Marxan options
-                marxan_spf_const = rep (NA, num_runs),
-                marxan_PROP = rep (NA, num_runs),
-                marxan_RANDSEED = rep (NA, num_runs),
-                marxan_NUMREPS = rep (NA, num_runs),
-
-                    #  Marxan Annealing Parameters
-                marxan_NUMITNS = rep (NA, num_runs),
-                marxan_STARTTEMP = rep (NA, num_runs),
-                marxan_NUMTEMP = rep (NA, num_runs),
-
-                    #  Marxan Cost Threshold
-                marxan_COSTTHRESH = rep (NA, num_runs),
-                marxan_THRESHPEN1 = rep (NA, num_runs),
-                marxan_THRESHPEN2 = rep (NA, num_runs),
-
-                    #  Marxan Program control
-                marxan_RUNMODE = rep (NA, num_runs),
-                marxan_MISSLEVEL = rep (NA, num_runs),
-                marxan_ITIMPTYPE = rep (NA, num_runs),
-                marxan_HEURTYPE = rep (NA, num_runs),
-                marxan_CLUMPTYPE = rep (NA, num_runs)
-                )
-
-cur_result_row = 0
-
 # for (n__num_cliques in 3:7)
 # {
 # for (cur_repeat in 1:5)
@@ -265,6 +202,8 @@ cur_result_row = 0
 
     num_independent_set_nodes = n__num_cliques
     num_dependent_set_nodes = tot_num_nodes - num_independent_set_nodes
+    opt_solution_as_frac_of_tot_num_nodes = 
+        num_dependent_set_nodes / tot_num_nodes
     
     num_rounds_of_linking_between_cliques = integerize (r__density * n__num_cliques * log (n__num_cliques))
     
@@ -980,7 +919,7 @@ cat ("\n\nAfter sorting, marxan_ssoln_df = \n")
 print (marxan_ssoln_df)
 cat ("\n\n-------------------")
 
-#---------------------------------
+#===============================================================================
 
 #  Build a master table containing:
     #  planning unit ID
@@ -1096,6 +1035,7 @@ cat ("\n\nmarxan_best_solution_NUM_spp_covered =", marxan_best_solution_NUM_spp_
 cat ("\nmarxan_best_solution_FRAC_spp_covered =", marxan_best_solution_FRAC_spp_covered)
 cat ("\nspp_rep_shortfall =", spp_rep_shortfall)
 
+#===============================================================================
 
 #  Supporting data not in binding
 #   species vs planning units (database?) to allow computation of performance 
@@ -1104,6 +1044,72 @@ cat ("\nspp_rep_shortfall =", spp_rep_shortfall)
 #   (e.g., SELECT planning unit ID WHERE species == curSpeciesID))
 #       - planning unit IDs
 #       - set of species on planning unit
+
+#-------------------------------------------------------------------------------
+
+num_runs = 1
+
+results_df = 
+    data.frame (run_ID = rep (NA, num_runs), 
+                num_PUs = rep (NA, num_runs), 
+                num_spp = rep (NA, num_runs), 
+                seed = rep (NA, num_runs), 
+                
+                    #  Xu options
+                n__num_cliques = rep (NA, num_runs), 
+                alpha__ = rep (NA, num_runs), 
+                p__prop_of_links_between_cliques = rep (NA, num_runs), 
+                r__density = rep (NA, num_runs),
+
+                    #  Results
+                opt_solution_as_frac_of_tot_num_nodes = rep (NA, num_runs),
+                cor_num_patches = rep (NA, num_runs),
+                marxan_best_num_patches = rep (NA, num_runs), 
+                abs_marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
+                marxan_best_solution_cost_err_frac = rep (NA, num_runs), 
+                spp_rep_shortfall = rep (NA, num_runs),                
+                marxan_best_solution_NUM_spp_covered = rep (NA, num_runs), 
+                marxan_best_solution_FRAC_spp_covered = rep (NA, num_runs), 
+                
+                    #  Derived options
+                num_nodes_per_clique = rep (NA, num_runs),
+                tot_num_nodes = rep (NA, num_runs),
+                num_independent_set_nodes = rep (NA, num_runs),
+                num_dependent_set_nodes = rep (NA, num_runs),
+                num_rounds_of_linking_between_cliques = rep (NA, num_runs),
+                target_num_links_between_2_cliques_per_round = rep (NA, num_runs), 
+                num_links_within_one_clique = rep (NA, num_runs),
+                tot_num_links_inside_cliques = rep (NA, num_runs),
+                max_possible_num_links_between_cliques = rep (NA, num_runs),
+                max_possible_tot_num_links = rep (NA, num_runs), 
+                
+                    #  Marxan options
+                marxan_spf_const = rep (NA, num_runs),
+                marxan_PROP = rep (NA, num_runs),
+                marxan_RANDSEED = rep (NA, num_runs),
+                marxan_NUMREPS = rep (NA, num_runs),
+
+                    #  Marxan Annealing Parameters
+                marxan_NUMITNS = rep (NA, num_runs),
+                marxan_STARTTEMP = rep (NA, num_runs),
+                marxan_NUMTEMP = rep (NA, num_runs),
+
+                    #  Marxan Cost Threshold
+                marxan_COSTTHRESH = rep (NA, num_runs),
+                marxan_THRESHPEN1 = rep (NA, num_runs),
+                marxan_THRESHPEN2 = rep (NA, num_runs),
+
+                    #  Marxan Program control
+                marxan_RUNMODE = rep (NA, num_runs),
+                marxan_MISSLEVEL = rep (NA, num_runs),
+                marxan_ITIMPTYPE = rep (NA, num_runs),
+                marxan_HEURTYPE = rep (NA, num_runs),
+                marxan_CLUMPTYPE = rep (NA, num_runs)
+                )
+
+cur_result_row = 0
+
+#-------------------------------------------------------------------------------
 
 cur_result_row = cur_result_row + 1
 
@@ -1119,6 +1125,7 @@ results_df$p__prop_of_links_between_cliques [cur_result_row]                 = p
 results_df$r__density [cur_result_row]                                       = r__density
 
     #  Results
+results_df$opt_solution_as_frac_of_tot_num_nodes [cur_result_row]            = opt_solution_as_frac_of_tot_num_nodes
 results_df$cor_num_patches [cur_result_row]                                  = cor_num_patches
 results_df$marxan_best_num_patches [cur_result_row]                          = marxan_best_num_patches
 results_df$abs_marxan_best_solution_cost_err_frac [cur_result_row]           = abs_marxan_best_solution_cost_err_frac

@@ -88,39 +88,51 @@ base_params:
 # Note that this file does all repetitions on scen 1, then on scen 2 etc...
 # Note that also the original value of the variable is not used.
 
+#  In "simple model ..." paper, they use:
+#       n in [8..100] while alpha = 0.52, r = 1
+#       r in [0.8..2.5] while n = 20, alpha = 0.77
+#       alpha in [0.2..1] while n = 20, r = 2.5
+#  In all 3 cases, best fit to the theory was when the parameter
+#  was at the top of its range.  See figure 1 in the paper.
+#
+#  Values in the paper for propOfLinksBetweenGroups were more variable.
+#  See figures 2 and 3 and text in column 2 of page 4.
+#  In those examples, they had:
+#       Figure 2:   k=2, alpha=0.8, r=3, n in {20,30,40}
+#                   p in [0.14..0.36] w/ critical value Pcr ~ 0.23
+
 repetitions:
     generators:
         - key: seed
           generator_type: linear_step
-          start: 101
+          start: 17
           step_size: 1
-          count: 1
+          count: 3
 
         - key: p__prop_of_links_between_cliques
           generator_type: linear_step
-          start: 0.5
-          step_size: 0.1
-          count: 5
+          start: 0.26
+          step_size: 0.01
+          count: 7
 
         - key: r__density
           generator_type: linear_step
-          start: 0.5
-          step_size: 0.1
-          count: 5
+          start: 2.5
+          step_size: 0.5
+          count: 3
 
         - key: alpha__
           generator_type: linear_step
           start: 0.25
           step_size: 0.25
-          count: 3
+          count: 1
 
         - key: n__num_cliques
           generator_type: linear_step
-          start: 50
-          step_size: 50
-          count: 4
-
-
+          start: 20
+          step_size: 20
+          count: 1
+          
 concatenate:
   heading_row: true
   input_filename: prob_diff_results.csv
