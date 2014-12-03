@@ -58,7 +58,7 @@ if (emulateRunningUnderTzar)
                     #  END EMULATION CODE
 #===============================================================================
 
-browser()
+#browser()
 
 library (plyr)    #  For count()
 library (marxan)
@@ -725,7 +725,7 @@ marxan_RANDSEED  = seed
 marxan_NUMREPS  = parameters$marxan_num_reps
 
     #  Annealing Parameters
-marxan_NUMITNS  = "1000000"
+marxan_NUMITNS  = parameters$marxan_num_iterations
 marxan_STARTTEMP  = -1
 marxan_NUMTEMP  = 10000
 
