@@ -1,9 +1,44 @@
 #===============================================================================
+
+                        #  generateSetCoverProblem.R
+
+#===============================================================================
+
+#  *** Future code should include test routines.  Would be good if those  
+#  routines could be explicit tests of the assumptions (and conclusions?) of  
+#  the 4 cases in the proof.
+
+#  *** Future code should include test routines.  Would be good if those  
+#  routines could be explicit tests of the assumptions (and conclusions?) of  
+#  the 4 cases in the proof.
+
+#===============================================================================
+
+#  History:
+
 #  v1 - 
 #  v2 - 
 #  v3 - add degree distribution calculations
 #  v4 - cleaning up code layout formatting
 #  v5 - replacing node_link_pairs with link_node_pairs to match marxan puvspr
+
+#  2014 12 10 - BTL
+#       Starting to replace the data frames and methods for operating on them 
+#       so that it's mostly done with sqlite.  It should make the code clearer 
+#       and make it easy to keep the whole structure in files in the tzar 
+#       output directory for each run.  This, in turn, will make it much 
+#       easier to go back and do post-hoc operations on the graph and output 
+#       data after the run.  Currently, as the experiments evolve, I keep 
+#       finding that I want to do things that I had not foreseen and I need 
+#       access to the data without re-running the whole set of experiments.
+#
+#       Before making the big changes, I've removed the huge block of notes 
+#       and code that I had at the end of the file that were related to 
+#       marxan and things I need to do.  I cut all of that out and pasted it 
+#       into another R file called:
+#           /Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/
+#               oldCommentedMarxanNotesCodeRemovedFrom_generateSetCoverProblem_2014_12_10.R
+#
 
 #===============================================================================
                     #  START EMULATION CODE
@@ -342,6 +377,91 @@ r__density                       = parameters$r__density
 #df[df$value>3.0,] 
 
 #===============================================================================
+#  Start adding dbms code to replace data frames.
+#  Most of this part is cloned from dbms.initialise.melb.grassland.R
+#===============================================================================
+
+source ("dbms_functions.R")
+
+db_name = "test.db"
+
+    #------------------------------------------------------------
+    #  Check whether database exists and remove it if it does.
+    #------------------------------------------------------------
+
+safe.remove.file.if.exists (db_name)
+
+    #------------------------------------------------------------
+    #  Create the DB and make the tables and
+    #  column headings
+    #------------------------------------------------------------
+
+connect_to_database (db_name)
+
+# db_driver <- dbDriver("SQLite")
+# db_con <- dbConnect (db_driver, db_name)
+
+    #------------------------------------------------------------
+    #  Define the column names and types of the table 
+    #------------------------------------------------------------
+
+node_table_defn = 
+    matrix (c ('ID', 'int',
+               'DEPENDENT_SET_MEMBER', 'int', 
+               'GROUP_ID', 'int'
+               ),
+            byrow = TRUE,
+            ncol = 2 )
+
+link_table_defn = 
+    matrix (c ('ID', 'int',
+               'NODE_1', 'int',
+               'NODE_2', 'int', 
+               'LINK_DIRECTION', 'string'    #  "UN", "BI", "FT", "TF"
+               ),
+            byrow = TRUE,
+            ncol = 2 )
+
+    #------------------------------------------------------------
+    #  Build the sql expression to create the table using SQLite
+    #------------------------------------------------------------
+
+node_table_name = "nodes"
+sql_create_table_query = 
+  build_sql_create_table_expression (node_table_name,
+                                     node_table_defn)
+sql_send_operation (sql_create_table_query)
+
+link_table_name = "links"
+sql_create_table_query = 
+  build_sql_create_table_expression (link_table_name,
+                                     node_table_defn)
+sql_send_operation (sql_create_table_query)
+
+
+    #  add some dummy data for testing 
+testSqlCmd <- paste0 ('insert into ', node_table_name, 
+                     ' values (1, 0, 1)')
+sql_send_operation (testSqlCmd)
+
+#query2s <- 'insert into staticPUinfo values(1, 4567)';
+#sql.send.operation( query2s );
+testSqlCmd <- paste0 ('insert into ', link_table_name, 
+                     ' values (1, 2, "un")')
+sql_send_operation (testSqlCmd)
+
+
+# some other example queries
+
+#query4 <- 'update PUstatus set RESERVED = -1 where ID = 1';
+#sql.send.operation( query4 );
+
+    #----------
+
+close_database_connection()
+
+#===============================================================================
+#===============================================================================
 
 cat ("\n\n--------------------  Linking all nodes within each clique.\n")
 
@@ -395,7 +515,6 @@ cat ("\n\n")
     #  The two columns are the nodes that are connected.
     #  This is the edge list the igraph needs, I think.
     #  However, I need more than one graph.  
-
 
 #===============================================================================
 
