@@ -234,16 +234,22 @@ r__density                       = parameters$r__density
     cat ("\n\t\t max_possible_tot_num_links = ", max_possible_tot_num_links)
     cat ("\n\n")
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
         #--------------------------------------------------
         #  Create structures to hold the nodes and links.
+#  NEED TO DESCRIBE ALL OF THE MAJOR DATA STRUCTURES USED IN HERE 
+#  AND WHAT (IF ANYTHING), THEY ASSUME.
         #--------------------------------------------------    
 
     cat ("\n\n--------------------  Creating structures to hold the nodes and links.\n")
 
     node_IDs = 1:tot_num_nodes
     
+#--------------------
+#  WILL HAVE TO MODIFY THIS TO ALLOW FOR MORE THAN ONE INDEPENDENT NODE 
+#  PER CLIQUE.
+
             #  For each node ID, what clique does it belong to?
     clique_IDs = 1 + (0:(tot_num_nodes - 1) %/% num_nodes_per_clique)
 
@@ -252,6 +258,7 @@ r__density                       = parameters$r__density
     independent_node_IDs = seq (from=1, 
                                 by=num_nodes_per_clique, 
                                 length.out=n__num_cliques)
+#--------------------
 
             #  For each node ID, flag whether it is in the dependent set or not.
     dependent_set_members = rep (TRUE, tot_num_nodes)
@@ -377,6 +384,18 @@ for (cur_clique_ID in 1:n__num_cliques)
 cat ("\n\nlinked_node_pairs (with last lines NA to hold interclique links to be loaded in next step):\n\n")
 print (linked_node_pairs)
 cat ("\n\n")
+
+#===============================================================================
+
+    #  linked_node_pairs gives the edge list.
+        #  However, can't use it until it's completely finished, i.e., 
+        #  close to when it's handed to Marxan.
+    #  igraph needs an edge list.
+    #  THe row number is also the edge/link ID.
+    #  The two columns are the nodes that are connected.
+    #  This is the edge list the igraph needs, I think.
+    #  However, I need more than one graph.  
+
 
 #===============================================================================
 
