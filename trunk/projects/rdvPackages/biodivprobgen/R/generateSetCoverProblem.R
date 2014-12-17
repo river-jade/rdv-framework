@@ -38,7 +38,20 @@
 #       into another R file called:
 #           /Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/
 #               oldCommentedMarxanNotesCodeRemovedFrom_generateSetCoverProblem_2014_12_10.R
+
+#  2014 12 11 - BTL
+#       - Replacing all references to "group" with "group", since I'm going to 
+#           add the ability to have more than one independent node per group.   
+#           These groups will no longer be groups if there is more than one 
+#           independent node because by definition, no independent nodes can 
+#           be linked.  There will still be a group inside the group, i.e., the 
+#           dependent nodes, and the independent nodes will still link to those 
+#           dependent nodes.  They just won't link to each other.  
+#           Renaming also means that I need to change the names of a couple of 
+#           variables in the yaml file who have "clique" in their name.
 #
+#       - Converted choice of integerize() function from hard-coded value to 
+#           switch statement based on option given in yaml file.
 
 #===============================================================================
                     #  START EMULATION CODE
@@ -106,12 +119,27 @@ set.seed (seed)
 
 #-------------------------------------------------------------------------------
 
-integerize = function (x) 
-    { 
-    round (x) 
-#    ceiling (x)
-#    floor (x)
-    }
+default_integerize_string = "round"
+integerize_string = default_integerize_string
+
+integerize_string = parameters$integerize_string
+
+#integerize_string = "round"
+#integerize_string = "ceiling"
+#integerize_string = "floor"
+
+integerize = switch (integerize_string, 
+                     round=round, 
+                     ceiling=ceiling, 
+                     floor=floor, 
+                     round)    #  default to round()
+
+# integerize = function (x) 
+#     { 
+#     round (x) 
+# #    ceiling (x)
+# #    floor (x)
+#     }
 
 #-------------------------------------------------------------------------------
 
@@ -193,79 +221,145 @@ run_marxan = function ()
 #===============================================================================
 
 # derive_control_parameters = 
-#     function (n__num_cliques = 3, 
+#     function (n__num_groups = 3, 
 #               alpha__ = 1, 
-#               p__prop_of_links_between_cliques = 0.5,     	#  p__prop_of_links_between_cliques   
+#               p__prop_of_links_between_groups = 0.5,     	#  p__prop_of_links_between_groups   
 #                                                             #  not the right name?
-#                                                             #  is it really the proportion of nodes in one clique 
-#                                                             #  to link to another clique during one round?
-#                                                             #  p__prop_of_nodes_in_clique_to_try_to_interlink_in_one_round?
-#                                                             #  p__prop_to_link_between_two_cliques_in_one_round?
+#                                                             #  is it really the proportion of nodes in one group 
+#                                                             #  to link to another group during one round?
+#                                                             #  p__prop_of_nodes_in_group_to_try_to_interlink_in_one_round?
+#                                                             #  p__prop_to_link_between_two_groups_in_one_round?
 #                                                             #  p__prop    
 #               r__density = 0.5
 #              )
 #     {
 
-n__num_cliques                   = parameters$n__num_cliques
-alpha__                          = parameters$alpha__
-p__prop_of_links_between_cliques = parameters$p__prop_of_links_between_cliques
-r__density                       = parameters$r__density
+n__num_groups                   = parameters$n__num_groups
+alpha__                         = parameters$alpha__
+p__prop_of_links_between_groups = parameters$p__prop_of_links_between_groups
+r__density                      = parameters$r__density
 
-# n__num_cliques                   = 5
-# alpha__                          = 0.8
-# p__prop_of_links_between_cliques = 0.5  
-# r__density                       = 0.5
+    #  2014 12 11 - BTL - Adding to the original set of parameters
+    #  Originally, there was only 1 independent node per group.  
+    #  I'm going to try allowing more than that to see if it will still 
+    #  build hard problems but allow the size of the solution set to drop 
+    #  below 50% of the node set.
 
-# n__num_cliques                   = 12
-# alpha__                          = 1.5
-# p__prop_of_links_between_cliques = 0.3  
-# r__density                       = 0.8
+num_independent_nodes_per_group = parameters$num_independent_nodes_per_group
+#num_independent_nodes_per_group = 1
 
-# for (n__num_cliques in 3:7)
-# {
-# for (cur_repeat in 1:5)
-# {
-        
 #-------------------------------------------------------------------------------
 
     #  Derived control parameters.
 
     cat ("\n\n--------------------  Building derived control parameters.\n")
     
-    num_nodes_per_clique = integerize (n__num_cliques ^ alpha__)
-    tot_num_nodes = n__num_cliques * num_nodes_per_clique
+        #  Originally, this parameter was set assuming that there was only 
+        #  1 independent node per group.  
+        #  Now allowing there to be more than 1, so need to add to the 
+        #  number of nodes per group.  However, we only want to add the 
+        #  the excess independent nodes that are beyond the original 1, 
+        #  so we have to subtract 1 from the number we're adding on.
 
-    num_independent_set_nodes = n__num_cliques
+#    num_nodes_per_group = integerize (n__num_groups ^ alpha__)
+    num_nodes_per_group = integerize (n__num_groups ^ alpha__) - 
+                          (num_independent_nodes_per_group - 1)
+#    num_independent_set_nodes = n__num_groups
+    num_independent_set_nodes = n__num_groups * num_independent_nodes_per_group
+
+    tot_num_nodes = n__num_groups * num_nodes_per_group
+
     num_dependent_set_nodes = tot_num_nodes - num_independent_set_nodes
     opt_solution_as_frac_of_tot_num_nodes = 
         num_dependent_set_nodes / tot_num_nodes
     
-    num_rounds_of_linking_between_cliques = integerize (r__density * n__num_cliques * log (n__num_cliques))
+    num_rounds_of_linking_between_groups = integerize (r__density * n__num_groups * log (n__num_groups))
+
+        #  Is this right?  Even in the old version?  
+        #  i.e., this count would allow links to ind. nodes too.
+        #  Should it be "* num_dependent_nodes_per_group" instead of 
+        #  "* num_nodes_per_group"?
+        #  How is it defined in Xu?
+        #  The interlinking code DOES make a check though and only allows 
+        #  linking to dependent nodes.  
+        #  The only thing that the code here seems like it would do is to 
+        #  overallocate space.
+        #  One weird thing though is that if you only have one dependent node, 
+        #  how is a proportion of 0.2x going to cause anything at all to be 
+        #  interlinked - unless, the integerize function is always giving a 
+        #  value of at least 1?  But integerize() is currently round() and 
+        #  with 2 nodes per group (to get  things down to 50% as the solution 
+        #  fraction), anything less than p=0.5 should yield no interlinking?
+        #  Actually, with rounding and 2 nodes per group, anything >= 0.25 will 
+        #  yield at least one interlink.  So, should I just leave this alone?  
+        #  Still, it's going to get very weird (and blow up?) if you have 
+        #  4 or 5 independent nodes in a group and only 1 dependent node 
+        #  because this is going to tell you that you have to have something 
+        #  like p=0.3 times 5 or 6 instead of times 2.  That would lead to 
+        #  many duplicate links, but does that really matter?  Seems like it 
+        #  would in a predictive sense, i.e., the value assigned to p would 
+        #  not have the same meaning in these lower bound saturating kinds of 
+        #  circumstances compared to when there larger values that it could 
+        #  take a real proportion of.  Even in the old version, there will be 
+        #  an odd threshold effect in what p means, e.g., when it falls below 
+        #  0.25 in the example above.  Still, isn't that always going to be the 
+        #  case because the theory uses continuous values but the problem sizes 
+        #  have to be integers and you will always have to map from continuous 
+        #  to integer?
+        #  Maybe the best solution here is to create an option that allows you 
+        #  to choose the behavior you want and records that in the output.
+        #  What would be the possible variants of this option?
+        #  Compute target... from:
+        #       a) num_nodes_per_group
+        #       b) num_dependent_nodes_per_group
+        #       c) at least 1, 
+        #               i.e., max (1, [a or b above]) so that you always 
+        #               get at least 1
+        #  So, option c) would mean that you need two options instead of 1, 
+        #  i.e., [a) or b)] and [max or actual value].  
+        #  Another thing that should probably be an option is the choice of the 
+        #  integerize function, since that also affects this.
+
+    base_for_target_num_links_between_2_groups_per_round = 
+        parameters$base_for_target_num_links_between_2_groups_per_round
+
+    at_least_1_for_target_num_links_between_2_groups_per_round = 
+        parameters$at_least_1_for_target_num_links_between_2_groups_per_round
+
+    target_num_links_between_2_groups_per_round = 
+        integerize (p__prop_of_links_between_groups * num_nodes_per_group)  
+
+
     
-    target_num_links_between_2_cliques_per_round = 
-        integerize (p__prop_of_links_between_cliques * num_nodes_per_clique)
+        #  Compute how many links there will be within each group.  
+        #  If there is more than one independent node, then not all possible 
+        #  combinations of links will be made.  Have to subtract off 
+        #  the number of possible links between independent nodes in 
+        #  the group.
+#    num_links_within_one_group = choose (num_nodes_per_group, 2)
+    num_links_within_one_group = choose (num_nodes_per_group, 2) - 
+                                 choose (num_independent_nodes_per_group, 2)
+
+    tot_num_links_inside_groups = n__num_groups * num_links_within_one_group
     
-    num_links_within_one_clique = choose (num_nodes_per_clique, 2)
-    tot_num_links_inside_cliques = n__num_cliques * num_links_within_one_clique
+    max_possible_num_links_between_groups = 
+        integerize (target_num_links_between_2_groups_per_round * num_rounds_of_linking_between_groups)
     
-    max_possible_num_links_between_cliques = 
-        integerize (target_num_links_between_2_cliques_per_round * num_rounds_of_linking_between_cliques)
-    
-    max_possible_tot_num_links = integerize (tot_num_links_inside_cliques + max_possible_num_links_between_cliques)
+    max_possible_tot_num_links = integerize (tot_num_links_inside_groups + max_possible_num_links_between_groups)
 
     cat ("\n\nInput variable settings")
-    cat ("\n\t\t n__num_cliques = ", n__num_cliques)
+    cat ("\n\t\t n__num_groups = ", n__num_groups)
     cat ("\n\t\t alpha__ = ", alpha__)
-    cat ("\n\t\t p__prop_of_links_between_cliques = ", p__prop_of_links_between_cliques)
+    cat ("\n\t\t p__prop_of_links_between_groups = ", p__prop_of_links_between_groups)
     cat ("\n\t\t r__density = ", r__density)
     
     cat ("\n\nDerived variable settings")
-    cat ("\n\t\t num_nodes_per_clique = ", num_nodes_per_clique)
-    cat ("\n\t\t num_rounds_of_linking_between_cliques = ", num_rounds_of_linking_between_cliques)
-    cat ("\n\t\t target_num_links_between_2_cliques_per_round = ", target_num_links_between_2_cliques_per_round)
-    cat ("\n\t\t num_links_within_one_clique = ", num_links_within_one_clique)
-    cat ("\n\t\t tot_num_links_inside_cliques = ", tot_num_links_inside_cliques)
-    cat ("\n\t\t max_possible_num_links_between_cliques = ", max_possible_num_links_between_cliques)
+    cat ("\n\t\t num_nodes_per_group = ", num_nodes_per_group)
+    cat ("\n\t\t num_rounds_of_linking_between_groups = ", num_rounds_of_linking_between_groups)
+    cat ("\n\t\t target_num_links_between_2_groups_per_round = ", target_num_links_between_2_groups_per_round)
+    cat ("\n\t\t num_links_within_one_group = ", num_links_within_one_group)
+    cat ("\n\t\t tot_num_links_inside_groups = ", tot_num_links_inside_groups)
+    cat ("\n\t\t max_possible_num_links_between_groups = ", max_possible_num_links_between_groups)
     cat ("\n\t\t max_possible_tot_num_links = ", max_possible_tot_num_links)
     cat ("\n\n")
 
@@ -282,17 +376,27 @@ r__density                       = parameters$r__density
     node_IDs = 1:tot_num_nodes
     
 #--------------------
-#  WILL HAVE TO MODIFY THIS TO ALLOW FOR MORE THAN ONE INDEPENDENT NODE 
-#  PER CLIQUE.
 
-            #  For each node ID, what clique does it belong to?
-    clique_IDs = 1 + (0:(tot_num_nodes - 1) %/% num_nodes_per_clique)
+            #  For each node ID, what group does it belong to?
+    group_IDs = 1 + (0:(tot_num_nodes - 1) %/% num_nodes_per_group)
 
-            #  Assign lowest node ID in each clique to be the independent node 
-            #  in that clique.
-    independent_node_IDs = seq (from=1, 
-                                by=num_nodes_per_clique, 
-                                length.out=n__num_cliques)
+            #  Assign lowest node IDs in each group to be the independent nodes 
+            #  in that group.
+#     independent_node_IDs = seq (from=1, 
+#                                 by=num_nodes_per_group, 
+#                                 length.out=n__num_groups)
+
+    independent_node_ID_starts = seq (from=1, 
+                                      by=num_nodes_per_group, 
+                                      length.out=n__num_groups)
+    independent_node_IDs = c()
+    for (idx in 0:(num_independent_nodes_per_group-1))
+        {
+        independent_node_IDs = 
+                c(independent_node_IDs, (idx + independent_node_ID_starts))
+        }            
+    independent_node_IDs = sort (independent_node_IDs)
+
 #--------------------
 
             #  For each node ID, flag whether it is in the dependent set or not.
@@ -303,11 +407,11 @@ r__density                       = parameters$r__density
     dependent_node_IDs = node_IDs [-independent_node_IDs]
     
             #  Build an overall data frame that shows for each node, 
-            #  its node ID and clique ID, plus a flag indicating whether 
+            #  its node ID and group ID, plus a flag indicating whether 
             #  it's in the dependent set or not.  For example, if there 
-            #  are 3 nodes per clique:
+            #  are 3 nodes per group:
             #
-            #       node_ID     clique_ID       dependent_set_member
+            #       node_ID     group_ID       dependent_set_member
             #         1            1                 TRUE
             #         2            1                 TRUE
             #         3            1                 FALSE
@@ -317,15 +421,15 @@ r__density                       = parameters$r__density
             #        ...          ...                 ...
 
 
-#    nodes = cbind (node_IDs, clique_IDs, dependent_set_member)
+#    nodes = cbind (node_IDs, group_IDs, dependent_set_member)
     nodes = data.frame (node_ID = node_IDs,
-                        clique_ID = clique_IDs, 
+                        group_ID = group_IDs, 
                         dependent_set_member = dependent_set_members)
 
-#     cat ("\n\nnodes and their clique IDs:")
+#     cat ("\n\nnodes and their group IDs:")
 #     for (cur_node_ID in 1:tot_num_nodes)
 #         {
-#         cat ("\n\t", cur_node_ID, "\t", clique_IDs [cur_node_ID])    
+#         cat ("\n\t", cur_node_ID, "\t", group_IDs [cur_node_ID])    
 #         }
 #     cat ("\n")
 
@@ -367,12 +471,12 @@ r__density                       = parameters$r__density
 
     next_node_link_row = 1    #  NEVER USED?  DELETE THIS?
     next_link_ID = 1
-    cur_clique_ID = 1
+    cur_group_ID = 1
     
-        #  Link all nodes within each clique.
-    all_clique_IDs = 1:n__num_cliques
+        #  Link all nodes within each group.
+    all_group_IDs = 1:n__num_groups
 
-    cat ("\n\nCliques")
+    cat ("\n\ngroups")
     
 #df[df$value>3.0,] 
 
@@ -407,8 +511,8 @@ connect_to_database (db_name)
 
 node_table_defn = 
     matrix (c ('ID', 'int',
-               'DEPENDENT_SET_MEMBER', 'int', 
-               'GROUP_ID', 'int'
+               'GROUP_ID', 'int', 
+               'DEPENDENT_SET_MEMBER', 'int'
                ),
             byrow = TRUE,
             ncol = 2 )
@@ -463,45 +567,45 @@ close_database_connection()
 #===============================================================================
 #===============================================================================
 
-cat ("\n\n--------------------  Linking all nodes within each clique.\n")
+cat ("\n\n--------------------  Linking nodes WITHIN each group.\n")
 
-if (num_nodes_per_clique < 2)
-    quit ("\n\n***  num_nodes_per_clique (", num_nodes_per_clique, 
+if (num_nodes_per_group < 2)
+    quit ("\n\n***  num_nodes_per_group (", num_nodes_per_group, 
           ") must be at least 2.\n\n")
 
 
-num_nodes_per_clique_minus_1 = num_nodes_per_clique - 1
+num_nodes_per_group_minus_1 = num_nodes_per_group - 1
 cur_row = 1
 
-for (cur_clique_ID in 1:n__num_cliques)
+for (cur_group_ID in 1:n__num_groups)
     {
-    #  NOTE:  The code in this loop assumes the clique nodes are sorted.  
-    #         These clique nodes are probably already sorted, 
+    #  NOTE:  The code in this loop assumes the group nodes are sorted.  
+    #         These group nodes are probably already sorted, 
     #         but this just makes sure, as a safeguard against 
     #         some future change.
-    cur_clique_nodes_sorted = 
-        sort (nodes [nodes$clique_ID == cur_clique_ID, "node_ID"])
-    cat ("\n\ncur_clique_nodes_sorted for clique ", cur_clique_ID, " = ")
-    print (cur_clique_nodes_sorted)
+    cur_group_nodes_sorted = 
+        sort (nodes [nodes$group_ID == cur_group_ID, "node_ID"])
+    cat ("\n\ncur_group_nodes_sorted for group ", cur_group_ID, " = ")
+    print (cur_group_nodes_sorted)
     
-    #  Link each node in the clique to all nodes with a higher node ID in 
-    #  the same clique.  
-    #  Doing it this way insures that all nodes in the clique are linked to 
-    #  all other nodes in the clique but that the linking action is only done 
+    #  Link each node in the group to all nodes with a higher node ID in 
+    #  the same group.  
+    #  Doing it this way insures that all nodes in the group are linked to 
+    #  all other nodes in the group but that the linking action is only done 
     #  once for each pair.
     
-    for (cur_idx in 1:num_nodes_per_clique_minus_1)
+    for (cur_idx in 1:num_nodes_per_group_minus_1)
         {
-        for (other_node_idx in (cur_idx+1):num_nodes_per_clique)
+        for (other_node_idx in (cur_idx+1):num_nodes_per_group)
             {
-            linked_node_pairs [cur_row, 1] = cur_clique_nodes_sorted [cur_idx]
-            linked_node_pairs [cur_row, 2] = cur_clique_nodes_sorted [other_node_idx]
+            linked_node_pairs [cur_row, 1] = cur_group_nodes_sorted [cur_idx]
+            linked_node_pairs [cur_row, 2] = cur_group_nodes_sorted [other_node_idx]
             cur_row = cur_row + 1
             }
         }
     }
 
-cat ("\n\nlinked_node_pairs (with last lines NA to hold interclique links to be loaded in next step):\n\n")
+cat ("\n\nlinked_node_pairs (with last lines NA to hold intergroup links to be loaded in next step):\n\n")
 print (linked_node_pairs)
 cat ("\n\n")
 
@@ -518,22 +622,22 @@ cat ("\n\n")
 
 #===============================================================================
 
-    #  Now all cliques and their within clique links have been built.  
-    #  Ready to start doing rounds of interclique linking.
+    #  Now all groups and their within group links have been built.  
+    #  Ready to start doing rounds of intergroup linking.
 
-cat ("\n\n--------------------  Doing rounds of interclique linking.\n")
+cat ("\n\n--------------------  Doing rounds of intergroup linking.\n")
 
-for (cur_round in 1:num_rounds_of_linking_between_cliques)
+for (cur_round in 1:num_rounds_of_linking_between_groups)
     {
     cat ("\nRound", cur_round)
     
-    #  Draw a random pair of cliques to link in this round.
-    cur_clique_pair = sample (1:n__num_cliques, 2, replace=FALSE)
+    #  Draw a random pair of groups to link in this round.
+    cur_group_pair = sample (1:n__num_groups, 2, replace=FALSE)
     
-    #  I'm using min and max here because smaller clique IDs were 
+    #  I'm using min and max here because smaller group IDs were 
     #  filled with smaller node IDs, so every node ID in the 
-    #  smaller clique ID should be the smaller node ID of any pairing 
-    #  of nodes between the cliques and the linking routine 
+    #  smaller group ID should be the smaller node ID of any pairing 
+    #  of nodes between the groups and the linking routine 
     #  expcts the smaller node ID to come before the larger one 
     #  in the linking argument list.  This may be a vestigial thing 
     #  from earlier schemes that doesn't matter any more, but 
@@ -542,27 +646,27 @@ for (cur_round in 1:num_rounds_of_linking_between_cliques)
     #  hurt anything to do this now other than the little bit of 
     #  extra execution time to compute the min and max.
     
-    clique_1 = min (cur_clique_pair)
-    clique_1_nodes = nodes [(nodes$clique_ID == clique_1) & (nodes$dependent_set_member), 
+    group_1 = min (cur_group_pair)
+    group_1_nodes = nodes [(nodes$group_ID == group_1) & (nodes$dependent_set_member), 
                             "node_ID"]
     
-    clique_2 = max (cur_clique_pair)
-    clique_2_nodes = nodes [(nodes$clique_ID == clique_2) & (nodes$dependent_set_member), 
+    group_2 = max (cur_group_pair)
+    group_2_nodes = nodes [(nodes$group_ID == group_2) & (nodes$dependent_set_member), 
                             "node_ID"]
     
     #***-----------------------------------------------------------------------------------
     
-    clique_1_sampled_nodes = 
-        sample (clique_1_nodes, target_num_links_between_2_cliques_per_round, 
+    group_1_sampled_nodes = 
+        sample (group_1_nodes, target_num_links_between_2_groups_per_round, 
                 replace=TRUE)
-    clique_2_sampled_nodes = 
-        sample (clique_2_nodes, target_num_links_between_2_cliques_per_round, 
+    group_2_sampled_nodes = 
+        sample (group_2_nodes, target_num_links_between_2_groups_per_round, 
                 replace=TRUE)
     
-    for (cur_node_pair_idx in 1:target_num_links_between_2_cliques_per_round)
+    for (cur_node_pair_idx in 1:target_num_links_between_2_groups_per_round)
         {                
-        linked_node_pairs [cur_row, 1] = clique_1_sampled_nodes [cur_node_pair_idx]
-        linked_node_pairs [cur_row, 2] = clique_2_sampled_nodes [cur_node_pair_idx]
+        linked_node_pairs [cur_row, 1] = group_1_sampled_nodes [cur_node_pair_idx]
+        linked_node_pairs [cur_row, 2] = group_2_sampled_nodes [cur_node_pair_idx]
         cur_row = cur_row + 1
         }
     }
@@ -651,12 +755,12 @@ cat ("\n\n--------------------  Computing and plotting degree distribution of no
 #  or visual display over those (e.g., something about their degree 
 #  distribution) that can be used as a predictive feature?
 
-# cat ("\n\nNumber of links per node BEFORE interclique linking:\n")
+# cat ("\n\nNumber of links per node BEFORE intergroup linking:\n")
 # print (initial_link_counts_for_each_node)
 
 final_link_counts_for_each_node = count (node_link_pairs, vars="node_ID")
 
-cat ("\n\nNumber of links per node AFTER interclique linking:\n")
+cat ("\n\nNumber of links per node AFTER intergroup linking:\n")
 print (final_link_counts_for_each_node)
 
 final_degree_dist = arrange (final_link_counts_for_each_node, -freq)
@@ -665,12 +769,12 @@ plot (final_degree_dist)
 
 #-------------------------------------------------------------------------------
 
-# cat ("\n\nNumber of nodes per link BEFORE interclique linking:\n")
+# cat ("\n\nNumber of nodes per link BEFORE intergroup linking:\n")
 # print (initial_node_counts_for_each_link)
 
 final_node_counts_for_each_link = count (node_link_pairs, vars="link_ID")
 
-cat ("\n\nNumber of nodes per link AFTER interclique linking:\n")
+cat ("\n\nNumber of nodes per link AFTER intergroup linking:\n")
 print (final_node_counts_for_each_link)
 
 final_rank_abundance_dist = arrange (final_node_counts_for_each_link, -freq)
@@ -1194,9 +1298,9 @@ results_df =
                 seed = rep (NA, num_runs), 
                 
                     #  Xu options
-                n__num_cliques = rep (NA, num_runs), 
+                n__num_groups = rep (NA, num_runs), 
                 alpha__ = rep (NA, num_runs), 
-                p__prop_of_links_between_cliques = rep (NA, num_runs), 
+                p__prop_of_links_between_groups = rep (NA, num_runs), 
                 r__density = rep (NA, num_runs),
 
                     #  Results
@@ -1210,15 +1314,15 @@ results_df =
                 marxan_best_solution_FRAC_spp_covered = rep (NA, num_runs), 
                 
                     #  Derived options
-                num_nodes_per_clique = rep (NA, num_runs),
+                num_nodes_per_group = rep (NA, num_runs),
                 tot_num_nodes = rep (NA, num_runs),
                 num_independent_set_nodes = rep (NA, num_runs),
                 num_dependent_set_nodes = rep (NA, num_runs),
-                num_rounds_of_linking_between_cliques = rep (NA, num_runs),
-                target_num_links_between_2_cliques_per_round = rep (NA, num_runs), 
-                num_links_within_one_clique = rep (NA, num_runs),
-                tot_num_links_inside_cliques = rep (NA, num_runs),
-                max_possible_num_links_between_cliques = rep (NA, num_runs),
+                num_rounds_of_linking_between_groups = rep (NA, num_runs),
+                target_num_links_between_2_groups_per_round = rep (NA, num_runs), 
+                num_links_within_one_group = rep (NA, num_runs),
+                tot_num_links_inside_groups = rep (NA, num_runs),
+                max_possible_num_links_between_groups = rep (NA, num_runs),
                 max_possible_tot_num_links = rep (NA, num_runs), 
                 
                     #  Marxan options
@@ -1257,9 +1361,9 @@ results_df$num_spp [cur_result_row]                                          = n
 results_df$seed [cur_result_row]                                             = seed
 
     #  Xu options
-results_df$n__num_cliques [cur_result_row]                                   = n__num_cliques
+results_df$n__num_groups [cur_result_row]                                   = n__num_groups
 results_df$alpha__ [cur_result_row]                                          = alpha__
-results_df$p__prop_of_links_between_cliques [cur_result_row]                 = p__prop_of_links_between_cliques
+results_df$p__prop_of_links_between_groups [cur_result_row]                 = p__prop_of_links_between_groups
 results_df$r__density [cur_result_row]                                       = r__density
 
     #  Results
@@ -1273,15 +1377,15 @@ results_df$marxan_best_solution_NUM_spp_covered [cur_result_row]             = m
 results_df$marxan_best_solution_FRAC_spp_covered [cur_result_row]            = marxan_best_solution_FRAC_spp_covered
 
     #  Derived Xu options
-results_df$num_nodes_per_clique [cur_result_row]                             = num_nodes_per_clique
+results_df$num_nodes_per_group [cur_result_row]                             = num_nodes_per_group
 results_df$tot_num_nodes [cur_result_row]                                    = tot_num_nodes
 results_df$num_independent_set_nodes [cur_result_row]                        = num_independent_set_nodes
 results_df$num_dependent_set_nodes [cur_result_row]                          = num_dependent_set_nodes
-results_df$num_rounds_of_linking_between_cliques [cur_result_row]            = num_rounds_of_linking_between_cliques
-results_df$target_num_links_between_2_cliques_per_round [cur_result_row]     = target_num_links_between_2_cliques_per_round
-results_df$num_links_within_one_clique [cur_result_row]                      = num_links_within_one_clique
-results_df$tot_num_links_inside_cliques [cur_result_row]                     = tot_num_links_inside_cliques
-results_df$max_possible_num_links_between_cliques [cur_result_row]           = max_possible_num_links_between_cliques
+results_df$num_rounds_of_linking_between_groups [cur_result_row]            = num_rounds_of_linking_between_groups
+results_df$target_num_links_between_2_groups_per_round [cur_result_row]     = target_num_links_between_2_groups_per_round
+results_df$num_links_within_one_group [cur_result_row]                      = num_links_within_one_group
+results_df$tot_num_links_inside_groups [cur_result_row]                     = tot_num_links_inside_groups
+results_df$max_possible_num_links_between_groups [cur_result_row]           = max_possible_num_links_between_groups
 results_df$max_possible_tot_num_links [cur_result_row]                       = max_possible_tot_num_links
 
     #  Marxan options
@@ -1319,15 +1423,6 @@ results_df$marxan_CLUMPTYPE [cur_result_row]                                 = m
 
 #write.csv (results_df, file = "./prob_diff_results.csv", row.names = FALSE)
 write.csv (results_df, file = parameters$summary_filename, row.names = FALSE)
-
-#===============================================================================
-
-
-# }  #  end - for cur_repeat
-#     
-# }  #  end - for n__num_cliques
-# 
-# plot (1:num_runs, results_df$spp_rep_shortfall)
 
 #===============================================================================
 
