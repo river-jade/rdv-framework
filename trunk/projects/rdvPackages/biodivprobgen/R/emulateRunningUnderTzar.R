@@ -105,6 +105,7 @@ emulateRunningTzar = function (projectPath,
         #----------------------------------------------------------
 
     parametersListSourceFilename = paste0 (tzarInProgressDirName,
+                                           "metadata/", 
                                            tzarParametersSrcFileName)
     source (parametersListSourceFilename)
 
