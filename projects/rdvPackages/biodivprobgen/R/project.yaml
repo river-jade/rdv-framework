@@ -11,6 +11,19 @@ runner_class: RRunner
     
 base_params:
 
+        #  BTL - 2014 12 28
+        #  This variable captures the tzar output path to hand it to the 
+        #  tzar emulation code.  It is absolutely necessary for the current 
+        #  version of emulation, but might go away in the future if River 
+        #  adds emulation directly inside of tzar with a "dry run" command.
+        #  Note that I had forgotten to add this variable to any of the 
+        #  project.yaml files used in biodivprobgen runs before today, so 
+        #  you need to add it back into any of those that you re-use under  
+        #  emulation.  That's not so likely though, since they're generally 
+        #  doing zillions of runs and you don't generally do that under 
+        #  emulation.
+    fullOutputDirWithSlash: $$output_path$$
+
     seed: 111
 
             #  1 - num_groups = tot cost, so increase n to reduce cost
@@ -19,7 +32,11 @@ base_params:
             #
             #      num_nodes_per_group = integerize (n__num_groups ^ alpha__)
     n__num_groups: 20
+#####    n__num_groups: 30
 #    n__num_groups: 5
+    use_unif_rand_n__num_groups: TRUE
+    n__num_groups_lower_bound: 20
+    n__num_groups_upper_bound: 35
     
             #  Drives the number of PUs per group and so, tot num PUs
             #  What is a reasonable range?
@@ -29,6 +46,9 @@ base_params:
             #      tot_num_nodes = n__num_groups * num_nodes_per_group
     alpha__: 0.25
 #    alpha__: 0.8
+    use_unif_rand_alpha__: TRUE
+    alpha___lower_bound: 0
+    alpha___upper_bound: 1
 
             #  p and r drive num of spp (increase p to increase num of spp)
             #  What is a reasonable range?
@@ -41,10 +61,18 @@ base_params:
             #         integerize (target_num_links_between_2_groups_per_round * num_rounds_of_linking_between_groups)
             #     max_possible_tot_num_links = integerize (tot_num_links_inside_groups + max_possible_num_links_between_groups)
 
-    p__prop_of_links_between_groups: 0.8
-#    p__prop_of_links_between_groups: 0.5
+#    p__prop_of_links_between_groups: 0.8
+    p__prop_of_links_between_groups: 0.28
+    use_unif_rand_p__prop_of_links_between_groups: TRUE
+    p__prop_of_links_between_groups_lower_bound: 0
+    p__prop_of_links_between_groups_upper_bound: 1
+
+
     r__density: 0.8
 #    r__density: 0.5
+    use_unif_rand_r__density: TRUE
+    p__r__density_lower_bound: 0
+    p__r__density_upper_bound: 5
 
 
 
@@ -78,4 +106,42 @@ base_params:
     summary_filename: $$output_path$$prob_diff_results.csv
 #    output.plot : $$output_path$$poptraj
 #    output.dump : $$output_path$$projtraj.R
+
+#repetitions:
+#    generators:
+#        - key: seed
+#          generator_type: linear_step
+#          start: 151
+#          step_size: 1
+#          count: 500
+
+#        - key: p__prop_of_links_between_cliques
+#          generator_type: linear_step
+#          start: 0.26
+#          step_size: 0.01
+#          count: 6
+
+#        - key: r__density
+#          generator_type: linear_step
+#          start: 6.0
+#          step_size: 0.5
+#          count: 2
+
+#        - key: alpha__
+#          generator_type: linear_step
+#          start: 0.20
+#          step_size: 0.25
+#          count: 1
+
+#        - key: n__num_groups
+#          generator_type: linear_step
+#          start: 40
+#          step_size: 5
+#          count: 1          
+          
+          
+#concatenate:
+#  heading_row: true
+#  input_filename: prob_diff_results.csv
+#  output_filename: all_results_prob_diff.csv
 

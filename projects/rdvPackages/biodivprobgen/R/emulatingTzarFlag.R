@@ -13,10 +13,12 @@
 
 #  BTL - 2014 11 28 - Created.
 
+#  BTL - 2014 12 28 - Changed flag's name to emulatingTzar.
+
 #===============================================================================
 
     #  Comment out whichever line is no longer appropriate.
-#emulateRunningUnderTzar = TRUE
-emulateRunningUnderTzar = FALSE
+#emulatingTzar = TRUE
+emulatingTzar = FALSE
 
 #===============================================================================
