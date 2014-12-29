@@ -17,7 +17,7 @@
         #  Moving this to the top level code (i.e., generateSetCoverProblem.R) 
         #  so that it's easier to see and control.  I was forgetting where 
         #  it was done before...
-#source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/emulatingTzarFlag.R")
+#source (paste0 (sourceCodeLocationWithSlash, "emulatingTzarFlag.R"))
 
 #--------------------
 
@@ -44,7 +44,7 @@ tzarEmulation_scratchFileName = "~/D/rdv-framework/projects/rdvPackages/biodivpr
     #  cleanUpAfterTzarEmulation() after your project code has finished 
     #  running, e.g., as the last act in this file. 
 
-source ('/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/emulateRunningUnderTzar.R')
+source (paste0 (sourceCodeLocationWithSlash, "emulateRunningUnderTzar.R"))
 
 if (emulatingTzar)
     {

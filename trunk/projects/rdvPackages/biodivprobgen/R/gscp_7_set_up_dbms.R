@@ -7,7 +7,7 @@
 #  Most of this part is cloned from dbms.initialise.melb.grassland.R
 #===============================================================================
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/dbms_functions.R")
+source (paste0 (sourceCodeLocationWithSlash, "dbms_functions.R"))
 
 db_name = "test.db"
 

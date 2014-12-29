@@ -31,10 +31,11 @@ base_params:
             #  Xu uses ???
             #
             #      num_nodes_per_group = integerize (n__num_groups ^ alpha__)
-    n__num_groups: 20
+    n__num_groups: 10
 #####    n__num_groups: 30
 #    n__num_groups: 5
-    use_unif_rand_n__num_groups: TRUE
+    use_unif_rand_n__num_groups: FALSE
+#####    use_unif_rand_n__num_groups: TRUE
     n__num_groups_lower_bound: 20
     n__num_groups_upper_bound: 35
     
@@ -46,7 +47,8 @@ base_params:
             #      tot_num_nodes = n__num_groups * num_nodes_per_group
     alpha__: 0.25
 #    alpha__: 0.8
-    use_unif_rand_alpha__: TRUE
+    use_unif_rand_alpha__: FALSE
+#####    use_unif_rand_alpha__: TRUE
     alpha___lower_bound: 0
     alpha___upper_bound: 1
 
@@ -63,14 +65,16 @@ base_params:
 
 #    p__prop_of_links_between_groups: 0.8
     p__prop_of_links_between_groups: 0.28
-    use_unif_rand_p__prop_of_links_between_groups: TRUE
+    use_unif_rand_p__prop_of_links_between_groups: FALSE
+#####    use_unif_rand_p__prop_of_links_between_groups: TRUE
     p__prop_of_links_between_groups_lower_bound: 0
     p__prop_of_links_between_groups_upper_bound: 1
 
 
     r__density: 0.8
 #    r__density: 0.5
-    use_unif_rand_r__density: TRUE
+    use_unif_rand_r__density: FALSE
+#####    use_unif_rand_r__density: TRUE
     p__r__density_lower_bound: 0
     p__r__density_upper_bound: 5
 

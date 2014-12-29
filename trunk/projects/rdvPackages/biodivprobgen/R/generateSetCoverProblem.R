@@ -79,6 +79,12 @@
 
 #===============================================================================
 
+if (!exists ("sourceCodeLocationWithSlash"))
+    sourceCodeLocationWithSlash = 
+        "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/"
+
+#-------------------------------------------------------------------------------
+
     #  2014 12 29 - BTL
     #  At this point, this flag will probably almost never change again 
     #  because my code is relying on the parameters list that tzar builds 
@@ -103,33 +109,33 @@ running_tzar_or_tzar_emulator = TRUE
         #  Moving this to the top level code so that it's easier to see and 
         #  control.
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/emulatingTzarFlag.R")
+source (paste0 (sourceCodeLocationWithSlash, "emulatingTzarFlag.R"))
 
 #-------------------------------------------------------------------------------
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_2_tzar_emulation.R")
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_3_get_parameters.R")
+source (paste0 (sourceCodeLocationWithSlash, "gscp_2_tzar_emulation.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_3_get_parameters.R"))
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_4_support_functions.R")
+source (paste0 (sourceCodeLocationWithSlash, "gscp_4_support_functions.R"))
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_5_derive_control_parameters.R")
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_6_create_data_structures.R")
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_7_set_up_dbms.R")
+source (paste0 (sourceCodeLocationWithSlash, "gscp_5_derive_control_parameters.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_6_create_data_structures.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_7_set_up_dbms.R"))
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_8_link_nodes_within_groups.R")
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_9_link_nodes_between_groups.R")
+source (paste0 (sourceCodeLocationWithSlash, "gscp_8_link_nodes_within_groups.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_9_link_nodes_between_groups.R"))
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_10_clean_up_completed_graph_structures.R")
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_11_summarize_and_plot_graph_structure_information.R")
+source (paste0 (sourceCodeLocationWithSlash, "gscp_10_clean_up_completed_graph_structures.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_11_summarize_and_plot_graph_structure_information.R"))
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_12_write_network_to_marxan_files.R")
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_13_write_marxan_control_file_and_run_marxan.R")
+source (paste0 (sourceCodeLocationWithSlash, "gscp_12_write_network_to_marxan_files.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_13_write_marxan_control_file_and_run_marxan.R"))
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_14_read_marxan_output_files.R")
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_15_create_master_output_structure.R")
+source (paste0 (sourceCodeLocationWithSlash, "gscp_14_read_marxan_output_files.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_15_create_master_output_structure.R"))
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_16_clean_up_run.R")
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_17_clean_up_tzar_emulation.R")
+source (paste0 (sourceCodeLocationWithSlash, "gscp_16_clean_up_run.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_17_clean_up_tzar_emulation.R"))
 
 #===============================================================================
 
