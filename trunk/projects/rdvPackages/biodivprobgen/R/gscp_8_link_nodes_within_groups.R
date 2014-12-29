@@ -16,20 +16,20 @@ cur_row = 1
 
 for (cur_group_ID in 1:n__num_groups)
     {
-    #  NOTE:  The code in this loop assumes the group nodes are sorted.  
-    #         These group nodes are probably already sorted, 
-    #         but this just makes sure, as a safeguard against 
-    #         some future change.
+        #  NOTE:  The code in this loop assumes the group nodes are sorted.  
+        #         These group nodes are probably already sorted, 
+        #         but this just makes sure, as a safeguard against 
+        #         some future change.
     cur_group_nodes_sorted = 
         sort (nodes [nodes$group_ID == cur_group_ID, "node_ID"])
     cat ("\n\ncur_group_nodes_sorted for group ", cur_group_ID, " = ")
     print (cur_group_nodes_sorted)
     
-    #  Link each node in the group to all nodes with a higher node ID in 
-    #  the same group.  
-    #  Doing it this way insures that all nodes in the group are linked to 
-    #  all other nodes in the group but that the linking action is only done 
-    #  once for each pair.
+        #  Link each node in the group to all nodes with a higher node ID in 
+        #  the same group.  
+        #  Doing it this way insures that all nodes in the group are linked to 
+        #  all other nodes in the group but that the linking action is only done 
+        #  once for each pair.
     
     for (cur_idx in 1:num_nodes_per_group_minus_1)
         {

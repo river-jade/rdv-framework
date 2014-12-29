@@ -4,6 +4,33 @@
 
 #  source ('emulateRunningUnderTzar.R')
 
+#  History:
+
+#  2014 ... - BTL
+#       Need to look up the creation stuff in the example from May or 
+#       whatever month it was.
+
+#  2014 12 28 - BTL
+#       Making it work under biodivprobgen.
+#       Made the following changes throughout the code in here and the 
+#       biodivprobgen code that calls this code:
+#           - Changed name of flag from "emulateRunningTzar" to 
+#             "emulatingTzar".  Not sure if this was necessary but it 
+#             seemed like both the flag and the function had the same 
+#             name and that didn't seem like a good idea.
+#           - Changed all code in biodivprobgen to use full path names 
+#             since not all of the source() calls were finding their 
+#             target code files.  I think that's because something in 
+#             tzar or somewhere does a cd into the biodivprobgen directory 
+#             but the source files are in biodivprobgen/R.
+#           - Most important change was to add "metadata/" in the middle 
+#             of parametersListSourceFilename since River changed the tzar 
+#             output directory structure after I had created this 
+#             emulation code originally.
+#           - Second most important change: had to add a missing variable 
+#             to the project.yaml file, i.e., the variable that captures 
+#             the output directory path.  
+
 #===============================================================================
 
     #  Probably never need to change these...
@@ -105,7 +132,7 @@ emulateRunningTzar = function (projectPath,
         #----------------------------------------------------------
 
     parametersListSourceFilename = paste0 (tzarInProgressDirName,
-                                           "metadata/", 
+                                           "metadata/",  #  BTL added 2014 12 28
                                            tzarParametersSrcFileName)
     source (parametersListSourceFilename)
 

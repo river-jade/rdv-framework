@@ -111,7 +111,7 @@ running_tzar_or_tzar_emulator = TRUE
 
 source (paste0 (sourceCodeLocationWithSlash, "emulatingTzarFlag.R"))
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_2_tzar_emulation.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_3_get_parameters.R"))
