@@ -50,8 +50,6 @@ local_build_parameters_list = function ()
 
 #-------------------------------------------------------------------------------
 
-running_tzar_or_tzar_emulator = TRUE
-
 if (! running_tzar_or_tzar_emulator)
     {
     if (exists ("parameters"))

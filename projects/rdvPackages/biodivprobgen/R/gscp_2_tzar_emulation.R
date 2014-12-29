@@ -13,7 +13,11 @@
     #  every file that needs to know the value of this flag is using 
     #  the synchronized to the same value.
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/emulatingTzarFlag.R")
+        #  2014 12 29 - BTL 
+        #  Moving this to the top level code (i.e., generateSetCoverProblem.R) 
+        #  so that it's easier to see and control.  I was forgetting where 
+        #  it was done before...
+#source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/emulatingTzarFlag.R")
 
 #--------------------
 

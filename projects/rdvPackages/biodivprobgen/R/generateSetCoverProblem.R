@@ -68,7 +68,44 @@
 #         the parameters.R file in there instead of in the output directory 
 #         itself.
 
+#  2014 12 29 - BTL
+#       - Moved both tzar control flag settings up into this file so that 
+#         they are easier to find and control in one place.  I'm still 
+#         leaving the actual setting of emulatingTzar in the file called 
+#         emulatingTzarFlag.R for the reasons explained below, but I'm 
+#         sourcing that file from here instead of in gscp_2_tzar_emulation.R 
+#         because I couldn't remember where it was happening when I wanted 
+#         to change it between runs.
+
 #===============================================================================
+
+    #  2014 12 29 - BTL
+    #  At this point, this flag will probably almost never change again 
+    #  because my code is relying on the parameters list that tzar builds 
+    #  and it would be too big of a pain in the ass to build the parameters 
+    #  structure myself, as would be required if NOT running under tzar or 
+    #  tzar emulation.  However, I have made it possible to do that using 
+    #  the function called local_build_parameters_list() in 
+    #  gscp_3_get_parameters.R.  That is mostly aimed at later use though, 
+    #  e.g., if the source code is distributed to someone else and they 
+    #  don't want to use tzar or tzar emulation.
+
+running_tzar_or_tzar_emulator = TRUE
+
+    #  Need to set emulation flag every time you swap between emulating 
+    #  and not emulating.  
+    #  This is the only variable you should need to set for that.
+    #  Make the change in the file called emulatingTzarFlag.R so that 
+    #  every file that needs to know the value of this flag is using 
+    #  the synchronized to the same value.
+
+        #  2014 12 29 - BTL 
+        #  Moving this to the top level code so that it's easier to see and 
+        #  control.
+
+source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/emulatingTzarFlag.R")
+
+#-------------------------------------------------------------------------------
 
 source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_2_tzar_emulation.R")
 source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/gscp_3_get_parameters.R")
