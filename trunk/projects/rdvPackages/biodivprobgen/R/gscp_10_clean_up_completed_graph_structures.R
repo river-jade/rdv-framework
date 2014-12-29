@@ -4,7 +4,7 @@
 
 #===============================================================================
 
-    #  All node pairs should be loaded into the linked_node_pairs table now 
+    #  All node pairs should be loaded into the edge_list table now 
     #  and there should be no NA lines left in the table.
     
     #  However no duplicate links are allowed, so need to go through all 
@@ -18,13 +18,13 @@
         #           the order was allowed to occur both ways, i.e., (3,5) and 
         #           (5,3) would not be flagged as being duplicates.
 
-unique_linked_node_pairs = unique (linked_node_pairs)  #  the edge list
+unique_edge_list = unique (edge_list)  #  the edge list
 
-num_non_unique_linked_node_pairs = dim (linked_node_pairs)[1]
-num_unique_linked_node_pairs = dim (unique_linked_node_pairs)[1]
+num_non_unique_edge_list = dim (edge_list)[1]
+num_unique_edge_list = dim (unique_edge_list)[1]
 
-cat ("\n\nnum_non_unique_linked_node_pairs =", num_non_unique_linked_node_pairs)
-cat ("\nnum_unique_linked_node_pairs =", num_unique_linked_node_pairs)
+cat ("\n\nnum_non_unique_edge_list =", num_non_unique_edge_list)
+cat ("\nnum_unique_edge_list =", num_unique_edge_list)
 cat ("\n")
 
 #===============================================================================
@@ -48,7 +48,7 @@ cat ("\n")
     #  It makes it easy to compute rank-abundance information and information 
     #  about the distribution of species across patches.
 
-num_node_link_pairs = 2 * num_unique_linked_node_pairs
+num_node_link_pairs = 2 * num_unique_edge_list
 node_link_pairs = matrix (NA, 
                           nrow=num_node_link_pairs, 
                           ncol=2, 
@@ -60,13 +60,13 @@ names (node_link_pairs) = c("node_ID", "link_ID")
 
 next_node_link_pair_row = 1
 
-for (cur_link_ID in 1:num_unique_linked_node_pairs)
+for (cur_link_ID in 1:num_unique_edge_list)
     {
     updated_links = 
         add_link (node_link_pairs, 
                   next_node_link_pair_row, 
-                  unique_linked_node_pairs [cur_link_ID, 1], 
-                  unique_linked_node_pairs [cur_link_ID, 2], 
+                  unique_edge_list [cur_link_ID, 1], 
+                  unique_edge_list [cur_link_ID, 2], 
                   cur_link_ID)
     
     node_link_pairs = updated_links$node_link_pairs

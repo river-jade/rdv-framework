@@ -47,8 +47,8 @@ for (cur_round in 1:num_rounds_of_linking_between_groups)
     
     for (cur_node_pair_idx in 1:target_num_links_between_2_groups_per_round)
         {                
-        linked_node_pairs [cur_row, 1] = group_1_sampled_nodes [cur_node_pair_idx]
-        linked_node_pairs [cur_row, 2] = group_2_sampled_nodes [cur_node_pair_idx]
+        edge_list [cur_row, 1] = group_1_sampled_nodes [cur_node_pair_idx]
+        edge_list [cur_row, 2] = group_2_sampled_nodes [cur_node_pair_idx]
         cur_row = cur_row + 1
         }
     }

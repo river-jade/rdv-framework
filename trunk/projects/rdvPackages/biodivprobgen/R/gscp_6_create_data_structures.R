@@ -81,7 +81,7 @@
     
 #    nodes_df = as.data.frame (nodes)
     
-    linked_node_pairs = matrix (NA, 
+    edge_list = matrix (NA, 
                                 nrow = max_possible_tot_num_links, 
                                 ncol = 2, 
                                 byrow = TRUE)
