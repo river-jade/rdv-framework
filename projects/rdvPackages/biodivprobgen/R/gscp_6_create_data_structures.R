@@ -86,6 +86,20 @@
                                 ncol = 2, 
                                 byrow = TRUE)
 
+#-------------------------------------------------------------------------------
+#    I don't think that anything from here on in this file is used anymore.
+#    I'm going to test this by putting an "if (FALSE)" around it all to see 
+#    whether anything breaks.  If everything continues to work fine, then 
+#    I can remove all of this.  
+#    However, the comment immediately below here seems like it must apply 
+#    to something that has been created elsewhere now and possibly given 
+#    a different name.
+#-------------------------------------------------------------------------------
+
+            #  Is this comment no longer applicable?
+            #  Or, does it apply to something else that's built later on?
+            #  BTL - 2014 12 29
+            #  
             #  Build a data frame with all the links for all of the nodes.  
             #  For each node, there is a separate line for each link associated 
             #  with that node.  So, for example, if there are two nodes, 3 and 5, 
@@ -99,7 +113,7 @@
             #       5            15
             #       5            21
 
-    max_possible_tot_num_node_link_pairs = 2 * max_possible_tot_num_links
+
 #     node_link_pairs = matrix (NA, 
 #                               nrow=max_possible_tot_num_node_link_pairs, 
 #                               ncol=2, 
@@ -108,16 +122,20 @@
 #     node_link_pairs = as.data.frame (node_link_pairs)
 #     names (node_link_pairs) = c("node_ID", "link_ID")
 
+if (FALSE)
+{
     next_node_link_row = 1    #  NEVER USED?  DELETE THIS?
     next_link_ID = 1
     cur_group_ID = 1
     
         #  Link all nodes within each group.
-    all_group_IDs = 1:n__num_groups
+    all_group_IDs = 1:n__num_groups    #  NEVER USED?  DELETE THIS?
 
     cat ("\n\ngroups")
     
 #df[df$value>3.0,] 
+    
+}
 
 #===============================================================================
 

@@ -169,6 +169,7 @@ num_independent_nodes_per_group = 1
         integerize (target_num_links_between_2_groups_per_round * num_rounds_of_linking_between_groups)
     
     max_possible_tot_num_links = integerize (tot_num_links_inside_groups + max_possible_num_links_between_groups)
+    max_possible_tot_num_node_link_pairs = 2 * max_possible_tot_num_links
 
     cat ("\n\nInput variable settings")
     cat ("\n\t\t n__num_groups = ", n__num_groups)
@@ -184,6 +185,7 @@ num_independent_nodes_per_group = 1
     cat ("\n\t\t tot_num_links_inside_groups = ", tot_num_links_inside_groups)
     cat ("\n\t\t max_possible_num_links_between_groups = ", max_possible_num_links_between_groups)
     cat ("\n\t\t max_possible_tot_num_links = ", max_possible_tot_num_links)
+    cat ("\n\t\t max_possible_tot_num_node_link_pairs = ", max_possible_tot_num_node_link_pairs)
     cat ("\n\n")
 
 #===============================================================================
