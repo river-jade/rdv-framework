@@ -8,10 +8,6 @@
 #  routines could be explicit tests of the assumptions (and conclusions?) of  
 #  the 4 cases in the proof.
 
-#  *** Future code should include test routines.  Would be good if those  
-#  routines could be explicit tests of the assumptions (and conclusions?) of  
-#  the 4 cases in the proof.
-
 #===============================================================================
 
 #  History:

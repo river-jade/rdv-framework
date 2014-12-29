@@ -35,20 +35,20 @@ for (cur_group_ID in 1:n__num_groups)
         {
         for (other_node_idx in (cur_idx+1):num_nodes_per_group)
             {
-            linked_node_pairs [cur_row, 1] = cur_group_nodes_sorted [cur_idx]
-            linked_node_pairs [cur_row, 2] = cur_group_nodes_sorted [other_node_idx]
+            edge_list [cur_row, 1] = cur_group_nodes_sorted [cur_idx]
+            edge_list [cur_row, 2] = cur_group_nodes_sorted [other_node_idx]
             cur_row = cur_row + 1
             }
         }
     }
 
-cat ("\n\nlinked_node_pairs (with last lines NA to hold intergroup links to be loaded in next step):\n\n")
-print (linked_node_pairs)
+cat ("\n\nedge_list (with last lines NA to hold intergroup links to be loaded in next step):\n\n")
+print (edge_list)
 cat ("\n\n")
 
 #===============================================================================
 
-    #  linked_node_pairs gives the edge list.
+    #  edge_list gives the edge list.
         #  However, can't use it until it's completely finished, i.e., 
         #  close to when it's handed to Marxan.
     #  igraph needs an edge list.
