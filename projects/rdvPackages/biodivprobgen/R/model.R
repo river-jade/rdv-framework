@@ -8,7 +8,11 @@
 
 #===============================================================================
 
-source ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/emulatingTzarFlag.R")
+if (!exists ("sourceCodeLocationWithSlash"))
+    sourceCodeLocationWithSlash = 
+        "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/"
+
+source (paste0 (sourceCodeLocationWithSlash, "emulatingTzarFlag.R"))
 
 tzarEmulation_scratchFileName = "~/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/tzarEmulation_scratchFile.txt"
 
@@ -16,7 +20,7 @@ if (! emulatingTzar)
     {
 cat ("\n\n=====>  In model.R: NOT emulatingTzar")
 
-    source ("generateSetCoverProblem.R")    #  not emulating, running regular tzar
+    source (paste0 (sourceCodeLocationWithSlash, "generateSetCoverProblem.R"))    #  not emulating, running regular tzar
     
     } else    #  emulating
     {
