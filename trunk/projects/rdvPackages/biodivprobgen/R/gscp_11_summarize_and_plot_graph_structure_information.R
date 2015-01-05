@@ -46,8 +46,11 @@ cat ("\n\n--------------------  Computing and plotting degree distribution of no
 
 final_link_counts_for_each_node = count (node_link_pairs, vars="node_ID")
 
-cat ("\n\nNumber of links per node AFTER intergroup linking:\n")
-print (final_link_counts_for_each_node)
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nNumber of links per node AFTER intergroup linking:\n")
+    print (final_link_counts_for_each_node)
+    }
 
 final_degree_dist = arrange (final_link_counts_for_each_node, -freq)
 final_degree_dist[,"node_ID"] = 1:dim(final_degree_dist)[1]
@@ -60,8 +63,11 @@ plot (final_degree_dist)
 
 final_node_counts_for_each_link = count (node_link_pairs, vars="link_ID")
 
-cat ("\n\nNumber of nodes per link AFTER intergroup linking:\n")
-print (final_node_counts_for_each_link)
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nNumber of nodes per link AFTER intergroup linking:\n")
+    print (final_node_counts_for_each_link)
+    }
 
 final_rank_abundance_dist = arrange (final_node_counts_for_each_link, -freq)
 final_rank_abundance_dist[,"link_ID"] = 1:dim(final_rank_abundance_dist)[1]

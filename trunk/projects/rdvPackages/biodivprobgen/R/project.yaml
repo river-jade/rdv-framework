@@ -108,6 +108,7 @@ base_params:
         # Outputs
         
     summary_filename: $$output_path$$prob_diff_results.csv
+    summary_without_run_id_filename: $$output_path$$prob_diff_results_with_0_run_id.csv
 #    output.plot : $$output_path$$poptraj
 #    output.dump : $$output_path$$projtraj.R
 

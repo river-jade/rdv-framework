@@ -36,7 +36,7 @@ for (cur_round in 1:num_rounds_of_linking_between_groups)
     group_2_nodes = nodes [(nodes$group_ID == group_2) & (nodes$dependent_set_member), 
                             "node_ID"]
     
-    #***-----------------------------------------------------------------------------------
+#***----------------------------------------------------------------------------
     
     group_1_sampled_nodes = 
         sample (group_1_nodes, target_num_links_between_2_groups_per_round, 
