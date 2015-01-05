@@ -16,6 +16,18 @@ cur_row = 1
 
 for (cur_group_ID in 1:n__num_groups)
     {
+        #  NOTE:  I think that the ordering of the node IDs within 
+        #           each pair is important later on.  That is, when  
+        #           trying to identify duplicated links, the unique()  
+        #           call that is used will only work if the pairs are 
+        #           ordered within pair, i.e., if all "from" nodes 
+        #           have a value less than or equal to the "to" value.
+        #           That wouldn't be necessary if these were directed links, 
+        #           but undirected, you couldn't recognize duplicates if 
+        #           the order was allowed to occur both ways, i.e., (3,5) and 
+        #           (5,3) would not be flagged as being duplicates.
+
+
         #  NOTE:  The code in this loop assumes the group nodes are sorted.  
         #         These group nodes are probably already sorted, 
         #         but this just makes sure, as a safeguard against 
