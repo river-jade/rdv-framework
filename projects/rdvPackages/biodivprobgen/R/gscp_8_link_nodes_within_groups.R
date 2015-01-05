@@ -42,9 +42,12 @@ for (cur_group_ID in 1:n__num_groups)
         }
     }
 
-cat ("\n\nedge_list (with last lines NA to hold intergroup links to be loaded in next step):\n\n")
-print (edge_list)
-cat ("\n\n")
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nedge_list (with last lines NA to hold intergroup links to be loaded in next step):\n\n")
+    print (edge_list)
+    cat ("\n\n")
+    }
 
 #===============================================================================
 

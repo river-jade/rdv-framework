@@ -72,12 +72,15 @@
 #         }
 #     cat ("\n")
 
+if (DEBUG_LEVEL > 0)
+    {
     cat ("\n\t\t independent_node_IDs = ", independent_node_IDs)
     cat ("\n\t\t dependent_node_IDs = ", dependent_node_IDs)
     
     cat ("\n\nnodes = \n")
     print (nodes)
-    cat ("\n\n")
+    cat ("\n\n")    
+    }
     
 #    nodes_df = as.data.frame (nodes)
     

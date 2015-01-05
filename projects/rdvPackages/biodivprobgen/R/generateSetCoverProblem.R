@@ -75,6 +75,13 @@
 
 #===============================================================================
 
+    #  debugging level: 0 means don't output debugging write statements.
+    #  Having this as an integer instead of binary so that I can have 
+    #  multiple levels of detail if I want to.
+DEBUG_LEVEL = 0
+
+#===============================================================================
+
 if (!exists ("sourceCodeLocationWithSlash"))
     sourceCodeLocationWithSlash = 
         "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/"

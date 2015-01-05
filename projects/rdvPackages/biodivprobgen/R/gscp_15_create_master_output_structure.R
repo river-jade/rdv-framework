@@ -196,7 +196,7 @@ cur_result_row = 0
 
 cur_result_row = cur_result_row + 1
 
-results_df$run_ID [cur_result_row]                                          = parameters$run_id
+#results_df$run_ID [cur_result_row]                                          = parameters$run_id
 results_df$num_PUs [cur_result_row]                                          = num_PUs
 results_df$num_spp [cur_result_row]                                          = num_spp
 results_df$seed [cur_result_row]                                             = seed
@@ -262,7 +262,21 @@ results_df$marxan_CLUMPTYPE [cur_result_row]                                 = m
 #  Execution halted 
 
 
-#write.csv (results_df, file = "./prob_diff_results.csv", row.names = FALSE)
+    #  Write the results out to 2 separate and nearly identical files.
+    #  The only difference between the two files is that the run ID in 
+    #  one of them is always set to 0 and in the other, it's the correct 
+    #  current run ID.  This is done to make it easier to automatically 
+    #  compare the output csv files of different runs when the only thing 
+    #  that should be different between the two runs is the run ID.  
+    #  Having different run IDs causes diff or any similar comparison to 
+    #  think that the run outputs don't match.  If they both have 0 run ID, 
+    #  then diff's output will correctly flag whether there are differences 
+    #  in the outputs.
+
+results_df$run_ID [cur_result_row] = 0
+write.csv (results_df, file = parameters$summary_without_run_id_filename, row.names = FALSE)
+
+results_df$run_ID [cur_result_row] = parameters$run_id
 write.csv (results_df, file = parameters$summary_filename, row.names = FALSE)
 
 #===============================================================================
