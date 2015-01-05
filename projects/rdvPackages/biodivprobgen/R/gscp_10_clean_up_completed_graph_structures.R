@@ -36,7 +36,8 @@ if (DEBUG_LEVEL > 0)
 
 #===============================================================================
 
-    #  Convert edge list to PU/spp table to give to Marxan.
+    #  Convert edge list to PU/spp table to give to Marxan and to network 
+    #  functions for bipartite networks:
     #
     #  Now that we have the edge list, we need to go through and 
     #  create a table where every link attached to a node appears on a 

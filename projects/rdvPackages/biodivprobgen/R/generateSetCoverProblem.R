@@ -129,6 +129,7 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_8_link_nodes_within_groups.R"
 source (paste0 (sourceCodeLocationWithSlash, "gscp_9_link_nodes_between_groups.R"))
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_10_clean_up_completed_graph_structures.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_10a_set_up_for_network_measures.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_11_summarize_and_plot_graph_structure_information.R"))
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_12_write_network_to_marxan_files.R"))
