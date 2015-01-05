@@ -60,9 +60,9 @@ if (DEBUG_LEVEL > 0)
     #  description of a bipartite network, so I may need to modify or use 
     #  it in doing the bipartite network analyses too.
 
-num_node_link_pairs = 2 * num_unique_edge_list
+num_PU_spp_pairs = 2 * num_unique_edge_list
 PU_spp_pair_indices = matrix (NA, 
-                          nrow=num_node_link_pairs, 
+                          nrow=num_PU_spp_pairs, 
                           ncol=2, 
                           byrow=TRUE
                           )
