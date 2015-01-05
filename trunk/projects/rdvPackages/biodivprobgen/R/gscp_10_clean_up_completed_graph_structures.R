@@ -61,14 +61,22 @@ if (DEBUG_LEVEL > 0)
     #  it in doing the bipartite network analyses too.
 
 num_PU_spp_pairs = 2 * num_unique_edge_list
-PU_spp_pair_indices = matrix (NA, 
-                          nrow=num_PU_spp_pairs, 
-                          ncol=2, 
-                          byrow=TRUE
-                          )
 
-PU_spp_pair_indices = as.data.frame (PU_spp_pair_indices)
-names (PU_spp_pair_indices) = c("node_ID", "link_ID")
+
+# PU_spp_pair_indices = matrix (NA, 
+#                           nrow=num_PU_spp_pairs, 
+#                           ncol=2, 
+#                           byrow=TRUE
+#                           )
+# PU_spp_pair_indices = as.data.frame (PU_spp_pair_indices)
+# names (PU_spp_pair_indices) = c("node_ID", "link_ID")
+
+
+#PU_spp_pair_indices = data.frame (PU_ID = rep (NA, num_PU_spp_pairs),
+#                              spp_ID = rep (NA, num_PU_spp_pairs))
+PU_spp_pair_indices = data.frame (node_ID = rep (NA, num_PU_spp_pairs),
+                              link_ID = rep (NA, num_PU_spp_pairs))
+
 
 next_PU_spp_pair_row = 1
 
