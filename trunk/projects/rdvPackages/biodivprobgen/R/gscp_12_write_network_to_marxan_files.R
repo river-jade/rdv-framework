@@ -14,7 +14,10 @@ library (marxan)
 
 sppAmount = 1
 
-num_node_link_pairs = length (PU_spp_pair_indices [,"node_ID"])
+    #  Wasn't this value (num_PU_spp_pairs) already set earlier?
+    #  Is this measuring the same thing and therefore, should not be reset here?
+
+num_PU_spp_pairs = length (PU_spp_pair_indices [,"node_ID"])
 
 PU_IDs = unique (PU_spp_pair_indices [,"node_ID"])
 num_PUs = length (PU_IDs)
@@ -25,7 +28,7 @@ num_spp = length (spp_IDs)
 spp_PU_amount_table =
     data.frame (species = PU_spp_pair_indices [,"link_ID"],
                 pu      = PU_spp_pair_indices [,"node_ID"],
-                amount  = rep (sppAmount, num_node_link_pairs))
+                amount  = rep (sppAmount, num_PU_spp_pairs))
 
     #----------------------------------------------------------------------
     #  Sort the table in ascending order by species within planning unit.
