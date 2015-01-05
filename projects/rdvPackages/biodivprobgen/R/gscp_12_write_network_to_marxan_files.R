@@ -14,17 +14,17 @@ library (marxan)
 
 sppAmount = 1
 
-num_node_link_pairs = length (node_link_pairs [,"node_ID"])
+num_node_link_pairs = length (PU_spp_pair_indices [,"node_ID"])
 
-PU_IDs = unique (node_link_pairs [,"node_ID"])
+PU_IDs = unique (PU_spp_pair_indices [,"node_ID"])
 num_PUs = length (PU_IDs)
 
-spp_IDs = unique (node_link_pairs [,"link_ID"])
+spp_IDs = unique (PU_spp_pair_indices [,"link_ID"])
 num_spp = length (spp_IDs)
 
 spp_PU_amount_table =
-    data.frame (species = node_link_pairs [,"link_ID"],
-                pu      = node_link_pairs [,"node_ID"],
+    data.frame (species = PU_spp_pair_indices [,"link_ID"],
+                pu      = PU_spp_pair_indices [,"node_ID"],
                 amount  = rep (sppAmount, num_node_link_pairs))
 
     #----------------------------------------------------------------------
