@@ -62,36 +62,21 @@ if (DEBUG_LEVEL > 0)
 
 num_PU_spp_pairs = 2 * num_unique_edge_list
 
-
-# PU_spp_pair_indices = matrix (NA, 
-#                           nrow=num_PU_spp_pairs, 
-#                           ncol=2, 
-#                           byrow=TRUE
-#                           )
-# PU_spp_pair_indices = as.data.frame (PU_spp_pair_indices)
-# names (PU_spp_pair_indices) = c("node_ID", "link_ID")
-
-
-#PU_spp_pair_indices = data.frame (PU_ID = rep (NA, num_PU_spp_pairs),
-#                              spp_ID = rep (NA, num_PU_spp_pairs))
-PU_spp_pair_indices = data.frame (node_ID = rep (NA, num_PU_spp_pairs),
-                              link_ID = rep (NA, num_PU_spp_pairs))
-
+PU_spp_pair_indices = data.frame (PU_ID = rep (NA, num_PU_spp_pairs),
+                                  spp_ID = rep (NA, num_PU_spp_pairs))
+PU_col_name = names (PU_spp_pair_indices)[1]
+spp_col_name = names (PU_spp_pair_indices)[2]
 
 next_PU_spp_pair_row = 1
 
 for (cur_spp_ID in 1:num_unique_edge_list)
     {
-#    PU_spp_pair_indices [next_PU_spp_pair_row, "PU_ID"] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
-    PU_spp_pair_indices [next_PU_spp_pair_row, "node_ID"] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
-#    PU_spp_pair_indices [next_PU_spp_pair_row, "spp_ID"] = cur_spp_ID  #  next_spp_ID
-    PU_spp_pair_indices [next_PU_spp_pair_row, "link_ID"] = cur_spp_ID  #  next_spp_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, spp_col_name] = cur_spp_ID  #  next_spp_ID
     next_PU_spp_pair_row = next_PU_spp_pair_row + 1    
     
-#    PU_spp_pair_indices [next_PU_spp_pair_row, "PU_ID"] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
-    PU_spp_pair_indices [next_PU_spp_pair_row, "node_ID"] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
-#    PU_spp_pair_indices [next_PU_spp_pair_row, "spp_ID"] = cur_spp_ID  #  next_spp_ID
-    PU_spp_pair_indices [next_PU_spp_pair_row, "link_ID"] = cur_spp_ID  #  next_spp_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, spp_col_name] = cur_spp_ID  #  next_spp_ID
     next_PU_spp_pair_row = next_PU_spp_pair_row + 1
     }
 
