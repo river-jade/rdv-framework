@@ -44,7 +44,7 @@ cat ("\n\n--------------------  Computing and plotting degree distribution of no
 # cat ("\n\nNumber of links per node BEFORE intergroup linking:\n")
 # print (initial_link_counts_for_each_node)
 
-final_link_counts_for_each_node = count (node_link_pairs, vars="node_ID")
+final_link_counts_for_each_node = count (PU_spp_pair_indices, vars="node_ID")
 
 if (DEBUG_LEVEL > 0)
     {
@@ -61,7 +61,7 @@ plot (final_degree_dist)
 # cat ("\n\nNumber of nodes per link BEFORE intergroup linking:\n")
 # print (initial_node_counts_for_each_link)
 
-final_node_counts_for_each_link = count (node_link_pairs, vars="link_ID")
+final_node_counts_for_each_link = count (PU_spp_pair_indices, vars="link_ID")
 
 if (DEBUG_LEVEL > 0)
     {

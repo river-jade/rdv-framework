@@ -61,36 +61,36 @@ if (DEBUG_LEVEL > 0)
     #  it in doing the bipartite network analyses too.
 
 num_node_link_pairs = 2 * num_unique_edge_list
-node_link_pairs = matrix (NA, 
+PU_spp_pair_indices = matrix (NA, 
                           nrow=num_node_link_pairs, 
                           ncol=2, 
                           byrow=TRUE
                           )
 
-node_link_pairs = as.data.frame (node_link_pairs)
-names (node_link_pairs) = c("node_ID", "link_ID")
+PU_spp_pair_indices = as.data.frame (PU_spp_pair_indices)
+names (PU_spp_pair_indices) = c("node_ID", "link_ID")
 
 next_PU_spp_pair_row = 1
 
 for (cur_spp_ID in 1:num_unique_edge_list)
     {
-#    node_link_pairs [next_PU_spp_pair_row, "PU_ID"] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
-    node_link_pairs [next_PU_spp_pair_row, "node_ID"] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
-#    node_link_pairs [next_PU_spp_pair_row, "spp_ID"] = cur_spp_ID  #  next_spp_ID
-    node_link_pairs [next_PU_spp_pair_row, "link_ID"] = cur_spp_ID  #  next_spp_ID
+#    PU_spp_pair_indices [next_PU_spp_pair_row, "PU_ID"] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, "node_ID"] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
+#    PU_spp_pair_indices [next_PU_spp_pair_row, "spp_ID"] = cur_spp_ID  #  next_spp_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, "link_ID"] = cur_spp_ID  #  next_spp_ID
     next_PU_spp_pair_row = next_PU_spp_pair_row + 1    
     
-#    node_link_pairs [next_PU_spp_pair_row, "PU_ID"] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
-    node_link_pairs [next_PU_spp_pair_row, "node_ID"] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
-#    node_link_pairs [next_PU_spp_pair_row, "spp_ID"] = cur_spp_ID  #  next_spp_ID
-    node_link_pairs [next_PU_spp_pair_row, "link_ID"] = cur_spp_ID  #  next_spp_ID
+#    PU_spp_pair_indices [next_PU_spp_pair_row, "PU_ID"] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, "node_ID"] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
+#    PU_spp_pair_indices [next_PU_spp_pair_row, "spp_ID"] = cur_spp_ID  #  next_spp_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, "link_ID"] = cur_spp_ID  #  next_spp_ID
     next_PU_spp_pair_row = next_PU_spp_pair_row + 1
     }
 
 if (DEBUG_LEVEL > 0)
     {
-    cat ("\n\n=====>>>>>  node_link_pairs = \n")
-    print (node_link_pairs)
+    cat ("\n\n=====>>>>>  PU_spp_pair_indices = \n")
+    print (PU_spp_pair_indices)
     cat ("\n\n")    
     }
 
