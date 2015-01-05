@@ -41,10 +41,13 @@ cat ("\n\n--------------------  Computing and plotting degree distribution of no
 #  or visual display over those (e.g., something about their degree 
 #  distribution) that can be used as a predictive feature?
 
-# cat ("\n\nNumber of links per node BEFORE intergroup linking:\n")
-# print (initial_link_counts_for_each_node)
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nNumber of links per node BEFORE intergroup linking:\n")
+    print (initial_link_counts_for_each_node)
+    }
 
-final_link_counts_for_each_node = count (PU_spp_pair_indices, vars="node_ID")
+final_link_counts_for_each_node = count (PU_spp_pair_indices, vars=PU_col_name)
 
 if (DEBUG_LEVEL > 0)
     {
@@ -53,15 +56,18 @@ if (DEBUG_LEVEL > 0)
     }
 
 final_degree_dist = arrange (final_link_counts_for_each_node, -freq)
-final_degree_dist[,"node_ID"] = 1:dim(final_degree_dist)[1]
+final_degree_dist[,PU_col_name] = 1:dim(final_degree_dist)[1]
 plot (final_degree_dist)
 
 #-------------------------------------------------------------------------------
 
-# cat ("\n\nNumber of nodes per link BEFORE intergroup linking:\n")
-# print (initial_node_counts_for_each_link)
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nNumber of nodes per link BEFORE intergroup linking:\n")
+    print (initial_node_counts_for_each_link)
+    }
 
-final_node_counts_for_each_link = count (PU_spp_pair_indices, vars="link_ID")
+final_node_counts_for_each_link = count (PU_spp_pair_indices, vars=spp_col_name)
 
 if (DEBUG_LEVEL > 0)
     {
@@ -70,7 +76,7 @@ if (DEBUG_LEVEL > 0)
     }
 
 final_rank_abundance_dist = arrange (final_node_counts_for_each_link, -freq)
-final_rank_abundance_dist[,"link_ID"] = 1:dim(final_rank_abundance_dist)[1]
+final_rank_abundance_dist[,spp_col_name] = 1:dim(final_rank_abundance_dist)[1]
 plot (final_rank_abundance_dist)
 
 #===============================================================================
