@@ -87,10 +87,18 @@ all_except_slow_indices <-
 
 
     bipartite_metrics_from_bipartite_package <- 
-#         t (networklevel (bpm, index=c ("links per species",
-#                                      "H2",
-#                                      "interaction evenness")))
-        t (networklevel (bpm, index=all_except_slow_indices))
+# #         t (networklevel (bpm, index=c ("links per species",
+# #                                      "H2",
+# #                                      "interaction evenness")))
+    
+                #  BTL - 2015 01 07
+                #  On a small network, ALLBUTDD took a miniscule amount 
+                #  of extra time compared to all_except_slow_indices, 
+                #  so I'm going to use ALLBUTDD for now.  If bigger 
+                #  networks show this is too slow, then can revert to 
+                #  using all_except_slow_indices.
+#         t (networklevel (bpm, index=all_except_slow_indices))
+        t (networklevel (bpm, index="ALLBUTDD"))
 
 cat ("\n\nbipartite_metrics_from_bipartite_package = \n")
 print (bipartite_metrics_from_bipartite_package)

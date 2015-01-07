@@ -262,6 +262,13 @@ results_df$marxan_CLUMPTYPE [cur_result_row]                                 = m
 #  Execution halted 
 
 
+    #  Need to bind the network measures to the data frame too.
+
+results_df = cbind (results_df, 
+                    bipartite_metrics_from_bipartite_package, 
+                    bipartite_metrics_from_igraph_package_df
+                    )
+
     #  Write the results out to 2 separate and nearly identical files.
     #  The only difference between the two files is that the run ID in 
     #  one of them is always set to 0 and in the other, it's the correct 
