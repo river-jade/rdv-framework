@@ -75,6 +75,10 @@
 
 #===============================================================================
 
+start_time = proc.time()
+
+#===============================================================================
+
     #  debugging level: 0 means don't output debugging write statements.
     #  Having this as an integer instead of binary so that I can have 
     #  multiple levels of detail if I want to.
@@ -146,3 +150,8 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_17_clean_up_tzar_emulation.R"
 
 #===============================================================================
 
+end_time = proc.time()
+elapsed_time = end_time - start_time
+cat ("\n\nElapsed time for entire run = \n")
+print (elapsed_time)
+cat ("\n")
