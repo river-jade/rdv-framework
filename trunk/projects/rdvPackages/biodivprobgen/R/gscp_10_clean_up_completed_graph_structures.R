@@ -4,6 +4,10 @@
 
 #===============================================================================
 
+library (stringr)
+
+#===============================================================================
+
     #  All node pairs should be loaded into the edge_list table now 
     #  and there should be no NA lines left in the table.
     
