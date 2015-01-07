@@ -63,8 +63,24 @@ if (DEBUG_LEVEL > 0)
 
 num_PU_spp_pairs = 2 * num_unique_edge_list
 
+        #  BTL - 2015 01 07
+        #  Later in this file, I also create a data frame that uses the names 
+        #  of these pairs rather than their indices.  
+        #  Though the two data frames carry identical information, it looks 
+        #  like both of them are necessary because different network packages 
+        #  expect different inputs.  
+        #  The bipartite package creates an adjacency matrix based on the 
+        #  indices, but the igraph package creates a bipartite graph using 
+        #  either the indices or the vertex names.  However, if I'm going to 
+        #  use the vertex indices, I need to go back and renumber either the 
+        #  spp vertices or the PU vertices so that they don't overlap the 
+        #  other set.  That may end up being the better strategy when graphs 
+        #  get big, but at the moment, giving them names seems less likely 
+        #  to introduce some kind of indexing bug.
+        
 PU_spp_pair_indices = data.frame (PU_ID = rep (NA, num_PU_spp_pairs),
                                   spp_ID = rep (NA, num_PU_spp_pairs))
+
 PU_col_name = names (PU_spp_pair_indices)[1]
 spp_col_name = names (PU_spp_pair_indices)[2]
 
@@ -73,7 +89,7 @@ next_PU_spp_pair_row = 1
 for (cur_spp_ID in 1:num_unique_edge_list)
     {
     PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
-    PU_spp_pair_indices [next_PU_spp_pair_row, spp_col_name] = cur_spp_ID  #  next_spp_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, spp_col_name] = cur_spp_ID  #  next_spp_ID    
     next_PU_spp_pair_row = next_PU_spp_pair_row + 1    
     
     PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
@@ -85,6 +101,47 @@ if (DEBUG_LEVEL > 0)
     {
     cat ("\n\n=====>>>>>  PU_spp_pair_indices = \n")
     print (PU_spp_pair_indices)
+    cat ("\n\n")    
+    }
+
+#===============================================================================
+
+    #  Network metric functions need to know how many spp and PUs as well as 
+    #  their values and names.
+    #  This is the first point in the code where we actually know this for 
+    #  the species.  We knew it for PUs much earlier, but it's more coherent  
+    #  to set both things up in the same place here.
+    #
+    #  Will create names for PU vertices by prepending the vertex ID with a "p".
+    #  Similarly, spp vertices will be named by prepending with an "s".
+    #  Note that we have to either uniquely name the vertices or we have to  
+    #  renumber either the spp or the PUs.  This is because the numbering of 
+    #  both sets of vertices starts at 1 and that means the vertex IDs are 
+    #  not unique when the two sets are combined.  
+
+#browser()
+
+cat ("\n\nAbout to compute num_PUs and num_spp...")
+
+num_PUs = tot_num_nodes
+PU_vertex_indices = 1:num_PUs
+PU_vertex_names = str_c ("p", PU_vertex_indices)
+
+num_spp = num_unique_edge_list
+spp_vertex_indices = 1:num_spp
+spp_vertex_names = str_c ("s", spp_vertex_indices)
+
+cat ("\n\nDone computing num_PUs and num_spp...")
+
+PU_spp_pair_names = 
+    data.frame (PU_ID = str_c ("p", PU_spp_pair_indices [,PU_col_name]),
+                spp_ID = str_c ("s", PU_spp_pair_indices [,spp_col_name]), 
+                stringsAsFactors = FALSE)
+
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\n=====>>>>>  PU_spp_pair_names = \n")
+    print (PU_spp_pair_names)
     cat ("\n\n")    
     }
 

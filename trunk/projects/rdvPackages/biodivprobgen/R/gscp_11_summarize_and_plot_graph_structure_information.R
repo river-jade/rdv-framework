@@ -48,6 +48,7 @@ if (DEBUG_LEVEL > 0)
     }
 
 final_link_counts_for_each_node = count (PU_spp_pair_indices, vars=PU_col_name)
+#final_link_counts_for_each_node = count (PU_spp_pair_names, vars=PU_col_name)
 
 if (DEBUG_LEVEL > 0)
     {
@@ -68,6 +69,7 @@ if (DEBUG_LEVEL > 0)
     }
 
 final_node_counts_for_each_link = count (PU_spp_pair_indices, vars=spp_col_name)
+#final_node_counts_for_each_link = count (PU_spp_pair_names, vars=spp_col_name)
 
 if (DEBUG_LEVEL > 0)
     {
