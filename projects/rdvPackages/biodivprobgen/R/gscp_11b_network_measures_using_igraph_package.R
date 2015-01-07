@@ -255,7 +255,7 @@ cat ("\nmedian top_bg_redundancy = ", median (top_bg_redundancy))
 
 cat ("\n")
 
-browser()
+#browser()
 
 #===============================================================================
 
