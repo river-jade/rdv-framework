@@ -11,6 +11,7 @@ runner_class: RRunner
     
 base_params:
 
+
         #  BTL - 2014 12 28
         #  This variable captures the tzar output path to hand it to the 
         #  tzar emulation code.  It is absolutely necessary for the current 
@@ -24,66 +25,23 @@ base_params:
         #  emulation.
     fullOutputDirWithSlash: $$output_path$$
 
+#    runset_name: $$runset$$    #  Looks like there is no access to runset.
+
+    max_allowed_possible_tot_num_links: 2000
+
     seed: 111
 
-            #  1 - num_groups = tot cost, so increase n to reduce cost
-            #  What is a reasonable range?
-            #  Xu uses ???
-            #
-            #      num_nodes_per_group = integerize (n__num_groups ^ alpha__)
-    n__num_groups: 10
-#####    n__num_groups: 30
-#    n__num_groups: 5
     use_unif_rand_n__num_groups: FALSE
-#####    use_unif_rand_n__num_groups: TRUE
-    n__num_groups_lower_bound: 20
-    n__num_groups_upper_bound: 35
+    n__num_groups: 29
     
-            #  Drives the number of PUs per group and so, tot num PUs
-            #  What is a reasonable range?
-            #  Xu uses ???
-            #
-            #  Increase alpha to increase num of PUs.
-            #      tot_num_nodes = n__num_groups * num_nodes_per_group
-    alpha__: 0.25
-#    alpha__: 0.8
     use_unif_rand_alpha__: FALSE
-#####    use_unif_rand_alpha__: TRUE
-    alpha___lower_bound: 0
-    alpha___upper_bound: 1
-
-            #  p and r drive num of spp (increase p to increase num of spp)
-            #  What is a reasonable range?
-            #  Xu uses ???
-            #
-            #     target_num_links_between_2_groups_per_round = 
-            #         integerize (p__prop_of_links_between_groups * num_nodes_per_group)          
-            #     num_rounds_of_linking_between_groups = integerize (r__density * n__num_groups * log (n__num_groups))            
-            #     max_possible_num_links_between_groups = 
-            #         integerize (target_num_links_between_2_groups_per_round * num_rounds_of_linking_between_groups)
-            #     max_possible_tot_num_links = integerize (tot_num_links_inside_groups + max_possible_num_links_between_groups)
-
-#    p__prop_of_links_between_groups: 0.8
-    p__prop_of_links_between_groups: 0.28
+    alpha__: 0.169201
+    
     use_unif_rand_p__prop_of_links_between_groups: FALSE
-#####    use_unif_rand_p__prop_of_links_between_groups: TRUE
-    p__prop_of_links_between_groups_lower_bound: 0
-    p__prop_of_links_between_groups_upper_bound: 1
-
-
-    r__density: 0.8
-#    r__density: 0.5
+    p__prop_of_links_between_groups: 0.1919268
+    
     use_unif_rand_r__density: FALSE
-#####    use_unif_rand_r__density: TRUE
-    p__r__density_lower_bound: 0
-    p__r__density_upper_bound: 5
-
-
-
-#    n__num_groups: 12
-#    alpha__: 1.5
-#    p__prop_of_links_between_groups: 0.3
-#    r__density: 0.8
+    r__density: 4.031895
 
 
         #  2014 12 11 - BTL - Added.
@@ -106,7 +64,9 @@ base_params:
     marxan_spf_const: 10
     
         # Outputs
-        
+
+    timepoints_filename: $$output_path$$timepoints.csv
+
     summary_filename: $$output_path$$prob_diff_results.csv
     summary_without_run_id_filename: $$output_path$$prob_diff_results_with_0_run_id.csv
 #    output.plot : $$output_path$$poptraj
@@ -116,9 +76,9 @@ base_params:
 #    generators:
 #        - key: seed
 #          generator_type: linear_step
-#          start: 151
+#          start: 251
 #          step_size: 1
-#          count: 500
+#          count: 100    #  500
 
 #        - key: p__prop_of_links_between_cliques
 #          generator_type: linear_step

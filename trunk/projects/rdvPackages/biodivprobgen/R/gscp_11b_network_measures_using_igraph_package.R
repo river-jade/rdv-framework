@@ -8,11 +8,15 @@
 
 #===============================================================================
 
-#browser()
+timepoints_df = 
+    timepoint (timepoints_df, "gscp_11b", 
+               "Starting gscp_11b_network_measures_using_igraph_package.R")
 
-#if (FALSE)
-#{
+#===============================================================================
+
 library (igraph)
+
+#===============================================================================
 
 vertices = data.frame (name=c(spp_vertex_names, PU_vertex_names), 
                        type=c(rep(FALSE, num_spp),

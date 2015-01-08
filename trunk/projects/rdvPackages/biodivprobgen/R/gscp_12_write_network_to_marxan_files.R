@@ -4,13 +4,21 @@
 
 #===============================================================================
 
+timepoints_df = 
+    timepoint (timepoints_df, "gscp_12", 
+               "Starting gscp_12_write_network_to_marxan_files.R")
+
+#===============================================================================
+
+library (marxan)
+
+#===============================================================================
+
     #  Write out the data as Marxan input files.
 
 #-------------------------------------------------------------------------------
 
 cat ("\n\n--------------------  Writing out the data as Marxan input files.\n")
-
-library (marxan)
 
 sppAmount = 1
 

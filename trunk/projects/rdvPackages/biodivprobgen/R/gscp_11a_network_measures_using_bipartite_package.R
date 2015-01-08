@@ -8,7 +8,15 @@
 
 #===============================================================================
 
+timepoints_df = 
+    timepoint (timepoints_df, "gscp_11a", 
+               "Starting gscp_11a_network_measures_using_bipartite_package.R")
+
+#===============================================================================
+
 library (bipartite)
+
+#===============================================================================
 
 ###  Build input matrix for bipartite package...
 
@@ -97,8 +105,8 @@ all_except_slow_indices <-
                 #  so I'm going to use ALLBUTDD for now.  If bigger 
                 #  networks show this is too slow, then can revert to 
                 #  using all_except_slow_indices.
-#         t (networklevel (bpm, index=all_except_slow_indices))
-        t (networklevel (bpm, index="ALLBUTDD"))
+         t (networklevel (bpm, index=all_except_slow_indices))
+#        t (networklevel (bpm, index="ALLBUTDD"))
 
 cat ("\n\nbipartite_metrics_from_bipartite_package = \n")
 print (bipartite_metrics_from_bipartite_package)
