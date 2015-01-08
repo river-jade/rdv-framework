@@ -4,6 +4,12 @@
 
 #===============================================================================
 
+timepoints_df = 
+    timepoint (timepoints_df, "gscp_10", 
+               "Starting gscp_10_clean_up_completed_graph_structures.R")
+
+#===============================================================================
+
 library (stringr)
 
 #===============================================================================
@@ -135,7 +141,9 @@ num_spp = num_unique_edge_list
 spp_vertex_indices = 1:num_spp
 spp_vertex_names = str_c ("s", spp_vertex_indices)
 
-cat ("\n\nDone computing num_PUs and num_spp...")
+cat ("\n\nnum_PUs =", num_PUs)
+cat ("\nnum_spp =", num_spp)
+cat ("\n")
 
 PU_spp_pair_names = 
     data.frame (PU_ID = str_c ("p", PU_spp_pair_indices [,PU_col_name]),

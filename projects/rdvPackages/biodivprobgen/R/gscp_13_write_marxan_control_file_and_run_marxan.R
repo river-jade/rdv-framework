@@ -51,6 +51,12 @@
 
 #===============================================================================
 
+timepoints_df = 
+    timepoint (timepoints_df, "gscp_13", 
+               "Starting gscp_13_write_marxan_control_file_and_run_marxan.R")
+
+#===============================================================================
+
     #  General Parameters
 marxan_BLM = 1
 marxan_PROP  = 0.5

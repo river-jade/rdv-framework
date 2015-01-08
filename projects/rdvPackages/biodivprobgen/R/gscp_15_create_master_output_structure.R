@@ -4,6 +4,12 @@
 
 #===============================================================================
 
+timepoints_df = 
+    timepoint (timepoints_df, "gscp_15", 
+               "Starting gscp_15_create_master_output_structure.R")
+
+#===============================================================================
+
 #  Build a master table containing:
     #  planning unit ID
             #  marxan_best_df$PUID
@@ -268,6 +274,8 @@ results_df = cbind (results_df,
                     bipartite_metrics_from_bipartite_package, 
                     bipartite_metrics_from_igraph_package_df
                     )
+
+#  SHOULD ADD RUNSET NAME TO THE DF'S AS WELL...
 
     #  Write the results out to 2 separate and nearly identical files.
     #  The only difference between the two files is that the run ID in 

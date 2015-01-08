@@ -75,7 +75,91 @@
 
 #===============================================================================
 
-start_time = proc.time()
+    #  Print a label message followed by the total elapsed time for the 
+    #  run so far and then the elapsed time for the previous section, i.e., 
+    #  for the section since the last call to this routine.
+    #  This is useful for marking progress of long runs and for recording 
+    #  how long different parts of the run take.
+    #
+    #  Usage:
+    #       prev_time = timepoint (start_time, prev_time, string_to_print)
+
+timepoint = function (timepoints_df, 
+                      cur_timepoint_name, 
+                      string_to_print)
+    {
+    cur_timepoint_num <<- cur_timepoint_num + 1    #  Note global assignment...
+    cat ("\n\nTP", cur_timepoint_num, ":", string_to_print, "\n\n")
+    
+    #----------
+    
+    cur_time = proc.time()
+    
+    prev_chunk_elapsed_time = cur_time - prev_time
+    cat ("Elapsed time for previous chunk:\n")
+    print (prev_chunk_elapsed_time)
+
+    total_elapsed_time = cur_time - start_time
+    cat ("Total elapsed time:\n")
+    print (total_elapsed_time)
+
+    cat ("\n")
+
+    #----------
+    
+    timepoints_df [cur_timepoint_num, "timepoint_num"] = 
+        cur_timepoint_num
+    timepoints_df [cur_timepoint_num, "timepoint_name"] = 
+        cur_timepoint_name
+    
+    timepoints_df [cur_timepoint_num, "prev_chunk_elapsed_user"] = 
+        prev_chunk_elapsed_time [1]    
+    timepoints_df [cur_timepoint_num, "tot_elapsed_user"] = 
+        total_elapsed_time [1]
+    
+    timepoints_df [cur_timepoint_num, "prev_chunk_elapsed_system"] = 
+        prev_chunk_elapsed_time [2]
+    timepoints_df [cur_timepoint_num, "tot_elapsed_system"] = 
+        total_elapsed_time [2]
+    
+    timepoints_df [cur_timepoint_num, "cur_time_user"] = 
+        cur_time [1]
+    timepoints_df [cur_timepoint_num, "cur_time_system"] = 
+        cur_time [2]
+
+    #----------
+    
+    prev_time <<- cur_time    #  Note global assignment...
+
+    return (timepoints_df)
+    }
+
+#-------------------------------------------------------------------------------
+
+timepoints_df_default_length = 20
+run_ID = 111    #  = parameters$run_ID
+runset_ID = "aLongRunsetName"    #  = parameters$runset_ID
+
+timepoints_df = 
+    data.frame (timepoint_num = 1:timepoints_df_default_length, 
+                timepoint_name = rep (NA, timepoints_df_default_length),
+                prev_chunk_elapsed_user = rep (NA, timepoints_df_default_length),
+                tot_elapsed_user = rep (NA, timepoints_df_default_length),
+                prev_chunk_elapsed_system = rep (NA, timepoints_df_default_length),
+                tot_elapsed_system = rep (NA, timepoints_df_default_length),
+                cur_time_user = rep (NA, timepoints_df_default_length),
+                cur_time_system = rep (NA, timepoints_df_default_length),
+                run_ID = run_ID, 
+                runset_ID = runset_ID 
+                )
+
+    #  First time, intialization.
+cur_timepoint_num = 0
+prev_time = start_time = proc.time()
+
+    #  Each time...
+
+timepoints_df = timepoint (timepoints_df, "start", "Run start...")
 
 #===============================================================================
 
@@ -127,7 +211,6 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_4_support_functions.R"))
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_5_derive_control_parameters.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_6_create_data_structures.R"))
-source (paste0 (sourceCodeLocationWithSlash, "gscp_7_set_up_dbms.R"))
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_8_link_nodes_within_groups.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_9_link_nodes_between_groups.R"))
@@ -146,12 +229,28 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_14_read_marxan_output_files.R
 source (paste0 (sourceCodeLocationWithSlash, "gscp_15_create_master_output_structure.R"))
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_16_clean_up_run.R"))
+
+#===============================================================================
+
+timepoints_df = timepoint (timepoints_df, "end", "End of run...")
+
+timepoints_df = timepoints_df [1:cur_timepoint_num,]
+write.csv (timepoints_df, 
+           file = parameters$timepoints_filename, 
+           row.names = FALSE)
+
+#===============================================================================
+
 source (paste0 (sourceCodeLocationWithSlash, "gscp_17_clean_up_tzar_emulation.R"))
 
 #===============================================================================
 
-end_time = proc.time()
-elapsed_time = end_time - start_time
-cat ("\n\nElapsed time for entire run = \n")
-print (elapsed_time)
-cat ("\n")
+timepoints_df = timepoint (timepoints_df, "end", "End of run...")
+
+timepoints_df = timepoints_df [1:cur_timepoint_num,]
+write.csv (timepoints_df, 
+           file = parameters$timepoints_filename, 
+           row.names = FALSE)
+
+#===============================================================================
+

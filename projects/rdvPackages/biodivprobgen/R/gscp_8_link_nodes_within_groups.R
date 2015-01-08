@@ -4,6 +4,12 @@
 
 #===============================================================================
 
+timepoints_df = 
+    timepoint (timepoints_df, "gscp_8", 
+               "Starting gscp_8_link_nodes_within_groups.R.")
+
+#===============================================================================
+
 cat ("\n\n--------------------  Linking nodes WITHIN each group.\n")
 
 if (num_nodes_per_group < 2)

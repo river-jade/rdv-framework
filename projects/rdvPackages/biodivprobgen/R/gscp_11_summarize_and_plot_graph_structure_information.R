@@ -4,6 +4,12 @@
 
 #===============================================================================
 
+timepoints_df = 
+    timepoint (timepoints_df, "gscp_11", 
+               "Starting gscp_11_summarize_and_plot_graph_structure_information.R")
+
+#===============================================================================
+
 cat ("\n\n--------------------  Computing and plotting degree distribution of node graph.\n")
 
 #  Compute and plot the degree distribution of the node graph.
