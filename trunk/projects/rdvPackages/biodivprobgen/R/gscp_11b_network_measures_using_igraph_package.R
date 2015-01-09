@@ -53,18 +53,23 @@ bg = graph.data.frame (PU_spp_pair_names, directed=FALSE, vertices=vertices)
 cat ("\n\n=====>  Under igraph, is.bipartite (bg) = ", is.bipartite (bg), "\n")
 #Echo results...
 
-
-print(bg)
-
-print (V(bg))
-print (V(bg)$type)
-print (E(bg))
-
-plot(bg)
-
-bgp = bipartite.projection(bg)
-plot(bgp$proj1)
-plot(bgp$proj2)
+    #  May want to plot things to a file at some point, but for now, 
+    #  there's no utility in dumping all this stuff when it's done in 
+    #  batch mode and therefore, never seen.
+if (emulatingTzar)
+    {
+    print(bg)
+    
+    print (V(bg))
+    print (V(bg)$type)
+    print (E(bg))
+    
+    plot(bg)
+    
+    bgp = bipartite.projection(bg)
+    plot(bgp$proj1)
+    plot(bgp$proj2)
+    }
 
 #===============================================================================
 

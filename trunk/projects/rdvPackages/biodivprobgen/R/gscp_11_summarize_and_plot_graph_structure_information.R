@@ -47,12 +47,6 @@ cat ("\n\n--------------------  Computing and plotting degree distribution of no
 #  or visual display over those (e.g., something about their degree 
 #  distribution) that can be used as a predictive feature?
 
-if (DEBUG_LEVEL > 0)
-    {
-    cat ("\n\nNumber of links per node BEFORE intergroup linking:\n")
-    print (initial_link_counts_for_each_node)
-    }
-
 final_link_counts_for_each_node = count (PU_spp_pair_indices, vars=PU_col_name)
 #final_link_counts_for_each_node = count (PU_spp_pair_names, vars=PU_col_name)
 
