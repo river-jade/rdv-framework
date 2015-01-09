@@ -14,11 +14,15 @@ timepoints_df =
 
 #===============================================================================
 
+cat ("\n\nAbout to load bipartite library.")
+
 library (bipartite)
 
 #===============================================================================
 
 ###  Build input matrix for bipartite package...
+
+cat ("\n\nAbout to create bpm matrix.")
 
 bpm = matrix (0, 
               #rep (0, num_spp*num_PUs), 
@@ -31,6 +35,8 @@ bpm = matrix (0,
               dimnames=list (spp_vertex_names, 
                              PU_vertex_names)
               )
+
+cat ("\n\nAbout to fill in bpm matrix.")
 
 for (edge_idx in 1:num_PU_spp_pairs)
     {
@@ -48,12 +54,14 @@ for (edge_idx in 1:num_PU_spp_pairs)
     bpm [cur_row, cur_col] = 1 + bpm [cur_row, cur_col]
     }
 
-if (DEBUG_LEVEL > 0)
-    {
+# if (DEBUG_LEVEL > 0)
+#     {
     cat ("\n\nbpm = \n")
     print (bpm)
     cat ("\n\n")
-    }
+#     }
+
+cat ("\n\nAbout to create all_except_slow_indices.")
 
 all_except_slow_indices <- 
     c(

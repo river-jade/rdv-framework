@@ -75,94 +75,6 @@
 
 #===============================================================================
 
-    #  Print a label message followed by the total elapsed time for the 
-    #  run so far and then the elapsed time for the previous section, i.e., 
-    #  for the section since the last call to this routine.
-    #  This is useful for marking progress of long runs and for recording 
-    #  how long different parts of the run take.
-    #
-    #  Usage:
-    #       prev_time = timepoint (start_time, prev_time, string_to_print)
-
-timepoint = function (timepoints_df, 
-                      cur_timepoint_name, 
-                      string_to_print)
-    {
-    cur_timepoint_num <<- cur_timepoint_num + 1    #  Note global assignment...
-    cat ("\n\nTP", cur_timepoint_num, ":", string_to_print, "\n\n")
-    
-    #----------
-    
-    cur_time = proc.time()
-    
-    prev_chunk_elapsed_time = cur_time - prev_time
-    cat ("Elapsed time for previous chunk:\n")
-    print (prev_chunk_elapsed_time)
-
-    total_elapsed_time = cur_time - start_time
-    cat ("Total elapsed time:\n")
-    print (total_elapsed_time)
-
-    cat ("\n")
-
-    #----------
-    
-    timepoints_df [cur_timepoint_num, "timepoint_num"] = 
-        cur_timepoint_num
-    timepoints_df [cur_timepoint_num, "timepoint_name"] = 
-        cur_timepoint_name
-    
-    timepoints_df [cur_timepoint_num, "prev_chunk_elapsed_user"] = 
-        prev_chunk_elapsed_time [1]    
-    timepoints_df [cur_timepoint_num, "tot_elapsed_user"] = 
-        total_elapsed_time [1]
-    
-    timepoints_df [cur_timepoint_num, "prev_chunk_elapsed_system"] = 
-        prev_chunk_elapsed_time [2]
-    timepoints_df [cur_timepoint_num, "tot_elapsed_system"] = 
-        total_elapsed_time [2]
-    
-    timepoints_df [cur_timepoint_num, "cur_time_user"] = 
-        cur_time [1]
-    timepoints_df [cur_timepoint_num, "cur_time_system"] = 
-        cur_time [2]
-
-    #----------
-    
-    prev_time <<- cur_time    #  Note global assignment...
-
-    return (timepoints_df)
-    }
-
-#-------------------------------------------------------------------------------
-
-timepoints_df_default_length = 20
-run_ID = 111    #  = parameters$run_ID
-runset_ID = "aLongRunsetName"    #  = parameters$runset_ID
-
-timepoints_df = 
-    data.frame (timepoint_num = 1:timepoints_df_default_length, 
-                timepoint_name = rep (NA, timepoints_df_default_length),
-                prev_chunk_elapsed_user = rep (NA, timepoints_df_default_length),
-                tot_elapsed_user = rep (NA, timepoints_df_default_length),
-                prev_chunk_elapsed_system = rep (NA, timepoints_df_default_length),
-                tot_elapsed_system = rep (NA, timepoints_df_default_length),
-                cur_time_user = rep (NA, timepoints_df_default_length),
-                cur_time_system = rep (NA, timepoints_df_default_length),
-                run_ID = run_ID, 
-                runset_ID = runset_ID 
-                )
-
-    #  First time, intialization.
-cur_timepoint_num = 0
-prev_time = start_time = proc.time()
-
-    #  Each time...
-
-timepoints_df = timepoint (timepoints_df, "start", "Run start...")
-
-#===============================================================================
-
     #  debugging level: 0 means don't output debugging write statements.
     #  Having this as an integer instead of binary so that I can have 
     #  multiple levels of detail if I want to.
@@ -207,6 +119,10 @@ source (paste0 (sourceCodeLocationWithSlash, "emulatingTzarFlag.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_2_tzar_emulation.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_3_get_parameters.R"))
 
+    #  This has to come after tzar has created the "parameters" object.
+cat ("\n\n", parameters$runset_description, "\n\n")
+source (paste0 (sourceCodeLocationWithSlash, "timepoints.R"))
+
 source (paste0 (sourceCodeLocationWithSlash, "gscp_4_support_functions.R"))
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_5_derive_control_parameters.R"))
@@ -218,9 +134,19 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_9_link_nodes_between_groups.R
 source (paste0 (sourceCodeLocationWithSlash, "gscp_10_clean_up_completed_graph_structures.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_11_summarize_and_plot_graph_structure_information.R"))
 
+cat ("\n\n=========>>>>>  Before 11a, sessionInfo() = \n")
+print (sessionInfo())
+cat ("\n\n=============\n")
+library (methods)
+cat ("\n\n=====>>>  After loading methods package:\n")
+print (sessionInfo())
+cat ("\n\n=============\n")
 source (paste0 (sourceCodeLocationWithSlash, "gscp_11a_network_measures_using_bipartite_package.R"))
+
+cat ("\n\n=========>>>>>  Before 11b, sessionInfo() = \n")
+print (sessionInfo())
+cat ("\n\n=============\n")
 source (paste0 (sourceCodeLocationWithSlash, "gscp_11b_network_measures_using_igraph_package.R"))
-#source (paste0 (sourceCodeLocationWithSlash, "gscp_11b_network_measures_using_igraph_package.R"))
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_12_write_network_to_marxan_files.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_13_write_marxan_control_file_and_run_marxan.R"))
@@ -234,7 +160,11 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_16_clean_up_run.R"))
 
 timepoints_df = timepoint (timepoints_df, "end", "End of run...")
 
-timepoints_df = timepoints_df [1:cur_timepoint_num,]
+    #  Writing the timepoints output file has to come BEFORE the tzar 
+    #  emulation cleanup because the directory name used to locate the 
+    #  output here will be changed by the emulator cleanup.
+
+timepoints_df = timepoints_df [1:cur_timepoint_num,]  #  Remove excess NA lines.
 write.csv (timepoints_df, 
            file = parameters$timepoints_filename, 
            row.names = FALSE)
@@ -242,15 +172,6 @@ write.csv (timepoints_df,
 #===============================================================================
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_17_clean_up_tzar_emulation.R"))
-
-#===============================================================================
-
-timepoints_df = timepoint (timepoints_df, "end", "End of run...")
-
-timepoints_df = timepoints_df [1:cur_timepoint_num,]
-write.csv (timepoints_df, 
-           file = parameters$timepoints_filename, 
-           row.names = FALSE)
 
 #===============================================================================
 
