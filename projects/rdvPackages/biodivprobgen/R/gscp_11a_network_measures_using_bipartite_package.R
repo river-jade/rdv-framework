@@ -24,42 +24,71 @@ library (bipartite)
 
 cat ("\n\nAbout to create bpm matrix.")
 
-bpm = matrix (0, 
-              #rep (0, num_spp*num_PUs), 
-              nrow=num_spp, 
-              ncol=num_PUs, 
-              byrow=TRUE
-                #  Not sure whether to have dimnames or not.  
-                #  Doesn't seem to hurt anything at the moment...
-              , 
-              dimnames=list (spp_vertex_names, 
-                             PU_vertex_names)
-              )
-
-cat ("\n\nAbout to fill in bpm matrix.")
-
-for (edge_idx in 1:num_PU_spp_pairs)
+create_adj_matrix_with_spp_rows_vs_PU_cols = 
+    function (num_spp, 
+              num_PUs, 
+              spp_vertex_names, 
+              PU_vertex_names, 
+              num_PU_spp_pairs, 
+              PU_spp_pair_indices, 
+              edge_idx, 
+              spp_col_name, 
+              PU_col_name) 
     {
-#     cur_row = PU_spp_pair_indices [edge_idx, "spp_ID"]
-#     cur_col = PU_spp_pair_indices [edge_idx, "PU_ID"]
-    cur_row = PU_spp_pair_indices [edge_idx, spp_col_name]
-    cur_col = PU_spp_pair_indices [edge_idx, PU_col_name]
-#    cat ("\ncur rc = [", cur_row, ", ", cur_col, "]")
-
-        #  I'm making this be "1 + ..." instead of just "1", 
-        #  in case at some point, I need to keep counts of 
-        #  duplicates instead of just presence/absence.  
-        #  With unique values, you get the same matrix 
-        #  either way.
-    bpm [cur_row, cur_col] = 1 + bpm [cur_row, cur_col]
+        #  Create the adjacency matrix that will be viewed as a 
+        #  bipartite matrix (bpm) by the bipartite network routines 
+        #  with species as rows and planning units as columns.
+    bpm = matrix (0, 
+                  nrow=num_spp, 
+                  ncol=num_PUs, 
+                  byrow=TRUE
+                  
+                      #  Not sure whether to have dimnames or not.  
+                      #  Doesn't seem to hurt anything at the moment...
+                  , 
+                  dimnames=list (spp_vertex_names, 
+                                 PU_vertex_names)
+                  )
+    
+    cat ("\n\nAbout to fill in bpm matrix.")
+    
+    for (edge_idx in 1:num_PU_spp_pairs)
+        {
+        cur_row = PU_spp_pair_indices [edge_idx, spp_col_name]
+        cur_col = PU_spp_pair_indices [edge_idx, PU_col_name]
+        
+        #    cat ("\ncur rc = [", cur_row, ", ", cur_col, "]")
+        
+            #  I'm making this be "1 + ..." instead of just "1", 
+            #  in case at some point, I need to keep counts of 
+            #  duplicates instead of just presence/absence.  
+            #  With unique values, you get the same matrix 
+            #  either way.
+        bpm [cur_row, cur_col] = 1 + bpm [cur_row, cur_col]
+        }
+    
+    if (DEBUG_LEVEL > 0)
+        {
+        cat ("\n\nbpm = \n")
+        print (bpm)
+        cat ("\n\n")
+        }
+    
+    return (bpm)
     }
 
-# if (DEBUG_LEVEL > 0)
-#     {
-    cat ("\n\nbpm = \n")
-    print (bpm)
-    cat ("\n\n")
-#     }
+bpm = 
+    create_adj_matrix_with_spp_rows_vs_PU_cols (num_spp,                                                 
+                                                  num_PUs, 
+                                                  spp_vertex_names, 
+                                                  PU_vertex_names, 
+                                                  num_PU_spp_pairs, 
+                                                  PU_spp_pair_indices, 
+                                                  edge_idx, 
+                                                  spp_col_name, 
+                                                  PU_col_name) 
+
+#===============================================================================
 
 cat ("\n\nAbout to create all_except_slow_indices.")
 

@@ -57,7 +57,7 @@ base_params:
         #  Looks like there is currently no tzar wildcard to capture the 
         #  the runset name, but it's very useful to add it to lines of 
         #  output that will be combined with output from other runsets.
-    runset_name: simple_test_unifRand_p_r_n_a_seed_701_in_phase_transition_area
+    runset_name: single_test_unifRand_p_r_n_a_seed_701_in_phase_transition_area
     runset_abbrev: st701phase
 
 
