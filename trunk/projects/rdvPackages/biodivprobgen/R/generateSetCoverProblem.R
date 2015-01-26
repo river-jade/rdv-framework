@@ -10,6 +10,78 @@
 
 #===============================================================================
 
+#  Procedure to run a single test case EMULATING tzar:
+
+#   - Duplicate single_test.yaml into project.yaml.
+
+#   - Set the tzar emulation flags wherever necessary.
+#       In emulatingTzarFlag.R, set:
+#           emulatingTzar = TRUE
+#       In this file (generateSetCoverProblem.R), set:
+#           running_tzar_or_tzar_emulator = TRUE
+#       However, for nearly everything that _I_ am doing, that flag will never 
+#       change since I'm nearly always using tzar.  It would be more of an 
+#       issue for someone else who is not using tzar.
+
+#           IS THIS STEP RIGHT?  DOES IT MATTER?  NOT SURE...
+#   - Make sure current working directory is:    
+#       /Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R
+#     e,g, 
+#       setwd ("/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R")
+
+#   - Source this file (generateSetCoverProblem.R)
+#       Under RStudio, that just means having this file open in the 
+#       edit window and hitting the Source button.
+#       
+#   - Just to give a ballpark estimate of how long to expect the test to run, 
+#     as the code and yaml file stand right now (2015 01 26 4:40 pm) took about 
+#     1 minute 45 seconds to run on my MacBook Pro with much of the memory 
+#     and disk unavailable and a backup copying process going on 
+#     in the background. 
+
+#  NOTE that the choice of random seed in the yaml file is important 
+#  because the example creates a test problem based on drawing the control 
+#  parameters from a random distribution.  When the seed was 111, the 
+#  test crashed with the message below.  When I changed it to 701, it 
+#  ran to completion.
+#       Failing:  max_possible_tot_num_links ( 3291 ) > maximum allowed ( 2000 ).
+#       Save workspace image to ~/D/rdv-framework/projects/rdvPackages/biodivprobgen/.RData? [y/n/c]: 
+#  However, the fail was just what it was supposed to do when those 
+#  parameters came up, so the yaml file could be changed to use 111 
+#  instead of 701 if you want to induce a crash to test that error 
+#  trapping.
+    
+#-------------------------------------------------------------------------------
+
+#  Procedure to run a single test case USING tzar:
+
+#   - Same as above, except:
+
+#   - Set the emulatingTzar flag to FALSE, i.e., 
+#       In emulatingTzarFlag.R, set:
+#           emulatingTzar = FALSE
+
+#   - In a terminal window, Make sure current working directory is not where 
+#     the source code is, but rather, in a terminal window, cd to where the 
+#     tzar jar is:    
+#       /Users/bill/D/rdv-framework
+
+#   - Instead of sourcing this R file, run the following command in the 
+#     terminal window:
+#           To put results in the tzar default area
+#       java -jar tzar.jar execlocalruns /Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/
+#   OR
+#           To use a specially named tzar area for the test
+#       java -jar tzar.jar execlocalruns /Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/ --runset=single_test_unifRand_p_r_n_a_seed_701_in_phase_transition_area
+#       
+#   - Just to give a ballpark estimate of how long to expect the test to run, 
+#     as the code and yaml file stand right now (2015 01 26 4:40 pm) took about 
+#     1 minute 15 or 20 seconds to run on my MacBook Pro with much of the  
+#     memory and disk unavailable but no backup copying process going on 
+#     in the background. 
+
+#===============================================================================
+
 #  History:
 
 #  v1 - 

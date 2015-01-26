@@ -72,8 +72,9 @@ solutions_df = data.frame (puid = marxan_best_df$PUID,
 #               - (1 - marxan best solution % of species covered)
 
 
-
+#---------------------------------------------------------------------------
 #  Aggregate measures not in binding (may be computed From the bound data)
+#---------------------------------------------------------------------------
 
     #  correct/optimal number of patches (cost)
     #  This is also just the size of the dependent set...
@@ -139,7 +140,8 @@ cat ("\nspp_rep_shortfall =", spp_rep_shortfall)
 num_runs = 1
 
 results_df = 
-    data.frame (run_ID = rep (NA, num_runs), 
+    data.frame (runset_abbrev = rep (NA, num_runs), 
+                run_ID = rep (NA, num_runs), 
                 num_PUs = rep (NA, num_runs), 
                 num_spp = rep (NA, num_runs), 
                 seed = rep (NA, num_runs), 
@@ -193,7 +195,10 @@ results_df =
                 marxan_MISSLEVEL = rep (NA, num_runs),
                 marxan_ITIMPTYPE = rep (NA, num_runs),
                 marxan_HEURTYPE = rep (NA, num_runs),
-                marxan_CLUMPTYPE = rep (NA, num_runs)
+                marxan_CLUMPTYPE = rep (NA, num_runs),
+                
+                    #  Full runset name
+                runset_name = rep (NA, num_runs)
                 )
 
 cur_result_row = 0
@@ -202,7 +207,7 @@ cur_result_row = 0
 
 cur_result_row = cur_result_row + 1
 
-#results_df$run_ID [cur_result_row]                                          = parameters$run_id
+results_df$runset_abbrev [cur_result_row]                                    = parameters$runset_abbrev
 results_df$num_PUs [cur_result_row]                                          = num_PUs
 results_df$num_spp [cur_result_row]                                          = num_spp
 results_df$seed [cur_result_row]                                             = seed
@@ -257,6 +262,10 @@ results_df$marxan_MISSLEVEL [cur_result_row]                                 = m
 results_df$marxan_ITIMPTYPE [cur_result_row]                                 = marxan_ITIMPTYPE
 results_df$marxan_HEURTYPE [cur_result_row]                                  = marxan_HEURTYPE
 results_df$marxan_CLUMPTYPE [cur_result_row]                                 = marxan_CLUMPTYPE
+                
+    #  Full runset name
+results_df$runset_name [cur_result_row]                                      = parameters$runset_name
+
 
 
 #  Getting an error.  Not sure why...  Is it because the free variable names 
@@ -275,7 +284,11 @@ results_df = cbind (results_df,
                     bipartite_metrics_from_igraph_package_df
                     )
 
-#  SHOULD ADD RUNSET NAME TO THE DF'S AS WELL...
+#  SHOULD ADD TO THE DF'S:
+#       - RUNSET NAME
+#       - NUM_SPP/NUM_PUs
+#       - NUM_PUs/NUM_SPP
+#       - what else?  Need to look at the excel sheet I've been working on...
 
     #  Write the results out to 2 separate and nearly identical files.
     #  The only difference between the two files is that the run ID in 
