@@ -70,10 +70,11 @@ cat ("\n\n--------------------  Building derived control parameters.\n")
     #  the excess independent nodes that are beyond the original 1, 
     #  so we have to subtract 1 from the number we're adding on.
 
-#    num_nodes_per_group = integerize (n__num_groups ^ alpha__)
+    #    num_nodes_per_group = integerize (n__num_groups ^ alpha__)
 num_nodes_per_group = integerize (n__num_groups ^ alpha__) - 
                       (num_independent_nodes_per_group - 1)
-#    num_independent_set_nodes = n__num_groups
+
+    #    num_independent_set_nodes = n__num_groups
 num_independent_set_nodes = n__num_groups * num_independent_nodes_per_group
 
 tot_num_nodes = n__num_groups * num_nodes_per_group
