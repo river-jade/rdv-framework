@@ -32,17 +32,22 @@ library (stringr)
         #           the order was allowed to occur both ways, i.e., (3,5) and 
         #           (5,3) would not be flagged as being duplicates.
 
-unique_edge_list = unique (edge_list)  #  the edge list
+# unique_edge_list = unique (edge_list)  #  the edge list
+# 
+# num_non_unique_edge_list = dim (edge_list)[1]
+# num_unique_edge_list = dim (unique_edge_list)[1]
+# 
+# if (DEBUG_LEVEL > 0)
+#     {
+#     cat ("\n\nnum_non_unique_edge_list =", num_non_unique_edge_list)
+#     cat ("\nnum_unique_edge_list =", num_unique_edge_list)
+#     cat ("\n")    
+#     }
 
-num_non_unique_edge_list = dim (edge_list)[1]
-num_unique_edge_list = dim (unique_edge_list)[1]
-
-if (DEBUG_LEVEL > 0)
-    {
-    cat ("\n\nnum_non_unique_edge_list =", num_non_unique_edge_list)
-    cat ("\nnum_unique_edge_list =", num_unique_edge_list)
-    cat ("\n")    
-    }
+    #  BTL - 2015 01 31 - TEMPORARY HACK WHILE TESTING REPLACEMENT OF CODE 
+    #                       ABOVE WITH CODE IN gscp_9a
+unique_edge_list = edge_list
+num_unique_edge_list = dim (edge_list)[1]
 
 #===============================================================================
 
