@@ -14,8 +14,9 @@ timepoints_df =
 
 #===============================================================================
 
-cat ("\n\nAbout to load bipartite library.")
+library (methods)    #  bipartite needs this if run before igraph under RScript
 
+cat ("\n\nAbout to load bipartite library.")
 library (bipartite)
 
 #===============================================================================

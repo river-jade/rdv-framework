@@ -48,22 +48,32 @@ library (plyr)      #  for arrange()
 marxan_best_df = 
     read.csv (paste (marxan_output_dir_path, marxan_output_best_file_name, sep=''), 
               header=TRUE)
-cat ("\n\nAfter loading output_best.csv, marxan_best_df =")
-print (marxan_best_df)
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nAfter loading output_best.csv, marxan_best_df =")
+    print (marxan_best_df)
+    }
 
 marxan_best_df = arrange (marxan_best_df, PUID)
 
-cat ("\n\nAfter sorting, marxan_best_df = \n")
-print (marxan_best_df)
-cat ("\n\n-------------------")
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nAfter sorting, marxan_best_df = \n")
+    print (marxan_best_df)
+    cat ("\n\n-------------------")
+    }
 
 #---------------------------------
 
 marxan_mvbest_df = 
     read.csv (paste (marxan_output_dir_path, marxan_output_mvbest_file_name, sep=''), 
               header=TRUE)
-cat ("\n\nAfter loading output_mvbest.csv, marxan_mvbest_df =")
-print (marxan_mvbest_df)
+
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nAfter loading output_mvbest.csv, marxan_mvbest_df =")
+    print (marxan_mvbest_df)
+    }
 
     #  The call to "arrange()" below gives a weird error when run on the 
     #  data frame because the column names have spaces in them (e.g., 
@@ -83,23 +93,32 @@ names (marxan_mvbest_df) =
 
 marxan_mvbest_df = arrange (marxan_mvbest_df, ConservationFeature)
 
-cat ("\n\nAfter sorting, marxan_mvbest_df = \n")
-print (marxan_mvbest_df)
-cat ("\n\n-------------------")
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nAfter sorting, marxan_mvbest_df = \n")
+    print (marxan_mvbest_df)
+    cat ("\n\n-------------------")
+    }
 
 #---------------------------------
 
 marxan_ssoln_df = 
     read.csv (paste (marxan_output_dir_path, marxan_output_ssoln_file_name, sep=''),
               header=TRUE)
-cat ("\n\nAfter loading output_ssoln.csv, marxan_ssoln_df =")
-print (marxan_ssoln_df)
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nAfter loading output_ssoln.csv, marxan_ssoln_df =")
+    print (marxan_ssoln_df)    
+    }
 
 marxan_ssoln_df = arrange (marxan_ssoln_df, planning_unit)
 
-cat ("\n\nAfter sorting, marxan_ssoln_df = \n")
-print (marxan_ssoln_df)
-cat ("\n\n-------------------")
+if (DEBUG_LEVEL > 0)
+    {
+    cat ("\n\nAfter sorting, marxan_ssoln_df = \n")
+    print (marxan_ssoln_df)
+    cat ("\n\n-------------------")
+    }
 
 #===============================================================================
 

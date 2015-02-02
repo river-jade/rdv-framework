@@ -56,7 +56,7 @@ cat ("\n\n=====>  Under igraph, is.bipartite (bg) = ", is.bipartite (bg), "\n")
     #  May want to plot things to a file at some point, but for now, 
     #  there's no utility in dumping all this stuff when it's done in 
     #  batch mode and therefore, never seen.
-if (emulatingTzar)
+if (emulatingTzar & (DEBUG_LEVEL > 0))
     {
     print(bg)
     
