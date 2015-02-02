@@ -82,10 +82,10 @@ if (DEBUG_LEVEL > 0)
     cat ("\n\n")    
     }
     
-    edge_list = matrix (NA, 
-                                nrow = max_possible_tot_num_links, 
-                                ncol = 2, 
-                                byrow = TRUE)
+#     edge_list = matrix (NA, 
+#                                 nrow = max_possible_tot_num_links, 
+#                                 ncol = 2, 
+#                                 byrow = TRUE)
 
 #===============================================================================
 

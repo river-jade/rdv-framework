@@ -154,11 +154,13 @@ DEBUG_LEVEL = 0
 
 #===============================================================================
 
+    #  Need to do this in a better way so that it is appropriate for  
+    #  anybody's setup.
 if (!exists ("sourceCodeLocationWithSlash"))
     sourceCodeLocationWithSlash = 
         "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/"
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
     #  2014 12 29 - BTL
     #  At this point, this flag will probably almost never change again 
@@ -185,30 +187,37 @@ running_tzar_or_tzar_emulator = TRUE
         #  control.
 
 source (paste0 (sourceCodeLocationWithSlash, "emulatingTzarFlag.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_2_tzar_emulation.R"))
 
 #===============================================================================
 
-source (paste0 (sourceCodeLocationWithSlash, "gscp_2_tzar_emulation.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_3_get_parameters.R"))
 
-    #  This has to come after tzar has created the "parameters" object.
+#===============================================================================
+
+library (plyr)    #  For count()
+library (marxan)
+
+#===============================================================================
+
+    #  The rest of this code has to come after tzar or someone else has 
+    #  created the "parameters" object.
+
+#===============================================================================
+
+seed = parameters$seed
+set.seed (seed)
+
 cat ("\n\n", parameters$runset_description, "\n\n")
+
 source (paste0 (sourceCodeLocationWithSlash, "timepoints.R"))
 
-source (paste0 (sourceCodeLocationWithSlash, "gscp_4_support_functions.R"))
-
-source (paste0 (sourceCodeLocationWithSlash, "gscp_5_derive_control_parameters.R"))
-source (paste0 (sourceCodeLocationWithSlash, "gscp_6_create_data_structures.R"))
-
-#-------------------------------------------------------------------------------
+#===============================================================================
 #                   Generate a problem, i.e, create the Xu graph.
-#-------------------------------------------------------------------------------
+#===============================================================================
 
-source (paste0 (sourceCodeLocationWithSlash, "gscp_8_link_nodes_within_groups.R"))
-source (paste0 (sourceCodeLocationWithSlash, "gscp_9_link_nodes_between_groups.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_9a_create_Xu_graph.R"))
 
-#edge_list_and_cur_row = 
 edge_list = 
     create_Xu_graph (num_nodes_per_group, 
                      n__num_groups, 
@@ -218,19 +227,16 @@ edge_list =
                      num_rounds_of_linking_between_groups
                      )
 
-#edge_list = edge_list_and_cur_row$edge_list
-#cur_row = edge_list_and_cur_row$cur_row    #  Is this ever used again?
-    
-#-------------------------------------------------------------------------------
+#===============================================================================
 #                       Clean up after graph creation.
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_10_clean_up_completed_graph_structures.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_11_summarize_and_plot_graph_structure_information.R"))
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 #                       Compute network metrics.
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 cat ("\n\n=========>>>>>  Before 11a, sessionInfo() = \n")
 print (sessionInfo())
@@ -247,24 +253,24 @@ print (sessionInfo())
 cat ("\n\n=============\n")
 source (paste0 (sourceCodeLocationWithSlash, "gscp_11b_network_measures_using_igraph_package.R"))
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 #                                   Run marxan.
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_12_write_network_to_marxan_files.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_13_write_marxan_control_file_and_run_marxan.R"))
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_14_read_marxan_output_files.R"))
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 #                   Dump all of the different kinds of results.
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_15_create_master_output_structure.R"))
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 #                                   Clean up.
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_16_clean_up_run.R"))
 

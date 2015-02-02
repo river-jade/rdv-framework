@@ -271,10 +271,10 @@ redundancy <- function (g
     {
     redundancy <- c()
 
-                   #  Added by BTL since this only seemed to do bottom.
+        #  type test added by BTL since this only seemed to do bottom...
+#   for (i in V(g)[which(V(g)$type==FALSE)])
     for (i in V(g)[which(V(g)$type==top_bottom_vertex_type)])
         {
-#        for(i in V(g)[which(V(g)$type==FALSE)]){
         
         overlap <- 0
         nei <- neighbors(g,i)
