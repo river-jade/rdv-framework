@@ -195,7 +195,7 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_3_get_parameters.R"))
 
 #===============================================================================
 
-library (plyr)    #  For count()
+library (plyr)    #  For count() and arrange()
 library (marxan)
 
 #===============================================================================
@@ -231,26 +231,13 @@ edge_list =
 #                       Clean up after graph creation.
 #===============================================================================
 
-source (paste0 (sourceCodeLocationWithSlash, "gscp_10_clean_up_completed_graph_structures.R"))
-source (paste0 (sourceCodeLocationWithSlash, "gscp_11_summarize_and_plot_graph_structure_information.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_9b_convert_Xu_graph_to_spp_PU_problem.R"))
 
 #===============================================================================
 #                       Compute network metrics.
 #===============================================================================
 
-cat ("\n\n=========>>>>>  Before 11a, sessionInfo() = \n")
-print (sessionInfo())
-cat ("\n\n=============\n")
-library (methods)
-cat ("\n\n=====>>>  After loading methods package:\n")
-print (sessionInfo())
-cat ("\n\n=============\n")
-
 source (paste0 (sourceCodeLocationWithSlash, "gscp_11a_network_measures_using_bipartite_package.R"))
-
-cat ("\n\n=========>>>>>  Before 11b, sessionInfo() = \n")
-print (sessionInfo())
-cat ("\n\n=============\n")
 source (paste0 (sourceCodeLocationWithSlash, "gscp_11b_network_measures_using_igraph_package.R"))
 
 #===============================================================================
@@ -259,7 +246,6 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_11b_network_measures_using_ig
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_12_write_network_to_marxan_files.R"))
 source (paste0 (sourceCodeLocationWithSlash, "gscp_13_write_marxan_control_file_and_run_marxan.R"))
-
 source (paste0 (sourceCodeLocationWithSlash, "gscp_14_read_marxan_output_files.R"))
 
 #===============================================================================
@@ -274,16 +260,19 @@ source (paste0 (sourceCodeLocationWithSlash, "gscp_15_create_master_output_struc
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_16_clean_up_run.R"))
 
-timepoints_df = timepoint (timepoints_df, "end", "End of run...")
+#-------------------------------------------------------------------------------
 
     #  Writing the timepoints output file has to come BEFORE the tzar 
     #  emulation cleanup because the directory name used to locate the 
     #  output here will be changed by the emulator cleanup.
 
+timepoints_df = timepoint (timepoints_df, "end", "End of run...")
 timepoints_df = timepoints_df [1:cur_timepoint_num,]  #  Remove excess NA lines.
 write.csv (timepoints_df, 
            file = parameters$timepoints_filename, 
            row.names = FALSE)
+
+#-------------------------------------------------------------------------------
 
 source (paste0 (sourceCodeLocationWithSlash, "gscp_17_clean_up_tzar_emulation.R"))
 

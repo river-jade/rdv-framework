@@ -58,7 +58,11 @@ if (DEBUG_LEVEL > 0)
 
 final_degree_dist = arrange (final_link_counts_for_each_node, -freq)
 final_degree_dist[,PU_col_name] = 1:dim(final_degree_dist)[1]
-plot (final_degree_dist)
+plot (final_degree_dist, 
+      main="Richness", 
+      #sub="subtitle",
+      xlab="PU ID", 
+      ylab="num spp on PU")    #  Need to label y axis as "num spp on PU"
 
 #-------------------------------------------------------------------------------
 
@@ -79,7 +83,11 @@ if (DEBUG_LEVEL > 0)
 
 final_rank_abundance_dist = arrange (final_node_counts_for_each_link, -freq)
 final_rank_abundance_dist[,spp_col_name] = 1:dim(final_rank_abundance_dist)[1]
-plot (final_rank_abundance_dist)
+plot (final_rank_abundance_dist,
+      main="Rank abundance curve", 
+      # sub="subtitle",
+      xlab="spp ID", 
+      ylab="abundance:  num PUs occupied by spp")    #  Need to label y axis as "abundance:  num PUs occupied"
 
 #===============================================================================
 
