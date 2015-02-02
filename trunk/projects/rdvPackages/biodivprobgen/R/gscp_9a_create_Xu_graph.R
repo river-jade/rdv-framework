@@ -4,6 +4,37 @@
 
 #===============================================================================
 
+default_integerize_string = "round"
+integerize_string = default_integerize_string
+
+integerize_string = parameters$integerize_string
+
+#integerize_string = "round"
+#integerize_string = "ceiling"
+#integerize_string = "floor"
+
+integerize = switch (integerize_string, 
+                     round=round, 
+                     ceiling=ceiling, 
+                     floor=floor, 
+                     round)    #  default to round()
+
+# integerize = function (x) 
+#     { 
+#     round (x) 
+# #    ceiling (x)
+# #    floor (x)
+#     }
+
+#===============================================================================
+
+source (paste0 (sourceCodeLocationWithSlash, "gscp_5_derive_control_parameters.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_6_create_data_structures.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_8_link_nodes_within_groups.R"))
+source (paste0 (sourceCodeLocationWithSlash, "gscp_9_link_nodes_between_groups.R"))
+
+#===============================================================================
+
 timepoints_df = 
     timepoint (timepoints_df, "gscp_9a_create_Xu_graph", 
                "Starting gscp_9a_create_Xu_graph.R")

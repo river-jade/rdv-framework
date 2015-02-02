@@ -46,8 +46,9 @@ library (stringr)
 
     #  BTL - 2015 01 31 - TEMPORARY HACK WHILE TESTING REPLACEMENT OF CODE 
     #                       ABOVE WITH CODE IN gscp_9a
-unique_edge_list = edge_list
-num_unique_edge_list = dim (edge_list)[1]
+# unique_edge_list = edge_list
+# num_unique_edge_list = dim (edge_list)[1]
+num_edge_list = dim (edge_list)[1]
 
 #===============================================================================
 
@@ -76,7 +77,8 @@ num_unique_edge_list = dim (edge_list)[1]
     #  description of a bipartite network, so I may need to modify or use 
     #  it in doing the bipartite network analyses too.
 
-num_PU_spp_pairs = 2 * num_unique_edge_list
+#num_PU_spp_pairs = 2 * num_unique_edge_list
+num_PU_spp_pairs = 2 * num_edge_list
 
         #  BTL - 2015 01 07
         #  Later in this file, I also create a data frame that uses the names 
@@ -101,13 +103,16 @@ spp_col_name = names (PU_spp_pair_indices)[2]
 
 next_PU_spp_pair_row = 1
 
-for (cur_spp_ID in 1:num_unique_edge_list)
+#for (cur_spp_ID in 1:num_unique_edge_list)
+for (cur_spp_ID in 1:num_edge_list)
     {
-    PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
+#    PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = unique_edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = edge_list [cur_spp_ID, 1]  #  smaller_PU_ID
     PU_spp_pair_indices [next_PU_spp_pair_row, spp_col_name] = cur_spp_ID  #  next_spp_ID    
     next_PU_spp_pair_row = next_PU_spp_pair_row + 1    
     
-    PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
+#    PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = unique_edge_list [cur_spp_ID, 2]  #  larger_PU_ID
+    PU_spp_pair_indices [next_PU_spp_pair_row, PU_col_name] = edge_list [cur_spp_ID, 2]  #  larger_PU_ID
     PU_spp_pair_indices [next_PU_spp_pair_row, spp_col_name] = cur_spp_ID  #  next_spp_ID
     next_PU_spp_pair_row = next_PU_spp_pair_row + 1
     }
@@ -142,7 +147,8 @@ num_PUs = tot_num_nodes
 PU_vertex_indices = 1:num_PUs
 PU_vertex_names = str_c ("p", PU_vertex_indices)
 
-num_spp = num_unique_edge_list
+#num_spp = num_unique_edge_list
+num_spp = num_edge_list
 spp_vertex_indices = 1:num_spp
 spp_vertex_names = str_c ("s", spp_vertex_indices)
 
