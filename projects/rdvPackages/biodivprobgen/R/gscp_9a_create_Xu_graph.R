@@ -4,6 +4,27 @@
 
 #===============================================================================
 
+    #  BTL - 2015 02 13 - Temporary testing code for tzar's rrunner.R
+    #
+    #  The following couple of lines were used to test the new version of the 
+    #  rrunner.R code in tzar.  
+    #  The changes there were done to improve the output when your R code 
+    #  crashes while running tzar, e.g., to generate a traceback.
+    #  The first line here was just to make the rrunner generate a warning.
+    #  The second was to make it generate a fatal error and crash the program.
+    #  I'm going to leave these in here for a moment and do a commit so that 
+    #  I have a record of what I was using for the tests, then I will remove 
+    #  them in the next commit.
+
+#  This should warn...
+kkkkk = log (-1)
+
+#  This should crash...
+aaaaa = bbbbb
+
+#===============================================================================
+
+
 default_integerize_string = "round"
 integerize_string = default_integerize_string
 
