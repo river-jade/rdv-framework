@@ -17,10 +17,10 @@
     #  them in the next commit.
 
 #  This should warn...
-kkkkk = log (-1)
+#kkkkk = log (-1)
 
 #  This should crash...
-aaaaa = bbbbb
+#aaaaa = bbbbb
 
 #===============================================================================
 

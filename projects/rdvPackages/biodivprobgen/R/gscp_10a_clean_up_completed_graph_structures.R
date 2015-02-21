@@ -131,6 +131,10 @@ if (DEBUG_LEVEL > 0)
     #  This is the first point in the code where we actually know this for 
     #  the species.  We knew it for PUs much earlier, but it's more coherent  
     #  to set both things up in the same place here.
+    #  [However, as more and more of this becomes encapsulated into functions, 
+    #   it may be more appropriate to put the PU stuff all together and the 
+    #   species stuff all together, maybe as a pair of objects holding all the 
+    #   information about each of those groups.]
     #
     #  Will create names for PU vertices by prepending the vertex ID with a "p".
     #  Similarly, spp vertices will be named by prepending with an "s".
