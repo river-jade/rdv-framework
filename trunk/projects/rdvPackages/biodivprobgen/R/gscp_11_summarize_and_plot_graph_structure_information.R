@@ -62,7 +62,7 @@ plot (final_degree_dist,
       main="Richness", 
       #sub="subtitle",
       xlab="PU ID", 
-      ylab="num spp on PU")    #  Need to label y axis as "num spp on PU"
+      ylab="num spp on PU")
 
 #-------------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ plot (final_rank_abundance_dist,
       main="Rank abundance curve", 
       # sub="subtitle",
       xlab="spp ID", 
-      ylab="abundance:  num PUs occupied by spp")    #  Need to label y axis as "abundance:  num PUs occupied"
+      ylab="abundance:  num PUs occupied by spp")
 
 #===============================================================================
 
