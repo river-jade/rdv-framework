@@ -80,6 +80,16 @@ run_marxan = function ()
     
     cat("\n =====> The current wd is", getwd() )
     
+        #  Set the marxan executable name to default to the mac, 
+        #  but check for linux as well.
+        #  I don't know the name for Windows, so I'll just 
+        #  let the system command crash on Windows for the moment since I'm 
+        #  not doing anything at all with Windows right now and 
+        #  can look that up later if necessary.
+    marxan_executable_name = "MarOpt_v243_Mac64"
+    if (current_os == "linux-gnu")
+        marxan_executable_name = "MarOpt_v243_Linux64"    
+    
         #  The -s deals with the problem of Marxan waiting for you to hit 
         #  return at the end of the run when you're running in the background.  
         #  Without it, the system() command never comes back.
@@ -87,8 +97,8 @@ run_marxan = function ()
         #        http://marxan.net/tutorial/Marxan_net_user_guide_rev2.1.pdf
         #        I'm not sure if it's even in the normal user's manual or 
         #        best practices manual for marxan.)
-    
-    system.command.run.marxan = "./MarOpt_v243_Mac64 -s"    
+
+    system.command.run.marxan = paste0 ("./", marxan_executable_name, " -s")   
     cat( "\n\n>>>>>  The system command to run marxan will be:\n'", 
          system.command.run.marxan, "'\n>>>>>\n\n", sep='')
     

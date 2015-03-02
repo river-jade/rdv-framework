@@ -208,6 +208,18 @@ library (marxan)
 seed = parameters$seed
 set.seed (seed)
 
+#---------------------------------------------------------------    
+    #  Determine the OS so you can assign the correct name for 
+    #  the marxan executable, etc.
+    #   - for linux this returns linux-gnu
+    #   - for mac this currently returns os = 'darwin13.4.0'
+    #   - for windows this returns mingw32
+
+current_os <- sessionInfo()$R.version$os
+cat ("\n\nos = '", current_os, "'\n", sep='')
+
+#---------------------------------------------------------------    
+
 cat ("\n\n", parameters$runset_description, "\n\n")
 
 source (paste0 (sourceCodeLocationWithSlash, "timepoints.R"))

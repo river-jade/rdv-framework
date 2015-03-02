@@ -1,5 +1,23 @@
+#===============================================================================
+
 project_name: biodivprobgen
 runner_class: RRunner
+
+#===============================================================================
+
+libraries:
+
+#---------------------------------------
+
+    -  name: marxanLibrary
+
+       repo_type: local_file
+       url: file:////Users/bill/D/Marxan
+
+#       repo_type: http_zip
+#       url: http://glass.eres.rmit.edu.au/tzar_input/biodivprobgen/Marxan.zip
+
+#===============================================================================
 
 #####
 #####  2014 12 11 - BTL
@@ -149,7 +167,9 @@ base_params:
     
     run_id: $$run_id$$
     
-    marxan_input_parameters_file_name: "/Users/bill/D/Marxan/input.dat"
+#    marxan_input_parameters_file_name: "/Users/bill/D/Marxan/input.dat"
+    marxan_input_parameters_file_name: "$$library_path(marxanLibrary)$$/input.dat"
+    
     marxan_num_reps: 100
     marxan_num_iterations: "2000000"
 
