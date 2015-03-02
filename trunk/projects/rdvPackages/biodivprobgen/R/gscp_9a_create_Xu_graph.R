@@ -4,7 +4,7 @@
 
 #===============================================================================
 
-    #  BTL - 2015 02 13 - Temporary testing code for tzar's rrunner.R
+    #  BTL - 2015 02 25 - Temporary testing code for tzar's rrunner.R
     #
     #  The following couple of lines were used to test the new version of the 
     #  rrunner.R code in tzar.  
@@ -12,9 +12,8 @@
     #  crashes while running tzar, e.g., to generate a traceback.
     #  The first line here was just to make the rrunner generate a warning.
     #  The second was to make it generate a fatal error and crash the program.
-    #  I'm going to leave these in here for a moment and do a commit so that 
-    #  I have a record of what I was using for the tests, then I will remove 
-    #  them in the next commit.
+    #  I'm going to leave these in here in case I need to go back and test 
+    #  rrunner crash behavior under tzar again later.
 
 #  This should warn...
 #kkkkk = log (-1)
