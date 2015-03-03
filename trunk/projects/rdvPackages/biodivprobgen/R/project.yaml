@@ -11,11 +11,11 @@ libraries:
 
     -  name: marxanLibrary
 
-       repo_type: local_file
-       url: file:////Users/bill/D/Marxan
+#       repo_type: local_file
+#       url: file:////Users/bill/D/Marxan
 
-#       repo_type: http_zip
-#       url: http://glass.eres.rmit.edu.au/tzar_input/biodivprobgen/Marxan.zip
+       repo_type: http_zip
+       url: http://glass.eres.rmit.edu.au/tzar_input/biodivprobgen/Marxan.zip
 
 #===============================================================================
 
