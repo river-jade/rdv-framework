@@ -8,10 +8,13 @@
 
 #===============================================================================
 
+cat ("\n\nCurrent working directory = '", getwd(), "'\n\n")
+
 if (!exists ("sourceCodeLocationWithSlash"))
     sourceCodeLocationWithSlash = 
-        "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/"
-
+#        "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/"
+        "./"
+        
 source (paste0 (sourceCodeLocationWithSlash, "emulatingTzarFlag.R"))
 
 tzarEmulation_scratchFileName = "~/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/tzarEmulation_scratchFile.txt"
