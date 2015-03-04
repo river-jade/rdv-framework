@@ -121,7 +121,8 @@ spf_const = parameters$marxan_spf_const
     #***  name of the directory to put the results in (but can  
     #***  default to writing in "." instead?).
 
-marxan_input_dir = "/Users/bill/D/Marxan/input/"
+marxan_input_dir = parameters$marxan_input_dir    #  "/Users/bill/D/Marxan/input/"
+
 write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table, 
                               spf_const)
 #                               spf_const = spf_const)
@@ -131,16 +132,32 @@ write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table,
 #                                          cost_const = 1, 
 #                                          status_const = 0)
 
-system ("rm /Users/bill/D/Marxan/output/*")
+#system ("rm /Users/bill/D/Marxan/output/*")
+system (paste0 ("rm ", parameters$marxan_output_dir, "*"))
 
-system ("rm /Users/bill/D/Marxan/input/pu.dat")
-system ("cp ./pu.dat /Users/bill/D/Marxan/input")
+#system ("rm /Users/bill/D/Marxan/input/pu.dat")
+system (paste0 ("rm ", parameters$marxan_input_dir, 
+                parameters$marxan_pu_file_name))
 
-system ("rm /Users/bill/D/Marxan/input/spec.dat")
-system ("cp ./spec.dat /Users/bill/D/Marxan/input")
+#system ("cp ./pu.dat /Users/bill/D/Marxan/input")
+system (paste0 ("cp ./", parameters$marxan_pu_file_name, 
+                " ", parameters$marxan_input_dir))
 
-system ("rm /Users/bill/D/Marxan/input/puvspr.dat")
-system ("cp ./puvspr.dat /Users/bill/D/Marxan/input")
+#system ("rm /Users/bill/D/Marxan/input/spec.dat")
+system (paste0 ("rm ", parameters$marxan_input_dir, 
+                parameters$marxan_spec_file_name))
+
+#system ("cp ./spec.dat /Users/bill/D/Marxan/input")
+system (paste0 ("cp ./", parameters$marxan_spec_file_name, 
+                " ", parameters$marxan_input_dir))
+
+#system ("rm /Users/bill/D/Marxan/input/puvspr.dat")
+system (paste0 ("rm ", parameters$marxan_input_dir, 
+                parameters$marxan_puvspr_file_name))
+
+#system ("cp ./puvspr.dat /Users/bill/D/Marxan/input")
+system (paste0 ("cp ./", parameters$marxan_puvspr_file_name, 
+                " ", parameters$marxan_input_dir))
 
 #===============================================================================
 
