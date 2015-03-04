@@ -169,7 +169,14 @@ base_params:
     
 #    marxan_input_parameters_file_name: "/Users/bill/D/Marxan/input.dat"
     marxan_input_parameters_file_name: "$$library_path(marxanLibrary)$$/input.dat"
-    
+
+    marxan_dir: "$$library_path(marxanLibrary)$$"
+    marxan_input_dir: "$$library_path(marxanLibrary)$$input/"
+    marxan_output_dir: "$$library_path(marxanLibrary)$$output/"
+    marxan_pu_file_name: "pu.dat"
+    marxan_spec_file_name: "spec.dat"
+    marxan_puvspr_file_name: "puvspr.dat"
+
     marxan_num_reps: 100
     marxan_num_iterations: "2000000"
 

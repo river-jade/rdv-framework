@@ -57,6 +57,18 @@ timepoints_df =
 
 #===============================================================================
 
+    #  Set the marxan executable name to default to the mac, 
+    #  but check for linux as well.
+    #  I don't know the name for Windows, so I'll just 
+    #  let the system command crash on Windows for the moment since I'm 
+    #  not doing anything at all with Windows right now and 
+    #  can look that up later if necessary.
+marxan_executable_name = "MarOpt_v243_Mac64"
+if (current_os == "linux-gnu")
+    marxan_executable_name = "MarOpt_v243_Linux64"    
+    
+#===============================================================================
+
     #  Run marxan.
         #  Should include this in the marxan package.
 
@@ -68,9 +80,10 @@ timepoints_df =
     #           so that I get reproducible results.
     #*******
 
-run_marxan = function ()
+
+run_marxan = function (marxan_dir, marxan_executable_name)
     {
-    marxan_dir = "/Users/bill/D/Marxan/"
+#    marxan_dir = "/Users/bill/D/Marxan/"    #  replaced in yaml file
     
     original_dir = getwd()
     cat ("\n\noriginal_dir =", original_dir)
@@ -79,16 +92,6 @@ run_marxan = function ()
     setwd (marxan_dir)
     
     cat("\n =====> The current wd is", getwd() )
-    
-        #  Set the marxan executable name to default to the mac, 
-        #  but check for linux as well.
-        #  I don't know the name for Windows, so I'll just 
-        #  let the system command crash on Windows for the moment since I'm 
-        #  not doing anything at all with Windows right now and 
-        #  can look that up later if necessary.
-    marxan_executable_name = "MarOpt_v243_Mac64"
-    if (current_os == "linux-gnu")
-        marxan_executable_name = "MarOpt_v243_Linux64"    
     
         #  The -s deals with the problem of Marxan waiting for you to hit 
         #  return at the end of the run when you're running in the background.  
@@ -159,8 +162,8 @@ marxan_SAVESOLUTIONSMATRIX  = 3
 
 #-------------------
 
-marxan_input_parameters_file_name = "/Users/bill/D/Marxan/input.dat"
-#marxan_input_parameters_file_name = parameters$marxan_input_parameters_file_name
+#marxan_input_parameters_file_name = "/Users/bill/D/Marxan/input.dat"
+marxan_input_parameters_file_name = parameters$marxan_input_parameters_file_name
 
 rm_cmd = paste ("rm", marxan_input_parameters_file_name)
 system (rm_cmd)
@@ -219,7 +222,9 @@ cat ("\nSAVESOLUTIONSMATRIX", marxan_SAVESOLUTIONSMATRIX, file=marxan_input_file
 
 #===============================================================================
 
-run_marxan()
+system (paste0 ("chmod +x ", parameters$marxan_dir, marxan_executable_name))
+
+run_marxan (parameters$marxan_dir, marxan_executable_name)
 
 #===============================================================================
 

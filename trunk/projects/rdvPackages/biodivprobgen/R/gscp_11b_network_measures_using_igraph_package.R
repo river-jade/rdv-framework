@@ -64,11 +64,11 @@ if (emulatingTzar & (DEBUG_LEVEL > 0))
     print (V(bg)$type)
     print (E(bg))
     
-    plot(bg)
+    plot (bg)
     
-    bgp = bipartite.projection(bg)
-    plot(bgp$proj1)
-    plot(bgp$proj2)
+    bgp = bipartite.projection (bg)
+    plot (bgp$proj1)
+    plot (bgp$proj2)
     }
 
 #===============================================================================
