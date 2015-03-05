@@ -131,7 +131,8 @@ marxan_ssoln_PUs_ranked_by_votes_df = arrange (marxan_ssoln_df, desc (number))
 #  when all PUs with the same number of votes or more are included in the 
 #  solution.
 
-plot_output_dir = "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/Plots/"
+#plot_output_dir = "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/Plots/"
+plot_output_dir = parameters$fullOutputDirWithSlash
 
 PU_costs = rep (1, num_PUs)
 total_landscape_cost = sum (PU_costs)
