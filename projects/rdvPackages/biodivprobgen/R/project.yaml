@@ -16,6 +16,7 @@ libraries:
 
        repo_type: http_zip
        url: http://glass.eres.rmit.edu.au/tzar_input/biodivprobgen/Marxan.zip
+       download_mode: ONCE
 
 #===============================================================================
 

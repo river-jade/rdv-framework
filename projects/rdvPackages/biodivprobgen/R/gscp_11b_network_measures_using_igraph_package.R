@@ -64,11 +64,19 @@ if (emulatingTzar & (DEBUG_LEVEL > 0))
     print (V(bg)$type)
     print (E(bg))
     
+    pdf (paste0 (plot_output_dir, "bg-bipartite_graph.pdf"))
     plot (bg)
+    dev.off()
     
     bgp = bipartite.projection (bg)
+
+    pdf (paste0 (plot_output_dir, "bgp_proj1-bipartite_projection_1.pdf"))
     plot (bgp$proj1)
+    dev.off()
+    
+    pdf (paste0 (plot_output_dir, "bgp_proj2-bipartite_projection_2.pdf"))
     plot (bgp$proj2)
+    dev.off()
     }
 
 #===============================================================================

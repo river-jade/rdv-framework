@@ -222,6 +222,12 @@ cat ("\n\nos = '", current_os, "'\n", sep='')
 
 cat ("\n\n", parameters$runset_description, "\n\n")
 
+#---------------------------------------------------------------    
+
+plot_output_dir = parameters$fullOutputDirWithSlash
+
+#---------------------------------------------------------------    
+
 source (paste0 (sourceCodeLocationWithSlash, "timepoints.R"))
 
 #===============================================================================
