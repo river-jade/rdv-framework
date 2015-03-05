@@ -45,5 +45,3 @@ install.packages ('reshape2', dependencies=TRUE, repos='http://cran.r-project.or
     
 #install.packages('marxan', repos='local?')  #  repos='http://cran.r-project.org')
 
-
-
