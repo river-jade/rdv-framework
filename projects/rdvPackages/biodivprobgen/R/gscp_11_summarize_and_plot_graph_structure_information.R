@@ -59,7 +59,8 @@ if (DEBUG_LEVEL > 0)
 final_degree_dist = arrange (final_link_counts_for_each_node, -freq)
 final_degree_dist[,PU_col_name] = 1:dim(final_degree_dist)[1]
 
-pdf (paste0 (plot_output_dir, "final_degree_dist.pdf"), width=6, height=6)
+#pdf (paste0 (plot_output_dir, "final_degree_dist.pdf"), width=6, height=6)
+pdf (file.path (plot_output_dir, "final_degree_dist.pdf"), width=6, height=6)
 plot (final_degree_dist, 
       main="Richness", 
       #sub="subtitle",
@@ -87,7 +88,8 @@ if (DEBUG_LEVEL > 0)
 final_rank_abundance_dist = arrange (final_node_counts_for_each_link, -freq)
 final_rank_abundance_dist[,spp_col_name] = 1:dim(final_rank_abundance_dist)[1]
 
-pdf (paste0 (plot_output_dir, "final_rank_abundance_dist.pdf"))
+#pdf (paste0 (plot_output_dir, "final_rank_abundance_dist.pdf"))
+pdf (file.path (plot_output_dir, "final_rank_abundance_dist.pdf"))
 plot (final_rank_abundance_dist,
       main="Rank abundance curve", 
       # sub="subtitle",

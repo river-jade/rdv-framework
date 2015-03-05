@@ -131,9 +131,6 @@ marxan_ssoln_PUs_ranked_by_votes_df = arrange (marxan_ssoln_df, desc (number))
 #  when all PUs with the same number of votes or more are included in the 
 #  solution.
 
-#plot_output_dir = "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/Plots/"
-plot_output_dir = parameters$fullOutputDirWithSlash
-
 PU_costs = rep (1, num_PUs)
 total_landscape_cost = sum (PU_costs)
 correct_optimum_cost = num_dependent_set_nodes    #  TEMPORARY - only works for all costs = 1
@@ -246,7 +243,8 @@ for (cur_run_length in rle_lengths_and_values$lengths)
     #   xlab="X-axis label", ylab="y-axix label",
     #   xlim=c(xmin, xmax), ylim=c(ymin, ymax)) 
 
-pdf (paste (plot_output_dir, "marxan_ssoln_frac_rep_vs_raw_cost.pdf", sep=''))
+#pdf (paste (plot_output_dir, "marxan_ssoln_frac_rep_vs_raw_cost.pdf", sep=''))
+pdf (file.path (plot_output_dir, "marxan_ssoln_frac_rep_vs_raw_cost.pdf"))
 plot (cost, frac_of_all_spp_meeting_their_target, 
       main="Marxan summed solutions\nFraction of spp meeting targets vs. Raw costs", 
       xlab="Solution cost", 
@@ -257,7 +255,8 @@ abline (v=correct_optimum_cost, lty=2)
 abline (h=1.0, lty=2)
 dev.off()
 
-pdf (paste (plot_output_dir, "marxan_ssoln_frac_rep_vs_normalized_cost.pdf", sep=''))
+#pdf (paste (plot_output_dir, "marxan_ssoln_frac_rep_vs_normalized_cost.pdf", sep=''))
+pdf (file.path (plot_output_dir, "marxan_ssoln_frac_rep_vs_normalized_cost.pdf"))
 plot (landscape_frac_cost, frac_of_all_spp_meeting_their_target, 
       main="Marxan summed solutions\nFraction of spp meeting targets vs. Normalized costs", 
       xlab="Solution cost as fraction of total landscape cost", 
@@ -276,7 +275,8 @@ dev.off()
     #  inflection point where the plot starts to bend.
     #  I'll leave them in for now, but could probably chuck them.
 
-pdf (paste (plot_output_dir, "marxan_ssoln_frac_rep_vs_frac_optimal_cost.pdf", sep=''))
+#pdf (paste (plot_output_dir, "marxan_ssoln_frac_rep_vs_frac_optimal_cost.pdf", sep=''))
+pdf (file.path (plot_output_dir, "marxan_ssoln_frac_rep_vs_frac_optimal_cost.pdf"))
 plot (optimal_frac_cost, frac_of_all_spp_meeting_their_target, 
       main="Marxan summed solutions\nFraction of spp meeting targets vs. Fraction of optimal cost", 
       xlab="Solution cost as fraction of optimal cost", 
@@ -286,7 +286,8 @@ abline (v=1, lty=5)
 abline (h=1.0, lty=5)
 dev.off()
 
-pdf (paste (plot_output_dir, "marxan_ssoln_frac_rep_over_frac_optimal_cost.pdf", sep=''))
+#pdf (paste (plot_output_dir, "marxan_ssoln_frac_rep_over_frac_optimal_cost.pdf", sep=''))
+pdf (file.path (plot_output_dir, "marxan_ssoln_frac_rep_over_frac_optimal_cost.pdf"))
 plot (optimal_frac_cost, frac_rep_met_over_optimal_frac_cost, 
       main="Marxan summed solutions\nRatio: sppFrac/optCostFrac vs. optCostFrac", 
       xlab="Solution cost as fraction of optimal cost", 

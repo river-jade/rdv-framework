@@ -224,7 +224,15 @@ cat ("\n\n", parameters$runset_description, "\n\n")
 
 #---------------------------------------------------------------    
 
-plot_output_dir = parameters$fullOutputDirWithSlash
+plot_output_dir = paste0 (parameters$fullOutputDirWithSlash, "Plots")
+dir.create (plot_output_dir, 
+            showWarnings = TRUE, 
+            recursive = FALSE)
+
+result_tables_output_dir = paste0 (parameters$fullOutputDirWithSlash, "Results")
+dir.create (result_tables_output_dir, 
+            showWarnings = TRUE, 
+            recursive = FALSE)
 
 #---------------------------------------------------------------    
 
