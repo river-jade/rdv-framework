@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TZAR_VERSION=${TZAR_VERSION:-0.5.2}
+: ${TZAR_VERSION?"TZAR_VERSION environment variable not set. Cannot continue"}
 
 mkdir /usr/local/lib/tzar
 cd /usr/local/lib/tzar
