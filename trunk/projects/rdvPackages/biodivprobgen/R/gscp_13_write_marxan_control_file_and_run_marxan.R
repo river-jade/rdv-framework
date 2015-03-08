@@ -66,7 +66,7 @@ timepoints_df =
 marxan_executable_name = "MarOpt_v243_Mac64"
 if (current_os == "linux-gnu")
     marxan_executable_name = "MarOpt_v243_Linux64"    
-    
+
 #===============================================================================
 
     #  Run marxan.
@@ -119,11 +119,11 @@ run_marxan = function (marxan_dir, marxan_executable_name)
     #  General Parameters
 marxan_BLM = 1
 marxan_PROP  = 0.5
-marxan_RANDSEED  = seed
-marxan_NUMREPS  = parameters$marxan_num_reps
+marxan_RANDSEED  = seed    #  Default to same seed as the R code.
+marxan_NUMREPS  = 10
 
     #  Annealing Parameters
-marxan_NUMITNS  = parameters$marxan_num_iterations
+marxan_NUMITNS  = 1000000
 marxan_STARTTEMP  = -1
 marxan_NUMTEMP  = 10000
 
@@ -133,7 +133,7 @@ marxan_THRESHPEN1   = "1.40000000000000E+0001"
 marxan_THRESHPEN2   = "1.00000000000000E+0000"
 
     #  Input Files
-marxan_INPUTDIR  = "input"
+marxan_INPUTDIR  = marxan_input_dir    #  "input"
 marxan_PUNAME  = "pu.dat"
 marxan_SPECNAME  = "spec.dat"
 marxan_PUVSPRNAME  = "puvspr.dat"
@@ -148,7 +148,7 @@ marxan_SAVETARGMET  = 3
 marxan_SAVESUMSOLN  = 3
 marxan_SAVEPENALTY  = 3
 marxan_SAVELOG  = 2
-marxan_OUTPUTDIR  = "output"
+marxan_OUTPUTDIR  = marxan_output_dir    #  "output"
 
     #  Program control
 marxan_RUNMODE  = 1
@@ -159,6 +159,34 @@ marxan_CLUMPTYPE  = 0
 marxan_VERBOSITY  = 3
 
 marxan_SAVESOLUTIONSMATRIX  = 3
+
+#-------------------
+
+#  Need to pull the random seed out of this and always set it myself.
+#  A good default would be to use the same random seed as my R code is using 
+#  here.  
+
+if (! is.null (parameters$marxan_seed))  
+    { marxan_RANDSEED  = parameters$marxan_seed }    
+
+    #  If not using default input parameters, use any values that are 
+    #  specified in the yaml file for the following variables. 
+    #  Anything that's not in the yaml file, just fall back to the defaults.
+    #  The way to know whether the yaml file has specified a value is that 
+    #  asking for its slot in the parameters list will return NULL if it 
+    #  was not specified.
+
+if (! parameters$marxan_use_default_input_parameters)
+    {
+    if (! is.null (parameters$marxan_prop))  
+        { marxan_PROP  = parameters$marxan_prop } 
+    
+    if (! is.null (parameters$marxan_num_reps))  
+        { marxan_NUMREPS  = parameters$marxan_num_reps } 
+    
+    if (! is.null (parameters$marxan_num_iterations))  
+        { marxan_NUMITNS  = parameters$marxan_num_iterations } 
+    }
 
 #-------------------
 
@@ -223,6 +251,8 @@ cat ("\nSAVESOLUTIONSMATRIX", marxan_SAVESOLUTIONSMATRIX, file=marxan_input_file
 #===============================================================================
 
 system (paste0 ("chmod +x ", parameters$marxan_dir, marxan_executable_name))
+
+stop("Testing - just finished marxan input file writing...")
 
 run_marxan (parameters$marxan_dir, marxan_executable_name)
 

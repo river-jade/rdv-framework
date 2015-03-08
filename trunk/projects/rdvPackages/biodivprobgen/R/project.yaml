@@ -76,8 +76,10 @@ base_params:
         #  Looks like there is currently no tzar wildcard to capture the 
         #  the runset name, but it's very useful to add it to lines of 
         #  output that will be combined with output from other runsets.
-    runset_name: simple_test_unifRand_p_r_n_a_seed_701_in_phase_transition_area
-    runset_abbrev: st701phase
+#    runset_name: simple_test_unifRand_p_r_n_a_seed_701_in_phase_transition_area
+    runset_name: $$runset$$
+#    runset_abbrev: st701phase
+    runset_abbrev: "uninitialized_runset_abbrev"
 
 
     max_allowed_possible_tot_num_links: 2000
@@ -168,12 +170,23 @@ base_params:
     
     run_id: $$run_id$$
     
+    #---------------------------------------------------------------------------
+        #  marxan control parameters
+        #
+        #  If marxan_use_default_input_parameters is TRUE, then all of these 
+        #  marxan_... parameters set in this file are ignored and marxan's 
+        #  default values are used instead.  
+        #  The one exception to this is the variable marxan_spf_const, 
+        #  which is a bit different from all the other parameters and is set 
+        #  in the just below the marxan_... parameters in this file.
+    marxan_use_default_input_parameters: FALSE
+    
 #    marxan_input_parameters_file_name: "/Users/bill/D/Marxan/input.dat"
     marxan_input_parameters_file_name: "$$library_path(marxanLibrary)$$/input.dat"
 
     marxan_dir: "$$library_path(marxanLibrary)$$"
-    marxan_input_dir: "$$library_path(marxanLibrary)$$input/"
-    marxan_output_dir: "$$library_path(marxanLibrary)$$output/"
+#    marxan_input_dir: "$$library_path(marxanLibrary)$$input/"
+#    marxan_output_dir: "$$library_path(marxanLibrary)$$output/"
     marxan_pu_file_name: "pu.dat"
     marxan_spec_file_name: "spec.dat"
     marxan_puvspr_file_name: "puvspr.dat"
@@ -181,8 +194,27 @@ base_params:
     marxan_num_reps: 100
     marxan_num_iterations: "2000000"
 
-#    marxan_spf_const: 100
+    #---------------------------------------------------------------------------
+        #  marxan spf value
+        #
+        #  Flag what rule to use for setting the spf value for all species.
+        #  Right now, legal values are just CONSTANT or POWER_OF_10.
+        #  If you choose CONSTANT, you need to also set the value of 
+        #  marxan_spf_const and that value is assigned to all species.  
+        #  If you choose POWER_OF_10, then every species is assigned the 
+        #  same spf value and that value is chosen using the heuristic 
+        #  given in the marxan documentation, i.e., the power of 10 that 
+        #  corresponds to the number of species, e.g., if 632 species, 
+        #  then spf is set to 100.  If a value is assigned to marxan_spf_const 
+        #  here, it is ignored.
+        
+#    marxan_spf_rule: "POWER_OF_10"
+
+    marxan_spf_rule: "CONSTANT"
     marxan_spf_const: 10
+
+#    marxan_spf_rule: "a bad spf rule that should cause an error"
+    #---------------------------------------------------------------------------
     
         # Outputs
         

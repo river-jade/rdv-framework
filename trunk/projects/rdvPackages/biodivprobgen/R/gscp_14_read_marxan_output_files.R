@@ -30,7 +30,8 @@ timepoints_df =
 
             #  output_sen.dat
 
-marxan_output_dir_path = parameters$marxan_output_dir    #  "/Users/bill/D/Marxan/output/"  #  replaced in yaml file
+#marxan_output_dir_path = parameters$marxan_output_dir    #  "/Users/bill/D/Marxan/output/"  #  replaced in yaml file
+marxan_output_dir_path = paste0 (marxan_output_dir, .Platform$file.sep)
 
 marxan_output_best_file_name = "output_best.csv"
 marxan_output_ssoln_file_name = "output_ssoln.csv"
