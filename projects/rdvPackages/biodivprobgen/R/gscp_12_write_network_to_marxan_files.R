@@ -112,8 +112,19 @@ spp_PU_amount_table = arrange (spp_PU_amount_table, pu, species)
 # be appropriate to raise the SPF for these features. Once again, see the
 # MGPH for more detail on setting SPFs.
 
-#spf_const = 10 ^ (floor (log10 (num_spp)))
-spf_const = parameters$marxan_spf_const
+if (parameters$marxan_spf_rule == "POWER_OF_10")
+    {
+    spf_const = 10 ^ (floor (log10 (num_spp)))
+    
+    } else if (parameters$marxan_spf_rule == "CONSTANT")
+    {
+    spf_const = parameters$marxan_spf_const
+    } else 
+    {
+    stop (paste0 ("\n\nERROR: marxan_spf_rule = '", 
+                  parameters$marxan_spf_rule, "'", 
+         "\nMust be one of: POWER_OF_10 or CONSTANT.\n\n"))
+    }
 
 #-------------------------------------------------------------------------------
 
@@ -121,7 +132,7 @@ spf_const = parameters$marxan_spf_const
     #***  name of the directory to put the results in (but can  
     #***  default to writing in "." instead?).
 
-marxan_input_dir = parameters$marxan_input_dir    #  "/Users/bill/D/Marxan/input/"
+#marxan_input_dir = parameters$marxan_input_dir    #  "/Users/bill/D/Marxan/input/"
 
 write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table, 
                               spf_const)
@@ -132,32 +143,57 @@ write_all_marxan_input_files (PU_IDs, spp_IDs, spp_PU_amount_table,
 #                                          cost_const = 1, 
 #                                          status_const = 0)
 
+
+cat ("\n\n>>>>>  marxan_input_dir = ", marxan_input_dir)
+cat ("\n>>>>>  marxan_output_dir = ", marxan_output_dir)
+
+
 #system ("rm /Users/bill/D/Marxan/output/*")
-system (paste0 ("rm ", parameters$marxan_output_dir, "*"))
+#system (paste0 ("rm ", parameters$marxan_output_dir, "*"))
+#system (paste0 ("rm ", parameters$marxan_output_dir, .Platform$file.sep, "*"))
+marxan_output_dir_files_to_rm = 
+#    paste0 (parameters$marxan_output_dir, .Platform$file.sep, "*")
+    paste0 (marxan_output_dir, .Platform$file.sep, "*")
+#####system (paste0 ("rm ", marxan_output_dir_files_to_rm))
+cat ("\n\n>>>>>  marxan_output_dir_files_to_rm = ", marxan_output_dir_files_to_rm, "\n")
 
 #system ("rm /Users/bill/D/Marxan/input/pu.dat")
-system (paste0 ("rm ", parameters$marxan_input_dir, 
-                parameters$marxan_pu_file_name))
+#pu_dat_file_to_remove = paste0 (parameters$marxan_input_dir, .Platform$file.sep, parameters$marxan_pu_file_name)
+pu_dat_file_to_remove = paste0 (marxan_input_dir, .Platform$file.sep, parameters$marxan_pu_file_name)
+#####system (paste0 ("rm ", pu_dat_file_to_remove))
+cat ("\n>>>>>  pu_dat_file_to_remove = ", pu_dat_file_to_remove, "\n")
 
 #system ("cp ./pu.dat /Users/bill/D/Marxan/input")
-system (paste0 ("cp ./", parameters$marxan_pu_file_name, 
-                " ", parameters$marxan_input_dir))
+#pu_dat_file_to_cp = paste0 (parameters$marxan_pu_file_name, " ", parameters$marxan_input_dir)
+pu_dat_file_to_cp = paste0 (parameters$marxan_pu_file_name, " ", marxan_input_dir)
+#####system (paste0 ("cp ./", pu_dat_file_to_cp))
+cat ("\n>>>>>  pu_dat_file_to_cp = ", pu_dat_file_to_cp, "\n")
 
 #system ("rm /Users/bill/D/Marxan/input/spec.dat")
-system (paste0 ("rm ", parameters$marxan_input_dir, 
-                parameters$marxan_spec_file_name))
+#spec_file_to_remove = paste0 (parameters$marxan_input_dir, .Platform$file.sep, parameters$marxan_spec_file_name)
+spec_file_to_remove = paste0 (marxan_input_dir, .Platform$file.sep, parameters$marxan_spec_file_name)
+#####system (paste0 ("rm ", spec_file_to_replace))
+cat ("\n>>>>>  spec_file_to_remove = ", spec_file_to_remove, "\n")
 
 #system ("cp ./spec.dat /Users/bill/D/Marxan/input")
-system (paste0 ("cp ./", parameters$marxan_spec_file_name, 
-                " ", parameters$marxan_input_dir))
-
+#spec_file_to_cp = paste0 (parameters$marxan_spec_file_name, " ", parameters$marxan_input_dir)
+spec_file_to_cp = paste0 (parameters$marxan_spec_file_name, " ", marxan_input_dir)
+#####system (paste0 ("cp ./", spec_file_to_cp))
+cat ("\n>>>>>  spec_file_to_cp = ", spec_file_to_cp, "\n")
+        
 #system ("rm /Users/bill/D/Marxan/input/puvspr.dat")
-system (paste0 ("rm ", parameters$marxan_input_dir, 
-                parameters$marxan_puvspr_file_name))
-
+#puvspr_file_to_remove = paste0 (parameters$marxan_input_dir, .Platform$file.sep, parameters$marxan_puvspr_file_name)
+puvspr_file_to_remove = paste0 (marxan_input_dir, .Platform$file.sep, parameters$marxan_puvspr_file_name)
+#####system (paste0 ("rm ", puvspr_file_to_remove))
+cat ("\n>>>>>  puvspr_file_to_remove = ", puvspr_file_to_remove, "\n")
+                
 #system ("cp ./puvspr.dat /Users/bill/D/Marxan/input")
-system (paste0 ("cp ./", parameters$marxan_puvspr_file_name, 
-                " ", parameters$marxan_input_dir))
-
+#puvspr_file_to_cp = paste0 (parameters$marxan_puvspr_file_name, " ", parameters$marxan_input_dir)
+puvspr_file_to_cp = paste0 (parameters$marxan_puvspr_file_name, " ", marxan_input_dir)
+#####system (paste0 ("cp ./", puvspr_file_to_cp))
+cat ("\n>>>>>  puvspr_file_to_cp = ", puvspr_file_to_cp, "\n")
+        
+stop("\nEND TEST\n")
+                
 #===============================================================================
 

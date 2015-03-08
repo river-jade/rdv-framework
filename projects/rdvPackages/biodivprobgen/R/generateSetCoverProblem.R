@@ -234,6 +234,21 @@ dir.create (result_tables_output_dir,
             showWarnings = TRUE, 
             recursive = FALSE)
 
+marxan_IO_dir = paste0 (parameters$fullOutputDirWithSlash, "Marxan_IO")
+dir.create (marxan_IO_dir, 
+            showWarnings = TRUE, 
+            recursive = FALSE)
+
+marxan_input_dir = paste0 (marxan_IO_dir, .Platform$file.sep, "input")
+dir.create (marxan_input_dir, 
+            showWarnings = TRUE, 
+            recursive = FALSE)
+
+marxan_output_dir = paste0 (marxan_IO_dir, .Platform$file.sep, "output")
+dir.create (marxan_output_dir, 
+            showWarnings = TRUE, 
+            recursive = FALSE)
+
 #---------------------------------------------------------------    
 
 source (paste0 (sourceCodeLocationWithSlash, "timepoints.R"))
