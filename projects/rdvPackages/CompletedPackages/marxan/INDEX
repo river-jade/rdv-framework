@@ -1,0 +1,29 @@
+gen_random_spp_PU_amount_table
+                        Generate a random species vs. planning unit
+                        table.
+marxan                  Build input files for Marxan reserve selection
+                        software.
+write_all_marxan_input_files
+                        Write all marxan input files except bound.dat
+                        and input.dat using constant values for
+                        individual elements.
+write_all_marxan_input_files_from_vectors
+                        Write all marxan input files except bound.dat
+                        and input.dat given vectors for individual
+                        elements.
+write_marxan_pu.dat_input_file
+                        Write marxan planning units input file (pu.dat)
+                        using constant values for cost and status.
+write_marxan_pu.dat_input_file_from_vectors
+                        Write marxan planning units input file (pu.dat)
+                        given vectors of cost and status values.
+write_marxan_puvspr.dat_input_file
+                        Write planning unit vs. species input file
+                        (puvspr.dat).
+write_marxan_spec.dat_input_file
+                        Write species input file (spec.dat) using
+                        constant values for species penalties and
+                        targets.
+write_marxan_spec.dat_input_file_from_vectors
+                        Write species input file (spec.dat) given
+                        vectors of target and spf values.
