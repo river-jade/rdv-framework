@@ -179,7 +179,7 @@ base_params:
         #  The one exception to this is the variable marxan_spf_const, 
         #  which is a bit different from all the other parameters and is set 
         #  in the just below the marxan_... parameters in this file.
-    marxan_use_default_input_parameters: TRUE
+    marxan_use_default_input_parameters: FALSE
     
 #    marxan_input_parameters_file_name: "/Users/bill/D/Marxan/input.dat"
     marxan_input_parameters_file_name: "$$library_path(marxanLibrary)$$input.dat"
