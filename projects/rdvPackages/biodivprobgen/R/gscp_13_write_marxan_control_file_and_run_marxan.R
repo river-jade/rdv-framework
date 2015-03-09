@@ -72,15 +72,6 @@ if (current_os == "linux-gnu")
     #  Run marxan.
         #  Should include this in the marxan package.
 
-    #*******
-    #  NOTE:  Random seed is set to -1 in the cplan input.dat.
-    #           I think that means to use a different seed each time.
-    #           I probably need to change this to any positive number, 
-    #           at least in the default input.dat that I'm using now 
-    #           so that I get reproducible results.
-    #*******
-
-
 run_marxan = function (marxan_dir, marxan_executable_name)
     {
 #    marxan_dir = "/Users/bill/D/Marxan/"    #  replaced in yaml file
@@ -119,11 +110,20 @@ run_marxan = function (marxan_dir, marxan_executable_name)
     #  General Parameters
 marxan_BLM = 1
 marxan_PROP  = 0.5
+
+    #*******
+    #  NOTE:  Random seed is set to -1 in the cplan input.dat.
+    #           I think that means to use a different seed each time.
+    #           I probably need to change this to any positive number, 
+    #           at least in the default input.dat that I'm using now 
+    #           so that I get reproducible results.
+    #*******
+
 marxan_RANDSEED  = seed    #  Default to same seed as the R code.
 marxan_NUMREPS  = 10
 
     #  Annealing Parameters
-marxan_NUMITNS  = 1000000
+marxan_NUMITNS  = "1000000"
 marxan_STARTTEMP  = -1
 marxan_NUMTEMP  = 10000
 
@@ -191,15 +191,24 @@ if (! parameters$marxan_use_default_input_parameters)
 #-------------------
 
 #marxan_input_parameters_file_name = "/Users/bill/D/Marxan/input.dat"
+#####marxan_input_parameters_file_name = parameters$marxan_input_parameters_file_name
+# marxan_input_parameters_file_name = 
+#     paste0 (marxan_input_dir, .Platform$file.sep, 
+#             parameters$marxan_input_parameters_file_name)
 marxan_input_parameters_file_name = parameters$marxan_input_parameters_file_name
 
-rm_cmd = paste ("rm", marxan_input_parameters_file_name)
-system (rm_cmd)
+cat ("\n\n>>>>>  IN 13, marxan_input_dir = ", marxan_input_dir)
+cat ("\n>>>>>  parameters$marxan_input_parameters_file_name = ", parameters$marxan_input_parameters_file_name)
+cat ("\n>>>>>  marxan_input_parameters_file_name = ", marxan_input_parameters_file_name, "\n")
+#stop ("is it inputinput?")
+#####rm_cmd = paste ("rm", marxan_input_parameters_file_name)
+#####system (rm_cmd)
 
 #marxan_input_file_conn = file (marxan_input_parameters_file_name)
 marxan_input_file_conn = marxan_input_parameters_file_name
     
-cat ("Marxan input file", file=marxan_input_file_conn, append=TRUE)
+#cat ("Marxan input file", file=marxan_input_file_conn, append=TRUE)
+cat ("Marxan input file", file=marxan_input_file_conn)
 
 cat ("\n\nGeneral Parameters", file=marxan_input_file_conn, append=TRUE)
 
@@ -246,13 +255,21 @@ cat ("\nVERBOSITY", marxan_VERBOSITY, file=marxan_input_file_conn, append=TRUE)
 
 cat ("\nSAVESOLUTIONSMATRIX", marxan_SAVESOLUTIONSMATRIX, file=marxan_input_file_conn, append=TRUE)
 
+    #  When I turn this on, I get the following error message:
+    #       Error in UseMethod("close") :  
+    #       no applicable method for 'close' applied to an object of class "character" 
+    #  Not sure what I should be handing to the close() function...
 #close (marxan_input_file_conn)
+
+input_dat_cp_cmd = paste0 ("cp ", marxan_input_parameters_file_name, " ", marxan_IO_dir)
+cat ("\n\ninput_dat_cp_cmd = ", input_dat_cp_cmd, "\n")
+system (input_dat_cp_cmd)
 
 #===============================================================================
 
 system (paste0 ("chmod +x ", parameters$marxan_dir, marxan_executable_name))
 
-stop("Testing - just finished marxan input file writing...")
+#stop("Testing - just finished marxan input file writing...")
 
 run_marxan (parameters$marxan_dir, marxan_executable_name)
 

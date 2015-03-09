@@ -131,6 +131,10 @@ if (parameters$marxan_spf_rule == "POWER_OF_10")
     #***  Need to modify the write_all...() function to prepend the 
     #***  name of the directory to put the results in (but can  
     #***  default to writing in "." instead?).
+    #***  Will do this later because it's not a big deal to do the copies 
+    #***  below and when I make this change I will have to rebuild the 
+    #***  marxan package and move copies to the R library and the nectar 
+    #***  machines.
 
 #marxan_input_dir = parameters$marxan_input_dir    #  "/Users/bill/D/Marxan/input/"
 
@@ -148,52 +152,23 @@ cat ("\n\n>>>>>  marxan_input_dir = ", marxan_input_dir)
 cat ("\n>>>>>  marxan_output_dir = ", marxan_output_dir)
 
 
-#system ("rm /Users/bill/D/Marxan/output/*")
-#system (paste0 ("rm ", parameters$marxan_output_dir, "*"))
-#system (paste0 ("rm ", parameters$marxan_output_dir, .Platform$file.sep, "*"))
-marxan_output_dir_files_to_rm = 
-#    paste0 (parameters$marxan_output_dir, .Platform$file.sep, "*")
-    paste0 (marxan_output_dir, .Platform$file.sep, "*")
-#####system (paste0 ("rm ", marxan_output_dir_files_to_rm))
-cat ("\n\n>>>>>  marxan_output_dir_files_to_rm = ", marxan_output_dir_files_to_rm, "\n")
-
-#system ("rm /Users/bill/D/Marxan/input/pu.dat")
-#pu_dat_file_to_remove = paste0 (parameters$marxan_input_dir, .Platform$file.sep, parameters$marxan_pu_file_name)
-pu_dat_file_to_remove = paste0 (marxan_input_dir, .Platform$file.sep, parameters$marxan_pu_file_name)
-#####system (paste0 ("rm ", pu_dat_file_to_remove))
-cat ("\n>>>>>  pu_dat_file_to_remove = ", pu_dat_file_to_remove, "\n")
-
 #system ("cp ./pu.dat /Users/bill/D/Marxan/input")
 #pu_dat_file_to_cp = paste0 (parameters$marxan_pu_file_name, " ", parameters$marxan_input_dir)
 pu_dat_file_to_cp = paste0 (parameters$marxan_pu_file_name, " ", marxan_input_dir)
-#####system (paste0 ("cp ./", pu_dat_file_to_cp))
+system (paste0 ("cp ./", pu_dat_file_to_cp))
 cat ("\n>>>>>  pu_dat_file_to_cp = ", pu_dat_file_to_cp, "\n")
-
-#system ("rm /Users/bill/D/Marxan/input/spec.dat")
-#spec_file_to_remove = paste0 (parameters$marxan_input_dir, .Platform$file.sep, parameters$marxan_spec_file_name)
-spec_file_to_remove = paste0 (marxan_input_dir, .Platform$file.sep, parameters$marxan_spec_file_name)
-#####system (paste0 ("rm ", spec_file_to_replace))
-cat ("\n>>>>>  spec_file_to_remove = ", spec_file_to_remove, "\n")
 
 #system ("cp ./spec.dat /Users/bill/D/Marxan/input")
 #spec_file_to_cp = paste0 (parameters$marxan_spec_file_name, " ", parameters$marxan_input_dir)
 spec_file_to_cp = paste0 (parameters$marxan_spec_file_name, " ", marxan_input_dir)
-#####system (paste0 ("cp ./", spec_file_to_cp))
+system (paste0 ("cp ./", spec_file_to_cp))
 cat ("\n>>>>>  spec_file_to_cp = ", spec_file_to_cp, "\n")
         
-#system ("rm /Users/bill/D/Marxan/input/puvspr.dat")
-#puvspr_file_to_remove = paste0 (parameters$marxan_input_dir, .Platform$file.sep, parameters$marxan_puvspr_file_name)
-puvspr_file_to_remove = paste0 (marxan_input_dir, .Platform$file.sep, parameters$marxan_puvspr_file_name)
-#####system (paste0 ("rm ", puvspr_file_to_remove))
-cat ("\n>>>>>  puvspr_file_to_remove = ", puvspr_file_to_remove, "\n")
-                
 #system ("cp ./puvspr.dat /Users/bill/D/Marxan/input")
 #puvspr_file_to_cp = paste0 (parameters$marxan_puvspr_file_name, " ", parameters$marxan_input_dir)
 puvspr_file_to_cp = paste0 (parameters$marxan_puvspr_file_name, " ", marxan_input_dir)
-#####system (paste0 ("cp ./", puvspr_file_to_cp))
+system (paste0 ("cp ./", puvspr_file_to_cp))
 cat ("\n>>>>>  puvspr_file_to_cp = ", puvspr_file_to_cp, "\n")
         
-stop("\nEND TEST\n")
-                
 #===============================================================================
 
