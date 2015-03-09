@@ -179,10 +179,11 @@ base_params:
         #  The one exception to this is the variable marxan_spf_const, 
         #  which is a bit different from all the other parameters and is set 
         #  in the just below the marxan_... parameters in this file.
-    marxan_use_default_input_parameters: FALSE
+    marxan_use_default_input_parameters: TRUE
     
 #    marxan_input_parameters_file_name: "/Users/bill/D/Marxan/input.dat"
-    marxan_input_parameters_file_name: "$$library_path(marxanLibrary)$$/input.dat"
+    marxan_input_parameters_file_name: "$$library_path(marxanLibrary)$$input.dat"
+#    marxan_input_parameters_file_name: "input.dat"
 
     marxan_dir: "$$library_path(marxanLibrary)$$"
 #    marxan_input_dir: "$$library_path(marxanLibrary)$$input/"
@@ -190,6 +191,13 @@ base_params:
     marxan_pu_file_name: "pu.dat"
     marxan_spec_file_name: "spec.dat"
     marxan_puvspr_file_name: "puvspr.dat"
+
+        #  It looks like Marxan chokes if input.dat has the number of 
+        #  iterations expressed in scientific notation (e.g., 2e+06). 
+        #  Somewhere along the path between here and writing the value 
+        #  out to the input.dat file, values around 1 million do get 
+        #  converted to scientific notation, so I'm putting them in 
+        #  quotes so that they are written out to marxan's liking.
 
     marxan_num_reps: 100
     marxan_num_iterations: "2000000"

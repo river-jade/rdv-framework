@@ -229,10 +229,10 @@ dir.create (plot_output_dir,
             showWarnings = TRUE, 
             recursive = FALSE)
 
-result_tables_output_dir = paste0 (parameters$fullOutputDirWithSlash, "Results")
-dir.create (result_tables_output_dir, 
-            showWarnings = TRUE, 
-            recursive = FALSE)
+# result_tables_output_dir = paste0 (parameters$fullOutputDirWithSlash, "Results")
+# dir.create (result_tables_output_dir, 
+#             showWarnings = TRUE, 
+#             recursive = FALSE)
 
 marxan_IO_dir = paste0 (parameters$fullOutputDirWithSlash, "Marxan_IO")
 dir.create (marxan_IO_dir, 
