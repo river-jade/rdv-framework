@@ -81,8 +81,9 @@ base_params:
 #    runset_abbrev: st701phase
     runset_abbrev: "uninitialized_runset_abbrev"
 
-
-    max_allowed_possible_tot_num_links: 2000
+        #  Temporarily bumping this up to 10000 to see how long runs take...
+        #  BTL - 2015 03 09
+    max_allowed_possible_tot_num_links: 10000    #  2000
 
         #  NOTE that the choice of random seed in the yaml file is important 
         #  for this single run test because the example creates a test problem 
@@ -216,9 +217,9 @@ base_params:
         #  then spf is set to 100.  If a value is assigned to marxan_spf_const 
         #  here, it is ignored.
         
-#    marxan_spf_rule: "POWER_OF_10"
+    marxan_spf_rule: "POWER_OF_10"
 
-    marxan_spf_rule: "CONSTANT"
+#    marxan_spf_rule: "CONSTANT"
     marxan_spf_const: 10
 
 #    marxan_spf_rule: "a bad spf rule that should cause an error"
@@ -239,7 +240,7 @@ repetitions:
           generator_type: linear_step
           start: 701
           step_size: 1
-          count: 10    #  500
+          count: 100    #  500
 
           
 #concatenate:

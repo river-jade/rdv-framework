@@ -207,7 +207,12 @@ cur_result_row = 0
 
 cur_result_row = cur_result_row + 1
 
-results_df$runset_abbrev [cur_result_row]                                    = parameters$runset_abbrev
+    #  Filling in the runset_abbrev with the full runset name for the moment, 
+    #  because it's more reliably correct since it's automatically captured 
+    #  by tzar.  Not sure what I'll do in the long run.
+    #  2015 03 09 - BTL
+results_df$runset_abbrev [cur_result_row]                                    = parameters$runset_name    #  parameters$runset_abbrev
+
 results_df$num_PUs [cur_result_row]                                          = num_PUs
 results_df$num_spp [cur_result_row]                                          = num_spp
 results_df$seed [cur_result_row]                                             = seed
