@@ -233,6 +233,14 @@ base_params:
 #    output.plot : $$output_path$$poptraj
 #    output.dump : $$output_path$$projtraj.R
 
+repetitions:
+    generators:
+        - key: seed
+          generator_type: linear_step
+          start: 701
+          step_size: 1
+          count: 10    #  500
+
           
 #concatenate:
 #  heading_row: true
