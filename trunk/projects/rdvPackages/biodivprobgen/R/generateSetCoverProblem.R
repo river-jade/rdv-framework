@@ -229,6 +229,11 @@ dir.create (plot_output_dir,
             showWarnings = TRUE, 
             recursive = FALSE)
 
+network_output_dir = paste0 (parameters$fullOutputDirWithSlash, "Networks")
+dir.create (network_output_dir, 
+            showWarnings = TRUE, 
+            recursive = FALSE)
+
 # result_tables_output_dir = paste0 (parameters$fullOutputDirWithSlash, "Results")
 # dir.create (result_tables_output_dir, 
 #             showWarnings = TRUE, 

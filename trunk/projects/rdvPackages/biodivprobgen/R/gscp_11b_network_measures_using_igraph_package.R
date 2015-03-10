@@ -53,9 +53,6 @@ bg = graph.data.frame (PU_spp_pair_names, directed=FALSE, vertices=vertices)
 cat ("\n\n=====>  Under igraph, is.bipartite (bg) = ", is.bipartite (bg), "\n")
 #Echo results...
 
-    #  May want to plot things to a file at some point, but for now, 
-    #  there's no utility in dumping all this stuff when it's done in 
-    #  batch mode and therefore, never seen.
 if (emulatingTzar & (DEBUG_LEVEL > 0))
     {
     print(bg)
@@ -63,24 +60,52 @@ if (emulatingTzar & (DEBUG_LEVEL > 0))
     print (V(bg))
     print (V(bg)$type)
     print (E(bg))
-    
-#    pdf (paste0 (plot_output_dir, "bg-bipartite_graph.pdf"))
-    pdf (file.path (plot_output_dir, "bg-bipartite_graph.pdf"))
-    plot (bg)
-    dev.off()
-    
-    bgp = bipartite.projection (bg)
-
-#    pdf (paste0 (plot_output_dir, "bgp_proj1-bipartite_projection_1.pdf"))
-    pdf (file.path (plot_output_dir, "bgp_proj1-bipartite_projection_1.pdf"))
-    plot (bgp$proj1)
-    dev.off()
-    
-#    pdf (paste0 (plot_output_dir, "bgp_proj2-bipartite_projection_2.pdf"))
-    pdf (file.path (plot_output_dir, "bgp_proj2-bipartite_projection_2.pdf"))
-    plot (bgp$proj2)
-    dev.off()
     }
+
+    #-------------------------------------------------------------------------
+    #  Write out the bipartite graph as an edgelist, then plot it to a file.
+    #-------------------------------------------------------------------------
+
+write.graph (bg,  
+             file.path (network_output_dir, "bg-bipartite_graph_edgelist.txt"), 
+             format="edgelist")
+
+pdf (file.path (network_output_dir, "bg-bipartite_graph.pdf"))
+plot (bg)
+dev.off()
+
+    #---------------------------------------------------------------
+    #  Create the 2 projections of the bipartite graph, i.e., 
+    #  a graph of just species and a graph of just planning units.
+    #---------------------------------------------------------------
+
+bgp = bipartite.projection (bg)
+
+    #---------------------------------------------------------------------------
+    #  Write out the PU projection, i.e., projection 1, then plot it to a file.
+    #---------------------------------------------------------------------------
+
+bgp_proj1_PUs = bgp$proj1
+write.graph (bgp_proj1_PUs,  
+             file.path (network_output_dir, "bgp_proj1_PUs_edgelist.txt"), 
+             format="edgelist")
+
+pdf (file.path (network_output_dir, "bgp_proj1_PUs.pdf"))
+plot (bgp_proj1_PUs)
+dev.off()
+
+    #---------------------------------------------------------------------------
+    #  Write out the spp projection, i.e., projection 2, then plot it to a file.
+    #---------------------------------------------------------------------------
+
+bgp_proj2_spp = bgp$proj2
+write.graph (bgp_proj2_spp,  
+             file.path (network_output_dir, "bgp_proj2_spp_edgelist.txt"), 
+             format="edgelist")
+
+pdf (file.path (network_output_dir, "bgp_proj2_spp.pdf"))
+plot (bgp_proj2_spp)
+dev.off()
 
 #===============================================================================
 

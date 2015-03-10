@@ -234,11 +234,14 @@ base_params:
 #    output.plot : $$output_path$$poptraj
 #    output.dump : $$output_path$$projtraj.R
 
+    too_many_possible_links_error_flag_file_name: $$output_path$$too_many_possible_links_error_flag_file.txt
+
+
 repetitions:
     generators:
         - key: seed
           generator_type: linear_step
-          start: 701
+          start: 801
           step_size: 1
           count: 100    #  500
 
