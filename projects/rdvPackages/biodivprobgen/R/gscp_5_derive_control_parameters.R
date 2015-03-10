@@ -276,7 +276,28 @@ if (max_possible_tot_num_links > parameters$max_allowed_possible_tot_num_links)
          max_possible_tot_num_links, ") > maximum allowed (", 
          parameters$max_allowed_possible_tot_num_links, 
          ").\n\n")
-    quit (status=1)
+    
+        #  Write a little file to the tzar output area flagging that the 
+        #  reason for this run failing is the link count threshold violation.
+        #  This is a quick and dirty way to make it easy to verify that a 
+        #  failed run is due to the threshold violation rather than 
+        #  a real error.  Need to make a better way of handling this as a  
+        #  line of NA values in the normal results output file, but 
+        #  the way that things are set up right now, that's a pain to do.
+        #  So, for now, this hack...
+        #  BTL - 2015 03 10.
+    
+    too_many_possible_links_error_flag_file_name = 
+        parameters$too_many_possible_links_error_flag_file_name
+
+    cat ("Failing:  max_possible_tot_num_links (", 
+        max_possible_tot_num_links, ") > maximum allowed (", 
+        parameters$max_allowed_possible_tot_num_links, 
+        ").\n\n", 
+        file=too_many_possible_links_error_flag_file_name
+        )    
+    
+    quit (status=20)
     }
 
 #===============================================================================

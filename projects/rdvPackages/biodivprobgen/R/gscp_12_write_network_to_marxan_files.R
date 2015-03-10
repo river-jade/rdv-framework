@@ -114,7 +114,11 @@ spp_PU_amount_table = arrange (spp_PU_amount_table, pu, species)
 
 if (parameters$marxan_spf_rule == "POWER_OF_10")
     {
-    spf_const = 10 ^ (floor (log10 (num_spp)))
+    spf_const_power_of_10 = 10 ^ (floor (log10 (num_spp)))
+        #  Marxan manual (quoted above) says to back off slightly 
+        #  from the power of 10.  
+        #  Not sure what "slightly" means, but I'll try decreasing by 5%.
+    spf_const = round (0.95 * spf_const_power_of_10)    #  "decrease the SPFs slightly"
     
     } else if (parameters$marxan_spf_rule == "CONSTANT")
     {

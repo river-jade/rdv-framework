@@ -144,6 +144,7 @@ results_df =
                 run_ID = rep (NA, num_runs), 
                 num_PUs = rep (NA, num_runs), 
                 num_spp = rep (NA, num_runs), 
+                num_spp_per_PU = rep (NA, num_runs), 
                 seed = rep (NA, num_runs), 
                 
                     #  Xu options
@@ -215,6 +216,7 @@ results_df$runset_abbrev [cur_result_row]                                    = p
 
 results_df$num_PUs [cur_result_row]                                          = num_PUs
 results_df$num_spp [cur_result_row]                                          = num_spp
+results_df$num_spp_per_PU [cur_result_row]                                   = num_spp / num_PUs
 results_df$seed [cur_result_row]                                             = seed
 
     #  Xu options
@@ -288,12 +290,6 @@ results_df = cbind (results_df,
                     bipartite_metrics_from_bipartite_package, 
                     bipartite_metrics_from_igraph_package_df
                     )
-
-#  SHOULD ADD TO THE DF'S:
-#       - RUNSET NAME
-#       - NUM_SPP/NUM_PUs
-#       - NUM_PUs/NUM_SPP
-#       - what else?  Need to look at the excel sheet I've been working on...
 
     #  Write the results out to 2 separate and nearly identical files.
     #  The only difference between the two files is that the run ID in 
