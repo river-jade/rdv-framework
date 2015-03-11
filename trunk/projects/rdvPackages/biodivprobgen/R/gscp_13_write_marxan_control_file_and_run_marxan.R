@@ -123,6 +123,12 @@ marxan_RANDSEED  = seed    #  Default to same seed as the R code.
 marxan_NUMREPS  = 10
 
     #  Annealing Parameters
+        #  It looks like Marxan chokes if input.dat has the number of 
+        #  iterations expressed in scientific notation (e.g., 1e+06). 
+        #  Somewhere along the path between here and writing the value 
+        #  out to the input.dat file, values around 1 million do get 
+        #  converted to scientific notation, so I'm putting them in 
+        #  quotes so that they are written out to marxan's liking.
 marxan_NUMITNS  = "1000000"
 marxan_STARTTEMP  = -1
 marxan_NUMTEMP  = 10000
