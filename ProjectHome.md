@@ -1,0 +1,1 @@
+rdv-framework is designed to evaluate and compare ecological conservation reserve selection alogrithms.
